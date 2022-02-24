@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_delete_ll"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/bb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/aa"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="280dp"
+            android:layout_marginTop="30dp"
+            android:scaleType="center"
+            android:src="@mipmap/ic_clear_dialog" />
+
+        <TextView
+            android:id="@+id/tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="18dp"
+            android:layout_marginTop="30dp"
+            android:layout_toRightOf="@id/aa"
+            android:gravity="center"
+            android:text="确定要清除缓存吗？"
+            android:textColor="#ff333436"
+            android:textSize="17sp" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <Button
+            android:id="@+id/confir_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="36dp"
+            android:layout_marginLeft="36dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="42dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_delete_confirm"
+            android:gravity="center"
+            android:text="确定"
+            android:textColor="#ffffff"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/cancel_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="36dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="36dp"
+            android:layout_marginTop="42dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_delete_cancel"
+            android:gravity="center"
+            android:text="取消"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+    </LinearLayout>
+</LinearLayout>

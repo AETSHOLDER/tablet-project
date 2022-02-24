@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.guanpy:eventbus:1.0.0@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/eventbus-1.0.0.aar/de915ba77c890dc15b205a5ac78e747c/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/eventbus-1.0.0.aar/de915ba77c890dc15b205a5ac78e747c/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.guanpy/eventbus/1.0.0/d8ddb1fe8b220d5e8703425b23fff7730f4f1216/eventbus-1.0.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

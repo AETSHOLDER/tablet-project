@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_shape_white"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:gravity="center_vertical"
+            android:layout_marginTop="26dp"
+            android:orientation="horizontal">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/avater_img"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="60dp"
+                android:background="@drawable/shape_corner_avater"
+                android:src="@mipmap/avater_default"/>
+
+
+            <TextView
+                android:id="@+id/endtimeClock"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_alignTop="@+id/avater_img"
+                android:layout_toRightOf="@+id/avater_img"
+                android:layout_marginLeft="10dp"
+                android:text="距离结束还剩 10:50"
+                android:textStyle="bold"
+                android:textColor="@color/color_textBlack"
+                android:textSize="22sp" />
+
+            <Button
+                android:id="@+id/danxaun"
+                android:layout_width="78dp"
+                android:layout_height="34dp"
+                android:scaleType="fitXY"
+                android:layout_centerVertical="@+id/endtimeClock"
+                android:layout_toRightOf="@+id/endtimeClock"
+                android:layout_marginLeft="12dp"
+                android:background="@drawable/rectangle_yellow"
+                android:text="单选"
+                android:textSize="18sp"
+                android:textColor="@color/alertdialog_danxuan_yellow">
+            </Button>
+
+            <Button
+                android:id="@+id/niming"
+                android:layout_width="78dp"
+                android:layout_height="34dp"
+                android:scaleType="fitXY"
+                android:layout_centerVertical="@+id/endtimeClock"
+                android:layout_toRightOf="@+id/danxaun"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/rectangle_blue"
+                android:text="匿名"
+                android:textSize="18sp"
+                android:textColor="@color/alertdialog_niming_blue">
+            </Button>
+
+            <TextView
+                android:id="@+id/creator"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/endtimeClock"
+                android:layout_below="@+id/endtimeClock"
+                android:layout_marginTop="5dp"
+                android:text="发起人：吴呆呆"
+                android:textStyle="normal"
+                android:textColor="@color/color_textBlack65"
+                android:textSize="18sp" />
+
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:padding="50dp"
+            android:layout_height="0.5dp"
+            android:background="@color/alertdialog_line" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:text="投票内容投票内容投票内容投票内容投票内容投票内容投票内容投票内容投票内容投票内容投票"
+                android:textStyle="normal"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:textColor="@color/color_textBlack2b"
+                android:textSize="22sp" />
+            <ListView
+                android:id="@+id/listview"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:layout_below="@+id/title"
+                android:layout_marginTop="15dp"
+                android:divider="#00000000"
+                android:scrollIndicators="none"
+                android:scrollbars="none"
+                android:listSelector="@drawable/trans_bg"
+                android:background="@color/bgColor">
+            </ListView>
+
+        </LinearLayout>
+
+        <TextView style="@style/HorizontalLine"
+            android:padding="50dp"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp" >
+
+            <Button
+                android:id="@+id/btn_neg"
+                android:layout_width="124dp"
+                android:layout_height="62dp"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/alert_cancle_btn_border"
+                android:layout_marginEnd="66dp"
+                android:layout_centerVertical="true"
+                android:textColor="@color/color_textBlue"
+                android:textAlignment="center"
+                android:text="取消"
+                android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/btn_pos"
+                android:layout_width="152dp"
+                android:layout_height="62dp"
+                android:layout_toLeftOf="@+id/btn_neg"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/alert_sure_btn_border"
+                android:layout_centerVertical="true"
+                android:textColor="@color/bgColor"
+                android:textAlignment="center"
+                android:textSize="30sp"
+                android:text="投票" />
+
+
+
+
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>

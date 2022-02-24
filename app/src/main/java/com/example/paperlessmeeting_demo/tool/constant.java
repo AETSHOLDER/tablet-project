@@ -1,0 +1,113 @@
+package com.example.paperlessmeeting_demo.tool;
+
+import android.Manifest;
+
+/**
+ * Created by 梅涛 on 2020/9/7.
+ */
+
+public class constant {
+    public final static String TAG = "wt";
+    public final static int MESSAGE = 0x0245;
+    public final static String SHOW_UI = "SHOW_UI";
+    public final static String WHITEBOARD_BROADCAST = "1";
+    public final static String SHOW_WHITEBOARD_BROADCAST = "2";
+    public final static String CLOSE_WHITEBOARD_BROADCAST = "3";
+    public final static String MAX_BROWSER = "4";
+    public final static String SHOW_BROWSER = "5";
+    public final static String CLOSE_BROWSER_BROADCAST = "6";
+    public final static String REMOVE_BROADCAST = "7";
+    public final static String USB_PATH = "/aa";
+    public final static String DOWNLOAD_PATH = "/meetings/";
+    public final static String COPY_PATH = "/copy/";
+
+
+    public final static String meeting_role = "meeting_role";  //  会议角色
+    public final static String role = "role";          //  公司角色
+    public final static String token = "token";
+    public final static String _id = "_id";       //  会议id
+    public final static String c_id = "c_id";      // 公司id
+    public final static String user_id = "user_id";   // 用户id
+    public final static String user_name = "user_name";   // 用户名
+    public final static String team_share = "team|share";   // 同屏还是协作
+
+    public final static String myNumber = "myNumber";   // 本机机号
+    public final static String attendeBeanList = "attendeBeanList";  //  参会人员信息
+    public final static String attendeIDList = "attendeIDList";  //  参会人员信息
+    public final static String FRESH_FILE = "file";    // 公开文件后通知网络碎片重新请求文件接口
+    public final static String FRESH_TAB = "tab";    // 刷新切换文件-投票tab
+    public final static String start_meeting = "start meeting";    // 会议开始事件
+    public final static String get_server_ip = "get center server address";    // 获取服务器ip
+    public final static String continusClick = "start continusClick";    // 连续点击事件
+    public final static String isFirstInit = "isFirstInit";
+    public final static String DOCUMENT = "Document";//文件请求参数常量-文档
+    public final static String IMAGE = "Image";//文件请求参数常量-图片
+    public final static String VIDEO = "Video";//文件请求参数常量-视频
+    public final static String OTHER = "Other";//文件请求参数常量-其他
+    public final static String SUMMARY = "Summary";//会议纪要
+    public final static String SHOW_CLOSE_SERVICE_BROADCAST = "closeService";//关闭同屏Servive
+    public final static String FILE_PRIVATE = "1";//文件类型私有
+    public final static String FILE_Public = "0";//文件类型公开
+    public final static String TEMPMEETING = "TEMPMEETING";//临时会议server还是client
+    public final static String InitiaMeeting = "InitiaMeeting";//推送过来的会议、人员信息
+    /**
+     * websocket 字段定义
+     */
+    public final static String QUERYVOTE = "queryVote";//查询投票数据
+    public final static String NEWVOTE = "newVote";//新增投票数据
+    public final static String UPDATEVOTE = "updateVote";//更新投票数据
+    public final static String FINISHVOTE = "finishVote";//结束投票数据
+    public final static String ADD = "add";//增加client
+    public final static String RESETNAME = "resetName";//add时重名，请重新添加
+    public final static String SURENAME = "sureName";//add名称机号可以使用
+    public final static String HEART = "heart";//心跳
+    public final static String SERVERSTART = "serverStart";//服务端开启成功
+    public final static String QUERYATTEND = "queryAttend";//查询参会人员
+
+    public final static String TEMPSHARE = "tempShare";//临时会议白板同屏
+    public final static String TEMPSHAREREQ = "tempShareReq";//临时会议白板同屏请求
+    public final static String TEMPSHAREDIS = "tempShareDis";//临时会议断开白板同屏
+    public final static String RUSHFILELIST = "updateFileList";//无纸化会议文件公开私有 socket通知
+    public final static String TEMPTEAM = "tempTeam";//临时会议白板协作
+    public final static String TEMPTEAMREQ = "tempTeamReq";//临时会议白板协作请求
+    public final static String TEMPTEAMDIS = "tempTeamDis";//临时会议断开白板协作
+
+    public final static String SETMICSTATUS = "setMicStatus";//设置发言单元状态
+    public final static String GETMICSTATUS = "getMicStatus";//获取发言单元状态
+
+    public final static String MINUTE_MEETING = "pushSign";//签批
+    public final static String MINUTE_MEETING_CONTENT = "meetingSummaryReceive";//签批内容接收
+
+    public final static String MEETINGFINISH = "meetingFinish";//会议结束
+    public final static String EXTRAORDINARY_MEETING_INETADDRESS = "255.255.255.255";//临时会议分享文件IP。
+    public final static int EXTRAORDINARY_MEETING_PORT = 4127;//临时会议分享文件端口。
+    public final static String SHARE_FILE = "/shareFile/";//临时会议分享的文件存储文件夹
+    public final static int SHARE_PORT = 9999;////临时会议分享的文件端口
+    public final static String SHARE_FILE_BROADCAST = "sharefile";////临时会议分享文件成功后，通知会议更新文件列表
+    public final static String FINISH_SHARE_SCREEN_BROADCAST = "finishscreen";////结束同屏广播
+    public final static String SHARE_FILE_IP = "share  file ip";//socket 临时会议分享文件收集设备IP全局标识
+    public final static String TEMP_MEETINGSHARE_FILE = "share  file";//socket 临时会议分享文件到其他设备标识
+    public final static String FINISH_SHARE_SCEEN = "finish  share screen";//socket 结束同屏标识
+    public final static String START_SHARE_SCEEN = "video";//socket 开始同屏标识
+    public final static String INIATE_ENDORSEMENT = "initiate endorsement";//socket 秘书发起签批时，普通会员自动打开签名页面
+    /**
+     * 发言单元
+     */
+    public final static String micMac = "micMac";     // mic的Mac地址
+    public final static String micNumber = "micNumber";  // mic的机号
+    public final static String micIP = "micIP";      // mic的ip地址
+    public final static String micSta = "micSta";
+    /*
+    * 签批广播
+    * */
+    public final static String MEMBER_SIGN_BROADCAST = "memberSign";
+    /**
+     * 写入权限的请求code,提示语，和权限码
+     */
+    public final static int WRITE_PERMISSION_CODE1 = 0x0244;
+    public final static String WRITE_PERMISSION_TIP = "为了正常使用，请允许一下权限!";
+    public final static String[] PERMS_WRITE = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO, Manifest.permission.INTERNET, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE
+    };
+    public final static String[] PERMS_WRITE1 = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET
+    };
+}

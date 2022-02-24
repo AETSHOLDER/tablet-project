@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="84dp"
+    android:minHeight="84dp">
+
+    <View
+        android:id="@+id/circle"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="36dp"
+        android:background="@drawable/vote_circle_shape"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@+id/circle"
+        android:maxLines="1"
+        android:text="投票内容描述投票内容描述"
+        android:textColor="@color/color_textBlack"
+        android:textSize="28sp" />
+
+    <ImageView
+        android:id="@+id/operation"
+        android:layout_width="50dp"
+        android:padding="10dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="175dp"
+        android:src="@mipmap/pop_more" />
+
+    <TextView
+        android:id="@+id/status"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="360dp"
+        android:gravity="left"
+        android:text="进行中"
+        android:textColor="@color/color_textBlack"
+        android:textSize="26sp" />
+
+    <TextView
+        android:id="@+id/status_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="20dp"
+        android:layout_toLeftOf="@+id/status"
+        android:gravity="left"
+        android:text="已结束"
+        android:textColor="@color/color_textGray"
+        android:textSize="28sp" />
+</RelativeLayout>

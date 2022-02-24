@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="3">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_extraordinary"
+                android:gravity="center"
+                android:paddingBottom="8dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="8dp"
+                android:text="临时会议"
+                android:textColor="#ffffffff"
+                android:textSize="22sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="扫码签到"
+                android:textColor="#ffa1b3c1"
+                android:textSize="22sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="手写签到"
+                android:textColor="#ffa1b3c1"
+                android:textSize="22sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="120dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/initiate_meeting_tv"
+            android:layout_width="400dp"
+            android:layout_height="180dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@mipmap/bg_initiate_meeting"
+            android:gravity="center"
+            android:shadowColor="#ff1d8bbc"
+            android:shadowDx="0"
+            android:shadowDy="2"
+            android:shadowRadius="3.0"
+            android:text="发起会议"
+            android:textColor="#ffffffff"
+            android:textSize="40sp" />
+
+        <TextView
+            android:id="@+id/join_meeting_tv"
+            android:layout_width="400dp"
+            android:layout_height="180dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="26dp"
+            android:background="@mipmap/bg_join_meeting"
+            android:gravity="center"
+            android:shadowColor="#ff2fb7a5"
+            android:shadowDx="0"
+            android:shadowDy="2"
+            android:shadowRadius="3.0"
+            android:text="加入会议"
+            android:textColor="#ffffffff"
+            android:textSize="40sp" />
+    </LinearLayout>
+</LinearLayout>

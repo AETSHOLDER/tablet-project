@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: com.bintray.library:basetools_lib:1.0.0@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/basetools_lib-1.0.0.aar/78410c08d2fa79583b582b2f4220e0d9/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/basetools_lib-1.0.0.aar/78410c08d2fa79583b582b2f4220e0d9/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.bintray.library/basetools_lib/1.0.0/b3d2f141d429068b15e7b2bf07b0aa00e1bf3502/basetools_lib-1.0.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

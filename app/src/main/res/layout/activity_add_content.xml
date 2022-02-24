@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    style="@style/noteTheme"
+    tools:context=".activity.Note.AddContent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_080"
+        android:background="@color/transparent">
+        <Button
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/margin_010"
+            android:background="@drawable/close_2"
+            android:onClick="cancle">
+
+        </Button>
+
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="20dp"
+        android:gravity="top"
+        android:textColor="#000"
+        android:hint="点击开始记录"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+        <Button
+            android:id="@+id/update"
+            android:layout_width="125dp"
+            android:layout_height="47dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/alert_cancle_btn_border"
+            android:layout_marginEnd="21dp"
+            android:layout_centerVertical="true"
+            android:textColor="@color/color_textBlue"
+            android:textAlignment="center"
+            android:text="上传"
+            android:textSize="19sp"
+            android:onClick="upLoad"/>
+        <Button
+            android:id="@+id/btn_pos"
+            android:layout_width="125dp"
+            android:layout_height="47dp"
+            android:layout_toLeftOf="@+id/update"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/alert_sure_btn_border"
+            android:layout_centerVertical="true"
+            android:textColor="@color/bgColor"
+            android:textAlignment="center"
+            android:textSize="19sp"
+            android:text="保存"
+            android:onClick="save"/>
+    </RelativeLayout>
+</LinearLayout>

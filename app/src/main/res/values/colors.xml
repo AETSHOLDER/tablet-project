@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#F0F0F4</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
+    <color name="colorMain">#dd2e2e2e</color>
+    <color name="white">#ffffff</color>
+    <color name="transparent">#00000000</color>
+    <color name="transparent_50">#7f000000</color>
+    <color name="cover">#E6F1FF</color>
+    <color name="black_semi_transparent">#B2000000</color>
+    <color name="primary_black">#3e3e3e</color>
+    <color name="grey_3e">#3e3e3e</color>
+    <color name="orange">#ff6a00</color>
+    <color name="light_red">#f54983</color>
+    <color name="primary_purple">#663fde</color>
+    <color name="green">#24a8a3</color>
+    <color name="white_board_drawtext_back">#f7f7f7</color>
+    <color name="com_bg_gray">#aaaaaaaa</color>
+    <color name="selet">#FF7400</color>
+    <color name="un_selet">#0071FF</color>
+    <color name="black">#000000</color>
+    <color name="select_color">#000000</color>
+    <color name="bgColor">#FFFFFF</color>
+    <color name="color_F5F5F5">#F5F5F5</color>
+    <color name="color_E6E9F0">#E6E9F0</color>
+    <color name="color_circleBlue">#368BFF</color>
+    <color name="color_circleGray">#9A9A9A</color>
+    <color name="color_black1d">#1D1D1D</color>
+    <color name="color_volume_bg">#E0EBFB</color>
+
+    <color name="color_volume_mic">#57A1FF</color>
+    <color name="color_textBlack">#3C3C3C</color>
+    <color name="color_textBlack65">#656565</color>
+    <color name="color_textBlack2b">#2B2B2B</color>
+    <color name="color_textBlack2e">#2E2E2E</color>
+    <color name="color_textBlue">#3377FF</color>
+    <color name="color_textGray">#9A9A9A</color>
+    <color name="color_dadada">#dadada</color>
+    <color name="color_trans">#00000000</color>
+    <color name="alertdialog_line">#c6c6c6</color>
+    <!-- 投票弹框匿名等颜色 -->
+    <color name="alertdialog_danxuan_yellow">#F6A530</color>
+    <color name="alertdialog_shiming_pink">#F26E65</color>
+    <color name="alertdialog_niming_blue">#4EC3FF</color>
+
+    <!--计算器-->
+
+    <color name="expression">#5555</color>
+    <color name="keyImp">#FF9000</color>
+    <color name="keyImpPressed">#FF7041</color>
+    <color name="keyBackground_normal">#E3E3ED</color>
+    <color name="keyBackground_pressed">#8888</color>
+    <!--tableLayout分割线-->
+    <color name="myWhite_darkBlue">#0949FB</color>
+    <color name="myWhite_lightBlue">#8ADFFF</color>
+    <!--progress渐变-->
+    <color name="progress_color_1">#006CFF</color>
+    <color name="progress_color_2">#63A5FF</color>
+    </resources>

@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: com.scwang.smart:refresh-header-classics:2.0.1@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/refresh-header-classics-2.0.1.aar/6510f66b37cce294d54a23a8d3bda7e9/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/refresh-header-classics-2.0.1.aar/6510f66b37cce294d54a23a8d3bda7e9/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.scwang.smart/refresh-header-classics/2.0.1/718572a5b8a7463369199bc72b187cdbcb5fd9e7/refresh-header-classics-2.0.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,0 +1,2 @@
+include ':app', ':wblib', ':verticaltablayout', ':FingerthDialogUtilsLibrary', ':library'
+rootProject.name = "PaperLessMeeting"

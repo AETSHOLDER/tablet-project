@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#00cccccc">
+
+    <RelativeLayout
+        android:id="@+id/dialog_header"
+        android:layout_width="430dp"
+        android:layout_height="80dp"
+        android:background="@color/color_trans">
+
+        <ImageView
+            android:id="@+id/dialog_close_icon"
+            android:layout_marginTop="15dp"
+            android:layout_alignParentRight="true"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/close_2" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/dialog_content"
+        android:layout_width="424dp"
+        android:layout_height="380dp"
+        android:background="@drawable/bg_shape_white"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Icon -->
+        <ImageView
+            android:id="@+id/dialog_icon"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/info_sucess" />
+
+        <TextView
+            android:id="@+id/dialog_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+
+            android:layout_marginTop="40dp"
+            android:padding="8dp"
+            android:textColor="@color/color_black1d"
+            android:text="我是标题"
+            android:textAlignment="center"
+            android:textSize="26sp"
+            android:textStyle="bold"
+             />
+
+        <TextView
+            android:id="@+id/dialog_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            tools:text="Dialog Message"
+            android:textColor="@color/color_textBlack65"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+</LinearLayout>

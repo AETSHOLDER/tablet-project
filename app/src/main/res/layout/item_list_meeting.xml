@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:circleimageview="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root_ll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:weightSum="4">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/avatar"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="40dp"
+                circleimageview:civ_border_color="#fff"
+                circleimageview:civ_border_overlay="false"
+                circleimageview:civ_border_width="0dp" />
+
+            <TextView
+                android:id="@+id/name"
+                style="@style/item_list_meeting"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:layout_toRightOf="@id/avatar"
+                android:text="刘丽"
+                android:textColor="#ff1f2e4d" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/unit"
+                style="@style/item_list_meeting"
+                android:layout_alignBaseline="@+id/name"
+                android:layout_alignBottom="@+id/name"
+                android:layout_alignParentStart="true"
+                android:layout_gravity="center_vertical"
+                android:maxLines="1"
+                 android:maxEms="16"
+                android:ellipsize="end"
+                android:textColor="#ff666666" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/identification"
+                style="@style/item_list_meeting"
+                android:layout_gravity="center_vertical"
+                android:layout_toRightOf="@id/unit"
+                android:text="主持人"
+                android:textColor="#ff666666" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/status_rl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/status_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ima_status_un" />
+
+            <TextView
+                android:id="@+id/status"
+                style="@style/item_list_meeting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="14dp"
+                android:layout_toRightOf="@id/status_image"
+                android:text="2020-08-24  10:12:00"
+                android:textColor="#ff666666" />
+        </RelativeLayout>
+
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/alert_piechart_border">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="110dp">
+        <TextView
+            android:id="@+id/dialog_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/bgColor"
+            android:text="我是标题我是标题我是标题我是标题"
+            android:textAlignment="center"
+            android:textSize="30sp"
+            android:textStyle="normal"/>
+
+        <ImageView
+            android:id="@+id/dialog_close_icon"
+            android:layout_marginTop="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="40dp"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:src="@drawable/close_1" />
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/PieViewParent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dialog_title"
+        android:layout_marginBottom="80dp"
+        android:layout_marginTop="136dp">
+        <com.example.paperlessmeeting_demo.widgets.PieView
+            android:id="@+id/pieView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_below="@+id/pieView"
+        android:layout_marginTop="-80dp">
+        <TextView
+            android:id="@+id/dialog_bottom"
+            android:layout_width="1436dp"
+            android:layout_height="43dp"
+            android:layout_marginLeft="47dp"
+            android:layout_marginTop="6dp"
+            android:text="匿名投票：10"
+            android:textAlignment="textStart"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="normal" />
+    </RelativeLayout>
+
+
+</LinearLayout>
+

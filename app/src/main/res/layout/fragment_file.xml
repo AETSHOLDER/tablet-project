@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_main_gridle">
+    <!--    app:tabBackground="@drawable/tablayout_background"-->
+    <com.example.paperlessmeeting_demo.widgets.MyTabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="#ffffff"
+        app:tabGravity="center"
+        app:tabIndicatorHeight="0dp"
+        app:tabMode="scrollable"
+        app:tabPaddingEnd="20dp"
+        app:tabPaddingStart="20dp"
+        app:tabRippleColor="@color/transparent"
+        app:tabSelectedTextColor="#fff"
+        app:tabTextColor="#3377FF" />
+
+
+
+    <com.example.paperlessmeeting_demo.widgets.MultiStateView
+        android:id="@+id/stateView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tabLayout"
+        android:background="#aed4d2"
+        app:msv_loadingView="@layout/layout_loading_view"
+        app:msv_viewState="content">
+
+        <!--下拉刷新组件-->
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+            android:id="@+id/smartRefreshLayout_home"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#f4f4f4">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_main_gridle"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="10dp"
+                        android:background="#f4f4f4" />
+
+                    <ListView
+                        android:id="@+id/listView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="23dp"
+                        android:layout_marginRight="23dp"
+                        android:layout_marginTop="30dp"
+                        android:scrollbars="none"></ListView>
+                </LinearLayout>
+
+      </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
+    </com.example.paperlessmeeting_demo.widgets.MultiStateView>
+    <TextView
+        android:id="@+id/no_data"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/tabLayout"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:text="暂无数据"
+        android:textColor="#777b81"
+        android:textSize="48px"
+        android:visibility="gone" />
+</RelativeLayout>

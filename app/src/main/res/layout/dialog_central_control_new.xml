@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="45dp"
+            android:gravity="center"
+            android:text="吊灯"
+            android:textColor="#ff000000"
+            android:textSize="24sp" />
+
+        <LinearLayout
+            android:id="@+id/close_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="26dp"
+            android:padding="10dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@mipmap/ic_close" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/equipment_ima"
+        android:layout_width="128dp"
+        android:layout_height="116dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="25dp"
+        android:scaleType="fitCenter"
+        android:src="@mipmap/ic_air_conditioning" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:gravity="center"
+        android:text="吊灯"
+        android:textColor="#ff000000"
+        android:textSize="30sp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:scrollbars="none">
+
+        <com.example.paperlessmeeting_demo.widgets.MyGridView
+            android:id="@+id/gridview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="15dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:background="#fff"
+            android:gravity="center"
+            android:horizontalSpacing="20dp"
+            android:numColumns="3"
+            android:scrollbars="none"
+            android:verticalSpacing="20dp"></com.example.paperlessmeeting_demo.widgets.MyGridView>
+
+    </ScrollView>
+</LinearLayout>

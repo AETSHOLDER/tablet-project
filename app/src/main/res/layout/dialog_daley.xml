@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#ffffff"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="15dp"
+        android:gravity="center"
+        android:text="请选择时间（单位：分钟）"
+        android:textColor="#454545"
+        android:textSize="14sp" />
+
+    <com.cncoderx.wheelview.Wheel3DView
+        android:id="@+id/wheel3d"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        app:wheelCyclic="true"
+        android:layout_gravity="center_horizontal"
+        app:wheelEntries="@array/equip_menu"
+        app:wheelItemCount="9"
+        app:wheelItemWidth="160dp"
+        app:wheelItemHeight="40dp"
+        app:wheelTextSize="@dimen/wheel_text_size"
+        app:wheelTextColor="@color/wheel_text_color"
+        app:wheelSelectedTextColor="@color/wheel_selected_text_color"
+        app:wheelDividerColor="@color/wheel_divider_color"
+        app:wheelHighlightColor="@color/wheel_highlight_color" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <Button
+            android:id="@+id/confir_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="36dp"
+            android:layout_marginLeft="36dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="42dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_delete_confirm"
+            android:gravity="center"
+            android:text="确定"
+            android:textColor="#fff"
+            android:textSize="19sp" />
+
+        <Button
+            android:id="@+id/cancel_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="36dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="36dp"
+            android:layout_marginTop="42dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_delete_cancel"
+            android:gravity="center"
+            android:text="取消"
+            android:textColor="#333"
+            android:textSize="19sp" />
+    </LinearLayout>
+</LinearLayout>

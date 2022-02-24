@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="2">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <LinearLayout
+            style="@style/central_control"
+            android:layout_width="match_parent"
+            android:layout_height="340dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/image_chandelier"
+                style="@style/central_control_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_chandelier_un" />
+
+            <TextView
+                style="@style/central_control_tv1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="吊灯" />
+
+            <TextView
+                android:id="@+id/chandelier_tv"
+                style="@style/central_control_tv2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="亮度0%" />
+
+            <SeekBar
+                android:id="@+id/sb_chandelier"
+                style="@style/central_control_btn"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:max="100"
+                android:maxHeight="5.0dp"
+                android:minHeight="5.0dp"
+                android:progressDrawable="@drawable/sb_thumb"
+                android:thumb="@drawable/sb_bar" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/central_control"
+            android:layout_width="match_parent"
+            android:layout_height="340dp"
+            android:layout_marginLeft="30dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/image_air_conditioning"
+                style="@style/central_control_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_air_conditioning_un" />
+
+            <TextView
+                style="@style/central_control_tv1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="空凋" />
+
+            <RelativeLayout
+                android:id="@+id/aa"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/temperature"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="30dp"
+                    android:drawableRight="@mipmap/ic_cooling"
+                    android:gravity="center"
+                    android:text="28"
+                    android:textColor="#000000"
+                    android:textSize="32sp" />
+
+                <ImageView
+                    android:id="@+id/cool"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@id/temperature"
+                    android:background="@drawable/bg_cooling"
+                    android:padding="10dp"
+                    android:src="@mipmap/ic_down_hot" />
+
+                <ImageView
+                    android:id="@+id/hot"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/temperature"
+                    android:background="@drawable/bg_cooling"
+                    android:padding="10dp"
+                    android:src="@mipmap/ic_add_hot" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/cc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/aa"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="设备已关闭"
+                android:textColor="#ff848484"
+                android:textSize="18sp" />
+
+            <Switch
+                android:id="@+id/swh_status"
+                style="@style/central_control_btn"
+                android:layout_width="60dp"
+                android:layout_height="32dp"
+                android:layout_marginTop="24dp"
+                android:textOff=""
+                android:textOn=""
+                android:thumb="@drawable/switch_bar"
+                android:track="@drawable/switch_track_selctor" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/central_control"
+            android:layout_width="match_parent"
+            android:layout_height="340dp"
+            android:layout_marginLeft="30dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/image_casting_device"
+                style="@style/central_control_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_casting_device_un" />
+
+            <TextView
+                style="@style/central_control_tv1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="投屏设备" />
+
+            <TextView
+                android:id="@+id/casting_device_tv"
+                style="@style/central_control_tv2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="设备已关闭" />
+
+            <Switch
+                android:id="@+id/switch_casting_device"
+                style="@style/central_control_btn"
+                android:layout_width="60dp"
+                android:layout_height="32dp"
+                android:textOff=""
+                android:textOn=""
+                android:thumb="@drawable/switch_bar"
+                android:track="@drawable/switch_track_selctor" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <LinearLayout
+            style="@style/central_control"
+            android:layout_width="match_parent"
+            android:layout_height="340dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/image_curtains"
+                style="@style/central_control_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_curtains_un" />
+
+            <TextView
+                style="@style/central_control_tv1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="窗帘" />
+
+            <TextView
+                android:id="@+id/curtains_tv"
+                style="@style/central_control_tv2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="打开0%" />
+
+            <SeekBar
+                android:id="@+id/sb_curtains"
+                style="@style/central_control_btn"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:max="100"
+                android:maxHeight="5.0dp"
+                android:minHeight="5.0dp"
+                android:progressDrawable="@drawable/sb_thumb"
+                android:thumb="@drawable/sb_bar" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/central_control"
+            android:layout_width="match_parent"
+            android:layout_height="340dp"
+            android:layout_marginLeft="30dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/image_pan_tilt_camera"
+                style="@style/central_control_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_pan_tilt_camera_un" />
+
+            <TextView
+
+                style="@style/central_control_tv1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="云台摄像头" />
+
+            <TextView
+                android:id="@+id/pan_tilt_camera_tv"
+                style="@style/central_control_tv2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="设备已关闭" />
+
+            <Switch
+                android:id="@+id/switch_pan_tilt_camera"
+                style="@style/central_control_btn"
+                android:layout_width="60dp"
+                android:layout_height="32dp"
+                android:textOff=""
+                android:textOn=""
+                android:thumb="@drawable/switch_bar"
+                android:track="@drawable/switch_track_selctor" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/central_control"
+            android:layout_width="match_parent"
+            android:layout_height="340dp"
+            android:layout_marginLeft="30dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/image_speakers"
+                style="@style/central_control_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_speakers_un" />
+
+            <TextView
+                style="@style/central_control_tv1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="音箱" />
+
+            <TextView
+                android:id="@+id/speakers_tv"
+                style="@style/central_control_tv2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="设备已关闭" />
+
+            <Switch
+                android:id="@+id/switch_speakers"
+                style="@style/central_control_btn"
+                android:layout_width="60dp"
+                android:layout_height="32dp"
+                android:textOff=""
+                android:textOn=""
+                android:thumb="@drawable/switch_bar"
+                android:track="@drawable/switch_track_selctor" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+</LinearLayout>

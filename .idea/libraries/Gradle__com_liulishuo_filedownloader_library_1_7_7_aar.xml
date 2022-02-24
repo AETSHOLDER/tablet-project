@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: com.liulishuo.filedownloader:library:1.7.7@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/library-1.7.7.aar/8d350ebdf6ed1329ec487fc0e858db50/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/library-1.7.7.aar/8d350ebdf6ed1329ec487fc0e858db50/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.liulishuo.filedownloader/library/1.7.7/6fcfb283a06426a60e61121c41f9060d44b5be30/library-1.7.7-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
