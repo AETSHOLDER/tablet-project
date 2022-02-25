@@ -99,8 +99,7 @@ public class LocationFileListAdapter extends BaseAdapter {
         ViewHolder viHolder = null;
         FileListBean gridViewBean = gridViewBeanList.get(i);
         if (view == null) {
-            view = LayoutInflater.from(context).inflate(
-                    R.layout.item_loact_file_list, null);
+            view = LayoutInflater.from(context).inflate(R.layout.item_loact_file_list, null);
             viHolder = new ViewHolder(view);
             view.setTag(viHolder);
         } else {
@@ -121,8 +120,15 @@ public class LocationFileListAdapter extends BaseAdapter {
                     shareFileInterface.shareFileInfo(gridViewBean.getPath(), gridViewBean.getFile_type(), "1", gridViewBean.getName(), gridViewBean.getAuthor(), gridViewBean.getTime());
                 }
             });
-        } else {
 
+            viHolder.push_file.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("asdfasfsf", gridViewBean.getPath() + "=====" + gridViewBean.getFile_type());
+                    shareFileInterface.shareFileInfo(gridViewBean.getPath(), gridViewBean.getFile_type(), "1", gridViewBean.getName(), gridViewBean.getAuthor(), gridViewBean.getTime());
+                }
+            });
+        } else {
             //文件公开
             viHolder.open.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -195,6 +201,9 @@ public class LocationFileListAdapter extends BaseAdapter {
         ImageView musicStrat;
         @BindView(R.id.music_reset)
         ImageView musicReset;
+        @BindView(R.id.push_file)
+        TextView push_file;
+
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);

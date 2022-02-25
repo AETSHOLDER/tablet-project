@@ -1,7 +1,15 @@
 package com.example.paperlessmeeting_demo.tool.TempMeetingTools;
 
+import android.app.Activity;
 import android.util.Log;
+
+import com.blankj.utilcode.util.ActivityUtils;
+import com.example.paperlessmeeting_demo.enums.MessageReceiveType;
 import com.example.paperlessmeeting_demo.tool.FLUtil;
+import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.EventMessage;
+
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -92,6 +100,18 @@ public class thdReceive extends Thread {
                     }
                 }else if(!receiveIPArr.contains(recMsg)){
                     receiveIPArr.add(recMsg);
+                    Activity topActivity = (Activity) ActivityUtils.getTopActivity();
+                    if (topActivity != null) {
+                        topActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                //  发黏性事件
+                                EventMessage msg = new EventMessage(MessageReceiveType.MessageCreatTempMeeting, "");
+                                EventBus.getDefault().post(msg);
+                            }
+                        });
+                    }
+
                 }
                 Log.d(TAG, "[Rx]" + recMsg);
                 Log.e(TAG,"receiveIPArr====="+ Arrays.toString(receiveIPArr.toArray()) );

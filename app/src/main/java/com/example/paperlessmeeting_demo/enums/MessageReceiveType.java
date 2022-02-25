@@ -6,6 +6,7 @@ package com.example.paperlessmeeting_demo.enums;
  *  MessageClick  连点事件接受的消息
  *  MessageRefreshMicSta 发言单元状态更新
  *  ConnectClientFail  client 连接失败
+ *  MessageCreatTempMeeting 创建临时会议
  * */
 public enum MessageReceiveType {
     MessageClient,
@@ -13,4 +14,5 @@ public enum MessageReceiveType {
     MessageClick,
     MessageRefreshMicSta,
     ConnectClientFail,
+    MessageCreatTempMeeting,
 }

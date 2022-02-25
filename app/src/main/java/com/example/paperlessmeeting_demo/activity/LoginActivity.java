@@ -38,6 +38,7 @@ import com.example.paperlessmeeting_demo.bean.CreateFileBeanResponse;
 import com.example.paperlessmeeting_demo.bean.MeetingInfoBean;
 import com.example.paperlessmeeting_demo.bean.PaperlessBean;
 import com.example.paperlessmeeting_demo.bean.UploadBean;
+import com.example.paperlessmeeting_demo.enums.MessageReceiveType;
 import com.example.paperlessmeeting_demo.fragment.ExtraordMeetingFragment;
 import com.example.paperlessmeeting_demo.fragment.SweepCodeFragment;
 import com.example.paperlessmeeting_demo.network.DefaultObserver;
@@ -254,6 +255,10 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
             String tips = "！您已在连续点击8次了！开启游客模式！！！";
             Toast.makeText(this, tips, Toast.LENGTH_SHORT).show();
             visitor.setVisibility(View.VISIBLE);
+        }
+        //TODO  收到临时会议创建通知
+        if (message.getType().equals(MessageReceiveType.MessageCreatTempMeeting)) {
+
         }
     }
 

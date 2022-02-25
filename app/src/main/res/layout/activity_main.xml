@@ -11,6 +11,7 @@
         android:id="@+id/theme_bg_ima"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:scaleType="fitXY"
         android:src="@mipmap/bg_main" />
     <include layout="@layout/tittle_main_activity" />
     <!-- title start    -->

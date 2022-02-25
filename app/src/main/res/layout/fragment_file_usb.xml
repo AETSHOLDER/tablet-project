@@ -2,25 +2,41 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/bg_main_gridle">
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/main_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="120dp"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:text="议题:"
+        android:textColor="#3F3932"
+        android:textSize="60sp">
+    </TextView>
+
+    <TextView
+        android:id="@+id/sub_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_below="@+id/main_title_tv"
+        android:layout_marginTop="15dp"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:text="汇报单位:江苏中协智能科技有限公司"
+        android:textColor="#3F3932"
+        android:textSize="45sp">
+    </TextView>
 
     <ImageView
         android:id="@+id/image_add"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="260dp"
         android:layout_alignParentRight="true"
         android:layout_marginRight="44dp"
         android:src="@mipmap/ic_add_usb" />
-
-    <ImageView
-        android:id="@+id/same_screeen_ima"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginRight="44dp"
-        android:layout_toLeftOf="@id/image_add"
-        android:src="@mipmap/same_screen"
-        android:visibility="gone" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -28,19 +44,12 @@
         android:layout_below="@id/image_add"
         android:layout_marginBottom="2dp"
         android:layout_marginTop="15dp"
-        android:background="#fff"
         android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_main_gridle"
             android:orientation="vertical">
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:background="#f4f4f4" />
 
             <com.example.paperlessmeeting_demo.widgets.MyListView
                 android:id="@+id/listView"

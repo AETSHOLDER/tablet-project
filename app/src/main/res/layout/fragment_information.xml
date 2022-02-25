@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/file_fragment_ly"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_main_gridle"
     android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="gone">
 
         <android.support.design.widget.TabLayout
             android:id="@+id/first_tabLayout"
@@ -32,7 +33,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="60dp"
             android:layout_toRightOf="@id/first_tabLayout"
-            android:background="#ffffff"
+            android:background="#00000000"
             android:enabled="true">
 
             <android.support.v7.widget.CardView

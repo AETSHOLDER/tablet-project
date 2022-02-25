@@ -65,10 +65,10 @@
         </attr>
     </declare-styleable>
 
-        <declare-styleable name="VolumeView">
-            <attr name="volumeColor" format="color|reference" />
-            <attr name="defaultVolumenColor" format="color|reference" />
-            <attr name="max" format="integer"/>
-            <attr name="volume" format="integer"/>
-        </declare-styleable>
+    <declare-styleable name="VolumeView">
+        <attr name="volumeColor" format="color|reference" />
+        <attr name="defaultVolumenColor" format="color|reference" />
+        <attr name="max" format="integer"/>
+        <attr name="volume" format="integer"/>
+    </declare-styleable>
 </resources>

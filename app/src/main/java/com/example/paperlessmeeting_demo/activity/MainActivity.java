@@ -1067,6 +1067,12 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
                 verify_invite_codeDialog.dismiss();
             }
         });
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                verify_invite_codeDialog.dismiss();
+            }
+        });
     }
 
 
