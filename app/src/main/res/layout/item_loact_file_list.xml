@@ -85,7 +85,8 @@
             android:gravity="center_vertical|end"
             android:text="推送"
             android:textColor="#3377FF"
-            android:textSize="35sp" />
+            android:textSize="35sp"
+            android:visibility="gone"/>
 
         <ImageView
             android:id="@+id/music_strat"

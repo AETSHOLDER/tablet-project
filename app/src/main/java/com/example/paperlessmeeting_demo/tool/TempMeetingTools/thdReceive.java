@@ -100,13 +100,24 @@ public class thdReceive extends Thread {
                     }
                 }else if(!receiveIPArr.contains(recMsg)){
                     receiveIPArr.add(recMsg);
+                    String code;
+                    if(receiveIPArr.size()>1){
+                        // 超过一个取最先收到的
+                        List<String> ipcodeInfo = FLUtil.dealUDPMsg(receiveIPArr.get(0));
+                        code = ipcodeInfo.get(1);
+                    }else {
+                        List<String> ipcodeInfo = FLUtil.dealUDPMsg(recMsg);
+                        code = ipcodeInfo.get(1);
+                    }
+
                     Activity topActivity = (Activity) ActivityUtils.getTopActivity();
                     if (topActivity != null) {
                         topActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 //  发黏性事件
-                                EventMessage msg = new EventMessage(MessageReceiveType.MessageCreatTempMeeting, "");
+                                Log.e(TAG, "[发黏性事件");
+                                EventMessage msg = new EventMessage(MessageReceiveType.MessageCreatTempMeeting, code);
                                 EventBus.getDefault().post(msg);
                             }
                         });
@@ -118,7 +129,7 @@ public class thdReceive extends Thread {
 
             } catch (SocketTimeoutException e){
                 //  超时处理
-                receiveIPArr.clear();
+//                receiveIPArr.clear();
                 Log.d(TAG,"Socket.receive超时error");
             }catch (IOException e) {
                 Log.d(TAG,"IOException error");
