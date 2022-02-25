@@ -3,6 +3,9 @@
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/autosize-1.1.2.aar/2fd2b215a9b4f128ddf5b713dd3ad990/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/autosize-1.1.2.aar/2fd2b215a9b4f128ddf5b713dd3ad990/res" />
+      <root url="jar://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/autosize-1.1.2.aar/30c6381c6ed9752270945bf4c33c831b/jars/classes.jar!/" />
+      <root url="file://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/autosize-1.1.2.aar/30c6381c6ed9752270945bf4c33c831b/res" />
+      <root url="file://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/autosize-1.1.2.aar/30c6381c6ed9752270945bf4c33c831b/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

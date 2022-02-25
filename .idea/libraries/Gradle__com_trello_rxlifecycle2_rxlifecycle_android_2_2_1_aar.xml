@@ -3,6 +3,9 @@
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/rxlifecycle-android-2.2.1.aar/7019da36ec826bac46453e22b6183bde/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/rxlifecycle-android-2.2.1.aar/7019da36ec826bac46453e22b6183bde/res" />
+      <root url="jar://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/rxlifecycle-android-2.2.1.aar/b36b56b314a3ad3e69c295c4a9849de6/jars/classes.jar!/" />
+      <root url="file://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/rxlifecycle-android-2.2.1.aar/b36b56b314a3ad3e69c295c4a9849de6/res" />
+      <root url="file://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/rxlifecycle-android-2.2.1.aar/b36b56b314a3ad3e69c295c4a9849de6/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

@@ -3,6 +3,9 @@
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/leakcanary-analyzer-1.6.2.aar/7580ccf577571b5c9c93832aa5e80275/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/leakcanary-analyzer-1.6.2.aar/7580ccf577571b5c9c93832aa5e80275/res" />
+      <root url="jar://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/leakcanary-analyzer-1.6.2.aar/b8ab9bc908304ed761fb4353f5e7cb88/jars/classes.jar!/" />
+      <root url="file://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/leakcanary-analyzer-1.6.2.aar/b8ab9bc908304ed761fb4353f5e7cb88/AndroidManifest.xml" />
+      <root url="file://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/leakcanary-analyzer-1.6.2.aar/b8ab9bc908304ed761fb4353f5e7cb88/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

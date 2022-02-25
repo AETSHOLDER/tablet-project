@@ -48,6 +48,7 @@ import com.example.paperlessmeeting_demo.bean.UploadBean;
 import com.example.paperlessmeeting_demo.bean.UserBehaviorBean;
 import com.example.paperlessmeeting_demo.network.DefaultObserver;
 import com.example.paperlessmeeting_demo.network.NetWorkManager;
+import com.example.paperlessmeeting_demo.sharefile.SocketPushFileManager;
 import com.example.paperlessmeeting_demo.sharefile.SocketShareFileManager;
 import com.example.paperlessmeeting_demo.tool.Define;
 import com.example.paperlessmeeting_demo.tool.FLUtil;
@@ -97,7 +98,8 @@ import static android.content.Context.WIFI_SERVICE;
  * 私有文件
  */
 @SuppressLint("ValidFragment")
-public class FileFragment extends BaseFragment implements MediaReceiver.sendfilePthInterface, LocationFileListAdapter.upLoadFileInterface, LocationFileListAdapter.PlayerClickInterface, LocationFileListAdapter.ShareFileInterface {
+public class FileFragment extends BaseFragment implements MediaReceiver.sendfilePthInterface, LocationFileListAdapter.upLoadFileInterface, LocationFileListAdapter.PlayerClickInterface, LocationFileListAdapter.ShareFileInterface, LocationFileListAdapter.PushFileInterface {
+
 
     Unbinder unbinder;
     @BindView(R.id.image_add)
@@ -136,6 +138,7 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
     private String videoPath = "";
     private String endStrAll;
     private SocketShareFileManager socketShareFileManager;
+    private SocketPushFileManager socketPushFileManager;
     private MyBroadcastReceiver myBroadcastReceiver;//分享文件成功后，刷新文件列表
     private List<String> stringListIp = new ArrayList<>();
     private Handler mHandler = new Handler() {
@@ -247,6 +250,7 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
         listView.setAdapter(fileListAdapter);
         fileListAdapter.setUpLoadFileInterface(this);
         fileListAdapter.setShareFileInterface(this);
+        fileListAdapter.setPushFileInterface(this);
         fileListAdapter.notifyDataSetChanged();
         Log.d("fwerwr", "页面初始化1111");
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -386,7 +390,7 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
         }
 
     }
-
+//String actionType:标识事件是分享还是推送  1：分享  2：推送
     @Override
     public void shareFileInfo(String path, String type, String flag, String name, String author, String time) {
         Log.d("dfgsgsf3333", path + "===name==" + name);
@@ -422,7 +426,7 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
                 }
                 //根据Ip将文件发送到不同的设备
                 for (int i = 0; i < stringListIp.size(); i++) {
-                    socketShareFileManager.SendFile(fileNames, paths, stringListIp.get(i), constant.SHARE_PORT);
+                    socketShareFileManager.SendFile(fileNames, paths, stringListIp.get(i), constant.SHARE_PORT,"1");
                 }
 
             }
@@ -432,7 +436,52 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
 
 
     }
+    @Override
+    public void pushFileInfo(String path, String type, String flag, String name, String author, String time) {
+        Log.d("dfgsgsf4444", path + "===name==" + name);
 
+        final ArrayList<String> fileNames = new ArrayList<>();
+        final ArrayList<String> paths = new ArrayList<>();
+        paths.add(path);
+        fileNames.add(name);
+        Message.obtain(mHandler, 4, name).sendToTarget();
+        /*
+         * 通知其他设备Service，这是分享文件
+         * */
+        Thread sendThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    DatagramSocket socket = new DatagramSocket();
+                    String str = constant.TEMP_MEETINGPUSH_FILE;
+                    byte[] sendStr = str.getBytes();
+                    InetAddress address = InetAddress.getByName(constant.EXTRAORDINARY_MEETING_INETADDRESS);
+                    DatagramPacket packet = new DatagramPacket(sendStr, sendStr.length, address, constant.EXTRAORDINARY_MEETING_PORT);
+                    socket.send(packet);
+                    socket.close();
+                } catch (SocketException e) {
+                    e.printStackTrace();
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (Hawk.contains("stringsIp")) {
+                    stringListIp = Hawk.get("stringsIp");
+                }
+                //根据Ip将文件发送到不同的设备
+                for (int i = 0; i < stringListIp.size(); i++) {
+                    socketPushFileManager.SendFile(fileNames, paths, stringListIp.get(i), constant.SHARE_PORT,"2");
+                }
+
+            }
+        });
+        sendThread.start();
+        // Message.obtain(handler, 0, response).sendToTarget();
+
+
+
+    }
     @Override
     public void sendFileInfo(String path, String type, String flag) {
         //把文件封装在RequestBody里
@@ -787,6 +836,7 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
         iFilter.addDataScheme("file");
         getActivity().registerReceiver(mBroadcastReceiver, iFilter);
         socketShareFileManager = new SocketShareFileManager(mHandler);
+        socketPushFileManager = new SocketPushFileManager(mHandler);
         myBroadcastReceiver = new MyBroadcastReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(constant.SHARE_FILE_BROADCAST);
@@ -1069,7 +1119,7 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
 
     private class MyBroadcastReceiver extends BroadcastReceiver {
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(Context context, Intent in) {
             initData();
             File path = new File(fileShare);
             File[] files = path.listFiles();// 读取
@@ -1077,6 +1127,83 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
                 return;
             }
             getShareFile(files);
+            String filePath=in.getStringExtra("filePath");
+            File file=new File(filePath);
+            String fileName = file.getName();
+            String endStr = fileName.substring(fileName.lastIndexOf(".") + 1);
+            Log.d(TAG, "文件类型=" + endStr + "文件名字" + fileName);
+            fileBean = new FileListBean(file.getName(), file.getPath(), "", "");
+            Uri uri = Uri.fromFile(file);
+            Log.d("requestCodeUr555", uri.getScheme() + "===" + uri.getPath() + "==" + file.getName());
+            fileBean.setResImage(getIamge(endStr));
+            fileBean.setFile_type(getType(endStr));
+            fileBean.setSuffix(endStr);//上传文件后缀名和文件类型；setSuffix和setType所赋值内容一样。
+            //  fileBean.setType(endStr);
+            fileBean.setType(getFileType(endStr));
+
+
+
+            Intent intent;
+            switch (fileBean.getFile_type()) {
+                case "1"://音乐
+                    startPlayer("file://" + fileBean.getPath());
+                    //  getActivity().startActivity(FileUtils.openFile(fileBean.getPath(), getActivity()));
+                    // FileUtils.openFile("file://"+fileBean.getPath(), getActivity());
+                    break;
+                case "2"://视频
+                    intent = new Intent();
+                    intent.setClass(getActivity(), ActivityVideoView.class);
+                    intent.putExtra("url", fileBean.getPath());
+                    intent.putExtra("isOpenFile", true);
+                    intent.putExtra("isNetFile", false);
+                    startActivity(intent);
+                    //  FileUtils.openFile(fileBean.getPath(), getActivity());
+                    break;
+                case "3"://图片
+                    intent = new Intent();
+                    intent.setClass(getActivity(), ActivityImage.class);
+                    intent.putExtra("url", fileBean.getPath());
+                    intent.putExtra("isOpenFile", true);
+                    intent.putExtra("isNetFile", false);
+                    startActivity(intent);
+                    break;
+                case "4":
+                    String wpsPackageName;
+                    if (FLUtil.checkPackage(context, Define.PACKAGENAME_KING_PRO))
+                    {
+                        wpsPackageName = Define.PACKAGENAME_KING_PRO;
+                    }
+                    else if (FLUtil.checkPackage(context, Define.PACKAGENAME_PRO_DEBUG))
+                    {
+                        wpsPackageName = Define.PACKAGENAME_PRO_DEBUG;
+                    }
+                    else if (FLUtil.checkPackage(context, Define.PACKAGENAME_ENG))
+                    {
+                        wpsPackageName = Define.PACKAGENAME_ENG;
+                    }
+                    else if (FLUtil.checkPackage(context, Define.PACKAGENAME_KING_PRO_HW))
+                    {
+                        wpsPackageName = Define.PACKAGENAME_KING_PRO_HW;
+                    }
+                    else if (FLUtil.checkPackage(context, Define.PACKAGENAME_K_ENG))
+                    {
+                        wpsPackageName = Define.PACKAGENAME_K_ENG;
+                    }
+                    else {
+                        ToastUtils.showToast(context,"文件打开失败，请安装WPS Office专业版");
+                        return;
+                    }
+                    startActivity(FileUtils.openFile(fileBean.getPath(), getActivity()));
+//                       intent = new Intent();
+//                        intent.setClass(getActivity(), CommonWebViewActivity.class);
+//                        intent.putExtra("url", fileBean.getPath());
+//                        intent.putExtra("isOpenFile", true);
+//                        intent.putExtra("isNetFile", false);
+//                        intent.putExtra("tempPath", false);
+//                        startActivity(intent);
+                    break;
+            }
+
         }
     }
 
