@@ -2,12 +2,12 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/FingerthDialogUtilsLibrary/FingerthDialogUtilsLibrary.iml" filepath="$PROJECT_DIR$/FingerthDialogUtilsLibrary/FingerthDialogUtilsLibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/PaperLessMeeting.iml" filepath="$PROJECT_DIR$/PaperLessMeeting.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />
-      <module fileurl="file://$PROJECT_DIR$/verticaltablayout/verticaltablayout.iml" filepath="$PROJECT_DIR$/verticaltablayout/verticaltablayout.iml" />
-      <module fileurl="file://$PROJECT_DIR$/wblib/wblib.iml" filepath="$PROJECT_DIR$/wblib/wblib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FingerthDialogUtilsLibrary/PaperLessMeeting.FingerthDialogUtilsLibrary.iml" filepath="$PROJECT_DIR$/.idea/modules/FingerthDialogUtilsLibrary/PaperLessMeeting.FingerthDialogUtilsLibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/PaperLessMeeting.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/PaperLessMeeting.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/library/PaperLessMeeting.library.iml" filepath="$PROJECT_DIR$/.idea/modules/library/PaperLessMeeting.library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/verticaltablayout/PaperLessMeeting.verticaltablayout.iml" filepath="$PROJECT_DIR$/.idea/modules/verticaltablayout/PaperLessMeeting.verticaltablayout.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/wblib/PaperLessMeeting.wblib.iml" filepath="$PROJECT_DIR$/.idea/modules/wblib/PaperLessMeeting.wblib.iml" />
     </modules>
   </component>
 </project>

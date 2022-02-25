@@ -3,6 +3,9 @@
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/basetools_lib-1.0.0.aar/78410c08d2fa79583b582b2f4220e0d9/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/basetools_lib-1.0.0.aar/78410c08d2fa79583b582b2f4220e0d9/res" />
+      <root url="file://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/basetools_lib-1.0.0.aar/6d47cf711af54d85c48f71ec977e9814/res" />
+      <root url="jar://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/basetools_lib-1.0.0.aar/6d47cf711af54d85c48f71ec977e9814/jars/classes.jar!/" />
+      <root url="file://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/basetools_lib-1.0.0.aar/6d47cf711af54d85c48f71ec977e9814/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

@@ -18,7 +18,7 @@ import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-
+//分享文件
 public class SocketShareFileManager {
     private ServerSocket server;
     private Handler handler = null;
@@ -34,25 +34,25 @@ public class SocketShareFileManager {
                 port--;
             }
         }
-        SendMessage(1, port);
+        SendMessage(1, port,1);
         Thread receiveFileThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 while (true) {
-                    ReceiveFile();
+                    ReceiveFile("1");
                 }
             }
         });
         receiveFileThread.start();
     }
 
-    void SendMessage(int what, Object obj) {
+    void SendMessage(int what, Object obj,int actionType) {
         if (handler != null) {
-            Message.obtain(handler, what, obj).sendToTarget();
+            Message.obtain(handler, what,actionType,actionType ,obj).sendToTarget();
         }
     }
-
-    public  void ReceiveFile() {
+//flag  1:分享  2：  推送
+    public  void ReceiveFile(String  flag) {
         try {
 
             Socket name = server.accept();
@@ -64,7 +64,7 @@ public class SocketShareFileManager {
             streamReader.close();
             nameStream.close();
             name.close();
-            SendMessage(2, "正在接收:" + fileName);
+            SendMessage(2, "正在接收:" + fileName,Integer.parseInt(flag));
 
             Socket data = server.accept();
             InputStream dataStream = data.getInputStream();
@@ -86,13 +86,13 @@ public class SocketShareFileManager {
             file.close();
             dataStream.close();
             data.close();
-            SendMessage(3, fileName + "接收完成");
+            SendMessage(3, savePath ,Integer.parseInt(flag));
         } catch (Exception e) {
-            SendMessage(4, "接收错误:\n" + e.getMessage());
+            SendMessage(4, "接收错误:\n" + e.getMessage(),Integer.parseInt(flag));
         }
     }
 
-    public void SendFile(ArrayList<String> fileName, ArrayList<String> path, String ipAddress, int port) {
+    public void SendFile(ArrayList<String> fileName, ArrayList<String> path, String ipAddress, int port,String actionType) {
         try {
             for (int i = 0; i < fileName.size(); i++) {
                 Socket name = new Socket(ipAddress, port);
@@ -104,7 +104,7 @@ public class SocketShareFileManager {
                 outputWriter.close();
                 outputName.close();
                 name.close();
-                SendMessage(0, "正在发送" + fileName.get(i));
+                SendMessage(0, "正在发送" + fileName.get(i),Integer.parseInt(actionType));
 
                 Socket data = new Socket(ipAddress, port);
                 OutputStream outputData = data.getOutputStream();
@@ -117,11 +117,11 @@ public class SocketShareFileManager {
                 outputData.close();
                 fileInput.close();
                 data.close();
-                SendMessage(5, fileName.get(i) + "  发送完成");
+                SendMessage(5, fileName.get(i) + "  发送完成",Integer.parseInt(actionType));
             }
-            SendMessage(5, "所有文件发送完成");
+            SendMessage(5, "所有文件发送完成",Integer.parseInt(actionType));
         } catch (Exception e) {
-            SendMessage(6, "发送错误:\n" + e.getMessage());
+            SendMessage(6, "发送错误:\n" + e.getMessage(),Integer.parseInt(actionType));
         }
     }
 }

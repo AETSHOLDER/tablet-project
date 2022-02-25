@@ -3,6 +3,9 @@
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/animated-vector-drawable-28.0.0.aar/c2b5ca2e2d379536a3d2f6c14c0168b5/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/animated-vector-drawable-28.0.0.aar/c2b5ca2e2d379536a3d2f6c14c0168b5/res" />
+      <root url="file://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/animated-vector-drawable-28.0.0.aar/08081b086de87b227fb4b9ba9cc53bb0/AndroidManifest.xml" />
+      <root url="jar://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/animated-vector-drawable-28.0.0.aar/08081b086de87b227fb4b9ba9cc53bb0/jars/classes.jar!/" />
+      <root url="file://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/animated-vector-drawable-28.0.0.aar/08081b086de87b227fb4b9ba9cc53bb0/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

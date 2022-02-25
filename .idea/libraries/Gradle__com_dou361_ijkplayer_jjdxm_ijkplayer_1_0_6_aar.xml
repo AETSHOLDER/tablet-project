@@ -3,6 +3,9 @@
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jjdxm-ijkplayer-1.0.6.aar/ae0ea1f7ad2bf84cfcd80d85736008c2/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jjdxm-ijkplayer-1.0.6.aar/ae0ea1f7ad2bf84cfcd80d85736008c2/res" />
+      <root url="file://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/jjdxm-ijkplayer-1.0.6.aar/cff37fde8b15958d48ccb6a976562557/AndroidManifest.xml" />
+      <root url="jar://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/jjdxm-ijkplayer-1.0.6.aar/cff37fde8b15958d48ccb6a976562557/jars/classes.jar!/" />
+      <root url="file://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/jjdxm-ijkplayer-1.0.6.aar/cff37fde8b15958d48ccb6a976562557/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

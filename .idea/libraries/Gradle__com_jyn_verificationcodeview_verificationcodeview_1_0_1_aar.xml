@@ -3,6 +3,9 @@
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/verificationcodeview-1.0.1.aar/b342d37d3f956ba56a2abd58da7310d7/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/verificationcodeview-1.0.1.aar/b342d37d3f956ba56a2abd58da7310d7/res" />
+      <root url="jar://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/verificationcodeview-1.0.1.aar/242993b3733dceb0f4e16ac9cad36c5f/jars/classes.jar!/" />
+      <root url="file://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/verificationcodeview-1.0.1.aar/242993b3733dceb0f4e16ac9cad36c5f/AndroidManifest.xml" />
+      <root url="file://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/verificationcodeview-1.0.1.aar/242993b3733dceb0f4e16ac9cad36c5f/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

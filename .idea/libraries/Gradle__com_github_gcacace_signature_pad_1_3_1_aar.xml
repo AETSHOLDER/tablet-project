@@ -3,6 +3,9 @@
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/signature-pad-1.3.1.aar/02c4262c2d2cdc7e316c7cc8371cd1a6/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/signature-pad-1.3.1.aar/02c4262c2d2cdc7e316c7cc8371cd1a6/res" />
+      <root url="file://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/signature-pad-1.3.1.aar/7ff113f5654bd033d80dcf345501ff36/res" />
+      <root url="jar://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/signature-pad-1.3.1.aar/7ff113f5654bd033d80dcf345501ff36/jars/classes.jar!/" />
+      <root url="file://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/signature-pad-1.3.1.aar/7ff113f5654bd033d80dcf345501ff36/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

@@ -3,6 +3,9 @@
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/FragmentTabhostUtils-0.5.0.aar/eeb29e18f9ec77327c81036e50d04f9d/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/FragmentTabhostUtils-0.5.0.aar/eeb29e18f9ec77327c81036e50d04f9d/res" />
+      <root url="jar://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/FragmentTabhostUtils-0.5.0.aar/a0d745e71f21e75cd13253cfa4a23a18/jars/classes.jar!/" />
+      <root url="file://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/FragmentTabhostUtils-0.5.0.aar/a0d745e71f21e75cd13253cfa4a23a18/res" />
+      <root url="file://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/FragmentTabhostUtils-0.5.0.aar/a0d745e71f21e75cd13253cfa4a23a18/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

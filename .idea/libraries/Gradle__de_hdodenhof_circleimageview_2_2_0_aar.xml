@@ -3,6 +3,9 @@
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/circleimageview-2.2.0.aar/f5ce67c032c8a40b01368fb0c26cc3b7/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/circleimageview-2.2.0.aar/f5ce67c032c8a40b01368fb0c26cc3b7/res" />
+      <root url="file://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/circleimageview-2.2.0.aar/b76197fc82b517f72512921b40d24173/res" />
+      <root url="jar://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/circleimageview-2.2.0.aar/b76197fc82b517f72512921b40d24173/jars/classes.jar!/" />
+      <root url="file://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/circleimageview-2.2.0.aar/b76197fc82b517f72512921b40d24173/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
