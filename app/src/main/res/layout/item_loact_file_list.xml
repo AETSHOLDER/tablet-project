@@ -5,14 +5,14 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp">
+        android:layout_height="100dp">
 
         <ImageView
             android:id="@+id/type_ima"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="30dp"
+            android:layout_marginLeft="80dp"
             android:src="@mipmap/aa" />
 
         <TextView

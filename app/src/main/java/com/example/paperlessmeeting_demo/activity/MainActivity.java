@@ -535,18 +535,6 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
                     intent.setAction(constant.SHARE_FILE_BROADCAST);
                     sendBroadcast(intent);
                     break;
-
-                case 8:
-                    Toast.makeText(MainActivity.this, "文件已成功接收，请在文件管理页面查看", Toast.LENGTH_SHORT).show();
-
-                    int flag3= msg.arg1;
-                    int flag4=msg.arg2;
-                    String filePath2=(String) msg.obj;
-                    Log.d("erwqrqrqrqr3333",filePath2+"     "+flag3+"    "+flag4);
-                    Intent intent8 = new Intent();
-                    intent8.setAction(constant.SHARE_FILE_BROADCAST);
-                    sendBroadcast(intent8);
-                    break;
                 case 4:
                     Toast.makeText(MainActivity.this, "文件接收失败", Toast.LENGTH_SHORT).show();
                     break;

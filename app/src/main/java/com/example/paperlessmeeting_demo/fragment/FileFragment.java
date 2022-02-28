@@ -477,11 +477,8 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
             }
         });
         sendThread.start();
-        // Message.obtain(handler, 0, response).sendToTarget();
-
-
-
     }
+
     @Override
     public void sendFileInfo(String path, String type, String flag) {
         //把文件封装在RequestBody里
@@ -543,8 +540,6 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
 
                     }
                 });
-
-
     }
 
     private void creatFile(CreateFileBeanRequest createFileBeanRequest) {
@@ -681,11 +676,11 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
             }
         });
         if (Hawk.contains("meetingInfoBean")) {
-             MeetingInfoBean meetingInfoBean = Hawk.get("meetingInfoBean");
+            MeetingInfoBean meetingInfoBean = Hawk.get("meetingInfoBean");
             mainTitleTv.setText("议题:"+meetingInfoBean.getName());
         }
         if (UserUtil.isTempMeeting) {
-            mainTitleTv.setText("议题:临时会议临时会议临时会议临时会议临时会议");
+            mainTitleTv.setText("议题1、关于弋江区轻轨绿化补助的报告");
         }
     }
 
