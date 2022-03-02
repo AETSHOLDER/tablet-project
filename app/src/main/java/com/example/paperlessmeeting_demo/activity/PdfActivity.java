@@ -19,6 +19,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.paperlessmeeting_demo.R;
@@ -50,8 +51,7 @@ public class PdfActivity extends BaseActivity implements OnPageChangeListener, O
     ImageView pizhu;
     @BindView(R.id.root_rl)
     RelativeLayout root_rl;
-    @BindView(R.id.commit)
-    TextView commit;
+
 
     private AlertDialog imaDialog;
     private File appDir;
@@ -86,6 +86,7 @@ public class PdfActivity extends BaseActivity implements OnPageChangeListener, O
         AlertDialog.Builder builder = new AlertDialog.Builder(PdfActivity.this);
         View view = LayoutInflater.from(PdfActivity.this).inflate(R.layout.dialog_see_ima, null);
         ImageView imageView = view.findViewById(R.id.see_ima);
+        TextView commitTv=view.findViewById(R.id.commit);
         builder.setView(view);
         builder.setCancelable(true);
         imaDialog = builder.create();
