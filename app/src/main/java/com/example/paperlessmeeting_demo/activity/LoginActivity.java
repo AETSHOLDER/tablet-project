@@ -38,11 +38,13 @@ import com.example.paperlessmeeting_demo.bean.CreateFileBeanResponse;
 import com.example.paperlessmeeting_demo.bean.MeetingInfoBean;
 import com.example.paperlessmeeting_demo.bean.PaperlessBean;
 import com.example.paperlessmeeting_demo.bean.UploadBean;
+import com.example.paperlessmeeting_demo.enums.MessageReceiveType;
 import com.example.paperlessmeeting_demo.fragment.ExtraordMeetingFragment;
 import com.example.paperlessmeeting_demo.fragment.SweepCodeFragment;
 import com.example.paperlessmeeting_demo.network.DefaultObserver;
 import com.example.paperlessmeeting_demo.network.NetWorkManager;
 import com.example.paperlessmeeting_demo.socket.InitSocketManager;
+import com.example.paperlessmeeting_demo.tool.CVIPaperDialogUtils;
 import com.example.paperlessmeeting_demo.tool.DeleteFileUtil;
 import com.example.paperlessmeeting_demo.tool.FLUtil;
 import com.example.paperlessmeeting_demo.tool.PermissionManager;
@@ -254,6 +256,17 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
             String tips = "！您已在连续点击8次了！开启游客模式！！！";
             Toast.makeText(this, tips, Toast.LENGTH_SHORT).show();
             visitor.setVisibility(View.VISIBLE);
+        }
+        //TODO  收到临时会议创建通知
+        if (message.getType().equals(MessageReceiveType.MessageCreatTempMeeting)) {
+            String code = message.getMessage();
+            String title = "您收到邀请码为("+code+")的临时会议!";
+            CVIPaperDialogUtils.showCountDownConfirmDialog(LoginActivity.this, title, "确定加入", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                @Override
+                public void onClickButton(boolean clickConfirm, boolean clickCancel) {
+                    Log.e("111111","倒计时哈哈哈");
+                }
+            });
         }
     }
 

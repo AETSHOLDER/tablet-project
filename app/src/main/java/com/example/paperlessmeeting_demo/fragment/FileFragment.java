@@ -44,6 +44,7 @@ import com.example.paperlessmeeting_demo.bean.BasicResponse;
 import com.example.paperlessmeeting_demo.bean.CreateFileBeanRequest;
 import com.example.paperlessmeeting_demo.bean.CreateFileBeanResponse;
 import com.example.paperlessmeeting_demo.bean.FileListBean;
+import com.example.paperlessmeeting_demo.bean.MeetingInfoBean;
 import com.example.paperlessmeeting_demo.bean.UploadBean;
 import com.example.paperlessmeeting_demo.bean.UserBehaviorBean;
 import com.example.paperlessmeeting_demo.network.DefaultObserver;
@@ -56,10 +57,12 @@ import com.example.paperlessmeeting_demo.tool.FileUtils;
 import com.example.paperlessmeeting_demo.tool.MediaReceiver;
 import com.example.paperlessmeeting_demo.tool.TimeUtils;
 import com.example.paperlessmeeting_demo.tool.ToastUtils;
+import com.example.paperlessmeeting_demo.tool.UrlConstant;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.example.paperlessmeeting_demo.tool.constant;
 import com.example.paperlessmeeting_demo.util.ToastUtil;
 import com.example.paperlessmeeting_demo.widgets.MyListView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.orhanobut.hawk.Hawk;
 
 import java.io.File;
@@ -105,10 +108,12 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
     MyListView listView;
     @BindView(R.id.progressBar_ll)
     RelativeLayout progressBarLl;
-    @BindView(R.id.same_screeen_ima)
-    ImageView sameScreeenIma;
     @BindView(R.id.tips)
     TextView tips;
+    @BindView(R.id.main_title_tv)
+    TextView mainTitleTv;
+    @BindView(R.id.sub_title_tv)
+    TextView subTitleTv;
 
     private String selfIp = "";
     private LocationFileListAdapter fileListAdapter;
@@ -146,24 +151,24 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
                     //    fileBeans.clear();
                     getCopyFile();
                     break;
-                    /*
-                    * 分享文件发送中，显示加载动画
-                    * */
+                /*
+                 * 分享文件发送中，显示加载动画
+                 * */
                 case 4:
                     progressBarLl.setVisibility(View.VISIBLE);
                     String fileName = msg.obj.toString();
                     tips.setText(fileName);
                     break;
-                      /*
-                    * 分享文件发送完毕，隐藏加载动画
-                    * */
+                /*
+                 * 分享文件发送完毕，隐藏加载动画
+                 * */
                 case 5:
                     progressBarLl.setVisibility(View.GONE);
                     Toast.makeText(getActivity(), "文件分享成功", Toast.LENGTH_SHORT).show();
                     break;
-                        /*
-                    * 分享文件发送失败，隐藏加载动画
-                    * */
+                /*
+                 * 分享文件发送失败，隐藏加载动画
+                 * */
                 case 6:
                     progressBarLl.setVisibility(View.GONE);
                     Toast.makeText(getActivity(), "文件分享失败", Toast.LENGTH_SHORT).show();
@@ -201,10 +206,7 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
 
     @Override
     protected void initData() {
-        sameScreeenIma.setVisibility(View.GONE);
-                /*
-* 统计用户行为日志
-* */
+
         if (Hawk.contains("UserBehaviorBean")) {
             UserBehaviorBean userBehaviorBean = Hawk.get("UserBehaviorBean");
             UserBehaviorBean.DataBean dataBean = new UserBehaviorBean.DataBean();
@@ -300,28 +302,18 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
                         break;
                     case "4":
                         String wpsPackageName;
-                        if (FLUtil.checkPackage(context, Define.PACKAGENAME_KING_PRO))
-                        {
+                        if (FLUtil.checkPackage(context, Define.PACKAGENAME_KING_PRO)) {
                             wpsPackageName = Define.PACKAGENAME_KING_PRO;
-                        }
-                        else if (FLUtil.checkPackage(context, Define.PACKAGENAME_PRO_DEBUG))
-                        {
+                        } else if (FLUtil.checkPackage(context, Define.PACKAGENAME_PRO_DEBUG)) {
                             wpsPackageName = Define.PACKAGENAME_PRO_DEBUG;
-                        }
-                        else if (FLUtil.checkPackage(context, Define.PACKAGENAME_ENG))
-                        {
+                        } else if (FLUtil.checkPackage(context, Define.PACKAGENAME_ENG)) {
                             wpsPackageName = Define.PACKAGENAME_ENG;
-                        }
-                        else if (FLUtil.checkPackage(context, Define.PACKAGENAME_KING_PRO_HW))
-                        {
+                        } else if (FLUtil.checkPackage(context, Define.PACKAGENAME_KING_PRO_HW)) {
                             wpsPackageName = Define.PACKAGENAME_KING_PRO_HW;
-                        }
-                        else if (FLUtil.checkPackage(context, Define.PACKAGENAME_K_ENG))
-                        {
+                        } else if (FLUtil.checkPackage(context, Define.PACKAGENAME_K_ENG)) {
                             wpsPackageName = Define.PACKAGENAME_K_ENG;
-                        }
-                        else {
-                            ToastUtils.showToast(context,"文件打开失败，请安装WPS Office专业版");
+                        } else {
+                            ToastUtils.showToast(context, "文件打开失败，请安装WPS Office专业版");
                             return;
                         }
                         startActivity(FileUtils.openFile(fileBean.getPath(), getActivity()));
@@ -356,9 +348,7 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
         getFileName(files);
     }
 
-    private void startPlayer(String url)
-
-    {
+    private void startPlayer(String url) {
         Uri uri = Uri.parse(url);//网络中的音乐文件
         try {
             mediaPlayer.reset();
@@ -429,8 +419,8 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
         fileNames.add(name);
         Message.obtain(mHandler, 4, name).sendToTarget();
         /*
-        * 通知其他设备Service，这是分享文件
-        * */
+         * 通知其他设备Service，这是分享文件
+         * */
         Thread sendThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -505,11 +495,8 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
             }
         });
         sendThread.start();
-        // Message.obtain(handler, 0, response).sendToTarget();
-
-
-
     }
+
     @Override
     public void sendFileInfo(String path, String type, String flag) {
         //把文件封装在RequestBody里
@@ -571,8 +558,6 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
 
                     }
                 });
-
-
     }
 
     private void creatFile(CreateFileBeanRequest createFileBeanRequest) {
@@ -664,9 +649,9 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
 
     @Override
     protected void initView() {
-/*
-* 临时会议时，全局发送本设备Ip地址到其他设备
-* */
+        /*
+         * 临时会议时，全局发送本设备Ip地址到其他设备
+         * */
         if (UserUtil.isTempMeeting) {
             new Thread(new Runnable() {
                 @Override
@@ -708,6 +693,13 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
 
             }
         });
+        if (Hawk.contains("meetingInfoBean")) {
+            MeetingInfoBean meetingInfoBean = Hawk.get("meetingInfoBean");
+            mainTitleTv.setText("议题:"+meetingInfoBean.getName());
+        }
+        if (UserUtil.isTempMeeting) {
+            mainTitleTv.setText("议题1、关于弋江区轻轨绿化补助的报告");
+        }
     }
 
     @Override
@@ -717,8 +709,8 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
 
 
     /*
-    * 临时会议时获取设备有线网IP地址
-    * */
+     * 临时会议时获取设备有线网IP地址
+     * */
     public static String getIpAddressString() {
         try {
             for (Enumeration<NetworkInterface> enNetI = NetworkInterface
@@ -762,7 +754,7 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
             return R.mipmap.ic_image;
         } else if (end.equals("ppt") || end.equals("pptx")) {
             return R.mipmap.ic_ppt;
-        } else if (end.equals("xls")||end.equals("xlsx")) {
+        } else if (end.equals("xls") || end.equals("xlsx")) {
             return R.mipmap.ic_excle;
         } else if (end.equals("doc") || end.equals("docx")) {
             return R.mipmap.ic_word;
@@ -787,7 +779,7 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
             return "3";
         } else if ((end.equals("ppt") || end.equals("pptx"))) {
             return "4";
-        } else if (end.equals("xls")||end.equals("xlsx")) {
+        } else if (end.equals("xls") || end.equals("xlsx")) {
             return "4";
         } else if (end.equals("doc") || end.equals("docx")) {
             return "4";
@@ -810,16 +802,15 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
             return constant.IMAGE;
         } else if ((end.equals("ppt") || end.equals("pptx"))) {
             return constant.DOCUMENT;
-        } else if (end.equals("xls")||end.equals("xlsx")) {
+        } else if (end.equals("xls") || end.equals("xlsx")) {
             return constant.DOCUMENT;
         } else if (end.equals("doc") || end.equals("docx")) {
             return constant.DOCUMENT;
         } else if (end.equals("pdf")) {
             return constant.DOCUMENT;
-        }
-        else if (end.equals("txt")) {
+        } else if (end.equals("txt")) {
             return constant.DOCUMENT;
-        }else {
+        } else {
             return constant.OTHER;
         }
     }
@@ -868,8 +859,8 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
     }
 
     /*
-           * 临时会议时获取设备是有线网还是无线网
-           * */
+     * 临时会议时获取设备是有线网还是无线网
+     * */
     private String getNetworkType() {
         ConnectivityManager manager = (ConnectivityManager) getActivity().getApplicationContext().
                 getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -927,7 +918,7 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
                         Uri uri = item.getUri();
                         try {
                             File file = new File(getFilePath(getActivity(), uri));
-                            ToastUtil.makeText(getActivity(),"uri.getPath()====="+uri.getPath());
+                            ToastUtil.makeText(getActivity(), "uri.getPath()=====" + uri.getPath());
                             Log.d("requestCodeUr2222", uri.getScheme() + "===" + uri.getPath() + "==" + file.getName() + "++++++++++" + getFilePath(getActivity(), uri) + "===" + uri.getAuthority());
                             String endStr = file.getName().substring(file.getName().lastIndexOf(".") + 1);
                             Log.d(TAG, "文件类型=" + endStr + "文件名字" + file.getName());
@@ -1100,8 +1091,8 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
     }
 
     /*
-    * 遍历得到分享的文件
-    * */
+     * 遍历得到分享的文件
+     * */
     private void getShareFile(File[] files) {
         shareFileBeans.clear();
         Log.d(TAG, "路过~~~~~11");

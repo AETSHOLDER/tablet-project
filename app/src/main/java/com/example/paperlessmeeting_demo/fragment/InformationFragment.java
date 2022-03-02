@@ -3,6 +3,9 @@ package com.example.paperlessmeeting_demo.fragment;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -16,20 +19,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.activity.ActivitySearchFile;
 import com.example.paperlessmeeting_demo.base.BaseFragment;
 import com.example.paperlessmeeting_demo.bean.UserBehaviorBean;
+import com.example.paperlessmeeting_demo.tool.Linear_Image_Radius;
 import com.example.paperlessmeeting_demo.tool.TimeUtils;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.orhanobut.hawk.Hawk;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -56,6 +58,8 @@ public class InformationFragment extends BaseFragment {
     RelativeLayout searchRl;
     @BindView(R.id.first_tabLayout)
     TabLayout firstTabLayout;
+    @BindView(R.id.file_fragment_ly)
+    LinearLayout fileFragmentLy;
     private String titles;
     private Context context;
     private List<Fragment> fragmentsList;//fragment容器
@@ -81,10 +85,15 @@ public class InformationFragment extends BaseFragment {
 
     @Override
     protected void initData() {
-
-                /*
-* 统计用户行为日志
-* */
+        Drawable drawable = getResources().getDrawable(R.drawable.file_bg);
+        BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+        Bitmap bitmap = bitmapDrawable.getBitmap();
+        BitmapDrawable bbb = new BitmapDrawable(Linear_Image_Radius.toRoundCorner(bitmap, 30));
+        bbb.setAlpha(200); //设置透明度 有效
+        fileFragmentLy.setBackgroundDrawable(bbb);
+        /*
+         * 统计用户行为日志
+         * */
         if (Hawk.contains("UserBehaviorBean")) {
             UserBehaviorBean userBehaviorBean = Hawk.get("UserBehaviorBean");
             UserBehaviorBean.DataBean dataBean = new UserBehaviorBean.DataBean();

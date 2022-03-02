@@ -108,8 +108,7 @@ public class LocationFileListAdapter extends BaseAdapter {
         ViewHolder viHolder = null;
         FileListBean gridViewBean = gridViewBeanList.get(i);
         if (view == null) {
-            view = LayoutInflater.from(context).inflate(
-                    R.layout.item_loact_file_list, null);
+            view = LayoutInflater.from(context).inflate(R.layout.item_loact_file_list, null);
             viHolder = new ViewHolder(view);
             view.setTag(viHolder);
         } else {

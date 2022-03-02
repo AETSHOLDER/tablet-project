@@ -3,6 +3,7 @@ package com.example.paperlessmeeting_demo.tool;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -20,13 +21,19 @@ public class CVIPaperDialogUtils {
     private static String mErrorStr = "错误";
     private static String mConfirmStr = "知道了";
     private static String mCancelStr = "取消";
-
     private static AlertDialog confirmDialog;
     /**
      *  弹出确认弹框 ，只有一个确定按钮
      * */
     public static void showConfirmDialog(Activity context, String title, String confirmStr, boolean canceledOnTouchOutside,final ConfirmDialogListener confirmDialogListener) {
         showAlertDialog(context, title,null, confirmStr,1, canceledOnTouchOutside,confirmDialogListener);
+    }
+
+    /**
+     *  弹出确认倒计时弹框 ，只有一个确定按钮
+     * */
+    public static void showCountDownConfirmDialog(Activity context, String title, String confirmStr, boolean canceledOnTouchOutside,final ConfirmDialogListener confirmDialogListener) {
+        showAlertDialog(context, title,null, confirmStr,3, canceledOnTouchOutside,confirmDialogListener);
     }
 
     /**
@@ -50,6 +57,9 @@ public class CVIPaperDialogUtils {
                 break;
             case 2:
                 view = LayoutInflater.from(context).inflate(R.layout.dialog_custom, null);
+                break;
+            case 3:
+                view = LayoutInflater.from(context).inflate(R.layout.dialog_confirm, null);
                 break;
             default:
                 view = LayoutInflater.from(context).inflate(R.layout.dialog_custom, null);
@@ -94,10 +104,30 @@ public class CVIPaperDialogUtils {
             });
         }
 
+
+
         if(TextUtils.isEmpty(confirmStr)){
             confirm.setText(mConfirmStr);
         }else {
-            confirm.setText(confirmStr);
+            if(type == 3){
+                CountDownTimer countDownTimer = new CountDownTimer(8000, 1000) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+                        String value = " ("+String.valueOf((int) (millisUntilFinished / 1000))+"s)";
+                        confirm.setText(confirmStr+value);
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        confirm.setText("正在进入");
+                        confirm.performClick();
+                    }
+                }.start();
+
+            }else {
+                confirm.setText(confirmStr);
+            }
+
         }
 
         if(contentTxt != null ){
@@ -112,6 +142,8 @@ public class CVIPaperDialogUtils {
 
         TextView title_tv = (TextView) view.findViewById(R.id.title_tv);
         title_tv.setText(title);
+
+
     }
 
     /**
