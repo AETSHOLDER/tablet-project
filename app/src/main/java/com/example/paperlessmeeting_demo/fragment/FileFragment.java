@@ -257,11 +257,23 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
                 FileListBean fileBean = (FileListBean) adapterView.getAdapter().getItem(i);
 
                 Log.d("requestCodeUr333", fileBean.getPath());
-                Intent intent=new Intent(getActivity(), PdfActivity.class);
-                Bundle bundle=new Bundle();
-                bundle.putString("pdfPath", fileBean.getPath());
-                intent.putExtras(bundle);
-                getActivity().startActivity(intent);
+                Intent intent;
+                if (fileBean.getFile_type().equals("3")){
+                    intent = new Intent();
+                    intent.setClass(getActivity(), ActivityImage.class);
+                    intent.putExtra("url", fileBean.getPath());
+                    intent.putExtra("isOpenFile", true);
+                    intent.putExtra("isNetFile", false);
+                    startActivity(intent);
+                }else if (fileBean.getFile_type().equals("4")){
+
+                     intent=new Intent(getActivity(), PdfActivity.class);
+                    Bundle bundle=new Bundle();
+                    bundle.putString("pdfPath", fileBean.getPath());
+                    intent.putExtras(bundle);
+                    getActivity().startActivity(intent);
+                }
+
               /*
                 switch (fileBean.getFile_type()) {
                     case "1"://音乐

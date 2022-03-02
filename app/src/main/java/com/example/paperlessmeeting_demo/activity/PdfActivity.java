@@ -1,15 +1,24 @@
 package com.example.paperlessmeeting_demo.activity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.paperlessmeeting_demo.R;
@@ -18,9 +27,12 @@ import com.joanzapata.pdfview.PDFView;
 import com.joanzapata.pdfview.listener.OnDrawListener;
 import com.joanzapata.pdfview.listener.OnLoadCompleteListener;
 import com.joanzapata.pdfview.listener.OnPageChangeListener;
+import com.nostra13.universalimageloader.core.ImageLoader;
+
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -36,9 +48,18 @@ public class PdfActivity extends BaseActivity implements OnPageChangeListener, O
     ImageView back;
     @BindView(R.id.pizhu)
     ImageView pizhu;
+    @BindView(R.id.root_rl)
+    RelativeLayout root_rl;
+    @BindView(R.id.commit)
+    TextView commit;
+
+    private AlertDialog imaDialog;
     private File appDir;
     private String pdfPath;
     private String fileName;
+    private String  originalPath;
+    private File qianpiPath;
+    private String qianpiName;
     private Handler  handler=new Handler(){
 
         @Override
@@ -46,14 +67,44 @@ public class PdfActivity extends BaseActivity implements OnPageChangeListener, O
             super.handleMessage(msg);
             switch (msg.what){
                 case 1:
-                    
+                    originalPath=(String) msg.obj;
+                    onSaveBitmap(merge(originalPath),"1") ;
                     break;
-
+                case 2:
+                   /* originalPath=(String) msg.obj;
+                    merge(originalPath);*/
+                    break;
             }
 
 
         }
+    };
+
+    //选项形式
+    private void showIma() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(PdfActivity.this);
+        View view = LayoutInflater.from(PdfActivity.this).inflate(R.layout.dialog_see_ima, null);
+        ImageView imageView = view.findViewById(R.id.see_ima);
+        builder.setView(view);
+        builder.setCancelable(true);
+        imaDialog = builder.create();
+        imaDialog.show();
+
+        Window window = imaDialog.getWindow();//获取dialog屏幕对象
+        window.setGravity(Gravity.CENTER);//设置展示位置
+        Display d = window.getWindowManager().getDefaultDisplay(); // 获取屏幕宽，高
+        WindowManager.LayoutParams p = window.getAttributes(); // 获取对话框当前的参数值
+        Point size = new Point();
+        d.getSize(size);
+        int width = size.x;
+        int height = size.y;
+        p.width = (int) (width);//设置宽
+        p.height = (int) (height);//设置高
+        window.setAttributes(p);
+        //ImageLoader.getInstance().displayImage("file://" + list.get(imaPath).getText(), imageView);
     }
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_pdf;
@@ -70,12 +121,15 @@ public class PdfActivity extends BaseActivity implements OnPageChangeListener, O
         pizhu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new Thread(){
+                showIma();
+
+                new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        onSaveBitmap(getBitmap()) ;
+
+                     //   onSaveBitmap(getBitmap(),"2") ;
                     }
-                }.start();
+                }).start();
 
             }
         });
@@ -146,16 +200,31 @@ public class PdfActivity extends BaseActivity implements OnPageChangeListener, O
     }
 
     //保存图片到系统图库
-    private void onSaveBitmap(Bitmap mBitmap) {
+    private void onSaveBitmap(Bitmap mBitmap,String flag) {
         //将Bitmap保存图片到指定的路径/sdcard/Boohee/下，文件名以当前系统时间命名,但是这种方法保存的图片没有加入到系统图库中
-        appDir = new File(Environment.getExternalStorageDirectory(), "comments");
+        File file =null;
+        if (flag.equals("1")){
+            appDir = new File(Environment.getExternalStorageDirectory(), "qianpi");
 
-        if (!appDir.exists()) {
-            appDir.mkdir();
+            if (!appDir.exists()) {
+                appDir.mkdir();
+            }
+
+            fileName ="qianpi.png";
+             file = new File(appDir, fileName);
+            Log.d("fgdddh签批合成路径", "路过~~~~"+" file.getPath()=  "+file.getPath());
+        }else {
+            appDir = new File(Environment.getExternalStorageDirectory(), "comments");
+
+            if (!appDir.exists()) {
+                appDir.mkdir();
+            }
+
+            fileName ="screenshot.png";
+             file = new File(appDir, fileName);
+            Log.d("fgdddh文件截图", "路过~~~~"+" file.getPath()=  "+file.getPath());
         }
-        Log.d("fgdddh", "路过~~~~");
-        fileName ="screenshot.png";
-        File file = new File(appDir, fileName);
+
 
         try {
             FileOutputStream fos = new FileOutputStream(file);
@@ -163,7 +232,15 @@ public class PdfActivity extends BaseActivity implements OnPageChangeListener, O
             fos.flush();
             fos.close();
            Message ms = new Message();
-            ms.what = 1;
+            ms.obj=file.getPath();
+            if (flag.equals("1")){
+                ms.what = 2;
+
+            }else {
+                ms.what = 1;
+
+            }
+
             handler.sendMessage(ms);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -175,8 +252,86 @@ public class PdfActivity extends BaseActivity implements OnPageChangeListener, O
 
 
     }
+    private Bitmap merge(String path2) {
+          qianpiPath= new File(Environment.getExternalStorageDirectory(), "comments");
+        if (!appDir.exists()) {
+            appDir.mkdir();
+        }
+          qianpiName="bg_qianpi.png";
+        File file2 = new File(qianpiPath, qianpiName);
+              Bitmap bitmap1=null ;
+              Bitmap bitmap2=null ;
+              try {
+                  File originalFile = new File(path2);
+                  File awaitFile=new File(file2.getPath());
+                  Log.d("fgdddh签批截图",path2);
+                  Log.d("fgdddh签批等待图",file2.getPath());
+                  bitmap1 = BitmapFactory.decodeStream(new FileInputStream(originalFile));
+                  bitmap2= BitmapFactory.decodeStream(new FileInputStream(awaitFile));
+              } catch (FileNotFoundException e) {
+                  e.printStackTrace();
+              }
+
+        int bitmap1Width = bitmap1.getWidth();
+
+        int bitmap1Height = bitmap1.getHeight();
+
+        int bitmap2Width = bitmap2.getWidth();
+
+        int bitmap2Height = bitmap2.getHeight();
+
+        float marginLeft = (float) (bitmap1Width * 0.5 - bitmap2Width * 0.5);
+
+        float marginTop = (float) (bitmap1Height * 0.5 - bitmap2Height * 0.5);
+
+        Bitmap overlayBitmap = Bitmap.createBitmap(bitmap1Width, bitmap1Height, bitmap1.getConfig());
+
+        Canvas canvas = new Canvas(overlayBitmap);
+
+        canvas.drawBitmap(bitmap1, new Matrix(), null);
+
+        canvas.drawBitmap(bitmap2, marginLeft, marginTop, null);
+          /*    int bgWidth = bitmap1.getWidth();
+              int bgHeight = bitmap1.getHeight();
+              //create the new blank bitmap 创建一个新的和SRC长度宽度一样的位图
+        Bitmap  newbmp = Bitmap.createBitmap(bgWidth, bgHeight, Bitmap.Config.ARGB_8888);
+              Canvas cv = new Canvas(newbmp);
+              //draw bg into
+              cv.drawBitmap(bitmap1, 0, 0, null);//在 0，0坐标开始画入bg
+              //draw fg into
+              cv.drawBitmap(bitmap2, 0, 0, null);//在 0，0坐标开始画入fg ，可以从任意位置画入
+
+              cv.save();//保存
+              cv.restore();//存储*/
+        return overlayBitmap;
+          }
+
+
+
+  /*  public  Bitmap toConformBitmap(Bitmap background, Bitmap foreground) {
+        if( background == null ) {
+            return null;
+        }
+
+        int bgWidth = background.getWidth();
+        int bgHeight = background.getHeight();
+        //create the new blank bitmap 创建一个新的和SRC长度宽度一样的位图
+        Bitmap newbmp = Bitmap.createBitmap(bgWidth, bgHeight, Bitmap.Config.ARGB_8888);
+        Canvas cv = new Canvas(newbmp);
+        //draw bg into
+        cv.drawBitmap(background, 0, 0, null);//在 0，0坐标开始画入bg
+        //draw fg into
+        cv.drawBitmap(foreground, 0, 0, null);//在 0，0坐标开始画入fg ，可以从任意位置画入
+
+        cv.save(Canvas.ALL_SAVE_FLAG);//保存
+        cv.restore();//存储
+        return newbmp;
+    }*/
+
     //两张图合成一张
     private Bitmap mergeBitmap(Bitmap firstBitmap, Bitmap secondBitmap) {
+
+
         Bitmap bitmap = Bitmap.createBitmap(firstBitmap.getWidth(), firstBitmap.getHeight(),
                 firstBitmap.getConfig());
         Canvas canvas = new Canvas(bitmap);
