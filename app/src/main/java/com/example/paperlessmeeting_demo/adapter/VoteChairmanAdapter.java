@@ -3,6 +3,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +17,20 @@ import java.util.ArrayList;
 
 
 public class VoteChairmanAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private  String flag;
+
+    public String getFlag() {
+        return flag;
+    }
+
+    public void setFlag(String flag) {
+        this.flag = flag;
+    }
     public interface voteClickListener{
         //  点击查看
-        public void chairmanClickListener(int position);
+        public void chairmanClickListener(int position,String flag);
         //  点击操作
-        public void operationclickListener(int position);
+        public void operationclickListener(int position,String flag);
 
     }
     private VoteChairmanAdapter.voteClickListener mvoterClickListener;
@@ -89,15 +99,17 @@ public class VoteChairmanAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             public void onClick(View v) {
                 //  未投票，或者已有结果
                 if(status==Constants.VoteStatusEnum.hasStartUnVote|| status==Constants.VoteStatusEnum.hasFinshed){
-                    mvoterClickListener.chairmanClickListener(position);
+                    Log.d("gdgsdgsdgdgf4448888","flag==="+flag);
+                    mvoterClickListener.chairmanClickListener(position,flag);
                 }
             }
         });
         ((VoteChairmanViewHolder) holder).operation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("gdgsdgsdgdgf4447777","flag==="+flag);
                 //  操作  已经投票  未投票
-                mvoterClickListener.operationclickListener(position);
+                mvoterClickListener.operationclickListener(position,flag);
             }
         });
 

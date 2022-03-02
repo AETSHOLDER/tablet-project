@@ -26,7 +26,7 @@ import java.util.List;
  * */
 public class AutomaticVoteUtil {
 
-    public static void voteAlert(VoteListBean.VoteBean model){
+    public static void voteAlert(VoteListBean.VoteBean model,String  flag){
         // 先手动设置一下状态
         model.setStatus(model.getStatus());
 
@@ -35,15 +35,15 @@ public class AutomaticVoteUtil {
         //  投票
         if (status == Constants.VoteStatusEnum.hasStartUnVote) {
             if (model.getType().equals("0")) {
-                showRadioDialog(model);
+                showRadioDialog(model,flag);
             } else {
-                showCheckBoxDialog(model);
+                showCheckBoxDialog(model,flag);
             }
         }
     }
 
     //  单选框
-    private static void showRadioDialog(VoteListBean.VoteBean model) {
+    private static void showRadioDialog(VoteListBean.VoteBean model,String flag) {
         Activity topActivity = (Activity) ActivityUtils.getTopActivity();
         if(topActivity == null){
             return;
@@ -58,7 +58,7 @@ public class AutomaticVoteUtil {
         topActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                RadioDialog dialog = new RadioDialog(topActivity, R.style.AlertDialogStyle, list);
+                RadioDialog dialog = new RadioDialog(topActivity, R.style.AlertDialogStyle, list,flag);
                 topActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -113,7 +113,7 @@ public class AutomaticVoteUtil {
     }
 
     //  复选框
-    private static void showCheckBoxDialog(VoteListBean.VoteBean model) {
+    private static void showCheckBoxDialog(VoteListBean.VoteBean model,String flag) {
         Activity topActivity = (Activity) ActivityUtils.getTopActivity();
         if(topActivity == null){
             return;
@@ -128,7 +128,7 @@ public class AutomaticVoteUtil {
         topActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                CheckBoxDialog dialog = new CheckBoxDialog(topActivity, R.style.AlertDialogStyle, list);
+                CheckBoxDialog dialog = new CheckBoxDialog(topActivity, R.style.AlertDialogStyle, list,flag);
                 dialog.show();
                 dialog.setTitle(model.getTopic());
                 dialog.setEndTime("投票截止时间:" + model.getEnd_time());

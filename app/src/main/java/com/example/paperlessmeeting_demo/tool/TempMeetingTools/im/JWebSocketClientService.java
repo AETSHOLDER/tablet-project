@@ -304,8 +304,8 @@ public class JWebSocketClientService {
                     if (message.contains(constant.NEWVOTE)) {
                         TempWSBean<VoteListBean.VoteBean> wsebean = new Gson().fromJson(message, new TypeToken<TempWSBean<VoteListBean.VoteBean>>(){}.getType());
                         VoteListBean.VoteBean voteBean = wsebean.getBody();
-
-                        AutomaticVoteUtil.voteAlert(voteBean);
+                        String flag= wsebean.getFlag();
+                        AutomaticVoteUtil.voteAlert(voteBean,flag);
 
                     }
                     // 正式会议 投票信息

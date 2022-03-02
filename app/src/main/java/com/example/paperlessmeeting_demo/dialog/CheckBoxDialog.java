@@ -44,13 +44,15 @@ public class CheckBoxDialog extends AlertDialog {
     private Button btnNeg;
     private Button btnPos;
     private ListView listView;
+   private    String flag;
     private List<ChoseBean> dataList = new ArrayList<>();
     private CheckBoxAdapter adapter;
 
-    public CheckBoxDialog(Context context, @StyleRes int themeResId, List<ChoseBean> dataList) {
+    public CheckBoxDialog(Context context, @StyleRes int themeResId, List<ChoseBean> dataList,String flag) {
         super(context, themeResId);
         this.context = context;
         this.dataList = dataList;
+        this.flag = flag;
     }
 
 
@@ -78,7 +80,7 @@ public class CheckBoxDialog extends AlertDialog {
         btnNiming = (Button)this.findViewById(R.id.niming);
 
         listView = (ListView)this.findViewById(R.id.listview);
-        adapter = new CheckBoxAdapter(context,dataList);
+        adapter = new CheckBoxAdapter(context,dataList,flag);
         listView.setAdapter(adapter);
     }
 

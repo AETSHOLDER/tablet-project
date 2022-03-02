@@ -3,6 +3,7 @@ package com.example.paperlessmeeting_demo.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +17,18 @@ import java.util.List;
 
 
 public class VoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private  String flag;
+
+    public String getFlag() {
+        return flag;
+    }
+
+    public void setFlag(String flag) {
+        this.flag = flag;
+    }
+
     public interface voteClickListener{
-        public void clickListener(int position);
+        public void clickListener(int position,String flag);
     }
     private voteClickListener mvoterClickListener;
     private List<VoteListBean.VoteBean> list = new ArrayList<>();
@@ -88,9 +99,10 @@ public class VoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         ((VoteViewHolder) holder).vote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("gdgsdgsdgdgf4440000","flag==="+flag);
                 //  未投票，或者已有结果
                 if(status==Constants.VoteStatusEnum.hasStartUnVote|| status==Constants.VoteStatusEnum.hasFinshed){
-                    mvoterClickListener.clickListener(position);
+                    mvoterClickListener.clickListener(position,flag);
                 }
             }
         });

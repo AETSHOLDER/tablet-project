@@ -277,7 +277,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
     private RigthContentFragment rigthContentFragment;
     private String path = "/storage/emulated/0/aa/会议系统需求分析文档V1.0.1.docx";
     private WhiteBoardServies myBinder;
-    //  private BrowserServies browserServies;
+     private BrowserServies browserServies;
     private MyReceiver myReceiver;
     private MyReceiver myBrowserReceiver;
     private FragmentManager fragmentManager;
@@ -875,6 +875,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
 
     @Override
     protected void initData() {
+        startFloatingBrowserService();
         /*
         * 标题背景透明度适配不同的动态主题
         * */
@@ -1730,7 +1731,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
             Log.d("gfjjfghjfg", "2222点击路过！！！~");
             bindService(new Intent(MainActivity.this, WhiteBoardServies.class), MainActivity.this, BIND_AUTO_CREATE);
             isWhiteStart = true;
-            //startService(new Intent(MainActivity1.this, WhiteBoardServies.class));
+          //startService(new Intent(MainActivity1.this, WhiteBoardServies.class));
         }
     }
 
@@ -2064,7 +2065,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
             bindService(new Intent(MainActivity.this, BrowserServies.class), new ServiceConnection() {
                 @Override
                 public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-                    //  browserServies = ((BrowserServies.MyBroadBinder) iBinder).getService();
+                   browserServies = ((BrowserServies.MyBroadBinder) iBinder).getService();
                 }
 
                 @Override
@@ -2073,7 +2074,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
                 }
             }, BIND_AUTO_CREATE);
             isBroadStart = true;
-            //startService(new Intent(MainActivity1.this, WhiteBoardServies.class));
+           startService(new Intent(MainActivity.this, BrowserServies.class));
         }
     }
 

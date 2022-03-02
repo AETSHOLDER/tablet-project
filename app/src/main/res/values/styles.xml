@@ -264,7 +264,9 @@
         <item name="android:textColor">#ff4b4b4b</item>
         <item name="android:textSize">22sp</item>
     </style>
-
+    <style name="option_form_tv">
+        <item name="android:textSize">32sp</item>
+    </style>
     <style name="agenda_name">
         <item name="android:layout_centerVertical">true</item>
         <item name="android:gravity">left</item>

@@ -37,6 +37,7 @@ import android.widget.Toast;
 import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.activity.ActivityImage;
 import com.example.paperlessmeeting_demo.activity.ActivityVideoView;
+import com.example.paperlessmeeting_demo.activity.PdfActivity;
 import com.example.paperlessmeeting_demo.adapter.LocationFileListAdapter;
 import com.example.paperlessmeeting_demo.base.BaseFragment;
 import com.example.paperlessmeeting_demo.bean.BasicResponse;
@@ -96,7 +97,6 @@ import static android.content.Context.WIFI_SERVICE;
  */
 @SuppressLint("ValidFragment")
 public class FileFragment extends BaseFragment implements MediaReceiver.sendfilePthInterface, LocationFileListAdapter.upLoadFileInterface, LocationFileListAdapter.PlayerClickInterface, LocationFileListAdapter.ShareFileInterface, LocationFileListAdapter.PushFileInterface {
-
 
     Unbinder unbinder;
     @BindView(R.id.image_add)
@@ -255,8 +255,14 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 FileListBean fileBean = (FileListBean) adapterView.getAdapter().getItem(i);
+
                 Log.d("requestCodeUr333", fileBean.getPath());
-                Intent intent;
+                Intent intent=new Intent(getActivity(), PdfActivity.class);
+                Bundle bundle=new Bundle();
+                bundle.putString("pdfPath", fileBean.getPath());
+                intent.putExtras(bundle);
+                getActivity().startActivity(intent);
+              /*
                 switch (fileBean.getFile_type()) {
                     case "1"://音乐
                         startPlayer("file://" + fileBean.getPath());
@@ -315,7 +321,7 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
 //                        intent.putExtra("tempPath", false);
 //                        startActivity(intent);
                         break;
-                }
+                }*/
 
             }
         });

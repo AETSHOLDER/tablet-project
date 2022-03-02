@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.bean.ChoseBean;
+import com.example.paperlessmeeting_demo.tool.Base642BitmapTool;
 
 import java.util.List;
 
@@ -19,10 +20,11 @@ import butterknife.ButterKnife;
 public class CheckBoxAdapter extends BaseAdapter {
     List<ChoseBean> listData;
     Context context;
-
-    public CheckBoxAdapter(Context context, List<ChoseBean> list ) {
+    private  String flag;
+    public CheckBoxAdapter(Context context, List<ChoseBean> list,String flag ) {
         listData = list;
         this.context = context;
+        this.flag = flag;
     }
 
     @Override
@@ -55,6 +57,19 @@ public class CheckBoxAdapter extends BaseAdapter {
         try {
             ChoseBean bean = listData.get(position);
             viewHolder.tvContent.setText(bean.getContent());
+
+
+            if ("1".equals(flag)){
+                viewHolder.tvContent.setVisibility(View.VISIBLE);
+                viewHolder.ima_content.setVisibility(View.GONE);
+                viewHolder.tvContent.setText(bean.getContent());
+
+            }else {
+                viewHolder.tvContent.setVisibility(View.GONE);
+                viewHolder.ima_content.setVisibility(View.VISIBLE);
+                viewHolder.ima_content.setImageBitmap(Base642BitmapTool.base642Bitmap(bean.getContent()));
+            }
+
             if (bean.isChecked()) {
                 viewHolder.ivCheckState.setImageResource(R.drawable.radio_selected);
             } else {
@@ -92,7 +107,8 @@ public class CheckBoxAdapter extends BaseAdapter {
 
         @BindView(R.id.iv_check_state)
         ImageView ivCheckState;
-
+        @BindView(R.id.ima_content)
+        ImageView ima_content;
         public ViewHolder(View itemView){
             ButterKnife.bind(this,itemView);
         }

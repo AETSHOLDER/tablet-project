@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +24,7 @@ import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.adapter.RadioAdapter;
 import com.example.paperlessmeeting_demo.bean.ChoseBean;
 import com.example.paperlessmeeting_demo.tool.UrlConstant;
+import com.example.paperlessmeeting_demo.widgets.MyListView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
@@ -34,7 +36,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class RadioDialog extends AlertDialog {
-    private LinearLayout layoutContent;
+    private RelativeLayout layoutContent;
     private Context context;
     private TextView endTime;
     private TextView creator;
@@ -42,18 +44,19 @@ public class RadioDialog extends AlertDialog {
     private TextView title;
     private Button btnNeg;
     private Button btnPos;
-
+    private  String flag;
     private Button btnDanxuan;
 
     private Button btnNiming;
-    private ListView listView;
+    private MyListView listView;
     private List<ChoseBean> dataList = new ArrayList<>();
     private RadioAdapter adapter;
 
-    public RadioDialog(Context context, @StyleRes int themeResId, List<ChoseBean> dataList) {
+    public RadioDialog(Context context, @StyleRes int themeResId, List<ChoseBean> dataList, String flag) {
         super(context, themeResId);
         this.context = context;
         this.dataList = dataList;
+        this.flag = flag;
     }
 
 
@@ -66,9 +69,9 @@ public class RadioDialog extends AlertDialog {
                 .getSystemService(Context.WINDOW_SERVICE);
         final Display display = windowManager.getDefaultDisplay();
 
-        layoutContent = (LinearLayout) findViewById(R.id.layout_content);
+        layoutContent = (RelativeLayout) findViewById(R.id.layout_content);
         layoutContent.setLayoutParams(new FrameLayout.LayoutParams((int) (display
-                .getWidth() * 0.5), (int) (display.getHeight() * 0.6)));
+                .getWidth() * 0.7), (int) (display.getHeight() * 0.9)));
 
         endTime = (TextView) this.findViewById(R.id.endtimeClock);
         title = (TextView) this.findViewById(R.id.title);
@@ -79,8 +82,8 @@ public class RadioDialog extends AlertDialog {
         btnDanxuan = (Button) this.findViewById(R.id.danxaun);
         btnNiming = (Button) this.findViewById(R.id.niming);
         btnDanxuan.setText("单选");
-        listView = (ListView) this.findViewById(R.id.listview);
-        adapter = new RadioAdapter(context, dataList);
+        listView = (MyListView) this.findViewById(R.id.listview);
+        adapter = new RadioAdapter(context, dataList,flag);
         listView.setAdapter(adapter);
     }
 

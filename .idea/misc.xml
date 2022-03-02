@@ -3,11 +3,24 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/TabletProject/tablet-project/app/src/main/res/layout/activity_browser.xml" value="0.19775390625" />
+        <entry key="..\:/TabletProject/tablet-project/app/src/main/res/layout/activity_pdf.xml" value="0.29638671875" />
+        <entry key="..\:/TabletProject/tablet-project/app/src/main/res/layout/activity_vote_list.xml" value="0.2318840579710145" />
+        <entry key="..\:/TabletProject/tablet-project/app/src/main/res/layout/activity_vote_list_chairman.xml" value="0.2056159420289855" />
+        <entry key="..\:/TabletProject/tablet-project/app/src/main/res/layout/dialog_checkbox.xml" value="0.34322916666666664" />
+        <entry key="..\:/TabletProject/tablet-project/app/src/main/res/layout/dialog_newvote.xml" value="0.35885416666666664" />
+        <entry key="..\:/TabletProject/tablet-project/app/src/main/res/layout/dialog_newvote_ima.xml" value="0.3072916666666667" />
+        <entry key="..\:/TabletProject/tablet-project/app/src/main/res/layout/dialog_option_form.xml" value="0.35885416666666664" />
+        <entry key="..\:/TabletProject/tablet-project/app/src/main/res/layout/dialog_piechart.xml" value="0.34322916666666664" />
+        <entry key="..\:/TabletProject/tablet-project/app/src/main/res/layout/dialog_see_ima.xml" value="0.23142857142857143" />
         <entry key="..\:/TabletProject/tablet-project/app/src/main/res/layout/diaog_create_invite_code.xml" value="0.35885416666666664" />
         <entry key="..\:/TabletProject/tablet-project/app/src/main/res/layout/diaog_invite_code_tips.xml" value="0.35885416666666664" />
         <entry key="..\:/TabletProject/tablet-project/app/src/main/res/layout/diaog_verify_invite_code.xml" value="0.17451874366767983" />
+        <entry key="..\:/TabletProject/tablet-project/app/src/main/res/layout/item_home.xml" value="0.28854166666666664" />
         <entry key="..\:/TabletProject/tablet-project/app/src/main/res/layout/item_loact_file_list.xml" value="0.35885416666666664" />
         <entry key="..\:/TabletProject/tablet-project/app/src/main/res/layout/item_private_file_list.xml" value="0.25104166666666666" />
+        <entry key="..\:/TabletProject/tablet-project/app/src/main/res/layout/layout_cheeckbox_list_item.xml" value="0.34322916666666664" />
+        <entry key="..\:/TabletProject/tablet-project/app/src/main/res/layout/vote_chairman_item.xml" value="0.283203125" />
       </map>
     </option>
   </component>
@@ -46,5 +59,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.35885416666666664" />
+      </ProjectState>
+    </option>
   </component>
 </project>

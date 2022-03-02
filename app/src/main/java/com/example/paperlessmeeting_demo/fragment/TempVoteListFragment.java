@@ -1,11 +1,24 @@
 package com.example.paperlessmeeting_demo.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ContentUris;
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Message;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -13,6 +26,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -26,6 +40,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -39,6 +55,7 @@ import com.example.paperlessmeeting_demo.adapter.VoteChairmanAdapter;
 import com.example.paperlessmeeting_demo.base.BaseFragment;
 import com.example.paperlessmeeting_demo.bean.BasicResponse;
 import com.example.paperlessmeeting_demo.bean.ChoseBean;
+import com.example.paperlessmeeting_demo.bean.FileListBean;
 import com.example.paperlessmeeting_demo.bean.TempWSBean;
 import com.example.paperlessmeeting_demo.bean.UserBehaviorBean;
 import com.example.paperlessmeeting_demo.enums.MessageReceiveType;
@@ -60,10 +77,12 @@ import com.example.paperlessmeeting_demo.network.NetWorkManager;
 import com.example.paperlessmeeting_demo.tool.PermissionManager;
 import com.example.paperlessmeeting_demo.tool.ToastUtils;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
+import com.example.paperlessmeeting_demo.util.ToastUtil;
 import com.example.paperlessmeeting_demo.widgets.DrawableTextView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mrgao.luckly_popupwindow.LucklyPopopWindow;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.orhanobut.hawk.Hawk;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 
@@ -71,6 +90,10 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -90,7 +113,8 @@ import pub.devrel.easypermissions.EasyPermissions;
 import com.example.paperlessmeeting_demo.bean.VoteListBean.VoteBean;
 
 @SuppressLint("ValidFragment")
-public class TempVoteListFragment extends BaseFragment implements VoteAdapter.voteClickListener, VoteChairmanAdapter.voteClickListener, EasyPermissions.PermissionCallbacks {
+public class TempVoteListFragment extends BaseFragment implements VoteAdapter.voteClickListener, VoteChairmanAdapter.voteClickListener, EasyPermissions.PermissionCallbacks, RecycleAdapter.ChoseOptionItemImaListener, RecycleAdapter.SeePhotosItemImaListener {
+
 
     @Override
     protected int getLayoutId() {
@@ -135,7 +159,6 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
 
     ArrayList<VoteListBean.VoteBean> voteList = new ArrayList<>();
     private LucklyPopopWindow mLucklyPopopWindow;
-
     private RecyclerView.LayoutManager mLayoutManager;
     //  修改1
     VoteAdapter voteAdapter1;
@@ -167,11 +190,13 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
     EditText edit_text3;
 
     private AlertDialog results;
-
+    private AlertDialog optionFormDialog;
+    private AlertDialog imaDialog;
     private FragmentManager fragmentManager;
     private String titles;
     private Context context;
     private String currentEndDate;
+    private int positionIma = -1;
 
     public TempVoteListFragment(FragmentManager fragmentManager) {
         this.fragmentManager = fragmentManager;
@@ -200,7 +225,7 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
             new_vote.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    showNewVoteItem();
+                    showOptionForm();
 
                 }
             });
@@ -249,10 +274,31 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
                     //  收到vote的websocket的信息
                     if (wsebean != null) {
                         voteList = wsebean.getBody();
+                        String flag = wsebean.getFlag();//获取选项是图片还是文字标识
+                        Log.d("gdgsdgsdgdgf444555",flag+"");
                         for (VoteListBean.VoteBean bean : voteList) {
                             bean.setStatus(bean.getStatus());
                         }
-                        refreshUI(voteList);
+                        refreshUI(voteList, flag);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            if (message.getMessage().contains(constant.NEWVOTE)) {
+                Log.e(TAG, "onReceiveMsg: " + message.toString());
+                try {
+                    TempWSBean<ArrayList> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<ArrayList<VoteBean>>>() {
+                    }.getType());
+                    //  收到vote的websocket的信息
+                    if (wsebean != null) {
+                        voteList = wsebean.getBody();
+                        String flag = wsebean.getFlag();//获取选项是图片还是文字标识
+                        Log.d("gdgsdgsdgdgf444888",flag+"");
+                        for (VoteListBean.VoteBean bean : voteList) {
+                            bean.setStatus(bean.getStatus());
+                        }
+                        refreshUI(voteList, flag);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -267,9 +313,84 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
 
     }
 
-    private void showNewVoteItem() {
+    //选项形式
+    private void showOptionForm() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_newvote, null);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_option_form, null);
+        RadioGroup rg = view.findViewById(R.id.rg_option_form);
+        RadioButton tv = view.findViewById(R.id.rb_tv);
+        RadioButton ima = view.findViewById(R.id.rb_ima);
+        builder.setView(view);
+        builder.setCancelable(true);
+        optionFormDialog = builder.create();
+        optionFormDialog.show();
+
+        Window window = optionFormDialog.getWindow();//获取dialog屏幕对象
+        window.setGravity(Gravity.CENTER);//设置展示位置
+        Display d = window.getWindowManager().getDefaultDisplay(); // 获取屏幕宽，高
+        WindowManager.LayoutParams p = window.getAttributes(); // 获取对话框当前的参数值
+        Point size = new Point();
+        d.getSize(size);
+        int width = size.x;
+        int height = size.y;
+        p.width = (int) (width * 0.4);//设置宽
+        p.height = (int) (height * 0.3);//设置高
+        window.setAttributes(p);
+
+        rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                // 选中状态改变时被触发
+                switch (checkedId) {
+                    case R.id.rb_tv:
+                        // 文字
+                        showNewVoteItem("1");
+                        optionFormDialog.dismiss();
+                        break;
+                    case R.id.rb_ima:
+                        // 图片
+                        showNewVoteItem("2");
+                        optionFormDialog.dismiss();
+                        break;
+                }
+            }
+        });
+
+    }
+
+    //选项形式
+    private void showIma(int imaPath) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_see_ima, null);
+        ImageView imageView = view.findViewById(R.id.see_ima);
+        builder.setView(view);
+        builder.setCancelable(true);
+        imaDialog = builder.create();
+        imaDialog.show();
+        Window window = imaDialog.getWindow();//获取dialog屏幕对象
+        window.setGravity(Gravity.CENTER);//设置展示位置
+        Display d = window.getWindowManager().getDefaultDisplay(); // 获取屏幕宽，高
+        WindowManager.LayoutParams p = window.getAttributes(); // 获取对话框当前的参数值
+        Point size = new Point();
+        d.getSize(size);
+        int width = size.x;
+        int height = size.y;
+        p.width = (int) (width * 0.4);//设置宽
+        p.height = (int) (height * 0.3);//设置高
+        window.setAttributes(p);
+        ImageLoader.getInstance().displayImage("file://" + list.get(imaPath).getText(), imageView);
+    }
+
+    //flag  1:文字选项  2：图片选项
+    private void showNewVoteItem(String flag) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        View view = null;
+        if (flag.equals("1")) {
+            view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_newvote, null);
+        } else {
+            view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_newvote_ima, null);
+        }
+
         layoutContent = view.findViewById(R.id.layout_newvote);
         mRecyclerView = view.findViewById(R.id.recyclerview);
         add_chose = view.findViewById(R.id.add_chose);//新增选项目
@@ -293,7 +414,20 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
         builder.setCancelable(false);
         results = builder.create();
         results.show();
-        initRecycle();
+
+        Window window = results.getWindow();//获取dialog屏幕对象
+        window.setGravity(Gravity.CENTER);//设置展示位置
+        Display d = window.getWindowManager().getDefaultDisplay(); // 获取屏幕宽，高
+        WindowManager.LayoutParams p = window.getAttributes(); // 获取对话框当前的参数值
+        Point size = new Point();
+        d.getSize(size);
+        int width = size.x;
+        int height = size.y;
+        p.width = (int) (width * 0.8);//设置宽
+        p.height = (int) (height * 0.8);//设置高
+        window.setAttributes(p);
+
+        initRecycle(flag);
         edit_text3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -346,29 +480,52 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
                     return;
                 }
 
-                if (TextUtils.isEmpty(edit_text.getText())) {
-                    Toast.makeText(getActivity(), "请输入选项1", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (TextUtils.isEmpty(edit_text2.getText())) {
-                    Toast.makeText(getActivity(), "请输入选项2", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+
                 if (TextUtils.isEmpty(currentEndDate)) {
                     Toast.makeText(getActivity(), "请选择结束时间", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 ArrayList<String> options_list = new ArrayList();
-                options_list.add(edit_text.getText().toString());
-                options_list.add(edit_text2.getText().toString());
-                //  拼接选项字符串
-                for (int i = 0; i < list.size(); i++) {
-                    ItemBean bean = list.get(i);
-                    if (!TextUtils.isEmpty(bean.getText())) {
-                        options_list.add(bean.getText().toString());
+                //当选项是文字时
+                if (flag.equals("1")) {
+                    if (TextUtils.isEmpty(edit_text.getText())) {
+                        Toast.makeText(getActivity(), "请输入选项1", Toast.LENGTH_SHORT).show();
+                        return;
                     }
+                    if (TextUtils.isEmpty(edit_text2.getText())) {
+                        Toast.makeText(getActivity(), "请输入选项2", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    options_list.add(edit_text.getText().toString());
+                    options_list.add(edit_text2.getText().toString());
+                    //  拼接选项字符串
+                    for (int i = 0; i < list.size(); i++) {
+                        ItemBean bean = list.get(i);
+                        if (!TextUtils.isEmpty(bean.getText())) {
+                            bean.setFlag("1");
+                            options_list.add(bean.getText().toString());
+                        }
+                    }
+
+                } else {
+                    //当选项是图片时
+
+                    //  拼接选项字符串
+                    for (int i = 0; i < list.size(); i++) {
+                        ItemBean bean = list.get(i);
+                        if (!TextUtils.isEmpty(bean.getText())) {
+                            try {
+                                bean.setFlag("2");
+                                options_list.add(byte2Base64(readStream(bean.getText())));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+
                 }
+
 
                 VoteListBean.VoteBean voteBean = new VoteListBean.VoteBean();
                 VoteBean.FromBean fromBean = new VoteBean.FromBean();
@@ -395,8 +552,13 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
 //                map.put("anonymity",currentSelNiming == ivCheckState3 ? "1" : "0");
 //                map.put("from", FLUtil.getMacAddress());
 ////                map.put("meeting_record_id",UserUtil.meeting_record_id);
-
-                creatVote(voteBean);
+                //当选项是文字时
+                if (flag.equals("1")) {
+                    creatVote(voteBean, "1");
+                } else {
+                    //选项是图片
+                    creatVote(voteBean, "2");
+                }
 
                 results.dismiss();
             }
@@ -480,7 +642,7 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
     }
 
     //  初始化列表
-    private void initRecycle() {
+    private void initRecycle(String flag) {
         if (list != null) {
             list.clear();
         }
@@ -492,7 +654,7 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
 //        list = initData();
         adapter = new RecycleAdapter(getActivity(), list, new RecycleAdapter.ChoseClickListener() {
             @Override
-            public void clickListener(int position) {
+            public void clickListener(int position, String flag) {
                 if (list.size() > 0) {
                     add_chose.setVisibility(View.INVISIBLE);
                 } else {
@@ -500,7 +662,9 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
                 }
 
             }
-        });
+        }, flag);
+        adapter.setChoseOptionItemImaListener(this);
+        adapter.setSeePhotosItemImaListener(this);
         mRecyclerView.setAdapter(adapter);
         //      添加动画
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -515,7 +679,7 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
     }
 
     // 刷新页面，无数据显示空白页面
-    protected void refreshUI(ArrayList<VoteListBean.VoteBean> data) {
+    protected void refreshUI(ArrayList<VoteListBean.VoteBean> data, String flag) {
 //        if (tempArr.size() == 0) {
 //            emptyView.setVisibility(View.VISIBLE);
 //            recyclerView.setVisibility(View.INVISIBLE);
@@ -523,13 +687,16 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
 //            emptyView.setVisibility(View.INVISIBLE);
 //            recyclerView.setVisibility(View.VISIBLE);
 //        }
+        Log.d("gdgsdgsdgdgf444",flag+"");
         if (UserUtil.ISCHAIRMAN) {
 //            voteAdapter2.addFinalVotestate(data);
             voteAdapter2.setList(data);
+            voteAdapter2.setFlag(flag);
             voteAdapter2.notifyDataSetChanged();
         } else {
 //            voteAdapter1.addFinalVotestate(data);
             voteAdapter1.setList(data);
+            voteAdapter1.setFlag(flag);
             voteAdapter1.notifyDataSetChanged();
         }
 
@@ -549,10 +716,221 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
 
     }
 
+    //查看大图
+    @Override
+    public void seeImaistener(int position) {
+
+        showIma(position);
+
+    }
+
+    //选择图片-选项
+    @Override
+    public void choseImaistener(int position) {
+
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");//无类型限制
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        startActivityForResult(intent, 1);
+        positionIma = position;
+    }
+
+    /**
+     * 照片转byte二进制
+     *
+     * @param imagepath 需要转byte的照片路径
+     * @return 已经转成的byte
+     * @throws Exception
+     */
+    public static byte[] readStream(String imagepath) throws Exception {
+        FileInputStream fs = new FileInputStream(imagepath);
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int len = 0;
+        while (-1 != (len = fs.read(buffer))) {
+            outStream.write(buffer, 0, len);
+        }
+        outStream.close();
+        fs.close();
+        return outStream.toByteArray();
+    }
+
+    private String byte2Base64(byte[] imageByte) {
+        if (null == imageByte) return null;
+        return Base64.encodeToString(imageByte, Base64.DEFAULT);
+    }
+
+    private Bitmap base642Bitmap(String base64) {
+        byte[] decode = Base64.decode(base64, Base64.DEFAULT);
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.RGB_565;
+        options.inJustDecodeBounds = true;
+        Bitmap mBitmap = BitmapFactory.decodeByteArray(decode, 0, decode.length);
+        // bitmapList.add(mBitmap);
+        Message ms = new Message();
+        ms.what = 2;
+        // handler.sendMessage(ms);//更新主线程
+        return mBitmap;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (data.getData() != null) {
+                Uri uri = data.getData();
+                try {
+                    File file = new File(getFilePath(getActivity(), uri));
+                    Log.d("requestCodeUr00000", Environment.getExternalStorageDirectory().getAbsolutePath() + "===" + Environment.getExternalStorageDirectory().toString() + "====" + Environment.getStorageState(file));
+                    Log.d("requestCodeUrl111", uri.getScheme() + "===" + uri.getPath() + "==" + file.getName() + "++++++++++" + getFilePath(getActivity(), uri) + "===" + uri.getAuthority());
+                    String endStr = file.getName().substring(file.getName().lastIndexOf(".") + 1);
+                    if ("jpg".equals(endStr) || "gif".equals(endStr) || "png".equals(endStr) || "jpeg".equals(endStr) || "bmp".equals(endStr)) {
+                        list.get(positionIma).setText(file.getPath());
+                        adapter.notifyDataSetChanged();
+                    } else {
+
+                        Toast.makeText(getActivity(), "选项只支持图片，请重新选择", Toast.LENGTH_SHORT).show();
+                    }
+                    Log.d("requestCodeUr7788", "文件类型=" + endStr + "文件名字" + file.getName() + getFilePath(getActivity(), uri));
+
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+
+            } else {
+                //长按使用多选的情况
+                ClipData clipData = data.getClipData();
+                if (clipData != null) {
+                    List<String> pathList = new ArrayList<>();
+                    for (int i = 0; i < clipData.getItemCount(); i++) {
+                        ClipData.Item item = clipData.getItemAt(i);
+                        Uri uri = item.getUri();
+                        try {
+                            File file = new File(getFilePath(getActivity(), uri));
+                            ToastUtil.makeText(getActivity(), "uri.getPath()=====" + uri.getPath());
+                            Log.d("requestCodeUr2222", uri.getScheme() + "===" + uri.getPath() + "==" + file.getName() + "++++++++++" + getFilePath(getActivity(), uri) + "===" + uri.getAuthority());
+                            String endStr = file.getName().substring(file.getName().lastIndexOf(".") + 1);
+                            if ("jpg".equals(endStr) || "gif".equals(endStr) || "png".equals(endStr) || "jpeg".equals(endStr) || "bmp".equals(endStr)) {
+                                list.get(positionIma).setText(file.getPath());
+                                adapter.notifyDataSetChanged();
+                            } else {
+
+                                Toast.makeText(getActivity(), "选项只支持图片，请重新选择", Toast.LENGTH_SHORT).show();
+                            }
+                            Log.d(TAG, "文件类型=" + endStr + "文件名字" + file.getName());
+                            // fileBean = new FileListBean(file.getName(), file.getPath(), "", "");
+                            //复制文件到指定目录
+                       /*     new Thread() {
+                                @Override
+                                public void run() {
+                                    copyFile(file.getPath(), fileStrPath + file.getName());
+                                }
+                            }.start();*/
+                           /* fileBean.setResImage(getIamge(endStr));
+                            fileBean.setFile_type(getType(endStr));
+                            fileBeans.add(fileBean);*/
+                        } catch (URISyntaxException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+
+      /*    fileListAdapter.setGridViewBeanList(fileBeans);
+            fileListAdapter.notifyDataSetChanged();*/
+        }
+
+    }
+
+    @SuppressLint("NewApi")
+    public String getFilePath(Context context, Uri uri) throws URISyntaxException {
+        String selection = null;
+        String[] selectionArgs = null;
+        // Uri is different in versions after KITKAT (Android 4.4), we need to
+        if (Build.VERSION.SDK_INT >= 19 && DocumentsContract.isDocumentUri(context.getApplicationContext(), uri)) {
+
+            if (isExternalStorageDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+                for (int i = 0; i < split.length; i++) {
+                    Log.d("requestCodeUr4444", split[i] + "i==" + i);
+                }
+                Log.d("requestCodeUr55555", Environment.getExternalStorageDirectory() + "/" + split[1]);
+                if ("primary".equalsIgnoreCase(type)) {
+                    return Environment.getExternalStorageDirectory() + "/" + split[1];
+                } else {
+                    return "/storage/" + split[0] + "/" + split[1];
+                }
+
+            } else if (isDownloadsDocument(uri)) {
+                final String id = DocumentsContract.getDocumentId(uri);
+                uri = ContentUris.withAppendedId(
+                        Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+            } else if (isMediaDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+                for (int i = 0; i < split.length; i++) {
+                    Log.d("requestCodeUr6666", split[i]);
+                }
+                Log.d("requestCodeUr7777", split[0]);
+                if ("image".equals(type)) {
+                    uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                } else if ("video".equals(type)) {
+                    uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                } else if ("audio".equals(type)) {
+                    uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                }
+                selection = "_id=?";
+                selectionArgs = new String[]{
+                        split[1]
+                };
+            }
+        }
+        if ("content".equalsIgnoreCase(uri.getScheme())) {
+
+            if (isGooglePhotosUri(uri)) {
+                return uri.getLastPathSegment();
+            }
+            String[] projection = {
+                    MediaStore.Images.Media.DATA};
+            Cursor cursor = null;
+            try {
+                cursor = context.getContentResolver()
+                        .query(uri, projection, selection, selectionArgs, null);
+                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                if (cursor.moveToFirst()) {
+                    return cursor.getString(column_index);
+                }
+            } catch (Exception e) {
+            }
+        } else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
+        }
+        return null;
+    }
+
+    public static boolean isExternalStorageDocument(Uri uri) {
+        return "com.android.externalstorage.documents".equals(uri.getAuthority());
+    }
+
+    public static boolean isDownloadsDocument(Uri uri) {
+        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
+    }
+
+    public static boolean isMediaDocument(Uri uri) {
+        return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
+
+    public static boolean isGooglePhotosUri(Uri uri) {
+        return "com.google.android.apps.photos.content".equals(uri.getAuthority());
+    }
 
     //   普通用户点击投票或者查看
     @Override
-    public void clickListener(int position) {
+    public void clickListener(int position, String flag) {
+        Log.d("gdgsdgsdgdgf444普通用户","flag==="+flag);
         if (position >= 0 && voteList.size() > position) {
             VoteListBean.VoteBean model = voteList.get(position);
             int status = model.getMvoteStatus();
@@ -585,17 +963,17 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
                 d.getSize(size);
                 int width = size.x;
                 int height = size.y;
-                p.width = (int) (width * 0.8);//设置宽
-                p.height = (int) (height * 0.85);//设置宽
+                p.width = (int) (width * 0.9);//设置宽
+                p.height = (int) (height * 0.9);//设置宽
                 window.setAttributes(p);
             }
 
             //  投票
             if (status == Constants.VoteStatusEnum.hasStartUnVote) {
                 if (model.getType().equals("0")) {
-                    showRadioDialog(model, position);
+                    showRadioDialog(model, position, flag);
                 } else {
-                    showCheckBoxDialog(model, position);
+                    showCheckBoxDialog(model, position, flag);
                 }
             }
         }
@@ -603,7 +981,8 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
 
     //   主席台点击查看
     @Override
-    public void chairmanClickListener(int position) {
+    public void chairmanClickListener(int position, String flag) {
+        Log.d("gdgsdgsdgdgf444主席","flag==="+flag);
         if (position >= 0 && voteList.size() > position) {
             VoteListBean.VoteBean model = voteList.get(position);
             int status = model.getMvoteStatus();
@@ -640,13 +1019,13 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
                 p.height = (int) (height * 0.85);//设置宽
                 window.setAttributes(p);
             }
-
+            Log.d("fgsdfgsdg445555", flag);
             //  投票
             if (status == Constants.VoteStatusEnum.hasStartUnVote) {
                 if (model.getType().equals("0")) {
-                    showRadioDialog(model, position);
+                    showRadioDialog(model, position, flag);
                 } else {
-                    showCheckBoxDialog(model, position);
+                    showCheckBoxDialog(model, position, flag);
                 }
             }
         }
@@ -654,7 +1033,8 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
 
     //  点击操作
     @Override
-    public void operationclickListener(int position) {
+    public void operationclickListener(int position, String flag) {
+        Log.d("gdgsdgsdgdgf444主席operation","flag==="+flag);
         int status = voteList.get(position).getMvoteStatus();
         if (status == Constants.VoteStatusEnum.hasStartUnVote) {
             popTitleArr = new String[]{"投票", "结束"};
@@ -680,19 +1060,20 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
 
                 if (popTitleArr[popPosition].equals("投票")) {
                     int status = model.getMvoteStatus();
+
                     //  未开始点击投票
                     if (status == Constants.VoteStatusEnum.hasStartUnVote) {
                         if (model.getType().equals("0")) {
-                            showRadioDialog(model, position);
+                            showRadioDialog(model, position, flag);
                         } else {
-                            showCheckBoxDialog(model, position);
+                            showCheckBoxDialog(model, position, flag);
                         }
                     }
                 } else if (popTitleArr[popPosition].equals("结束")) {
                     model.setStatus("FINISH");
 
 
-                    finishVote(model);
+                    finishVote(model, flag);
 
                 } else {
                     Map<String, Object> map = new HashMap<>();
@@ -797,7 +1178,7 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
     }
 
     //  单选框
-    private void showRadioDialog(VoteListBean.VoteBean model, int index) {
+    private void showRadioDialog(VoteListBean.VoteBean model, int index, String flag) {
         final List<ChoseBean> list = new ArrayList<>();
         for (int i = 0; i < model.getOptions().size(); i++) {
             ChoseBean object = new ChoseBean();
@@ -806,8 +1187,23 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
             list.add(object);
         }
 
-        RadioDialog dialog = new RadioDialog(getActivity(), R.style.AlertDialogStyle, list);
+        RadioDialog dialog = new RadioDialog(getActivity(), R.style.AlertDialogStyle, list, flag);
+
+
         dialog.show();
+
+        Window window = dialog.getWindow();//获取dialog屏幕对象
+        window.setGravity(Gravity.CENTER);//设置展示位置
+        Display d = window.getWindowManager().getDefaultDisplay(); // 获取屏幕宽，高
+        WindowManager.LayoutParams p = window.getAttributes(); // 获取对话框当前的参数值
+        Point size = new Point();
+        d.getSize(size);
+        int width = size.x;
+        int height = size.y;
+        p.width = (int) (width * 0.8);//设置宽
+        p.height = (int) (height * 0.6);//设置高
+        window.setAttributes(p);
+
         dialog.setTitle(model.getTopic());
         dialog.setEndTime("投票截止时间:" + model.getEnd_time());
         dialog.setCreator("发起人：" + model.getFrom().getName());
@@ -841,7 +1237,7 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
                 userListBean.setUser_id(FLUtil.getMacAddress());
                 userListBean.setMeeting_vote_id(model.get_id());
                 userListBean.setChoose(chose);
-                requestToVote(userListBean);
+                requestToVote(userListBean, flag);
             }
         });
         dialog.setOnItemClickEvent(new AdapterView.OnItemClickListener() {
@@ -855,9 +1251,11 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
     /**
      * websocket发送投票更新
      */
-    private void wsUpdataVote(Object obj, String packType) {
+    private void wsUpdataVote(Object obj, String packType, String flag) {
+        Log.d("gdgsdgsdgdgf444666",flag+"");
         TempWSBean bean = new TempWSBean();
         bean.setReqType(0);
+        bean.setFlag(flag);
         bean.setUserMac_id(FLUtil.getMacAddress());
         bean.setPackType(packType);
         bean.setBody(obj);
@@ -870,9 +1268,9 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
     /**
      * 新增投票请求
      */
-    private void creatVote(VoteBean bean) {
+    private void creatVote(VoteBean bean, String flag) {
         if (UserUtil.isTempMeeting) {
-            wsUpdataVote(bean, constant.NEWVOTE);
+            wsUpdataVote(bean, constant.NEWVOTE, flag);
 
             VoteInfoDialog infoDialog = new VoteInfoDialog.Builder(getActivity())
                     .setTitle("新增投票成功")
@@ -884,8 +1282,8 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
     /**
      * 更新投票操作(单、复选投票)请求
      */
-    private void requestToVote(VoteBean.UserListBean bean) {
-        wsUpdataVote(bean, constant.UPDATEVOTE);
+    private void requestToVote(VoteBean.UserListBean bean, String flag) {
+        wsUpdataVote(bean, constant.UPDATEVOTE, flag);
 
     }
 
@@ -922,14 +1320,14 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
     /**
      * 结束投票请求
      */
-    private void finishVote(VoteBean voteBean) {
+    private void finishVote(VoteBean voteBean, String flag) {
 
-        wsUpdataVote(voteBean, constant.FINISHVOTE);
+        wsUpdataVote(voteBean, constant.FINISHVOTE, flag);
     }
 
 
     //  复选框
-    private void showCheckBoxDialog(VoteListBean.VoteBean model, int index) {
+    private void showCheckBoxDialog(VoteListBean.VoteBean model, int index, String flag) {
         final List<ChoseBean> list = new ArrayList<>();
         for (int i = 0; i < model.getOptions().size(); i++) {
             ChoseBean object = new ChoseBean();
@@ -938,8 +1336,21 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
             list.add(object);
         }
 
-        CheckBoxDialog dialog = new CheckBoxDialog(getActivity(), R.style.AlertDialogStyle, list);
+        CheckBoxDialog dialog = new CheckBoxDialog(getActivity(), R.style.AlertDialogStyle, list, flag);
         dialog.show();
+
+        Window window = dialog.getWindow();//获取dialog屏幕对象
+        window.setGravity(Gravity.CENTER);//设置展示位置
+        Display d = window.getWindowManager().getDefaultDisplay(); // 获取屏幕宽，高
+        WindowManager.LayoutParams p = window.getAttributes(); // 获取对话框当前的参数值
+        Point size = new Point();
+        d.getSize(size);
+        int width = size.x;
+        int height = size.y;
+        p.width = (int) (width * 0.8);//设置宽
+        p.height = (int) (height * 0.6);//设置高
+        window.setAttributes(p);
+
         dialog.setTitle(model.getTopic());
         dialog.setEndTime("投票截止时间:" + model.getEnd_time());
         dialog.setCreator("发起人：" + model.getFrom().getName());
@@ -974,7 +1385,7 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
                 userListBean.setUser_id(FLUtil.getMacAddress());
                 userListBean.setMeeting_vote_id(model.get_id());
                 userListBean.setChoose(chose);
-                requestToVote(userListBean);
+                requestToVote(userListBean, flag);
             }
         });
         dialog.setOnItemClickEvent(new AdapterView.OnItemClickListener() {

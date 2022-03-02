@@ -14,7 +14,17 @@ public class TempWSBean<T> {
     private String userMac_number;
     private String packType;
     private T body;
+    //标识选项时文字还是图片1：文字  2：图片
 
+    private String flag;
+
+    public String getFlag() {
+        return flag;
+    }
+
+    public void setFlag(String flag) {
+        this.flag = flag;
+    }
     public int getReqType() {
         return reqType;
     }

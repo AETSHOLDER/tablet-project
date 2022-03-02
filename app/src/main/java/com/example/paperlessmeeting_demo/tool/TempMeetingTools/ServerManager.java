@@ -55,11 +55,13 @@ public class ServerManager {
      */
     public void MsgReceive(String message,WebSocket conn){
         String user_mac_id = "未知ID";
+        String flag2="-1";
         try {
             TempWSBean wsebean = new Gson().fromJson(message, TempWSBean.class);
             //  收到vote的websocket的信息
             if(wsebean!=null){
                 user_mac_id = wsebean.getUserMac_id();
+                flag2=wsebean.getFlag();
             }
         }catch (Exception e) {
 
@@ -73,6 +75,7 @@ public class ServerManager {
                 bean.setReqType(1);
                 bean.setUserMac_id(user_mac_id);
                 bean.setPackType(constant.QUERYVOTE);
+                bean.setFlag(flag2);
                 bean.setBody(voteList);
                 String strJson = new Gson().toJson(bean);
                 //  谁查询，发送给谁
@@ -120,6 +123,7 @@ public class ServerManager {
                 wsebean1.setUserMac_id("");
                 wsebean1.setPackType(constant.NEWVOTE);
                 wsebean1.setBody(voteBean);
+                wsebean1.setFlag(wsebean.getFlag());
                 String strJson = new Gson().toJson(wsebean1);
                 SendMessageToAll(strJson);
 

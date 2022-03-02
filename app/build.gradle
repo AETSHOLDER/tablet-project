@@ -200,4 +200,5 @@ dependencies {
     // If you want to use the GPU Filters
     implementation 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
     implementation 'org.slf4j:slf4j-simple:1.6.6'
+    implementation 'com.joanzapata.pdfview:android-pdfview:1.0.4@aar'
 }

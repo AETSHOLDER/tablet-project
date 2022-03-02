@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class VoteListBean implements Serializable {
+
     private ArrayList<VoteBean> data;
 
     public ArrayList<VoteListBean.VoteBean> getData() {

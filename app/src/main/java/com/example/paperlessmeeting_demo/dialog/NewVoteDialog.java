@@ -32,7 +32,7 @@ import butterknife.ButterKnife;
 public class NewVoteDialog extends AlertDialog implements RecycleAdapter.ChoseClickListener {
 
     public interface creatVoteClickListener {
-        public void creatvoteclickListener(VoteListBean.VoteBean model);
+        public void creatvoteclickListener(VoteListBean.VoteBean model,String flag);
     }
 
     private NewVoteDialog.creatVoteClickListener mcreatvoterClickListener;
@@ -178,7 +178,7 @@ public class NewVoteDialog extends AlertDialog implements RecycleAdapter.ChoseCl
 //
 //                model.isniming = currentSelNiming == ivCheckState3 ? 1 : 0;
 
-                mcreatvoterClickListener.creatvoteclickListener(model);
+                mcreatvoterClickListener.creatvoteclickListener(model,"1");
                 dismiss();
 
             }
@@ -270,7 +270,7 @@ public class NewVoteDialog extends AlertDialog implements RecycleAdapter.ChoseCl
         mRecyclerView.setLayoutManager(linearLayoutManager);
         //      获取数据，向适配器传数据，绑定适配器
 //        list = initData();
-        adapter = new RecycleAdapter(context, list, this);
+        adapter = new RecycleAdapter(context, list, this,"1");
         mRecyclerView.setAdapter(adapter);
         //      添加动画
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -286,7 +286,7 @@ public class NewVoteDialog extends AlertDialog implements RecycleAdapter.ChoseCl
 
     //  新增选项
     @Override
-    public void clickListener(int position) {
+    public void clickListener(int position,String flag) {
         if (list.size() > 0) {
             add_chose.setVisibility(View.INVISIBLE);
         } else {

@@ -29,11 +29,11 @@
     <ImageView
         android:id="@+id/operation"
         android:layout_width="50dp"
-        android:padding="10dp"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="175dp"
+        android:padding="10dp"
         android:src="@mipmap/pop_more" />
 
     <TextView

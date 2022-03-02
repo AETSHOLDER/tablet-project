@@ -466,7 +466,7 @@ public class VoteListFragment extends BaseFragment implements VoteAdapter.voteCl
 //        list = initData();
         adapter = new RecycleAdapter(getActivity(), list, new RecycleAdapter.ChoseClickListener() {
             @Override
-            public void clickListener(int position) {
+            public void clickListener(int position,String flag) {
                 if (list.size() > 0) {
                     add_chose.setVisibility(View.INVISIBLE);
                 } else {
@@ -474,7 +474,7 @@ public class VoteListFragment extends BaseFragment implements VoteAdapter.voteCl
                 }
 
             }
-        });
+        },"1");
         mRecyclerView.setAdapter(adapter);
         //      添加动画
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -550,7 +550,7 @@ public class VoteListFragment extends BaseFragment implements VoteAdapter.voteCl
 
     //   普通用户点击投票或者查看
     @Override
-    public void clickListener(int position) {
+    public void clickListener(int position,String flag) {
         if (position >= 0 && voteList.size() > position) {
             VoteListBean.VoteBean model = voteList.get(position);
             int status = model.getMvoteStatus();
@@ -601,7 +601,7 @@ public class VoteListFragment extends BaseFragment implements VoteAdapter.voteCl
 
     //   主席台点击查看
     @Override
-    public void chairmanClickListener(int position) {
+    public void chairmanClickListener(int position,String flag) {
         if (position >= 0 && voteList.size() > position) {
             VoteListBean.VoteBean model = voteList.get(position);
             int status = model.getMvoteStatus();
@@ -652,7 +652,7 @@ public class VoteListFragment extends BaseFragment implements VoteAdapter.voteCl
 
     //  点击操作
     @Override
-    public void operationclickListener(int position) {
+    public void operationclickListener(int position,String flag) {
         int status = voteList.get(position).getMvoteStatus();
         if (status == Constants.VoteStatusEnum.hasStartUnVote) {
             popTitleArr = new String[]{"投票", "结束"};
@@ -803,7 +803,7 @@ public class VoteListFragment extends BaseFragment implements VoteAdapter.voteCl
             list.add(object);
         }
 
-        RadioDialog dialog = new RadioDialog(getActivity(), R.style.AlertDialogStyle, list);
+        RadioDialog dialog = new RadioDialog(getActivity(), R.style.AlertDialogStyle, list,"1");
         dialog.show();
         dialog.setTitle(model.getTopic());
         dialog.setEndTime("投票截止时间:" + model.getEnd_time());
@@ -957,7 +957,7 @@ public class VoteListFragment extends BaseFragment implements VoteAdapter.voteCl
             list.add(object);
         }
 
-        CheckBoxDialog dialog = new CheckBoxDialog(getActivity(), R.style.AlertDialogStyle, list);
+        CheckBoxDialog dialog = new CheckBoxDialog(getActivity(), R.style.AlertDialogStyle, list,"1");
         dialog.show();
         dialog.setTitle(model.getTopic());
         dialog.setEndTime("投票截止时间:" + model.getEnd_time());
