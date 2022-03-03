@@ -84,7 +84,7 @@ public class PdfActivity extends BaseActivity implements OnPageChangeListener, O
     private void showIma(String originalPath) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(PdfActivity.this);
-        View view = LayoutInflater.from(PdfActivity.this).inflate(R.layout.dialog_see_ima, null);
+        View view = LayoutInflater.from(PdfActivity.this).inflate(R.layout.dialog_qianpi_ima, null);
         ImageView imageView = view.findViewById(R.id.see_ima);
         TextView commitTv=view.findViewById(R.id.commit);
         builder.setView(view);

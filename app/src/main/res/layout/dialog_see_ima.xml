@@ -8,20 +8,7 @@
        android:id="@+id/see_ima"
        android:layout_width="match_parent"
        android:layout_height="match_parent"
-       android:src="@mipmap/bg_qianpi"
-       android:scaleType="center"/>
-
-   <TextView
-       android:id="@+id/commit"
-       android:layout_width="200dp"
-       android:layout_height="80dp"
-       android:layout_centerHorizontal="true"
-       android:layout_marginBottom="50dp"
-       android:text="提交"
-       android:gravity="center"
-       android:textSize="30sp"
-       android:textColor="@color/bgColor"
-       android:background="@drawable/alert_sure_btn_border"
-       android:layout_alignParentBottom="true"
+       android:scaleType="center"
+       android:src="@mipmap/ic_option"
        />
 </RelativeLayout>
