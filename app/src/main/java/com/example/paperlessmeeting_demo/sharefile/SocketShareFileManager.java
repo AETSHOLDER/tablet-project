@@ -3,7 +3,9 @@ package com.example.paperlessmeeting_demo.sharefile;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
+import com.blankj.utilcode.util.StringUtils;
 import com.example.paperlessmeeting_demo.tool.constant;
 
 import java.io.BufferedReader;
@@ -11,18 +13,24 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 //分享文件
 public class SocketShareFileManager {
     private ServerSocket server;
     private Handler handler = null;
-
+    private String savePath = null;
     public SocketShareFileManager(Handler handler) {
         this.handler = handler;
         int port = 9999;
@@ -39,7 +47,7 @@ public class SocketShareFileManager {
             @Override
             public void run() {
                 while (true) {
-                    ReceiveFile("1");
+                    ReceiveFile();
                 }
             }
         });
@@ -51,10 +59,9 @@ public class SocketShareFileManager {
             Message.obtain(handler, what,actionType,actionType ,obj).sendToTarget();
         }
     }
-//flag  1:分享  2：  推送
-    public  void ReceiveFile(String  flag) {
+    //flag  1:分享  2：  推送
+    public  void ReceiveFile() {
         try {
-
             Socket name = server.accept();
             InputStream nameStream = name.getInputStream();
             InputStreamReader streamReader = new InputStreamReader(nameStream);
@@ -64,15 +71,16 @@ public class SocketShareFileManager {
             streamReader.close();
             nameStream.close();
             name.close();
-            SendMessage(2, "正在接收:" + fileName,Integer.parseInt(flag));
+            SendMessage(2, "正在接收:" + fileName,0);
 
             Socket data = server.accept();
             InputStream dataStream = data.getInputStream();
             String path = Environment.getExternalStorageDirectory().getPath() + constant.SHARE_FILE;
-            String savePath = path + fileName;
+            savePath = path + fileName;
             /*
             * 文件夹不存在创新创建，存在直接写入。
             * */
+
             File f = new File(path);
             if (!f.exists()) {
                 f.mkdir();
@@ -86,9 +94,21 @@ public class SocketShareFileManager {
             file.close();
             dataStream.close();
             data.close();
-            SendMessage(3, savePath ,Integer.parseInt(flag));
         } catch (Exception e) {
-            SendMessage(4, "接收错误:\n" + e.getMessage(),Integer.parseInt(flag));
+            SendMessage(4, "接收错误:\n" + e.getMessage(),0);
+        }
+    }
+
+    public  void SendFlag(String  flag){
+        if(StringUtils.isEmpty(savePath)){
+            Log.e("SendFlag","savePath===null");
+            return;
+        }
+        if(flag.equals("1")){
+            SendMessage(3, savePath ,1);
+        }
+        if(flag.equals("2")){
+            SendMessage(8, savePath,2);
         }
     }
 
@@ -120,6 +140,28 @@ public class SocketShareFileManager {
                 SendMessage(5, fileName.get(i) + "  发送完成",Integer.parseInt(actionType));
             }
             SendMessage(5, "所有文件发送完成",Integer.parseInt(actionType));
+
+            try {
+                DatagramSocket socket = new DatagramSocket();
+                String str;
+                if(actionType.equals("1")){
+                    str = constant.TEMP_MEETINGSHARE_FILE;
+                }else {
+                    str = constant.TEMP_MEETINGPUSH_FILE;
+                }
+
+                byte[] sendStr = str.getBytes();
+                InetAddress address = InetAddress.getByName(constant.EXTRAORDINARY_MEETING_INETADDRESS);
+                DatagramPacket packet = new DatagramPacket(sendStr, sendStr.length, address, constant.EXTRAORDINARY_MEETING_PORT);
+                socket.send(packet);
+                socket.close();
+            } catch (SocketException e) {
+                e.printStackTrace();
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } catch (Exception e) {
             SendMessage(6, "发送错误:\n" + e.getMessage(),Integer.parseInt(actionType));
         }

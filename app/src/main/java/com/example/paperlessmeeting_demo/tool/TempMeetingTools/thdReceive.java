@@ -25,7 +25,7 @@ public class thdReceive extends Thread {
     public boolean pause = false;
     private String  TAG = "thdReceive";
     public static List<String> receiveIPArr = new ArrayList<>();
-
+    private String  currentIP_code = null;
     /**
      * 调用这个方法实现暂停线程
      */
@@ -100,16 +100,20 @@ public class thdReceive extends Thread {
                     }
                 }else if(!receiveIPArr.contains(recMsg)){
                     receiveIPArr.add(recMsg);
-                    String code;
+                    String ip_code;
                     if(receiveIPArr.size()>1){
                         // 超过一个取最先收到的
                         List<String> ipcodeInfo = FLUtil.dealUDPMsg(receiveIPArr.get(0));
-                        code = ipcodeInfo.get(1);
+                        ip_code = ipcodeInfo.get(0)+","+ipcodeInfo.get(1);
                     }else {
                         List<String> ipcodeInfo = FLUtil.dealUDPMsg(recMsg);
-                        code = ipcodeInfo.get(1);
+                        ip_code = ipcodeInfo.get(0)+","+ipcodeInfo.get(1);
                     }
-
+                    // 如果IPcode 都是上一个，直接返回，不再发送
+//                    if(currentIP_code != null && currentIP_code.equals(ip_code)){
+//                        return;
+//                    }
+//                    currentIP_code = ip_code;
                     Activity topActivity = (Activity) ActivityUtils.getTopActivity();
                     if (topActivity != null) {
                         topActivity.runOnUiThread(new Runnable() {
@@ -117,7 +121,7 @@ public class thdReceive extends Thread {
                             public void run() {
                                 //  发黏性事件
                                 Log.e(TAG, "[发黏性事件");
-                                EventMessage msg = new EventMessage(MessageReceiveType.MessageCreatTempMeeting, code);
+                                EventMessage msg = new EventMessage(MessageReceiveType.MessageCreatTempMeeting, ip_code);
                                 EventBus.getDefault().post(msg);
                             }
                         });
@@ -129,7 +133,7 @@ public class thdReceive extends Thread {
 
             } catch (SocketTimeoutException e){
                 //  超时处理
-//                receiveIPArr.clear();
+                receiveIPArr.clear();
                 Log.d(TAG,"Socket.receive超时error");
             }catch (IOException e) {
                 Log.d(TAG,"IOException error");

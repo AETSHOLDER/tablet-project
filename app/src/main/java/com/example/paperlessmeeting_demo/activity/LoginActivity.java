@@ -1,5 +1,6 @@
 package com.example.paperlessmeeting_demo.activity;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
@@ -26,6 +27,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.example.paperlessmeeting_demo.MeetingAPP;
 import com.example.paperlessmeeting_demo.R;
@@ -51,6 +53,7 @@ import com.example.paperlessmeeting_demo.tool.PermissionManager;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.UDPBroadcastManager;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.EventMessage;
 import com.example.paperlessmeeting_demo.tool.TimeUtils;
+import com.example.paperlessmeeting_demo.tool.ToastUtils;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.example.paperlessmeeting_demo.tool.constant;
 import com.example.paperlessmeeting_demo.tool.VideoEncoderUtil;
@@ -257,16 +260,39 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
             Toast.makeText(this, tips, Toast.LENGTH_SHORT).show();
             visitor.setVisibility(View.VISIBLE);
         }
-        //TODO  收到临时会议创建通知
         if (message.getType().equals(MessageReceiveType.MessageCreatTempMeeting)) {
-            String code = message.getMessage();
-            String title = "您收到邀请码为("+code+")的临时会议!";
-            CVIPaperDialogUtils.showCountDownConfirmDialog(LoginActivity.this, title, "确定加入", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
-                @Override
-                public void onClickButton(boolean clickConfirm, boolean clickCancel) {
-                    Log.e("111111","倒计时哈哈哈");
-                }
-            });
+            Activity topActivity = (Activity) ActivityUtils.getTopActivity();
+            if (topActivity != null && topActivity.getLocalClassName().contains("LoginActivity")) {
+                String[] ip_code = message.getMessage().split(",");
+                String ip = ip_code[0];
+                String code = ip_code[1];
+                String title = "您收到邀请码为("+code+")的临时会议!";
+                CVIPaperDialogUtils.showCountDownCustomDialog(LoginActivity.this, title, "确定加入", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                    @Override
+                    public void onClickButton(boolean clickConfirm, boolean clickCancel) {
+                        if(clickConfirm){
+                            Log.e("111111","倒计时结束");
+
+                            UserUtil.isTempMeeting = true;
+                            Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageClient);
+
+                            boolean flag = false;
+                            for (String msg : UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr){
+                                if(msg.contains(ip)){
+                                    flag = true;
+                                }
+                            }
+                            if(!flag){
+                                ToastUtils.showToast(LoginActivity.this,"该会议已结束!!!");
+                                return;
+                            }
+                            Intent intent1 = new Intent(LoginActivity.this, MainActivity.class);
+                            intent1.putExtra("ip", ip);
+                            startActivity(intent1);
+                        }
+                    }
+                });
+            }
         }
     }
 
