@@ -49,7 +49,6 @@ import com.example.paperlessmeeting_demo.bean.UploadBean;
 import com.example.paperlessmeeting_demo.bean.UserBehaviorBean;
 import com.example.paperlessmeeting_demo.network.DefaultObserver;
 import com.example.paperlessmeeting_demo.network.NetWorkManager;
-import com.example.paperlessmeeting_demo.sharefile.SocketPushFileManager;
 import com.example.paperlessmeeting_demo.sharefile.SocketShareFileManager;
 import com.example.paperlessmeeting_demo.tool.Define;
 import com.example.paperlessmeeting_demo.tool.FLUtil;
@@ -57,12 +56,10 @@ import com.example.paperlessmeeting_demo.tool.FileUtils;
 import com.example.paperlessmeeting_demo.tool.MediaReceiver;
 import com.example.paperlessmeeting_demo.tool.TimeUtils;
 import com.example.paperlessmeeting_demo.tool.ToastUtils;
-import com.example.paperlessmeeting_demo.tool.UrlConstant;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.example.paperlessmeeting_demo.tool.constant;
 import com.example.paperlessmeeting_demo.util.ToastUtil;
 import com.example.paperlessmeeting_demo.widgets.MyListView;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.orhanobut.hawk.Hawk;
 
 import java.io.File;
@@ -138,7 +135,6 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
     private String videoPath = "";
     private String endStrAll;
     private SocketShareFileManager socketShareFileManager;
-    private SocketPushFileManager socketPushFileManager;
     private MyBroadcastReceiver myBroadcastReceiver;//分享文件成功后，刷新文件列表
     private List<String> stringListIp = new ArrayList<>();
     private Handler mHandler = new Handler() {
@@ -411,7 +407,7 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
 //String actionType:标识事件是分享还是推送  1：分享  2：推送
     @Override
     public void shareFileInfo(String path, String type, String flag, String name, String author, String time) {
-        Log.d("dfgsgsf3333", path + "===name==" + name);
+        Log.d("FileFragment--分享", path + "===name==" + name);
 
         final ArrayList<String> fileNames = new ArrayList<>();
         final ArrayList<String> paths = new ArrayList<>();
@@ -424,21 +420,7 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
         Thread sendThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    DatagramSocket socket = new DatagramSocket();
-                    String str = constant.TEMP_MEETINGSHARE_FILE;
-                    byte[] sendStr = str.getBytes();
-                    InetAddress address = InetAddress.getByName(constant.EXTRAORDINARY_MEETING_INETADDRESS);
-                    DatagramPacket packet = new DatagramPacket(sendStr, sendStr.length, address, constant.EXTRAORDINARY_MEETING_PORT);
-                    socket.send(packet);
-                    socket.close();
-                } catch (SocketException e) {
-                    e.printStackTrace();
-                } catch (UnknownHostException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+
                 if (Hawk.contains("stringsIp")) {
                     stringListIp = Hawk.get("stringsIp");
                 }
@@ -446,17 +428,14 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
                 for (int i = 0; i < stringListIp.size(); i++) {
                     socketShareFileManager.SendFile(fileNames, paths, stringListIp.get(i), constant.SHARE_PORT,"1");
                 }
-
             }
         });
         sendThread.start();
         // Message.obtain(handler, 0, response).sendToTarget();
-
-
     }
     @Override
     public void pushFileInfo(String path, String type, String flag, String name, String author, String time) {
-        Log.d("dfgsgsf4444", path + "===name==" + name);
+        Log.d("FileFragment--推送", path + "===name==" + name);
 
         final ArrayList<String> fileNames = new ArrayList<>();
         final ArrayList<String> paths = new ArrayList<>();
@@ -469,28 +448,15 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
         Thread sendThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    DatagramSocket socket = new DatagramSocket();
-                    String str = constant.TEMP_MEETINGPUSH_FILE;
-                    byte[] sendStr = str.getBytes();
-                    InetAddress address = InetAddress.getByName(constant.EXTRAORDINARY_MEETING_INETADDRESS);
-                    DatagramPacket packet = new DatagramPacket(sendStr, sendStr.length, address, constant.EXTRAORDINARY_MEETING_PORT);
-                    socket.send(packet);
-                    socket.close();
-                } catch (SocketException e) {
-                    e.printStackTrace();
-                } catch (UnknownHostException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+
                 if (Hawk.contains("stringsIp")) {
                     stringListIp = Hawk.get("stringsIp");
                 }
                 //根据Ip将文件发送到不同的设备
                 for (int i = 0; i < stringListIp.size(); i++) {
-                    socketPushFileManager.SendFile(fileNames, paths, stringListIp.get(i), constant.SHARE_PORT,"2");
+                    socketShareFileManager.SendFile(fileNames, paths, stringListIp.get(i), constant.SHARE_PORT,"2");
                 }
+
 
             }
         });
@@ -849,7 +815,6 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
         iFilter.addDataScheme("file");
         getActivity().registerReceiver(mBroadcastReceiver, iFilter);
         socketShareFileManager = new SocketShareFileManager(mHandler);
-        socketPushFileManager = new SocketPushFileManager(mHandler);
         myBroadcastReceiver = new MyBroadcastReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(constant.SHARE_FILE_BROADCAST);

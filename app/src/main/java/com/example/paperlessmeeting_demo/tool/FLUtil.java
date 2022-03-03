@@ -316,6 +316,9 @@ public class FLUtil {
         InitSocketManager.SocketCallBack callBack = new InitSocketManager.SocketCallBack() {
             @Override
             public void success() {
+                if(InitSocketManager.socket == null){
+                    return;
+                }
                 //  监听会议开启
                 InitSocketManager.socket.on(constant.start_meeting, new Emitter.Listener() {
                     @Override
@@ -362,6 +365,9 @@ public class FLUtil {
                 Runnable runnable=new Runnable(){
                     @Override
                     public void run() {
+                        if(InitSocketManager.socket == null){
+                            return;
+                        }
                         InitSocketManager.socket.emit(constant.get_server_ip, new Ack() {
                             @Override
                             public void call(Object... args) {

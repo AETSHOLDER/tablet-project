@@ -81,7 +81,6 @@ import com.example.paperlessmeeting_demo.fragment.SetingFragment;
 import com.example.paperlessmeeting_demo.fragment.TempVoteListFragment;
 import com.example.paperlessmeeting_demo.fragment.VoteListFragment;
 import com.example.paperlessmeeting_demo.sharefile.BroadcastUDPFileService;
-import com.example.paperlessmeeting_demo.sharefile.SocketPushFileManager;
 import com.example.paperlessmeeting_demo.sharefile.SocketShareFileManager;
 import com.example.paperlessmeeting_demo.tool.CVIPaperDialogUtils;
 import com.example.paperlessmeeting_demo.tool.SerialPortUtils.SerialConstants;
@@ -319,7 +318,6 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
     private ServiceConnection serviceConnection;
     private boolean isBind = false;
     private SocketShareFileManager socketShareFileManager;
-    private SocketPushFileManager socketPushFileManager;
     private List<String> stringsIp = new ArrayList<>();//临时会议存储各个设备Ip
     private boolean isSecretaryId = false;//是否是秘书
 
@@ -523,20 +521,25 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
                     break;
                 case 3:
                     Toast.makeText(MainActivity.this, "文件已成功接收，请在文件管理页面查看", Toast.LENGTH_SHORT).show();
+                    Log.e("hahahahahahaa","case 3");
+                    int flag= msg.arg1;
+                    int flag2=msg.arg2;
 
-                   int flag= msg.arg1;
-                   int flag2=msg.arg2;
-                   String filePath=(String) msg.obj;
-                   Log.d("erwqrqrqrqr",filePath+"     "+flag+"    "+flag2);
+                    break;
+                case 4:
+                    Toast.makeText(MainActivity.this, "文件接收失败", Toast.LENGTH_SHORT).show();
+                    break;
+                case 8:
+                    Toast.makeText(MainActivity.this, "文件已成功接收，请在文件管理页面查看", Toast.LENGTH_SHORT).show();
+                    Log.e("hahahahahahaa","case 8");
+                    String filePath=(String) msg.obj;
                     Intent intent = new Intent();
                     Bundle bundle=new Bundle();
                     bundle.putString("filePath",filePath);
                     intent.putExtras(bundle);
                     intent.setAction(constant.SHARE_FILE_BROADCAST);
                     sendBroadcast(intent);
-                    break;
-                case 4:
-                    Toast.makeText(MainActivity.this, "文件接收失败", Toast.LENGTH_SHORT).show();
+
                     break;
                 case 119:
                     String adressIp = (String) msg.obj;
@@ -611,26 +614,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
 
         }
     };
-    private Handler mPushHander = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case 8:
-                    Toast.makeText(MainActivity.this, "文件已成功接收，请在文件管理页面查看", Toast.LENGTH_SHORT).show();
-                    int flag3= msg.arg1;
-                    int flag4=msg.arg2;
-                    String filePath2=(String) msg.obj;
-                    Log.d("erwqrqrqrqr3333",filePath2+"     "+flag3+"    "+flag4);
-                    Intent intent8 = new Intent();
-                    intent8.setAction(constant.SHARE_FILE_BROADCAST);
-                    sendBroadcast(intent8);
-                    break;
 
-            }
-        }
-
-        };
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         //获取相对屏幕的坐标，即以屏幕左上角为原点
@@ -1459,7 +1443,6 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
         * 当是临时会议时，开启Servive随时监听各参会人人员分享的文件。正常网络会议时监听同屏关闭操作
         * */
         socketShareFileManager = new SocketShareFileManager(mHander);
-        socketPushFileManager = new SocketPushFileManager(mPushHander);
         serviceConnection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
@@ -1486,9 +1469,6 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
                                 int p = datagramPacket.getPort();
                                 // 准备接收数据
                                 try {
-                                /*
-                                超时
-                                * */
                                     // datagramSocket.setSoTimeout(20000);
                                     datagramSocket.receive(datagramPacket);
                                     strMsg = new String(datagramPacket.getData(), 0, datagramPacket.getData().length, "UTF-8");
@@ -1502,13 +1482,15 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
                                      /*
                                     * 接收分享文件
                                     * */
-                                        socketShareFileManager.ReceiveFile("1");
+                                        Log.e("5555555","接收分享文件");
+                                        socketShareFileManager.SendFlag("1");
                                     }
                                     else if (strMsg.contains(constant.TEMP_MEETINGPUSH_FILE)) {
                                         /*
                                          * 接收推送文件
                                          * */
-                                        socketPushFileManager.ReceiveFile("2");
+                                        Log.e("5555555","接收推送文件");
+                                        socketShareFileManager.SendFlag("2");
                                     }
 
                                     else if (strMsg.contains(constant.FINISH_SHARE_SCEEN)) {
@@ -1522,9 +1504,9 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
                                         mHander.sendMessage(mes);
                                     } else if (strMsg.contains(constant.START_SHARE_SCEEN)) {
                                         String ip = datagramPacket.getAddress().getHostAddress();
-                                    /*
-                                    * 开始同屏，通知其他设备打开同频界面,如果是自身IP 则不跳转
-                                    * */
+                                        /*
+                                        * 开始同屏，通知其他设备打开同频界面,如果是自身IP 则不跳转
+                                        * */
 
                                         Message mes = new Message();
                                         mes.what = 120;
@@ -3034,14 +3016,6 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
 
     }
 
-    /*
-    * 临时会议分享文件
-    * */
-    private void shareFile() {
-
-
-    }
-
     private void setFloatballVisible(boolean visible) {
         if (visible) {
             mFloatballManager.show();
@@ -3208,10 +3182,9 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
     class CloseServiceBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-if (serviceConnection!=null){
-    unbindService(serviceConnection);
+            if (serviceConnection!=null){
+                unbindService(serviceConnection);
 
-}
-
-    }
+            }
+        }
 }}

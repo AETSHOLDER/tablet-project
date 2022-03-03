@@ -69,6 +69,9 @@ public class DeleteFileUtil {
         boolean flag = true;
         // 删除文件夹中的所有文件包括子目录
         File[] files = dirFile.listFiles();
+        if(files==null){
+            return false;
+        }
         for (int i = 0; i < files.length; i++) {
             // 删除子文件
             if (files[i].isFile()) {

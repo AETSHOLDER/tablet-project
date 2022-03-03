@@ -22,12 +22,6 @@ public class CVIPaperDialogUtils {
     private static String mConfirmStr = "知道了";
     private static String mCancelStr = "取消";
     private static AlertDialog confirmDialog;
-    /**
-     *  弹出确认弹框 ，只有一个确定按钮
-     * */
-    public static void showConfirmDialog(Activity context, String title, String confirmStr, boolean canceledOnTouchOutside,final ConfirmDialogListener confirmDialogListener) {
-        showAlertDialog(context, title,null, confirmStr,1, canceledOnTouchOutside,confirmDialogListener);
-    }
 
     /**
      *  弹出确认倒计时弹框 ，只有一个确定按钮
@@ -35,7 +29,18 @@ public class CVIPaperDialogUtils {
     public static void showCountDownConfirmDialog(Activity context, String title, String confirmStr, boolean canceledOnTouchOutside,final ConfirmDialogListener confirmDialogListener) {
         showAlertDialog(context, title,null, confirmStr,3, canceledOnTouchOutside,confirmDialogListener);
     }
-
+    /**
+     *  弹出确认倒计时弹框 ，两个按钮
+     * */
+    public static void showCountDownCustomDialog(Activity context, String title, String confirmStr, boolean canceledOnTouchOutside,final ConfirmDialogListener confirmDialogListener) {
+        showAlertDialog(context, title,null, confirmStr,4, canceledOnTouchOutside,confirmDialogListener);
+    }
+    /**
+     *  弹出确认弹框 ，只有一个确定按钮
+     * */
+    public static void showConfirmDialog(Activity context, String title, String confirmStr, boolean canceledOnTouchOutside,final ConfirmDialogListener confirmDialogListener) {
+        showAlertDialog(context, title,null, confirmStr,1, canceledOnTouchOutside,confirmDialogListener);
+    }
     /**
      *  弹出普通弹框 ，底部两个按钮(确认，取消)
      * */
@@ -60,6 +65,9 @@ public class CVIPaperDialogUtils {
                 break;
             case 3:
                 view = LayoutInflater.from(context).inflate(R.layout.dialog_confirm, null);
+                break;
+            case 4:
+                view = LayoutInflater.from(context).inflate(R.layout.dialog_custom, null);
                 break;
             default:
                 view = LayoutInflater.from(context).inflate(R.layout.dialog_custom, null);
@@ -89,7 +97,7 @@ public class CVIPaperDialogUtils {
             }
 
         });
-        if(type == 2){
+        if(type == 2 || type == 4){
             Button cancel = view.findViewById(R.id.cancel_btn);
             cancel.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -104,30 +112,32 @@ public class CVIPaperDialogUtils {
             });
         }
 
-
-
+        String currentStr = null;
         if(TextUtils.isEmpty(confirmStr)){
             confirm.setText(mConfirmStr);
+            currentStr = mConfirmStr;
         }else {
-            if(type == 3){
-                CountDownTimer countDownTimer = new CountDownTimer(8000, 1000) {
-                    @Override
-                    public void onTick(long millisUntilFinished) {
-                        String value = " ("+String.valueOf((int) (millisUntilFinished / 1000))+"s)";
-                        confirm.setText(confirmStr+value);
-                    }
+            confirm.setText(confirmStr);
+            currentStr = confirmStr;
+        }
 
-                    @Override
-                    public void onFinish() {
+        if(type == 3 || type == 4){
+            String finalCurrentStr = currentStr;
+            CountDownTimer countDownTimer = new CountDownTimer(9000, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    String value = " (" + String.valueOf((int) (millisUntilFinished / 1000)) + "s)";
+                    confirm.setText(finalCurrentStr + value);
+                }
+
+                @Override
+                public void onFinish() {
+                    if(type == 3){
                         confirm.setText("正在进入");
                         confirm.performClick();
                     }
-                }.start();
-
-            }else {
-                confirm.setText(confirmStr);
-            }
-
+                }
+            }.start();
         }
 
         if(contentTxt != null ){
@@ -137,13 +147,10 @@ public class CVIPaperDialogUtils {
                 contentTxt.setVisibility(View.VISIBLE);
                 contentTxt.setText(content);
             }
-
         }
 
         TextView title_tv = (TextView) view.findViewById(R.id.title_tv);
         title_tv.setText(title);
-
-
     }
 
     /**

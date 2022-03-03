@@ -86,8 +86,8 @@ public class constant {
     public final static String SHARE_FILE_BROADCAST = "sharefile";////临时会议分享文件成功后，通知会议更新文件列表
     public final static String FINISH_SHARE_SCREEN_BROADCAST = "finishscreen";////结束同屏广播
     public final static String SHARE_FILE_IP = "share  file ip";//socket 临时会议分享文件收集设备IP全局标识
-    public final static String TEMP_MEETINGSHARE_FILE = "share  file";//socket 临时会议分享文件到其他设备标识
-    public final static String TEMP_MEETINGPUSH_FILE = "push  file";//socket 临时会议推送文件到其他设备标识
+    public final static String TEMP_MEETINGSHARE_FILE = "TEMP_MEETINGSHARE_FILE";//socket 临时会议分享文件到其他设备标识
+    public final static String TEMP_MEETINGPUSH_FILE = "TEMP_MEETINGPUSH_FILE";//socket 临时会议推送文件到其他设备标识
     public final static String FINISH_SHARE_SCEEN = "finish  share screen";//socket 结束同屏标识
     public final static String START_SHARE_SCEEN = "video";//socket 开始同屏标识
     public final static String INIATE_ENDORSEMENT = "initiate endorsement";//socket 秘书发起签批时，普通会员自动打开签名页面
