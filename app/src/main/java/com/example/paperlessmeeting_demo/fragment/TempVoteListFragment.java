@@ -1338,7 +1338,6 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
 
         CheckBoxDialog dialog = new CheckBoxDialog(getActivity(), R.style.AlertDialogStyle, list, flag);
         dialog.show();
-
         Window window = dialog.getWindow();//获取dialog屏幕对象
         window.setGravity(Gravity.CENTER);//设置展示位置
         Display d = window.getWindowManager().getDefaultDisplay(); // 获取屏幕宽，高
