@@ -1118,69 +1118,24 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
             fileBean.setSuffix(endStr);//上传文件后缀名和文件类型；setSuffix和setType所赋值内容一样。
             //  fileBean.setType(endStr);
             fileBean.setType(getFileType(endStr));
-
-
-
+            Log.d("requestCodeUr333", fileBean.getPath());
             Intent intent;
-            switch (fileBean.getFile_type()) {
-                case "1"://音乐
-                    startPlayer("file://" + fileBean.getPath());
-                    //  getActivity().startActivity(FileUtils.openFile(fileBean.getPath(), getActivity()));
-                    // FileUtils.openFile("file://"+fileBean.getPath(), getActivity());
-                    break;
-                case "2"://视频
-                    intent = new Intent();
-                    intent.setClass(getActivity(), ActivityVideoView.class);
-                    intent.putExtra("url", fileBean.getPath());
-                    intent.putExtra("isOpenFile", true);
-                    intent.putExtra("isNetFile", false);
-                    startActivity(intent);
-                    //  FileUtils.openFile(fileBean.getPath(), getActivity());
-                    break;
-                case "3"://图片
-                    intent = new Intent();
-                    intent.setClass(getActivity(), ActivityImage.class);
-                    intent.putExtra("url", fileBean.getPath());
-                    intent.putExtra("isOpenFile", true);
-                    intent.putExtra("isNetFile", false);
-                    startActivity(intent);
-                    break;
-                case "4":
-                    String wpsPackageName;
-                    if (FLUtil.checkPackage(context, Define.PACKAGENAME_KING_PRO))
-                    {
-                        wpsPackageName = Define.PACKAGENAME_KING_PRO;
-                    }
-                    else if (FLUtil.checkPackage(context, Define.PACKAGENAME_PRO_DEBUG))
-                    {
-                        wpsPackageName = Define.PACKAGENAME_PRO_DEBUG;
-                    }
-                    else if (FLUtil.checkPackage(context, Define.PACKAGENAME_ENG))
-                    {
-                        wpsPackageName = Define.PACKAGENAME_ENG;
-                    }
-                    else if (FLUtil.checkPackage(context, Define.PACKAGENAME_KING_PRO_HW))
-                    {
-                        wpsPackageName = Define.PACKAGENAME_KING_PRO_HW;
-                    }
-                    else if (FLUtil.checkPackage(context, Define.PACKAGENAME_K_ENG))
-                    {
-                        wpsPackageName = Define.PACKAGENAME_K_ENG;
-                    }
-                    else {
-                        ToastUtils.showToast(context,"文件打开失败，请安装WPS Office专业版");
-                        return;
-                    }
-                    startActivity(FileUtils.openFile(fileBean.getPath(), getActivity()));
-//                       intent = new Intent();
-//                        intent.setClass(getActivity(), CommonWebViewActivity.class);
-//                        intent.putExtra("url", fileBean.getPath());
-//                        intent.putExtra("isOpenFile", true);
-//                        intent.putExtra("isNetFile", false);
-//                        intent.putExtra("tempPath", false);
-//                        startActivity(intent);
-                    break;
+            if (fileBean.getFile_type().equals("3")){
+                intent = new Intent();
+                intent.setClass(getActivity(), ActivityImage.class);
+                intent.putExtra("url", fileBean.getPath());
+                intent.putExtra("isOpenFile", true);
+                intent.putExtra("isNetFile", false);
+                startActivity(intent);
+            }else if (fileBean.getFile_type().equals("4")){
+
+                intent=new Intent(getActivity(), PdfActivity.class);
+                Bundle bundle=new Bundle();
+                bundle.putString("pdfPath", fileBean.getPath());
+                intent.putExtras(bundle);
+                getActivity().startActivity(intent);
             }
+
 
         }
     }
