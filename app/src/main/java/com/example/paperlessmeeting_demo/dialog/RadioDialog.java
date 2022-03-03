@@ -71,7 +71,7 @@ public class RadioDialog extends AlertDialog {
 
         layoutContent = (RelativeLayout) findViewById(R.id.layout_content);
         layoutContent.setLayoutParams(new FrameLayout.LayoutParams((int) (display
-                .getWidth() * 0.7), (int) (display.getHeight() * 0.9)));
+                .getWidth() ), (int) (display.getHeight())));
 
         endTime = (TextView) this.findViewById(R.id.endtimeClock);
         title = (TextView) this.findViewById(R.id.title);
