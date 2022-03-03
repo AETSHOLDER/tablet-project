@@ -267,7 +267,7 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
         if (message.getType().equals(MessageReceiveType.MessageClient)) {
             // 查询投票信息
             if (message.getMessage().contains(constant.QUERYVOTE)) {
-                Log.e(TAG, "onReceiveMsg: " + message.toString());
+                Log.e(TAG, "onReceiveMsg11111: " + message.toString());
                 try {
                     TempWSBean<ArrayList> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<ArrayList<VoteBean>>>() {
                     }.getType());
@@ -286,7 +286,7 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
                 }
             }
             if (message.getMessage().contains(constant.NEWVOTE)) {
-                Log.e(TAG, "onReceiveMsg: " + message.toString());
+                Log.e(TAG, "onReceiveMsg22222: " + message.toString());
                 try {
                     TempWSBean<ArrayList> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<ArrayList<VoteBean>>>() {
                     }.getType());

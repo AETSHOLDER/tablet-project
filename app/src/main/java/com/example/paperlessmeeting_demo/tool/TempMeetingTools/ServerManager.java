@@ -115,7 +115,7 @@ public class ServerManager {
                 voteBean.setUser_list(new ArrayList<>());
                 voteMap.put(voteBean.get_id(),new ArrayList<>());
                 voteList.add(voteBean);
-                SendVoteMsgToAll();
+                SendVoteMsgToAll(wsebean.getFlag());
 
                 // 新增投票多发送一条
                 TempWSBean wsebean1 = new TempWSBean();
@@ -137,6 +137,7 @@ public class ServerManager {
                 TempWSBean<VoteListBean.VoteBean.UserListBean> wsebean = new Gson().fromJson(message, new TypeToken<TempWSBean<VoteListBean.VoteBean.UserListBean>>(){}.getType());
                 VoteListBean.VoteBean.UserListBean userListBean = wsebean.getBody();
                 String meeting_vote_id = userListBean.getMeeting_vote_id();
+                String  flag3=wsebean.getFlag();
                 boolean flag = false;
                 int     index = -1;
                 ArrayList<VoteListBean.VoteBean.UserListBean> userListBeans = voteMap.get(meeting_vote_id);
@@ -168,7 +169,7 @@ public class ServerManager {
                     }
                 }
 
-                SendVoteMsgToAll();
+                SendVoteMsgToAll(flag3);
 
             }catch (Exception e) {
                 e.printStackTrace();
@@ -180,7 +181,7 @@ public class ServerManager {
             try {
                 TempWSBean<VoteListBean.VoteBean> wsebean = new Gson().fromJson(message, new TypeToken<TempWSBean<VoteListBean.VoteBean>>(){}.getType());
                 VoteListBean.VoteBean voteBean = wsebean.getBody();
-
+             String  flag4=wsebean.getFlag();
                 for (VoteListBean.VoteBean bean : voteList){
                     if(voteBean.get_id().equals(bean.get_id())){
                         int index22 = voteList.indexOf(bean);
@@ -189,7 +190,7 @@ public class ServerManager {
                     }
                 }
 
-                SendVoteMsgToAll();
+                SendVoteMsgToAll(flag4);
 
             }catch (Exception e) {
                 e.printStackTrace();
@@ -214,10 +215,11 @@ public class ServerManager {
     /**
      * 广播投票数据
      */
-    public void SendVoteMsgToAll() {
+    public void SendVoteMsgToAll(String flag) {
         TempWSBean bean = new TempWSBean();
         bean.setReqType(1);
         bean.setUserMac_id("");
+        bean.setFlag(flag);
         bean.setPackType(constant.QUERYVOTE);
         bean.setBody(voteList);
         String strJson = new Gson().toJson(bean);

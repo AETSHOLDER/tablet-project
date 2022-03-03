@@ -203,7 +203,7 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
        agendaRl=(RelativeLayout) findViewById(R.id.agenda_rl);
        loginLeft=(LinearLayout) findViewById(R.id.login_left);
         //删除临时会议分享文件文件夹
-        DeleteFileUtil.deleteDirectory(fileShare);
+     //   DeleteFileUtil.deleteDirectory(fileShare);
         /*
         * 清除每次的会议的暂存纪要数据
         * */

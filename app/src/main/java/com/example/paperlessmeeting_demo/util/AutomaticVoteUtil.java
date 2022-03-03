@@ -99,7 +99,7 @@ public class AutomaticVoteUtil {
                         userListBean.setUser_id(FLUtil.getMacAddress());
                         userListBean.setMeeting_vote_id(model.get_id());
                         userListBean.setChoose(chose);
-                        requestToVote(userListBean);
+                        requestToVote(userListBean,flag);
                     }
                 });
                 dialog.setOnItemClickEvent(new AdapterView.OnItemClickListener() {
@@ -164,7 +164,7 @@ public class AutomaticVoteUtil {
                         userListBean.setUser_id(FLUtil.getMacAddress());
                         userListBean.setMeeting_vote_id(model.get_id());
                         userListBean.setChoose(chose);
-                        requestToVote(userListBean);
+                        requestToVote(userListBean,flag);
                     }
                 });
                 dialog.setOnItemClickEvent(new AdapterView.OnItemClickListener() {
@@ -182,13 +182,13 @@ public class AutomaticVoteUtil {
     /**
      * 更新投票操作(单、复选投票)请求
      */
-    private static void requestToVote(VoteListBean.VoteBean.UserListBean bean) {
+    private static void requestToVote(VoteListBean.VoteBean.UserListBean bean,String flag) {
         TempWSBean tempWSBean = new TempWSBean();
         tempWSBean.setReqType(0);
+        tempWSBean.setFlag(flag);
         tempWSBean.setUserMac_id(FLUtil.getMacAddress());
         tempWSBean.setPackType(constant.UPDATEVOTE);
         tempWSBean.setBody(bean);
-
         String strJson = new Gson().toJson(tempWSBean);
         JWebSocketClientService.sendMsg(strJson);
     }
