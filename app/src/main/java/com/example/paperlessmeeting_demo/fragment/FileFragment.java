@@ -1118,7 +1118,8 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
             fileBean.setSuffix(endStr);//上传文件后缀名和文件类型；setSuffix和setType所赋值内容一样。
             //  fileBean.setType(endStr);
             fileBean.setType(getFileType(endStr));
-            Log.d("requestCodeUr333", fileBean.getPath());
+
+
             Intent intent;
             if (fileBean.getFile_type().equals("3")){
                 intent = new Intent();

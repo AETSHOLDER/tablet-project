@@ -3,9 +3,6 @@
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/realm-android-library-5.13.0.aar/6edba089a01280479b6c9fd4cfb31440/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/realm-android-library-5.13.0.aar/6edba089a01280479b6c9fd4cfb31440/res" />
-      <root url="jar://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/realm-android-library-5.13.0.aar/fd37ccff9feeb3e39311b7d07779760e/jars/classes.jar!/" />
-      <root url="file://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/realm-android-library-5.13.0.aar/fd37ccff9feeb3e39311b7d07779760e/AndroidManifest.xml" />
-      <root url="file://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/realm-android-library-5.13.0.aar/fd37ccff9feeb3e39311b7d07779760e/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

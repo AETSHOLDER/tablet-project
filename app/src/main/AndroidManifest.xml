@@ -137,7 +137,8 @@
             android:screenOrientation="landscape" />
         <activity
             android:name=".activity.PdfActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".activity.ActivityBrowser"
             android:screenOrientation="landscape" />
@@ -168,7 +169,8 @@
             android:screenOrientation="landscape" />
         <activity
             android:name=".activity.ActivityImage"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="landscape"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".activity.ActivityVideoView"
             android:screenOrientation="landscape" />

@@ -23,7 +23,11 @@
             android:gravity="center"
             android:layout_marginLeft="16dp"
             android:layout_toRightOf="@id/type_ima"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="380dp"
             android:text="无纸化会议厅无纸化会"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:textColor="#3F3932"
             android:textSize="45sp"/>
 
