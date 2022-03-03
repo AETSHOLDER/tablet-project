@@ -4,11 +4,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
-   <ImageView
+   <com.example.paperlessmeeting_demo.widgets.ZoomImageView
        android:id="@+id/see_ima"
        android:layout_width="match_parent"
        android:layout_height="match_parent"
-       android:scaleType="center"
+       android:scaleType="fitCenter"
        android:src="@mipmap/ic_option"
        />
 </RelativeLayout>
