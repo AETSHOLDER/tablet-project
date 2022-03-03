@@ -26,14 +26,14 @@ import com.example.paperlessmeeting_demo.tool.UrlConstant;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
-
+import android.widget.RelativeLayout;
 import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CheckBoxDialog extends AlertDialog {
-    private LinearLayout layoutContent;
+    private RelativeLayout layoutContent;
     private Context context;
     private TextView endTime;
     private TextView title;
@@ -65,9 +65,9 @@ public class CheckBoxDialog extends AlertDialog {
                 .getSystemService(Context.WINDOW_SERVICE);
         final Display display = windowManager.getDefaultDisplay();
 
-        layoutContent = (LinearLayout)findViewById(R.id.layout_content);
+        layoutContent = (RelativeLayout)findViewById(R.id.layout_content);
         layoutContent.setLayoutParams(new FrameLayout.LayoutParams((int) (display
-                .getWidth() * 0.75), LinearLayout.LayoutParams.WRAP_CONTENT));
+                .getWidth() * 0.75), RelativeLayout.LayoutParams.WRAP_CONTENT));
         title = (TextView) this.findViewById(R.id.title);
         endTime = (TextView) this.findViewById(R.id.endtimeClock);
         creator = (TextView) this.findViewById(R.id.creator);

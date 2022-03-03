@@ -48,7 +48,7 @@ public class RadioDialog extends AlertDialog {
     private Button btnDanxuan;
 
     private Button btnNiming;
-    private MyListView listView;
+    private ListView listView;
     private List<ChoseBean> dataList = new ArrayList<>();
     private RadioAdapter adapter;
 
@@ -71,8 +71,7 @@ public class RadioDialog extends AlertDialog {
 
         layoutContent = (RelativeLayout) findViewById(R.id.layout_content);
         layoutContent.setLayoutParams(new FrameLayout.LayoutParams((int) (display
-                .getWidth() ), (int) (display.getHeight())));
-
+                .getWidth() * 0.75), RelativeLayout.LayoutParams.WRAP_CONTENT));
         endTime = (TextView) this.findViewById(R.id.endtimeClock);
         title = (TextView) this.findViewById(R.id.title);
         avater_img = (CircleImageView) this.findViewById(R.id.avater_img);
@@ -82,7 +81,7 @@ public class RadioDialog extends AlertDialog {
         btnDanxuan = (Button) this.findViewById(R.id.danxaun);
         btnNiming = (Button) this.findViewById(R.id.niming);
         btnDanxuan.setText("单选");
-        listView = (MyListView) this.findViewById(R.id.listview);
+        listView = (ListView) this.findViewById(R.id.listview);
         adapter = new RadioAdapter(context, dataList,flag);
         listView.setAdapter(adapter);
     }
