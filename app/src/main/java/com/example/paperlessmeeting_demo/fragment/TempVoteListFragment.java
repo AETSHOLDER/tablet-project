@@ -79,6 +79,7 @@ import com.example.paperlessmeeting_demo.tool.ToastUtils;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.example.paperlessmeeting_demo.util.ToastUtil;
 import com.example.paperlessmeeting_demo.widgets.DrawableTextView;
+import com.example.paperlessmeeting_demo.widgets.ZoomImageView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mrgao.luckly_popupwindow.LucklyPopopWindow;
@@ -362,7 +363,7 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
     private void showIma(int imaPath) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_see_ima, null);
-        ImageView imageView = view.findViewById(R.id.see_ima);
+        ZoomImageView imageView = view.findViewById(R.id.see_ima);
         builder.setView(view);
         builder.setCancelable(true);
         imaDialog = builder.create();
@@ -375,8 +376,8 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
         d.getSize(size);
         int width = size.x;
         int height = size.y;
-        p.width = (int) (width * 0.4);//设置宽
-        p.height = (int) (height * 0.3);//设置高
+        p.width = (int) (width * 0.8);//设置宽
+        p.height = (int) (height * 0.8);//设置高
         window.setAttributes(p);
         ImageLoader.getInstance().displayImage("file://" + list.get(imaPath).getText(), imageView);
     }
