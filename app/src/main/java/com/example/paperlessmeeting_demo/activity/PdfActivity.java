@@ -71,8 +71,8 @@ public class PdfActivity extends BaseActivity implements OnPageChangeListener, O
                     onSaveBitmap(merge(originalPath),"1") ;
                     break;
                 case 2:
-                   /* originalPath=(String) msg.obj;
-                    merge(originalPath);*/
+                    originalPath=(String) msg.obj;
+                    showIma(originalPath);
                     break;
             }
 
@@ -80,8 +80,8 @@ public class PdfActivity extends BaseActivity implements OnPageChangeListener, O
         }
     };
 
-    //选项形式
-    private void showIma() {
+
+    private void showIma(String originalPath) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(PdfActivity.this);
         View view = LayoutInflater.from(PdfActivity.this).inflate(R.layout.dialog_see_ima, null);
@@ -103,7 +103,15 @@ public class PdfActivity extends BaseActivity implements OnPageChangeListener, O
         p.width = (int) (width);//设置宽
         p.height = (int) (height);//设置高
         window.setAttributes(p);
-        //ImageLoader.getInstance().displayImage("file://" + list.get(imaPath).getText(), imageView);
+        commitTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(PdfActivity.this,"批注提交成功，请到qianpi文件夹查看",Toast.LENGTH_SHORT).show();
+                imaDialog.dismiss();
+
+            }
+        });
+      ImageLoader.getInstance().displayImage("file://" + originalPath, imageView);
     }
 
     @Override
@@ -122,13 +130,11 @@ public class PdfActivity extends BaseActivity implements OnPageChangeListener, O
         pizhu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showIma();
 
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-
-                     //   onSaveBitmap(getBitmap(),"2") ;
+                 onSaveBitmap(getBitmap(),"2") ;
                     }
                 }).start();
 
