@@ -1192,7 +1192,7 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
 
         dialog.show();
 
-    /*    Window window = dialog.getWindow();//获取dialog屏幕对象
+       Window window = dialog.getWindow();//获取dialog屏幕对象
         window.setGravity(Gravity.CENTER);//设置展示位置
         Display d = window.getWindowManager().getDefaultDisplay(); // 获取屏幕宽，高
         WindowManager.LayoutParams p = window.getAttributes(); // 获取对话框当前的参数值
@@ -1202,7 +1202,7 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
         int height = size.y;
         p.width = (int) (width * 0.8);//设置宽
         p.height = (int) (height * 0.6);//设置高
-        window.setAttributes(p);*/
+        window.setAttributes(p);
 
         dialog.setTitle(model.getTopic());
         dialog.setEndTime("投票截止时间:" + model.getEnd_time());
@@ -1338,7 +1338,6 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
 
         CheckBoxDialog dialog = new CheckBoxDialog(getActivity(), R.style.AlertDialogStyle, list, flag);
         dialog.show();
-
         Window window = dialog.getWindow();//获取dialog屏幕对象
         window.setGravity(Gravity.CENTER);//设置展示位置
         Display d = window.getWindowManager().getDefaultDisplay(); // 获取屏幕宽，高

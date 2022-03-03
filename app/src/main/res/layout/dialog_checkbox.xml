@@ -4,10 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-<!--    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="none">-->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -109,7 +105,7 @@
                     android:textSize="34sp"
                     android:textStyle="normal" />
 
-                <com.example.paperlessmeeting_demo.widgets.MyListView
+                <ListView
                     android:id="@+id/listview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -121,17 +117,18 @@
                     android:divider="#00000000"
                     android:listSelector="@drawable/trans_bg"
                     android:scrollIndicators="none"
-                    android:scrollbars="none"></com.example.paperlessmeeting_demo.widgets.MyListView>
+                    android:scrollbars="none"></ListView>
 
             </LinearLayout>
 
             <TextView
                 style="@style/HorizontalLine"
-                android:padding="50dp" />
+                android:padding="50dp"
+                android:visibility="gone"
+                />
 
 
         </LinearLayout>
- <!--   </ScrollView>-->
 
     <RelativeLayout
         android:layout_width="match_parent"
