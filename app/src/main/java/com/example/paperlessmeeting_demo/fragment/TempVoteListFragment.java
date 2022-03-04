@@ -747,7 +747,7 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
     public static byte[] readStream(String imagepath) throws Exception {
         FileInputStream fs = new FileInputStream(imagepath);
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024];
+        byte[] buffer = new byte[3*1024*1024];
         int len = 0;
         while (-1 != (len = fs.read(buffer))) {
             outStream.write(buffer, 0, len);

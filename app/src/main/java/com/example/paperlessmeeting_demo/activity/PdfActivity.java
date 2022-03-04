@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.base.BaseActivity;
+import com.example.paperlessmeeting_demo.widgets.ZoomImageView;
 import com.joanzapata.pdfview.PDFView;
 import com.joanzapata.pdfview.listener.OnDrawListener;
 import com.joanzapata.pdfview.listener.OnLoadCompleteListener;
@@ -85,7 +86,7 @@ public class PdfActivity extends BaseActivity implements OnPageChangeListener, O
 
         AlertDialog.Builder builder = new AlertDialog.Builder(PdfActivity.this);
         View view = LayoutInflater.from(PdfActivity.this).inflate(R.layout.dialog_qianpi_ima, null);
-        ImageView imageView = view.findViewById(R.id.see_ima);
+        ZoomImageView imageView = view.findViewById(R.id.see_ima);
         TextView commitTv=view.findViewById(R.id.commit);
         builder.setView(view);
         builder.setCancelable(true);

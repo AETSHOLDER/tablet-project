@@ -7,7 +7,7 @@
     <LinearLayout
         android:id="@+id/aa"
         android:layout_width="match_parent"
-        android:layout_height="10dp"
+        android:layout_height="200dp"
         android:layout_below="@id/ima_close"
         android:background="@mipmap/bg_invita_code"
         android:orientation="vertical"></LinearLayout>
@@ -28,19 +28,19 @@
             android:gravity="center"
             android:text="您的邀请码是:"
             android:textColor="#ff5b5b5b"
-            android:textSize="14sp" />
+            android:textSize="34sp" />
 
         <TextView
             android:id="@+id/code"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="70dp"
             android:layout_marginTop="32dp"
             android:gravity="center"
             android:text="5200"
             android:textColor="#006CFF"
-            android:textSize="18sp" />
+            android:textSize="68sp" />
     </LinearLayout>
 
     <TextView
@@ -49,7 +49,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/code_ll"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="70dp"
         android:background="@mipmap/ic_invita_code_konw"
         android:gravity="center"
         android:paddingBottom="5dp"

@@ -8,6 +8,7 @@ import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.base.BaseActivity;
 import com.example.paperlessmeeting_demo.bean.UserBehaviorBean;
 import com.example.paperlessmeeting_demo.tool.TimeUtils;
+import com.example.paperlessmeeting_demo.widgets.ZoomImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.orhanobut.hawk.Hawk;
 
@@ -25,7 +26,7 @@ public class ActivityImage extends BaseActivity {
     ImageView ivBack;
     private String url;
     @BindView(R.id.image)
-    ImageView image;
+    ZoomImageView image;
     private boolean isNetFile = false;
 
     @Override

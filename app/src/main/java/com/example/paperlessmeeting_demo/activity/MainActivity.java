@@ -1074,6 +1074,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
         create_invite_codeview.setText(code);
         verify_invite_codeDialog.setContentView(view);//这里还可以指定布局参数
         verify_invite_codeDialog.setCancelable(false);// 不可以用“返回键”取消
+        verify_invite_codeDialog.setCanceledOnTouchOutside(true);
         verify_invite_codeDialog.show();
         ok_tv.setOnClickListener(new View.OnClickListener() {
             @Override

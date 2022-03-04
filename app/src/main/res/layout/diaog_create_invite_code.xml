@@ -15,7 +15,7 @@
     <LinearLayout
         android:id="@+id/aa"
         android:layout_width="match_parent"
-        android:layout_height="18dp"
+        android:layout_height="180dp"
         android:layout_below="@id/ima_close"
         android:background="@mipmap/bg_invita_code"
         android:orientation="vertical"></LinearLayout>
@@ -31,7 +31,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp">
+            android:layout_marginTop="68dp">
 
 
             <TextView
@@ -59,7 +59,7 @@
             android:id="@+id/verificationcodeview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="120dp"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
             android:layout_marginTop="10dp"
@@ -70,7 +70,7 @@
             app:vcv_et_inputType="number"
             app:vcv_et_number="4"
             app:vcv_et_text_color="@android:color/black"
-            app:vcv_et_text_size="18sp" />
+            app:vcv_et_text_size="68sp" />
 
     </LinearLayout>
 

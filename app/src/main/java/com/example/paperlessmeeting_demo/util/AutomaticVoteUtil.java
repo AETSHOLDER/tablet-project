@@ -1,7 +1,12 @@
 package com.example.paperlessmeeting_demo.util;
 
 import android.app.Activity;
+import android.graphics.Point;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 
 import com.blankj.utilcode.util.ActivityUtils;
@@ -65,6 +70,21 @@ public class AutomaticVoteUtil {
                         dialog.show();
                     }
                 });
+
+
+                Window window = dialog.getWindow();//获取dialog屏幕对象
+                window.setGravity(Gravity.CENTER);//设置展示位置
+                Display d = window.getWindowManager().getDefaultDisplay(); // 获取屏幕宽，高
+                WindowManager.LayoutParams p = window.getAttributes(); // 获取对话框当前的参数值
+                Point size = new Point();
+                d.getSize(size);
+                int width = size.x;
+                int height = size.y;
+                p.width = (int) (width * 0.8);//设置宽
+                p.height = (int) (height * 0.6);//设置高
+                window.setAttributes(p);
+
+
 
                 dialog.setTitle(model.getTopic());
                 dialog.setEndTime("投票截止时间:" + model.getEnd_time());
@@ -139,6 +159,20 @@ public class AutomaticVoteUtil {
                         dialog.dismiss();
                     }
                 });
+
+
+                Window window = dialog.getWindow();//获取dialog屏幕对象
+                window.setGravity(Gravity.CENTER);//设置展示位置
+                Display d = window.getWindowManager().getDefaultDisplay(); // 获取屏幕宽，高
+                WindowManager.LayoutParams p = window.getAttributes(); // 获取对话框当前的参数值
+                Point size = new Point();
+                d.getSize(size);
+                int width = size.x;
+                int height = size.y;
+                p.width = (int) (width * 0.8);//设置宽
+                p.height = (int) (height * 0.6);//设置高
+                window.setAttributes(p);
+
 
                 if (model.getAnonymity().equals("1")) {
                     dialog.setNiming("实名");

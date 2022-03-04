@@ -18,8 +18,8 @@
 
         <ImageView
             android:id="@+id/iv_check_state"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
             android:gravity="center_vertical"
             android:src="@drawable/radio_unselected" />
 
@@ -40,7 +40,8 @@
             android:id="@+id/ima_content"
             android:layout_width="300dp"
             android:layout_height="224dp"
-            android:scaleType="center"
+            android:layout_marginLeft="30dp"
+            android:scaleType="centerInside"
             android:src="@mipmap/ic_option"
             android:visibility="gone" />
     </LinearLayout>

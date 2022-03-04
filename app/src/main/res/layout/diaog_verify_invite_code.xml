@@ -16,7 +16,7 @@
     <LinearLayout
         android:id="@+id/aa"
         android:layout_width="match_parent"
-        android:layout_height="10dp"
+        android:layout_height="180dp"
         android:layout_below="@id/ima_close"
         android:background="@mipmap/bg_invita_code"
         android:orientation="vertical"></LinearLayout>
@@ -32,7 +32,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp">
+            android:layout_marginTop="68dp">
 
 
             <TextView
@@ -41,8 +41,8 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:layout_marginBottom="15dp"
                 android:gravity="center"
+                android:layout_marginBottom="15dp"
                 android:text="请选择邀请码"
                 android:textColor="#ff5b5b5b"
                 android:textSize="28sp" />
@@ -67,9 +67,9 @@
         <Spinner
             android:id="@+id/spinner"
             android:layout_width="match_parent"
-            android:layout_height="18dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_height="68dp"
+            android:layout_marginLeft="60dp"
+            android:layout_marginRight="60dp"
             android:background="@drawable/bg_invite_code_spinner_down" />
 
         <!--     </LinearLayout>-->
@@ -80,8 +80,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="40dp"
-            android:layout_marginTop="10dp"
             android:layout_marginRight="40dp"
+            android:layout_marginTop="10dp"
             android:gravity="center"
             android:orientation="horizontal"
             android:visibility="gone"
@@ -90,33 +90,33 @@
             app:vcv_et_inputType="number"
             app:vcv_et_number="4"
             app:vcv_et_text_color="@android:color/black"
-            app:vcv_et_text_size="18sp" />
+            app:vcv_et_text_size="68sp" />
 
         <TextView
             android:id="@+id/results"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="70dp"
             android:layout_marginTop="32dp"
-            android:layout_marginBottom="10dp"
             android:gravity="center"
             android:text="未查询到此邀请码"
             android:textColor="#fff26e65"
-            android:textSize="16sp" />
+            android:textSize="26sp" />
 
         <TextView
             android:id="@+id/entry_meeting"
-            android:layout_width="82dp"
+            android:layout_width="282dp"
             android:layout_height="56dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="45dp"
             android:layout_marginBottom="60dp"
-            android:background="@drawable/bg_entry_meeting"
             android:gravity="center"
             android:text="进入"
+            android:visibility="gone"
+            android:background="@drawable/bg_entry_meeting"
             android:textColor="#ffffffff"
-            android:textSize="26sp"
-            android:visibility="gone" />
+            android:textSize="26sp" />
     </LinearLayout>
 
     <TextView
