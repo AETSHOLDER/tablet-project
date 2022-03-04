@@ -953,6 +953,11 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
                     ToastUtils.showShort("暂无人投票!");
                     return;
                 }
+                if(flag.equals("1")){
+                    ToastUtils.showShort("批注暂不支持查看!");
+                    return;
+                }
+
                 PieChartDialog piechartDialog = new PieChartDialog(getActivity(), R.style.AlertDialogStyle, createData(model), voteList.get(position));
                 piechartDialog.show();
 
@@ -1005,6 +1010,11 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
                     ToastUtils.showShort("暂无人投票!");
                     return;
                 }
+                if(flag.equals("1")){
+                    ToastUtils.showShort("批注暂不支持查看!");
+                    return;
+                }
+
                 PieChartDialog piechartDialog = new PieChartDialog(getActivity(), R.style.AlertDialogStyle, createData(model), voteList.get(position));
                 piechartDialog.show();
 
@@ -1035,7 +1045,7 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
     //  点击操作
     @Override
     public void operationclickListener(int position, String flag) {
-        Log.d("gdgsdgsdgdgf444主席operation","flag==="+flag);
+        Log.d("operation","flag==="+flag);
         int status = voteList.get(position).getMvoteStatus();
         if (status == Constants.VoteStatusEnum.hasStartUnVote) {
             popTitleArr = new String[]{"投票", "结束"};

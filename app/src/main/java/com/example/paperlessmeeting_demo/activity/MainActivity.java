@@ -881,7 +881,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
             meeting_summary.setVisibility(View.GONE);//隐藏正常会议普通会员签批入口
         }
 
-        FLUtil.findSerialPortInfo();
+//        FLUtil.findSerialPortInfo();
         UDPBroadcastManager.getInstance().stopReceiveUDP();
 
 
