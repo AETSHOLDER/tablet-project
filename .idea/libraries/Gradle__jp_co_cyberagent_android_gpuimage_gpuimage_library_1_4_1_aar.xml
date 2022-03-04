@@ -3,9 +3,6 @@
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/gpuimage-library-1.4.1.aar/01428d43502cdc6cc69312300fb83a60/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/gpuimage-library-1.4.1.aar/01428d43502cdc6cc69312300fb83a60/res" />
-      <root url="file://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/gpuimage-library-1.4.1.aar/f5c4a923243238b185234b398aef995e/res" />
-      <root url="jar://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/gpuimage-library-1.4.1.aar/f5c4a923243238b185234b398aef995e/jars/classes.jar!/" />
-      <root url="file://C:/Program Files/Java/jdk1.8.0_131/caches/transforms-1/files-1.1/gpuimage-library-1.4.1.aar/f5c4a923243238b185234b398aef995e/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

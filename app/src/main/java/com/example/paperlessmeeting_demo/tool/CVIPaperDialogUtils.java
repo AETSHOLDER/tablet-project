@@ -132,10 +132,9 @@ public class CVIPaperDialogUtils {
 
                 @Override
                 public void onFinish() {
-                    if(type == 3){
-                        confirm.setText("正在进入");
-                        confirm.performClick();
-                    }
+                    confirm.setText("正在进入");
+                    confirm.performClick();
+
                 }
             }.start();
         }

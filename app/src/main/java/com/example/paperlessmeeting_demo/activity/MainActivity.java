@@ -530,7 +530,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
                     Toast.makeText(MainActivity.this, "文件接收失败", Toast.LENGTH_SHORT).show();
                     break;
                 case 8:
-                    Toast.makeText(MainActivity.this, "文件已成功接收，请在文件管理页面查看", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "推送文件已成功接收，请在文件管理页面查看", Toast.LENGTH_SHORT).show();
                     Log.e("hahahahahahaa","case 8");
                     String filePath=(String) msg.obj;
                     Intent intent = new Intent();
@@ -881,7 +881,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
             meeting_summary.setVisibility(View.GONE);//隐藏正常会议普通会员签批入口
         }
 
-        FLUtil.findSerialPortInfo();
+//        FLUtil.findSerialPortInfo();
         UDPBroadcastManager.getInstance().stopReceiveUDP();
 
 

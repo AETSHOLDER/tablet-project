@@ -50,8 +50,8 @@
 
             <com.example.paperlessmeeting_demo.widgets.DrawableTextView
                 android:id="@+id/new_vote"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="60dp"
+                android:layout_height="50dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="45dp"
@@ -59,6 +59,7 @@
                 android:drawableLeft="@mipmap/new_vote"
                 android:drawablePadding="3dp"
                 android:text="新增"
+                android:gravity="center"
                 android:textColor="@color/color_textBlue"
                 android:textSize="20sp" />
 

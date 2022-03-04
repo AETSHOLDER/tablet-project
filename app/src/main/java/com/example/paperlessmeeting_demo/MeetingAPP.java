@@ -111,8 +111,8 @@ public class MeetingAPP extends Application {
 
         //  串口相关
         hexadecimal = new HexadecimalConversion();
-        serialPortClient = new SerialPortClient();
-        serialPortClient.openPort();
+//        serialPortClient = new SerialPortClient();
+//        serialPortClient.openPort();
         // 初始化socket连接 ，寻址广播
         FLUtil.receiveBroadcast();
 

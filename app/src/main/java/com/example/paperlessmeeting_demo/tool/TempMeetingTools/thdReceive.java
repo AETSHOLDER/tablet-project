@@ -25,7 +25,7 @@ public class thdReceive extends Thread {
     public boolean pause = false;
     private String  TAG = "thdReceive";
     public static List<String> receiveIPArr = new ArrayList<>();
-    private String  currentIP_code = null;
+    private Integer  timeoutCount = 0;
     /**
      * 调用这个方法实现暂停线程
      */
@@ -83,9 +83,10 @@ public class thdReceive extends Thread {
                 byte[] buffer = new byte[1024];
                 final DatagramPacket dp = new DatagramPacket(buffer, buffer.length);
                 // 注意 此超时时间要超过广播发送的频率，否则会经常超时
-                rSocket.setSoTimeout(5010);
+                rSocket.setSoTimeout(5020);
                 rSocket.receive(dp);
                 String recMsg = new String(dp.getData(), dp.getOffset(), dp.getLength(), "UTF-8");
+                timeoutCount = 0;
 
                 if(recMsg.contains("destroy") ){
                     List<String> ipcodeInfo = FLUtil.dealUDPMsg(recMsg);
@@ -133,7 +134,10 @@ public class thdReceive extends Thread {
 
             } catch (SocketTimeoutException e){
                 //  超时处理
-                receiveIPArr.clear();
+                timeoutCount++;
+                if(timeoutCount>3){
+                    receiveIPArr.clear();
+                }
                 Log.d(TAG,"Socket.receive超时error");
             }catch (IOException e) {
                 Log.d(TAG,"IOException error");
