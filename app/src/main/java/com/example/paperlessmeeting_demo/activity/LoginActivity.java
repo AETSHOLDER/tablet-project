@@ -252,7 +252,7 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
             getMeeingInfo(UserUtil.meeting_record_id);
         }
         if (message.getMessage().equals(constant.get_server_ip)) {
-           getMacIsRegister();
+//           getMacIsRegister();
            resumeToGetMeetingInfo();
         }
         if (message.getMessage().equals(constant.continusClick)) {
