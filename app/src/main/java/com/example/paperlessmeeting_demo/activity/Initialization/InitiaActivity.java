@@ -62,7 +62,7 @@ public class InitiaActivity extends BaseActivity {
 //            multicastLock.acquire();
 //        }
         Log.d(TAG, "mac===" + FLUtil.getMacAddress());
-        FLUtil.findSerialPortInfo();
+//        FLUtil.findSerialPortInfo();
     }
 
     private Runnable mRunnable = new Runnable() {

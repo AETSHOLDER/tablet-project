@@ -953,7 +953,7 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
                     ToastUtils.showShort("暂无人投票!");
                     return;
                 }
-                if(flag.equals("1")){
+                if(flag.equals("2")){
                     ToastUtils.showShort("批注暂不支持查看!");
                     return;
                 }
@@ -1010,7 +1010,7 @@ public class TempVoteListFragment extends BaseFragment implements VoteAdapter.vo
                     ToastUtils.showShort("暂无人投票!");
                     return;
                 }
-                if(flag.equals("1")){
+                if(flag.equals("2")){
                     ToastUtils.showShort("批注暂不支持查看!");
                     return;
                 }
