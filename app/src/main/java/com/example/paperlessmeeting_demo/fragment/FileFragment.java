@@ -1134,6 +1134,22 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
 
 
             Intent intent;
+//            if (fileBean.getFile_type().equals("3")){
+//                intent = new Intent();
+//                intent.setClass(getActivity(), ActivityImage.class);
+//                intent.putExtra("url", fileBean.getPath());
+//                intent.putExtra("isOpenFile", true);
+//                intent.putExtra("isNetFile", false);
+//                startActivity(intent);
+//            }else if (fileBean.getFile_type().equals("4")){
+//
+//                intent=new Intent(getActivity(), PdfActivity.class);
+//                Bundle bundle=new Bundle();
+//                bundle.putString("pdfPath", fileBean.getPath());
+//                intent.putExtras(bundle);
+//                getActivity().startActivity(intent);
+//            }
+
             if (fileBean.getFile_type().equals("3")){
                 intent = new Intent();
                 intent.setClass(getActivity(), ActivityImage.class);
@@ -1142,12 +1158,23 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
                 intent.putExtra("isNetFile", false);
                 startActivity(intent);
             }else if (fileBean.getFile_type().equals("4")){
-
-                intent=new Intent(getActivity(), PdfActivity.class);
-                Bundle bundle=new Bundle();
-                bundle.putString("pdfPath", fileBean.getPath());
-                intent.putExtras(bundle);
-                getActivity().startActivity(intent);
+                if(UserUtil.isNetworkOnline){
+                    intent = new Intent();
+                    intent.setClass(getActivity(), SignActivity.class);
+                    intent.putExtra("url", fileBean.getPath());
+                    intent.putExtra("isOpenFile", true);
+                    intent.putExtra("isNetFile", false);
+                    intent.putExtra("tempPath", false);
+                    intent.putExtra("fileName",fileBean.getName());
+                    startActivity(intent);
+                }else {
+                    CVIPaperDialogUtils.showConfirmDialog(getActivity(), "当前无外网，会使用wps打开文件", "知道了", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                        @Override
+                        public void onClickButton(boolean clickConfirm, boolean clickCancel) {
+                            startActivity(FileUtils.openFile(fileBean.getPath(), getActivity()));
+                        }
+                    });
+                }
             }
 
 
