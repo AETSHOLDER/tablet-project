@@ -108,7 +108,7 @@ public class FloatingActionsMenu extends ViewGroup {
      * */
     /**控制按钮外圈*/
     public void drawRing(int color){
-       mAddButton.drawRing(WhiteBoardVariable.RingSize.LARRGE, color);
+        mAddButton.drawRing(WhiteBoardVariable.RingSize.LARRGE, color);
     }
     /**
      * 清除绘画
@@ -121,7 +121,7 @@ public class FloatingActionsMenu extends ViewGroup {
      * 切换控制按钮背景图
      * */
     public void setAddButtonBackground(int drawable){
-            mAddButton.setBackgroundResource(drawable);
+        mAddButton.setBackgroundResource(drawable);
     }
     /**
      * dip转px

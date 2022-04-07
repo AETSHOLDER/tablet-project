@@ -29,7 +29,7 @@ android {
         versionName "1.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
-            abiFilters 'armeabi', "armeabi-v7a","x86"
+            abiFilters 'armeabi', "armeabi-v7a", "x86"
         }
 //        buildConfigField "boolean", "DOWNLOAD_NEED_LOG", needLog == "true" ? "true" : "false"
         multiDexEnabled true
@@ -201,5 +201,5 @@ dependencies {
     implementation 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
     implementation 'org.slf4j:slf4j-simple:1.6.6'
     implementation 'com.joanzapata.pdfview:android-pdfview:1.0.4@aar'
-    implementation  'com.angel:ZoomImageView:1.0.0'
+    implementation 'com.angel:ZoomImageView:1.0.0'
 }

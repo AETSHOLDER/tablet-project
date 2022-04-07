@@ -43,6 +43,21 @@ public class StoreUtil {
     private static final String CACHE_DIR_WB = "wb";
     private static final String WB_FORMAT = ".wb";
 
+
+
+    /**
+     * 获取个人批注保存路径
+     */
+    public static String getPersonalSignPhotoSavePath() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日HH:mm:ss");// HH:mm:ss
+        // 获取当前时间
+        Date date = new Date(System.currentTimeMillis());
+        return getPersonalSignPhotoPath() + File.separator + simpleDateFormat.format(date) + PHOTO_FORMAT_PNG;
+    }
+
+    public static String getPersonalSignPhotoPath() {
+        return SdCardStatus.getDefaulstCacheDirInSdCard() + File.separator + UserUtil.user_name;
+    }
     /**
      * 获取保存路径
      */

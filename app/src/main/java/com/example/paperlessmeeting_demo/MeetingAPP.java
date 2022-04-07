@@ -8,11 +8,14 @@ import android.support.multidex.MultiDex;
 import android.util.Log;
 
 import com.blankj.utilcode.util.Utils;
+import com.example.paperlessmeeting_demo.tool.Constants;
 import com.example.paperlessmeeting_demo.tool.FLUtil;
+import com.example.paperlessmeeting_demo.tool.NetWorkUtils;
 import com.example.paperlessmeeting_demo.tool.SdCardStatus;
 import com.example.paperlessmeeting_demo.tool.SerialPortUtils.HexadecimalConversion;
 import com.example.paperlessmeeting_demo.tool.SerialPortUtils.SerialPortClient;
 import com.example.paperlessmeeting_demo.tool.StoreUtil;
+import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.github.guanpy.wblib.utils.AppContextUtil;
 import com.github.guanpy.wblib.utils.OperationUtils;
 import com.liulishuo.filedownloader.FileDownloader;
@@ -23,6 +26,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.orhanobut.hawk.Hawk;
 import com.squareup.leakcanary.RefWatcher;
+import com.tencent.smtt.export.external.TbsCoreSettings;
 import com.tencent.smtt.sdk.QbSdk;
 import com.tencent.smtt.sdk.TbsListener;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -30,6 +34,7 @@ import com.zhy.http.okhttp.cookie.CookieJarImpl;
 import com.zhy.http.okhttp.cookie.store.PersistentCookieStore;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import cn.dreamtobe.threaddebugger.IThreadDebugger;
@@ -124,40 +129,15 @@ public class MeetingAPP extends Application {
         OperationUtils.getInstance().init();
         Hawk.init(this).build();
         ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
-        //非wifi情况下，主动下载x5内核
-        QbSdk.setDownloadWithoutWifi(true);
-        //搜集本地tbs内核信息并上报服务器，服务器返回结果决定使用哪个内核。
-        QbSdk.PreInitCallback cb = new QbSdk.PreInitCallback() {
-            @Override
-            public void onViewInitFinished(boolean arg0) {
-                //x5內核初始化完成的回调，为true表示x5内核加载成功，否则表示x5内核加载失败，会自动切换到系统内核。
-                Log.d("MeetingAPP", " onViewInitFinished is " + arg0);
-            }
 
+        new Handler().post(new Runnable() {
             @Override
-            public void onCoreInitFinished() {
-                Log.d("MeetingAPP22", " onViewInitFinished is " + "路过~~~~~");
-            }
-        };
-        QbSdk.setTbsListener(new TbsListener() {
-            @Override
-            public void onDownloadFinish(int i) {
-                Log.d("MeetingAPP33", " onViewInitFinished is " + i);
-            }
-
-            @Override
-            public void onInstallFinish(int i) {
-                Log.d("MeetingAPP444", " onViewInitFinished is " + i);
-            }
-
-            @Override
-            public void onDownloadProgress(int i) {
-                Log.d("MeetingAPP555", " onViewInitFinished is " + i);
+            public void run() {
+                UserUtil.isNetworkOnline =  NetWorkUtils.isNetworkOnline();
             }
         });
-
-        //x5内核初始化接口
-        QbSdk.initX5Environment(getApplicationContext(), cb);
+        //  TBS 初始化
+        initX5();
         //内存泄漏-start
 //        if (LeakCanary.isInAnalyzerProcess(this)) {
 //            // This process is dedicated to LeakCanary for heap analysis.
@@ -209,6 +189,47 @@ public class MeetingAPP extends Application {
                 });
 
 
+    }
+
+    private void initX5() {
+        HashMap map = new HashMap();
+        map.put(TbsCoreSettings.TBS_SETTINGS_USE_SPEEDY_CLASSLOADER, true);
+        map.put(TbsCoreSettings.TBS_SETTINGS_USE_DEXLOADER_SERVICE, true);
+        QbSdk.initTbsSettings(map);
+        //非wifi情况下，主动下载x5内核
+        QbSdk.setDownloadWithoutWifi(true);
+        //搜集本地tbs内核信息并上报服务器，服务器返回结果决定使用哪个内核。
+        QbSdk.PreInitCallback cb = new QbSdk.PreInitCallback() {
+            @Override
+            public void onViewInitFinished(boolean arg0) {
+                //x5內核初始化完成的回调，为true表示x5内核加载成功，否则表示x5内核加载失败，会自动切换到系统内核。
+                Log.d("MeetingAPP", " onViewInitFinished is " + arg0);
+            }
+
+            @Override
+            public void onCoreInitFinished() {
+                Log.d("MeetingAPP22", " onViewInitFinished is " + "路过~~~~~");
+            }
+        };
+        QbSdk.setTbsListener(new TbsListener() {
+            @Override
+            public void onDownloadFinish(int i) {
+                Log.d("MeetingAPP33", " onViewInitFinished is " + i);
+            }
+
+            @Override
+            public void onInstallFinish(int i) {
+                Log.d("MeetingAPP444", " onViewInitFinished is " + i);
+            }
+
+            @Override
+            public void onDownloadProgress(int i) {
+                Log.d("MeetingAPP555", " onViewInitFinished is " + i);
+            }
+        });
+
+        //x5内核初始化接口
+        QbSdk.initX5Environment(getApplicationContext(), cb);
     }
 
    /* public static RefWatcher getRefWatcher(Context context) {

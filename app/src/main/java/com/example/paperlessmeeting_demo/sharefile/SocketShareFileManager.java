@@ -6,6 +6,7 @@ import android.os.Message;
 import android.util.Log;
 
 import com.blankj.utilcode.util.StringUtils;
+import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.tool.constant;
 
 import java.io.BufferedReader;
@@ -31,6 +32,7 @@ public class SocketShareFileManager {
     private ServerSocket server;
     private Handler handler = null;
     private String savePath = null;
+    private String signFlag = "signPath=";
     public SocketShareFileManager(Handler handler) {
         this.handler = handler;
         int port = 9999;
@@ -73,18 +75,42 @@ public class SocketShareFileManager {
             name.close();
             SendMessage(2, "正在接收:" + fileName,0);
 
+            /**
+             * 批注文件接收时path是全路径，signFlag区分
+             * */
+            String path = null;
+            if(fileName.contains(signFlag)){
+                path = fileName.replace(signFlag,"");
+                savePath = path;
+                File file = new File(path);
+                try {
+                    File directory = file.getParentFile();
+                    if (!directory.exists() && !directory.mkdirs()) {
+                        return;
+                    }
+                    file.createNewFile();
+                }catch (Exception e) {
+                    e.printStackTrace();
+                    return ;
+                }
+
+            }else {
+                path = Environment.getExternalStorageDirectory().getPath() + constant.SHARE_FILE;
+                savePath = path + fileName;
+                File f = new File(path);
+                if (!f.exists()) {
+                    f.mkdir();
+                }
+            }
+
+            Log.e("aaaa","savePath=="+savePath);
+
             Socket data = server.accept();
             InputStream dataStream = data.getInputStream();
-            String path = Environment.getExternalStorageDirectory().getPath() + constant.SHARE_FILE;
-            savePath = path + fileName;
             /*
             * 文件夹不存在创新创建，存在直接写入。
             * */
 
-            File f = new File(path);
-            if (!f.exists()) {
-                f.mkdir();
-            }
             FileOutputStream file = new FileOutputStream(savePath, false);
             byte[] buffer = new byte[1024];
             int size = -1;
@@ -109,6 +135,41 @@ public class SocketShareFileManager {
         }
         if(flag.equals("2")){
             SendMessage(8, savePath,2);
+        }
+    }
+
+    /**
+     * 批注文件传输
+     * */
+    public void SendFile(String fileName, String path, String ipAddress, int port,String actionType) {
+        try {
+            Socket name = new Socket(ipAddress, port);
+            OutputStream outputName = name.getOutputStream();
+            OutputStreamWriter outputWriter = new OutputStreamWriter(outputName);
+            BufferedWriter bwName = new BufferedWriter(outputWriter);
+            bwName.write(signFlag+path);
+            bwName.close();
+            outputWriter.close();
+            outputName.close();
+            name.close();
+            SendMessage(0, "正在发送" + fileName,Integer.parseInt(actionType));
+
+            Socket data = new Socket(ipAddress, port);
+            OutputStream outputData = data.getOutputStream();
+            FileInputStream fileInput = new FileInputStream(path);
+            int size = -1;
+            byte[] buffer = new byte[1024];
+            while ((size = fileInput.read(buffer, 0, 1024)) != -1) {
+                outputData.write(buffer, 0, size);
+            }
+            outputData.close();
+            fileInput.close();
+            data.close();
+
+            SendMessage(5, "文件发送完成",Integer.parseInt(actionType));
+
+        } catch (Exception e) {
+            SendMessage(6, "发送错误:\n" + e.getMessage(),Integer.parseInt(actionType));
         }
     }
 
@@ -137,7 +198,6 @@ public class SocketShareFileManager {
                 outputData.close();
                 fileInput.close();
                 data.close();
-                SendMessage(5, fileName.get(i) + "  发送完成",Integer.parseInt(actionType));
             }
             SendMessage(5, "所有文件发送完成",Integer.parseInt(actionType));
 

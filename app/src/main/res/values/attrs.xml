@@ -71,4 +71,10 @@
         <attr name="max" format="integer"/>
         <attr name="volume" format="integer"/>
     </declare-styleable>
+
+    <declare-styleable name="PxBlurringView">
+        <attr name="blurRadius" format="integer"/>
+        <attr name="downsampleFactor" format="integer"/>
+        <attr name="overlayColor" format="color"/>
+    </declare-styleable>
 </resources>

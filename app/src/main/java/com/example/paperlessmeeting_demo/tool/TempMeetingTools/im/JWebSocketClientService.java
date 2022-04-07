@@ -196,7 +196,7 @@ public class JWebSocketClientService {
                             topActivity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    CVIPaperDialogUtils.showConfirmDialog(topActivity, "同屏|协作白板已断开!", "确定", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                                    CVIPaperDialogUtils.showCountDownConfirmDialog(topActivity, "同屏|协作白板已断开!", "确定", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
                                         @Override
                                         public void onClickButton(boolean clickConfirm, boolean clickCancel) {
                                             if (clickConfirm) {
@@ -220,7 +220,7 @@ public class JWebSocketClientService {
                             topActivity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    CVIPaperDialogUtils.showConfirmDialog(topActivity, "同屏|协作白板已断开!", "确定", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                                    CVIPaperDialogUtils.showCountDownConfirmDialog(topActivity, "同屏|协作白板已断开!", "确定", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
                                         @Override
                                         public void onClickButton(boolean clickConfirm, boolean clickCancel) {
                                             if (clickConfirm) {
@@ -276,7 +276,7 @@ public class JWebSocketClientService {
                                                 public void run() {
                                                     Activity top2 = (Activity) ActivityUtils.getTopActivity();
                                                     if(top2!=null){
-                                                        CVIPaperDialogUtils.showConfirmDialog(top2, "会议已结束!", "确定", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                                                        CVIPaperDialogUtils.showCountDownConfirmDialog(top2, "会议已结束!", "确定", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
                                                             @Override
                                                             public void onClickButton(boolean clickConfirm, boolean clickCancel) {
                                                                 if (clickConfirm) {
@@ -438,7 +438,7 @@ public class JWebSocketClientService {
                     public void run() {
                         Activity top2 = (Activity) ActivityUtils.getTopActivity();
                         if(top2!=null){
-                            CVIPaperDialogUtils.showConfirmDialog(top2, "会议已结束!", "确定", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                            CVIPaperDialogUtils.showCountDownConfirmDialog(top2, "会议已结束!", "确定", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
                                 @Override
                                 public void onClickButton(boolean clickConfirm, boolean clickCancel) {
                                     if (clickConfirm) {
@@ -524,7 +524,7 @@ public class JWebSocketClientService {
                                 topActivity.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        CVIPaperDialogUtils.showConfirmDialog(topActivity, "会议已结束!", "退出", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                                        CVIPaperDialogUtils.showCountDownConfirmDialog(topActivity, "会议已结束!", "退出", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
                                             @Override
                                             public void onClickButton(boolean clickConfirm, boolean clickCancel) {
                                                 if (clickConfirm) {

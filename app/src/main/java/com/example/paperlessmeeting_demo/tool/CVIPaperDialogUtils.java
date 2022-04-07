@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,32 +23,40 @@ public class CVIPaperDialogUtils {
     private static String mConfirmStr = "知道了";
     private static String mCancelStr = "取消";
     private static AlertDialog confirmDialog;
-
+    private static CountDownTimer countDownTimer;
     /**
      *  弹出确认倒计时弹框 ，只有一个确定按钮
      * */
     public static void showCountDownConfirmDialog(Activity context, String title, String confirmStr, boolean canceledOnTouchOutside,final ConfirmDialogListener confirmDialogListener) {
-        showAlertDialog(context, title,null, confirmStr,3, canceledOnTouchOutside,confirmDialogListener);
+        showAlertDialog(context, title,null, confirmStr,3,3000, canceledOnTouchOutside,confirmDialogListener);
     }
     /**
      *  弹出确认倒计时弹框 ，两个按钮
      * */
     public static void showCountDownCustomDialog(Activity context, String title, String confirmStr, boolean canceledOnTouchOutside,final ConfirmDialogListener confirmDialogListener) {
-        showAlertDialog(context, title,null, confirmStr,4, canceledOnTouchOutside,confirmDialogListener);
+        showAlertDialog(context, title,null, confirmStr,4, 9000, canceledOnTouchOutside,confirmDialogListener);
     }
+    /**
+     *  弹出倒计时弹框 ，默认倒计时9秒
+     * */
+    public static void showCountDownDialog(Activity context, String title, String confirmStr,long countDown, boolean canceledOnTouchOutside,final ConfirmDialogListener confirmDialogListener) {
+        showAlertDialog(context, title,null, confirmStr,4,countDown, canceledOnTouchOutside,confirmDialogListener);
+    }
+
     /**
      *  弹出确认弹框 ，只有一个确定按钮
      * */
     public static void showConfirmDialog(Activity context, String title, String confirmStr, boolean canceledOnTouchOutside,final ConfirmDialogListener confirmDialogListener) {
-        showAlertDialog(context, title,null, confirmStr,1, canceledOnTouchOutside,confirmDialogListener);
+        showAlertDialog(context, title,null, confirmStr,1,0, canceledOnTouchOutside,confirmDialogListener);
     }
+
     /**
      *  弹出普通弹框 ，底部两个按钮(确认，取消)
      * */
     public static void showCustomDialog(Activity context, String title,String content, String confirmStr, boolean canceledOnTouchOutside,final ConfirmDialogListener confirmDialogListener) {
-        showAlertDialog(context, title, content,confirmStr,2, canceledOnTouchOutside,confirmDialogListener);
+        showAlertDialog(context, title, content,confirmStr,2,0, canceledOnTouchOutside,confirmDialogListener);
     }
-    private static void showAlertDialog(Activity context, String title, String content, String confirmStr, int type, boolean canceledOnTouchOutside, final ConfirmDialogListener confirmDialogListener) {
+    private static void showAlertDialog(Activity context, String title, String content, String confirmStr, int type,long countDown, boolean canceledOnTouchOutside, final ConfirmDialogListener confirmDialogListener) {
         if (context == null || context.isFinishing()) {
             return;
         }
@@ -94,6 +103,11 @@ public class CVIPaperDialogUtils {
                 if (confirmDialog != null && confirmDialog.isShowing()) {
                     confirmDialog.dismiss();
                 }
+                if(countDownTimer != null){
+                    countDownTimer.cancel();
+                    countDownTimer = null;
+                    Log.e("","countDownTimer已取消");
+                }
             }
 
         });
@@ -107,6 +121,10 @@ public class CVIPaperDialogUtils {
                     }
                     if (confirmDialog != null && confirmDialog.isShowing()) {
                         confirmDialog.dismiss();
+                    }
+                    if(type == 4 && countDownTimer != null){
+                        countDownTimer.cancel();
+                        countDownTimer = null;
                     }
                 }
             });
@@ -123,7 +141,7 @@ public class CVIPaperDialogUtils {
 
         if(type == 3 || type == 4){
             String finalCurrentStr = currentStr;
-            CountDownTimer countDownTimer = new CountDownTimer(9000, 1000) {
+            countDownTimer = new CountDownTimer(countDown, 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
                     String value = " (" + String.valueOf((int) (millisUntilFinished / 1000)) + "s)";
@@ -132,7 +150,10 @@ public class CVIPaperDialogUtils {
 
                 @Override
                 public void onFinish() {
-                    confirm.setText("正在进入");
+                    Log.e("CVIPaperDialogUtils","倒计时结束");
+                    if(type == 4){
+                        confirm.setText("正在进入");
+                    }
                     confirm.performClick();
 
                 }
@@ -170,6 +191,10 @@ public class CVIPaperDialogUtils {
         if (confirmDialog != null && confirmDialog.isShowing()) {
             confirmDialog.dismiss();
             confirmDialog = null;
+        }
+        if(countDownTimer != null){
+            countDownTimer.cancel();
+            countDownTimer = null;
         }
     }
 

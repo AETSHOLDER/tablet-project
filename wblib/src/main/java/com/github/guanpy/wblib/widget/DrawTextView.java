@@ -115,20 +115,20 @@ public class DrawTextView extends RelativeLayout implements
             setText(mDrawPoint.getDrawText().getStr());
         }
         setLayoutParams();
-        mEtTextEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            //-------------------
-            @Override
-            public boolean onEditorAction(TextView arg0, int arg1, KeyEvent arg2) {
-                if (arg1 == EditorInfo.IME_ACTION_DONE) {
-                    switchView(TEXT_DETAIL);
-
-                    Toast.makeText(mContext, "你点了软键盘'完成'按钮",
-                            Toast.LENGTH_SHORT).show();
-                    OperationUtils.getInstance().DISABLE = true;
-                }
-                return false;
-            }
-        });
+//        mEtTextEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+//            //-------------------
+//            @Override
+//            public boolean onEditorAction(TextView arg0, int arg1, KeyEvent arg2) {
+//                if (arg1 == EditorInfo.IME_ACTION_DONE) {
+//                    switchView(TEXT_DETAIL);
+//
+//                    Toast.makeText(mContext, "你点了软键盘'完成'按钮",
+//                            Toast.LENGTH_SHORT).show();
+//                    OperationUtils.getInstance().DISABLE = true;
+//                }
+//                return false;
+//            }
+//        });
 
     }
 

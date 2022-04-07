@@ -483,6 +483,7 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
 
     @Override
     protected void initData() {
+        UDPBroadcastManager.getInstance().removeUDPBroastcast();
         //  接受UDP广播
         EventBus.getDefault().register(this);
 

@@ -35,7 +35,9 @@ public class UDPBroadcastManager {
      * 移除UDP广播
      */
     public void removeUDPBroastcast() {
-        scheduledExecutorService.shutdownNow();
+        if(scheduledExecutorService != null){
+            scheduledExecutorService.shutdownNow();
+        }
     }
 
     /**

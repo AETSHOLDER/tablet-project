@@ -36,8 +36,8 @@ import android.widget.Toast;
 
 import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.activity.ActivityImage;
-import com.example.paperlessmeeting_demo.activity.ActivityVideoView;
 import com.example.paperlessmeeting_demo.activity.PdfActivity;
+import com.example.paperlessmeeting_demo.activity.Sign.SignActivity;
 import com.example.paperlessmeeting_demo.adapter.LocationFileListAdapter;
 import com.example.paperlessmeeting_demo.base.BaseFragment;
 import com.example.paperlessmeeting_demo.bean.BasicResponse;
@@ -50,17 +50,18 @@ import com.example.paperlessmeeting_demo.bean.UserBehaviorBean;
 import com.example.paperlessmeeting_demo.network.DefaultObserver;
 import com.example.paperlessmeeting_demo.network.NetWorkManager;
 import com.example.paperlessmeeting_demo.sharefile.SocketShareFileManager;
-import com.example.paperlessmeeting_demo.tool.Define;
-import com.example.paperlessmeeting_demo.tool.FLUtil;
+import com.example.paperlessmeeting_demo.tool.CVIPaperDialogUtils;
 import com.example.paperlessmeeting_demo.tool.FileUtils;
 import com.example.paperlessmeeting_demo.tool.MediaReceiver;
+import com.example.paperlessmeeting_demo.tool.NetWorkUtils;
 import com.example.paperlessmeeting_demo.tool.TimeUtils;
-import com.example.paperlessmeeting_demo.tool.ToastUtils;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.example.paperlessmeeting_demo.tool.constant;
+import com.example.paperlessmeeting_demo.util.NetworkUtil;
 import com.example.paperlessmeeting_demo.util.ToastUtil;
 import com.example.paperlessmeeting_demo.widgets.MyListView;
 import com.orhanobut.hawk.Hawk;
+import com.snow.common.tool.utils.FastClickUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -252,6 +253,9 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if(FastClickUtils.init().isClickFast()){
+                    return;
+                }
                 FileListBean fileBean = (FileListBean) adapterView.getAdapter().getItem(i);
 
                 Log.d("requestCodeUr333", fileBean.getPath());
@@ -264,12 +268,23 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
                     intent.putExtra("isNetFile", false);
                     startActivity(intent);
                 }else if (fileBean.getFile_type().equals("4")){
-
-                     intent=new Intent(getActivity(), PdfActivity.class);
-                    Bundle bundle=new Bundle();
-                    bundle.putString("pdfPath", fileBean.getPath());
-                    intent.putExtras(bundle);
-                    getActivity().startActivity(intent);
+                    if(UserUtil.isNetworkOnline){
+                        intent = new Intent();
+                        intent.setClass(getActivity(), SignActivity.class);
+                        intent.putExtra("url", fileBean.getPath());
+                        intent.putExtra("isOpenFile", true);
+                        intent.putExtra("isNetFile", false);
+                        intent.putExtra("tempPath", false);
+                        intent.putExtra("fileName",fileBean.getName());
+                        startActivity(intent);
+                    }else {
+                        CVIPaperDialogUtils.showConfirmDialog(getActivity(), "当前无外网，会使用wps打开文件", "知道了", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                            @Override
+                            public void onClickButton(boolean clickConfirm, boolean clickCancel) {
+                                startActivity(FileUtils.openFile(fileBean.getPath(), getActivity()));
+                            }
+                        });
+                    }
                 }
 
               /*
@@ -447,7 +462,7 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
          * */
         Thread sendThread = new Thread(new Runnable() {
             @Override
-            public void run() {
+                public void run() {
 
                 if (Hawk.contains("stringsIp")) {
                     stringListIp = Hawk.get("stringsIp");
@@ -456,8 +471,6 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
                 for (int i = 0; i < stringListIp.size(); i++) {
                     socketShareFileManager.SendFile(fileNames, paths, stringListIp.get(i), constant.SHARE_PORT,"2");
                 }
-
-
             }
         });
         sendThread.start();

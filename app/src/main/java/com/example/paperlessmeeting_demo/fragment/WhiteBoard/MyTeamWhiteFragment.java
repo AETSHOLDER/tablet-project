@@ -989,7 +989,7 @@ public class MyTeamWhiteFragment extends BaseFragment implements View.OnClickLis
         }
 
 
-        CVIPaperDialogUtils.showConfirmDialog(getActivity(),title,"知道了",true,new CVIPaperDialogUtils.ConfirmDialogListener() {
+        CVIPaperDialogUtils.showCountDownConfirmDialog(getActivity(),title,"知道了",true,new CVIPaperDialogUtils.ConfirmDialogListener() {
             @Override
             public void onClickButton(boolean clickConfirm, boolean clickCancel) {
                 if(clickConfirm){

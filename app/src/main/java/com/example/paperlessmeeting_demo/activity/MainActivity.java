@@ -891,6 +891,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
                 //  客户端默认非主席
                 UserUtil.ISCHAIRMAN = false;
                 String ipUrl = getIntent().getStringExtra("ip");
+                UserUtil.serverIP = ipUrl;
                 if (!StringUtils.isEmpty(ipUrl)) {
                     UrlConstant.TempWSIPString = "ws://" + ipUrl + ":" + UrlConstant.port;
                     Log.e("临时会议", "临时会议的server IP ======" + UrlConstant.TempWSIPString);
@@ -2039,19 +2040,19 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
             startActivityForResult(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName())), 1);
         } else {
             Log.d("gfjjfghjfg", "2222点击路过！！！~");
-            bindService(new Intent(MainActivity.this, BrowserServies.class), new ServiceConnection() {
-                @Override
-                public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-                   browserServies = ((BrowserServies.MyBroadBinder) iBinder).getService();
-                }
-
-                @Override
-                public void onServiceDisconnected(ComponentName componentName) {
-
-                }
-            }, BIND_AUTO_CREATE);
-            isBroadStart = true;
-           startService(new Intent(MainActivity.this, BrowserServies.class));
+//            bindService(new Intent(MainActivity.this, BrowserServies.class), new ServiceConnection() {
+//                @Override
+//                public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+//                   browserServies = ((BrowserServies.MyBroadBinder) iBinder).getService();
+//                }
+//
+//                @Override
+//                public void onServiceDisconnected(ComponentName componentName) {
+//
+//                }
+//            }, BIND_AUTO_CREATE);
+//            isBroadStart = true;
+//           startService(new Intent(MainActivity.this, BrowserServies.class));
         }
     }
 

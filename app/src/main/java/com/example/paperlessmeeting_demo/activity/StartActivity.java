@@ -55,7 +55,7 @@ public class StartActivity extends WBBasicActivity implements EasyPermissions.Pe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.shutDownImage:
-                CVIPaperDialogUtils.showConfirmDialog(this, "确定要关机吗?", "关机", true, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                CVIPaperDialogUtils.showCustomDialog(this, "确定要关机吗?",null, "关机", true, new CVIPaperDialogUtils.ConfirmDialogListener() {
                     @Override
                     public void onClickButton(boolean clickConfirm, boolean clickCancel) {
                         if(clickConfirm){

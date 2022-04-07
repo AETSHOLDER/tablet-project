@@ -21,7 +21,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-
 import com.blankj.utilcode.util.StringUtils;
 import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.activity.WhiteBoardActivity2;
@@ -59,7 +58,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import static com.github.guanpy.wblib.utils.OperationUtils.getInstance;
@@ -1030,7 +1028,7 @@ public class MyShareWhiteFragment extends BaseFragment implements View.OnClickLi
         }
 
 
-        CVIPaperDialogUtils.showConfirmDialog(getActivity(),title,"知道了",true,new CVIPaperDialogUtils.ConfirmDialogListener() {
+        CVIPaperDialogUtils.showCountDownConfirmDialog(getActivity(),title,"知道了",true,new CVIPaperDialogUtils.ConfirmDialogListener() {
             @Override
             public void onClickButton(boolean clickConfirm, boolean clickCancel) {
                 if(clickConfirm){
