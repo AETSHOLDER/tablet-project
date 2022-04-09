@@ -49,6 +49,7 @@ import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.activity.ActivityImage;
 import com.example.paperlessmeeting_demo.activity.EditWuHuActivity;
 import com.example.paperlessmeeting_demo.activity.PdfActivity;
+import com.example.paperlessmeeting_demo.activity.Sign.SignActivity;
 import com.example.paperlessmeeting_demo.adapter.WuHuFileListAdapter;
 import com.example.paperlessmeeting_demo.adapter.WuHuListAdapter;
 import com.example.paperlessmeeting_demo.base.BaseFragment;
@@ -63,7 +64,9 @@ import com.example.paperlessmeeting_demo.enums.MessageReceiveType;
 import com.example.paperlessmeeting_demo.network.DefaultObserver;
 import com.example.paperlessmeeting_demo.network.NetWorkManager;
 import com.example.paperlessmeeting_demo.sharefile.SocketShareFileManager;
+import com.example.paperlessmeeting_demo.tool.CVIPaperDialogUtils;
 import com.example.paperlessmeeting_demo.tool.FLUtil;
+import com.example.paperlessmeeting_demo.tool.FileUtils;
 import com.example.paperlessmeeting_demo.tool.MediaReceiver;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.EventMessage;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.JWebSocketClientService;
@@ -283,11 +286,29 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                     startActivity(intent);
                 }else if (fileBean.getFile_type().equals("4")){
 
-                    intent=new Intent(getActivity(), PdfActivity.class);
+                    if(UserUtil.isNetworkOnline){
+                        intent = new Intent();
+                        intent.setClass(getActivity(), SignActivity.class);
+                        intent.putExtra("url", fileBean.getPath());
+                        intent.putExtra("isOpenFile", true);
+                        intent.putExtra("isNetFile", false);
+                        intent.putExtra("tempPath", false);
+                        intent.putExtra("fileName",fileBean.getName());
+                        startActivity(intent);
+                    }else {
+                        CVIPaperDialogUtils.showConfirmDialog(getActivity(), "当前无外网，会使用wps打开文件", "知道了", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                            @Override
+                            public void onClickButton(boolean clickConfirm, boolean clickCancel) {
+                                startActivity(FileUtils.openFile(fileBean.getPath(), getActivity()));
+                            }
+                        });
+                    }
+
+                 /*   intent=new Intent(getActivity(), PdfActivity.class);
                     Bundle bundle=new Bundle();
                     bundle.putString("pdfPath", fileBean.getPath());
                     intent.putExtras(bundle);
-                    getActivity().startActivity(intent);
+                    getActivity().startActivity(intent);*/
                 }
 
               /*

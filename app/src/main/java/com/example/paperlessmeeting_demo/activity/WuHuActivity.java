@@ -1,6 +1,8 @@
 package com.example.paperlessmeeting_demo.activity;
 
 import com.blankj.utilcode.util.StringUtils;
+import com.example.paperlessmeeting_demo.activity.Sign.SignActivity;
+import com.example.paperlessmeeting_demo.activity.Sign.SignListActivity;
 import com.example.paperlessmeeting_demo.adapter.WuHuListAdapter;
 import com.example.paperlessmeeting_demo.base.BaseActivity;
 
@@ -73,6 +75,9 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
     RelativeLayout edit_name_rl;
     @BindView(R.id.vote_ll)
     RelativeLayout vote_ll;
+    @BindView(R.id.consult_ll)
+    RelativeLayout consult_ll;
+
     private Dialog dialog;
     @BindView(R.id.comfirm)
     ImageView comfirm;
@@ -165,11 +170,11 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
             String  n=Hawk.get(constant.myNumber);
             name.setText(n);
         }
-
-        edit_ll.setOnClickListener(this);
         edit_rl.setOnClickListener(this);
+        edit_ll.setOnClickListener(this);
         comfirm.setOnClickListener(this);
         vote_ll.setOnClickListener(this);
+        consult_ll.setOnClickListener(this);
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mBtnDelete = (Button) findViewById(R.id.btn_delete);
         mBtnAdd = (Button) findViewById(R.id.btn_add);
@@ -233,11 +238,16 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
     public void onClick(View v) {
         Intent intent;
         switch (v.getId()){
-            case  R.id.edit_ll:
-                showRightDialog();
+            case  R.id.consult_ll:
+                 intent = new Intent(WuHuActivity.this, SignListActivity.class);
+                startActivity(intent);
+
                 break;
             case R.id.edit_rl:
                 edit_name_rl.setVisibility(View.VISIBLE);
+                break;
+            case R.id.edit_ll:
+                showRightDialog();
                 break;
             case R.id.comfirm:
                 edit_name_rl.setVisibility(View.GONE);
