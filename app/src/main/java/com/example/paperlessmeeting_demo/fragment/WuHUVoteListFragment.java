@@ -125,7 +125,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
         if (UserUtil.ISCHAIRMAN) {
             return R.layout.activity_wuhu_vote_list_chairman;
         } else {
-            return R.layout.activity_vote_list;
+            return R.layout.activity_wuhu_vote_list_chairman;
         }
     }
 
