@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="20dp"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/text_chose"
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="40dp"
+        android:gravity="right"
+        android:text="选项1:"
+        style="@style/option_form_tv" />
+
+    <EditText
+        android:id="@+id/edit_text"
+        style="@style/option_form_tv"
+        android:layout_width="140dp"
+        android:layout_height="65dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="10dp"
+        android:visibility="gone"
+        android:layout_toLeftOf="@+id/add_chose"
+        android:layout_toRightOf="@+id/text_chose"
+        android:background="@android:drawable/editbox_background_normal"
+        android:hint="请输入"
+        android:textColorHint="#7c7c7c" />
+    <ImageView
+        android:id="@+id/option_ima"
+        android:layout_width="300dp"
+        android:layout_height="80dp"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:scaleType="fitCenter"
+        android:src="@mipmap/ic_option"
+        android:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/dete_option_ima"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:scaleType="fitCenter"
+        android:src="@mipmap/ic_dele_wuhu_options_ima" />
+
+    <RelativeLayout
+        android:id="@+id/option_ima_rl"
+        android:layout_width="300dp"
+        android:layout_height="80dp"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/add_chose">
+
+
+    </RelativeLayout>
+
+
+    <ImageView
+        android:id="@+id/add_delet"
+        android:layout_width="53dp"
+        android:layout_height="53dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="102dp"
+        android:scaleType="fitXY"
+        android:src="@mipmap/ic_minu_wuhu_options" />
+
+    <ImageView
+        android:id="@+id/add_chose"
+        android:layout_width="53dp"
+        android:layout_height="53dp"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="13dp"
+        android:layout_toLeftOf="@+id/add_delet"
+        android:scaleType="fitXY"
+        android:src="@mipmap/ic_add_wuhu_options" />
+
+    <ImageView
+        android:id="@+id/chose_ima_tv"
+        android:layout_width="66dp"
+        android:visibility="gone"
+        android:layout_height="66dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="-85dp"
+        android:layout_toRightOf="@id/add_delet"
+        android:scaleType="fitXY"
+        android:src="@mipmap/ic_chose_ima" />
+
+</RelativeLayout>

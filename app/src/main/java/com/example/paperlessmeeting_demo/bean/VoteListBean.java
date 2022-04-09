@@ -49,6 +49,24 @@ public class VoteListBean implements Serializable {
         private String create_time;
         private List<String> options;
         private List<UserListBean> user_list;
+        private String flag;
+        private   List<TemporBean> temporBeanList;
+
+        public List<TemporBean> getTemporBeanList() {
+            return temporBeanList;
+        }
+
+        public void setTemporBeanList(List<TemporBean> temporBeanList) {
+            this.temporBeanList = temporBeanList;
+        }
+
+        public String getFlag() {
+            return flag;
+        }
+
+        public void setFlag(String flag) {
+            this.flag = flag;
+        }
 
         //  手动新增加,判断我当前的投票状态，用这个来判断，不要用上面的status
         private int mvoteStatus;
@@ -250,7 +268,57 @@ public class VoteListBean implements Serializable {
                 this.dept_id = dept_id;
             }
         }
+        //临时存放选项状态及选项
+        public static class TemporBean {
 
+            private String content;
+            private boolean isChecked;
+            private String userName;
+            private String choosWhich;
+            private String  orderNumb;
+
+            public String getOrderNumb() {
+                return orderNumb;
+            }
+
+            public void setOrderNumb(String orderNumb) {
+                this.orderNumb = orderNumb;
+            }
+
+            public String getContent() {
+                return content;
+            }
+
+            public void setContent(String content) {
+                this.content = content;
+            }
+
+            public boolean isChecked() {
+                return isChecked;
+            }
+
+            public void setChecked(boolean checked) {
+                isChecked = checked;
+            }
+
+            public String getUserName() {
+                return userName;
+            }
+
+            public void setUserName(String userName) {
+                this.userName = userName;
+            }
+
+            public String getChoosWhich() {
+                return choosWhich;
+            }
+
+            public void setChoosWhich(String choosWhich) {
+                this.choosWhich = choosWhich;
+            }
+
+
+        }
         public static class UserListBean {
             /**
              * choose : []
@@ -269,7 +337,7 @@ public class VoteListBean implements Serializable {
             private String user_avtar;
             private String vote_time;
             private List<String> choose;
-
+            private  List<ChoseBean> choseBeanList;
             public String getStatus() {
                 return status;
             }
@@ -324,6 +392,62 @@ public class VoteListBean implements Serializable {
 
             public void setChoose(List<String> choose) {
                 this.choose = choose;
+            }
+
+
+            public List<ChoseBean> getChoseBeanList() {
+                return choseBeanList;
+            }
+
+            public void setChoseBeanList(List<ChoseBean> choseBeanList) {
+                this.choseBeanList = choseBeanList;
+            }
+            public static class ChoseBean{
+                private String content;
+                private boolean isChecked;
+                private String userName;
+                private String choosWhich;
+                private String  orderNumb;
+
+                public String getOrderNumb() {
+                    return orderNumb;
+                }
+
+                public void setOrderNumb(String orderNumb) {
+                    this.orderNumb = orderNumb;
+                }
+
+                public String getContent() {
+                    return content;
+                }
+
+                public void setContent(String content) {
+                    this.content = content;
+                }
+
+                public boolean isChecked() {
+                    return isChecked;
+                }
+
+                public void setChecked(boolean checked) {
+                    isChecked = checked;
+                }
+
+                public String getUserName() {
+                    return userName;
+                }
+
+                public void setUserName(String userName) {
+                    this.userName = userName;
+                }
+
+                public String getChoosWhich() {
+                    return choosWhich;
+                }
+
+                public void setChoosWhich(String choosWhich) {
+                    this.choosWhich = choosWhich;
+                }
             }
         }
     }

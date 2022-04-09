@@ -1,9 +1,19 @@
 package com.example.paperlessmeeting_demo.bean;
 
-public class ChoseBean {
+import java.io.Serializable;
+
+public class ChoseBean extends Object implements Serializable {
     private String content;
     private boolean isChecked;
+    private String  orderNumb;
 
+    public String getOrderNumb() {
+        return orderNumb;
+    }
+
+    public void setOrderNumb(String orderNumb) {
+        this.orderNumb = orderNumb;
+    }
     public String getContent() {
         return content;
     }

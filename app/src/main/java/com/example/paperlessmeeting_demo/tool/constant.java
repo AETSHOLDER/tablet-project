@@ -54,6 +54,10 @@ public class constant {
      * websocket 字段定义
      */
     public final static String QUERYVOTE = "queryVote";//查询投票数据
+    public final static String REFRASHWuHUSIGLEDATA = "refreshdata";//更新单个芜湖数据
+    public final static String WUHUADDFRAGMENT = "addfragments";//普通参会人员新增芜湖fragment
+    public final static String REFRASHWuHUALL = "refreshdataALL";//更新所有芜湖数据fragment
+
     public final static String NEWVOTE = "newVote";//新增投票数据
     public final static String UPDATEVOTE = "updateVote";//更新投票数据
     public final static String FINISHVOTE = "finishVote";//结束投票数据
@@ -84,6 +88,9 @@ public class constant {
     public final static String SHARE_FILE = "/shareFile/";//临时会议分享的文件存储文件夹
     public final static int SHARE_PORT = 9999;////临时会议分享的文件端口
     public final static String SHARE_FILE_BROADCAST = "sharefile";////临时会议分享文件成功后，通知会议更新文件列表
+    public final static String ADD_FRAGMENT_BROADCAST = "addfragment";////增加芜湖fragment
+    public final static String SAVE_SEPARATELY_BROADCAST = "save_separately ";//从议题列表中单独保存某个会议议题
+    public final static String REFRESH_BROADCAST = "refresh_ui";//自己刷新芜湖界面
     public final static String FINISH_SHARE_SCREEN_BROADCAST = "finishscreen";////结束同屏广播
     public final static String SHARE_FILE_IP = "share  file ip";//socket 临时会议分享文件收集设备IP全局标识
     public final static String TEMP_MEETINGSHARE_FILE = "TEMP_MEETINGSHARE_FILE";//socket 临时会议分享文件到其他设备标识
@@ -91,6 +98,8 @@ public class constant {
     public final static String FINISH_SHARE_SCEEN = "finish  share screen";//socket 结束同屏标识
     public final static String START_SHARE_SCEEN = "video";//socket 开始同屏标识
     public final static String INIATE_ENDORSEMENT = "initiate endorsement";//socket 秘书发起签批时，普通会员自动打开签名页面
+
+    public final static String FINISH_WUHUVOTEACTIVITY_BROADCAST = "finishactivity";//自己刷新芜湖界面
     /**
      * 发言单元
      */

@@ -40,6 +40,7 @@ import com.example.paperlessmeeting_demo.bean.CreateFileBeanResponse;
 import com.example.paperlessmeeting_demo.bean.MeetingInfoBean;
 import com.example.paperlessmeeting_demo.bean.PaperlessBean;
 import com.example.paperlessmeeting_demo.bean.UploadBean;
+import com.example.paperlessmeeting_demo.bean.WuHuEditBean;
 import com.example.paperlessmeeting_demo.enums.MessageReceiveType;
 import com.example.paperlessmeeting_demo.fragment.ExtraordMeetingFragment;
 import com.example.paperlessmeeting_demo.fragment.SweepCodeFragment;
@@ -203,6 +204,14 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
 
     @Override
     protected void initView() {
+
+        //如芜湖数据存在则清除
+        if (Hawk.contains("WuHuFragmentData")){
+            Hawk.delete("WuHuFragmentData");
+        }
+        //重新创建芜湖数据
+        WuHuEditBean wuHuEditBean=new WuHuEditBean();
+        Hawk.put("WuHuFragmentData",wuHuEditBean);
        agendaRl=(RelativeLayout) findViewById(R.id.agenda_rl);
        loginLeft=(LinearLayout) findViewById(R.id.login_left);
         //删除临时会议分享文件文件夹
@@ -286,7 +295,7 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
                                 ToastUtils.showToast(LoginActivity.this,"该会议已结束!!!");
                                 return;
                             }
-                            Intent intent1 = new Intent(LoginActivity.this, MainActivity.class);
+                                Intent intent1 = new Intent(LoginActivity.this, WuHuActivity.class);
                             intent1.putExtra("ip", ip);
                             startActivity(intent1);
                         }
@@ -456,6 +465,7 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
     }
 
     private void getMacIsRegister() {
+
         NetWorkManager.getInstance().getNetWorkApiService().findPaperLessInfo(FLUtil.getMacAddress().toLowerCase()).compose(this.<BasicResponse<PaperlessBean>>bindToLifecycle())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -466,6 +476,7 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
                             PaperlessBean paperlessBean = response.getData();
                             if(!Hawk.contains(constant.myNumber)){
                                 Hawk.put(constant.myNumber,paperlessBean.getNumber());
+
                             }
                         }
                     }

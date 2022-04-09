@@ -247,6 +247,46 @@ public class JWebSocketClientService {
 
                     }
                 }
+
+                //  芜湖增加fragment
+                if (message.contains("addfragments") || message.contains(constant.WUHUADDFRAGMENT)) {
+                    if (topActivity != null) {
+                     /*
+                        Intent intent = new Intent();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("fileType", fileType);
+                        intent.putExtras(bundle);
+                        intent.setAction(constant.SHOW_CLOSE_SERVICE_BROADCAST);
+                        this.sendBroadcast(intent);*/
+
+                    }
+                }
+                //  芜湖更新某个fragment
+                if (message.contains("refreshdata") || message.contains(constant.REFRASHWuHUSIGLEDATA)) {
+                    if (topActivity != null) {
+                     /*
+                        Intent intent = new Intent();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("fileType", fileType);
+                        intent.putExtras(bundle);
+                        intent.setAction(constant.SHOW_CLOSE_SERVICE_BROADCAST);
+                        this.sendBroadcast(intent);*/
+
+                    }
+                }
+                //  芜湖更新所有fragment
+                if (message.contains("refreshdataALL") || message.contains(constant.REFRASHWuHUALL)) {
+                    if (topActivity != null) {
+                     /*
+                        Intent intent = new Intent();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("fileType", fileType);
+                        intent.putExtras(bundle);
+                        intent.setAction(constant.SHOW_CLOSE_SERVICE_BROADCAST);
+                        this.sendBroadcast(intent);*/
+
+                    }
+                }
                 //  会议结束
                 if (message.contains(constant.MEETINGFINISH)) {
                     try {

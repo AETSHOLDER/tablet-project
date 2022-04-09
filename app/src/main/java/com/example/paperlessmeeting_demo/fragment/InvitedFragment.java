@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.alimuzaffar.lib.pin.PinEntryEditText;
 import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.activity.MainActivity;
+import com.example.paperlessmeeting_demo.activity.WuHuActivity;
 import com.example.paperlessmeeting_demo.base.BaseFragment;
 import com.example.paperlessmeeting_demo.bean.UserBehaviorBean;
 import com.example.paperlessmeeting_demo.tool.TimeUtils;
@@ -76,7 +77,7 @@ public class InvitedFragment extends BaseFragment {
         entryMeet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), MainActivity.class);
+                Intent intent = new Intent(getActivity(), WuHuActivity.class);
                 startActivity(intent);
             }
         });

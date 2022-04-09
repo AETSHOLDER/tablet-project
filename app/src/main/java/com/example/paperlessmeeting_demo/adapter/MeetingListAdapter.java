@@ -40,6 +40,7 @@ public class MeetingListAdapter extends BaseAdapter {
     }
 
     public List<AttendeBean> getGridViewBeanList() {
+
         return gridViewBeanList;
     }
 

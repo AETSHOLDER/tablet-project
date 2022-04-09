@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    >
+
+    <TextView
+        android:id="@+id/tittle_pos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1"
+        android:gravity="center"
+        android:textColor="#ff5a5a5a"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="15dp"
+        android:textSize="33sp"
+        />
+
+    <LinearLayout
+        android:id="@+id/edit_rl"
+        android:layout_width="match_parent"
+        android:layout_height="255dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_toRightOf="@id/tittle_pos"
+        android:background="@drawable/bg_item_wuhu"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="21dp"
+            android:layout_marginTop="15dp">
+
+            <TextView
+                android:id="@+id/aa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:text="会议议题："
+                android:textColor="#ff1d1d1d"
+                android:textSize="30sp" />
+
+            <EditText
+                android:id="@+id/tittle2"
+                android:layout_width="match_parent"
+                android:layout_height="53dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"
+                android:layout_toRightOf="@id/aa"
+                android:background="@drawable/bg_wuhu_edit"
+                android:gravity="left"
+                android:hint="请输入…"
+                android:paddingLeft="23dp"
+                android:textColor="#ff1d1d1d"
+                android:textSize="30sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="21dp"
+            android:layout_marginTop="13dp"
+            android:layout_marginBottom="15dp">
+
+            <TextView
+                android:id="@+id/bb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:text="参会人员："
+                android:textColor="#ff1d1d1d"
+                android:textSize="30sp" />
+
+            <EditText
+                android:id="@+id/tittle3"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"
+                android:layout_toRightOf="@id/bb"
+                android:background="@drawable/bg_wuhu_edit"
+                android:gravity="left"
+                android:hint="请输入…"
+                android:paddingLeft="23dp"
+                android:paddingTop="10dp"
+                android:textColor="#ff1d1d1d"
+                android:textSize="30sp" />
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/save"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_below="@id/edit_rl"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="28dp"
+        android:layout_marginBottom="3dp"
+        android:background="@drawable/bg_wuhu_edit_confirm"
+        android:gravity="center"
+        android:paddingLeft="39dp"
+        android:paddingRight="39dp"
+        android:text="保 存"
+        android:textColor="#ffffffff"
+        android:textSize="30sp" />
+</RelativeLayout>

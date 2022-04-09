@@ -25,21 +25,20 @@
         android:layout_width="wrap_content"
         android:layout_height="80dp"
         android:layout_below="@+id/main_title_tv"
-        android:layout_marginTop="10dp"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
         android:gravity="top"
         android:text="汇报单位:  江苏中协"
         android:textColor="#3F3932"
-        android:textSize="60sp">
-    </TextView>
+        android:textSize="60sp"></TextView>
 
     <ImageView
         android:id="@+id/image_add"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_below="@+id/sub_title_tv"
-        android:layout_marginTop="90dp"
         android:layout_alignParentRight="true"
+        android:layout_marginTop="90dp"
         android:layout_marginRight="180dp"
         android:src="@mipmap/ic_add_usb" />
 

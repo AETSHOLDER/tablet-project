@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_trans"
+    android:minHeight="30dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/layout_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="26dp"
+        android:background="@color/color_trans"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingRight="12dp">
+     <TextView
+    android:id="@+id/orderNumb"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+         android:textColor="@color/color_textBlack2b"
+         android:textSize="30sp"
+    />
+        <ImageView
+            android:id="@+id/iv_check_state"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="25dp"
+            android:src="@drawable/radio_unselected" />
+
+        <TextView
+            android:id="@+id/tv_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:text="1111111111111111111111"
+            android:textColor="@color/color_textBlack2b"
+            android:textSize="30sp" />
+
+        <ImageView
+            android:id="@+id/ima_content"
+            android:layout_width="300dp"
+            android:layout_height="224dp"
+            android:layout_marginLeft="30dp"
+            android:scaleType="centerInside"
+            android:src="@mipmap/ic_option"
+            android:visibility="gone" />
+    </LinearLayout>
+</LinearLayout>

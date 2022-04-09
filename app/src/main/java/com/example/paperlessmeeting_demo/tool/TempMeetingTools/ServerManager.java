@@ -6,6 +6,7 @@ import android.util.Log;
 import com.example.paperlessmeeting_demo.bean.AttendeBean;
 import com.example.paperlessmeeting_demo.bean.TempWSBean;
 import com.example.paperlessmeeting_demo.bean.VoteListBean;
+import com.example.paperlessmeeting_demo.bean.WuHuEditBean;
 import com.example.paperlessmeeting_demo.enums.MessageReceiveType;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.EventMessage;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.MyWebSocketServer;
@@ -207,7 +208,56 @@ public class ServerManager {
         if(message.contains(constant.TEMPTEAM) || message.contains(constant.TEMPTEAMREQ)){
             SendWBMsgToAll(message);
         }
+        // 芜湖新增fragment
+        if(message.contains(constant.WUHUADDFRAGMENT)){
+            try {
+                TempWSBean<WuHuEditBean> wsebean = new Gson().fromJson(message, new TypeToken<TempWSBean<WuHuEditBean>>(){}.getType());
+                WuHuEditBean wuHuEditBean = wsebean.getBody();
+                TempWSBean wsebean1 = new TempWSBean();
+                wsebean1.setReqType(1);
+                wsebean1.setUserMac_id("");
+                wsebean1.setPackType(constant.WUHUADDFRAGMENT);
+                wsebean1.setBody(wuHuEditBean);
+                String strJson = new Gson().toJson(wsebean1);
+                SendMessageToAll(strJson);
 
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        // 刷新单个芜湖新增fragment
+        if(message.contains(constant.REFRASHWuHUSIGLEDATA)){
+            try {
+                TempWSBean<WuHuEditBean> wsebean = new Gson().fromJson(message, new TypeToken<TempWSBean<WuHuEditBean>>(){}.getType());
+                WuHuEditBean wuHuEditBean = wsebean.getBody();
+                TempWSBean wsebean1 = new TempWSBean();
+                wsebean1.setReqType(1);
+                wsebean1.setUserMac_id("");
+                wsebean1.setPackType(constant.REFRASHWuHUSIGLEDATA);
+                wsebean1.setBody(wuHuEditBean);
+                String strJson = new Gson().toJson(wsebean1);
+                SendMessageToAll(strJson);
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        // 更新芜湖所有fragment
+        if(message.contains(constant.REFRASHWuHUALL)){
+            try {
+                TempWSBean<WuHuEditBean> wsebean = new Gson().fromJson(message, new TypeToken<TempWSBean<WuHuEditBean>>(){}.getType());
+                WuHuEditBean wuHuEditBean = wsebean.getBody();
+                TempWSBean wsebean1 = new TempWSBean();
+                wsebean1.setReqType(1);
+                wsebean1.setUserMac_id("");
+                wsebean1.setPackType(constant.REFRASHWuHUALL);
+                wsebean1.setBody(wuHuEditBean);
+                String strJson = new Gson().toJson(wsebean1);
+                SendMessageToAll(strJson);
+
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         EventMessage msg = new EventMessage(MessageReceiveType.MessageServer,message);
         EventBus.getDefault().post(msg);
     }

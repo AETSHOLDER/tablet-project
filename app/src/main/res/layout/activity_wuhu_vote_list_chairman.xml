@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/bgColor">
+    <!--老版无纸化投票 tittle start-->
+        <RelativeLayout
+            android:id="@+id/title_view"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+           android:visibility="gone"
+            android:background="@color/color_E6E9F0">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="76dp"
+                android:layout_marginStart="76dp"
+                android:text="名称"
+                android:textAlignment="center"
+                android:textColor="@color/color_textBlack"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="402dp"
+                android:layout_marginRight="402dp"
+                android:text="状态"
+                android:textAlignment="center"
+                android:textColor="@color/color_textBlack"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+
+            <com.example.paperlessmeeting_demo.widgets.DrawableTextView
+                android:id="@+id/new_vote"
+                android:layout_width="60dp"
+                android:layout_height="50dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="45dp"
+                android:background="@color/color_trans"
+                android:drawableLeft="@mipmap/new_vote"
+                android:drawablePadding="3dp"
+                android:text="新增"
+                android:gravity="center"
+                android:textColor="@color/color_textBlue"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="65dp"
+                android:layout_toLeftOf="@id/new_vote"
+                android:text="操作"
+                android:textAlignment="center"
+                android:textColor="@color/color_textBlack"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+
+            <com.scwang.smart.refresh.header.ClassicsHeader
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginEnd="0dp"
+                android:layout_marginTop="0dp"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+        <!--老版无纸化投票 tittle end-->
+        <!--新版芜湖无纸化投票 tittle start-->
+        <RelativeLayout
+            android:id="@+id/huwu_ttile"
+            android:layout_width="match_parent"
+            android:layout_height="93dp"
+            android:background="#fff">
+
+            <LinearLayout
+                android:id="@+id/back_ll"
+                android:layout_width="80dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="35dp"
+                android:layout_centerVertical="true">
+
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:scaleType="fitCenter"
+                    android:src="@mipmap/ic_wuhu_back" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="投票"
+                android:textColor="#ff1d1d1d"
+                android:textSize="35sp" />
+
+            <RelativeLayout
+                android:id="@+id/add_wuhu_vote_rl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="80dp">
+
+                <ImageView
+                    android:id="@+id/add_wuhu_vote"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_centerVertical="true"
+                    android:scaleType="fitCenter"
+                    android:src="@mipmap/ic_add_wuhu_vote_un" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@id/add_wuhu_vote"
+                    android:gravity="center"
+                    android:text="新增"
+                    android:textColor="#ff1d1d1d"
+                    android:textSize="35sp" />
+            </RelativeLayout>
+        </RelativeLayout>
+        <!--新版芜湖无纸化投票 tittle end-->
+
+        <com.scwang.smart.refresh.layout.SmartRefreshLayout
+            android:id="@+id/vote_refreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/huwu_ttile"
+            android:background="@mipmap/bg_wuhu_home2"
+            app:srlEnableHeaderTranslationContent="false"
+            app:srlEnableNestedScrolling="true"
+            app:srlEnablePreviewInEditMode="false">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycle_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginRight="580dp"
+                android:layout_marginLeft="580dp"
+                >
+
+            </android.support.v7.widget.RecyclerView>
+
+            <!--            <com.scwang.smart.refresh.layout.footer.ClassicsFooter-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content" />-->
+        </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+        >
+        <LinearLayout
+            android:id="@+id/vote_type_ll"
+            android:layout_width="400dp"
+            android:layout_height="120dp"
+            android:weightSum="2"
+            android:layout_below="@+id/huwu_ttile"
+            android:layout_marginTop="110dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="60dp"
+            android:orientation="horizontal"
+            >
+            <RelativeLayout
+                android:id="@+id/vote_imag_rl"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/bg_wuhu_add"
+                >
+
+                <ImageView
+                    android:id="@+id/aa"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_centerVertical="true"
+                    android:scaleType="fitCenter"
+                    android:src="@mipmap/ic_wuhu_vote_ima" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="12dp"
+                    android:layout_toRightOf="@id/aa"
+                    android:text="图片"
+                    android:textColor="#ff1d1d1d"
+                    android:textSize="35sp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/vote_text_rl"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/bg_wuhu_add"
+                >
+
+                <ImageView
+                    android:id="@+id/bb"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_centerVertical="true"
+                    android:scaleType="fitCenter"
+                    android:src="@mipmap/ic_wuhu_vote_text" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/bb"
+                    android:text="文字"
+                    android:layout_marginLeft="12dp"
+                    android:layout_centerVertical="true"
+                    android:textColor="#ff1d1d1d"
+                    android:textSize="35sp"
+                    />
+            </RelativeLayout>
+
+        </LinearLayout>
+    </RelativeLayout>
+
+
+</RelativeLayout>

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_content"
+    android:layout_width="match_parent"
+    android:background="@drawable/bg_shape_white"
+    android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginTop="30dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/avater_img"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:visibility="gone"
+                    android:layout_marginLeft="60dp"
+                    android:background="@drawable/shape_corner_avater"
+                    android:src="@mipmap/avater_default" />
+
+
+                <TextView
+                    android:id="@+id/endtimeClock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/avater_img"
+                    android:layout_marginLeft="60dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/avater_img"
+                    android:text="距离结束还剩 10:50"
+                    android:textColor="@color/color_textBlack"
+                    android:textSize="35sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/danxaun"
+                    android:layout_width="78dp"
+                    android:layout_height="34dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="12dp"
+                    android:layout_toRightOf="@+id/endtimeClock"
+                    android:background="@drawable/rectangle_yellow"
+                    android:scaleType="fitXY"
+                    android:text="单选"
+                    android:textColor="@color/alertdialog_danxuan_yellow"
+                    android:textSize="24sp"></Button>
+
+                <Button
+                    android:id="@+id/niming"
+                    android:layout_width="78dp"
+                    android:layout_height="34dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/danxaun"
+                    android:background="@drawable/rectangle_blue"
+                    android:scaleType="fitXY"
+
+                    android:text="匿名"
+                    android:textColor="@color/alertdialog_niming_blue"
+                    android:textSize="24sp"></Button>
+
+                <TextView
+                    android:id="@+id/creator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="80dp"
+                    android:text="发起人：吴呆呆"
+                    android:textColor="@color/color_textBlack65"
+                    android:textSize="33sp"
+                    android:textStyle="normal" />
+
+
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/alertdialog_line"
+                android:padding="50dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="50dp"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:text="投票内容投票内容投票内容投票内容投票内容投票内容投票内容投票内容投票内容投票内容投票"
+                    android:textColor="@color/color_textBlack2b"
+                    android:textSize="34sp"
+                    android:textStyle="normal" />
+
+                <ListView
+                    android:id="@+id/listview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/title"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="50dp"
+                    android:background="@color/bgColor"
+                    android:divider="#00000000"
+                    android:listSelector="@drawable/trans_bg"
+                    android:scrollIndicators="none"
+                    android:scrollbars="none"></ListView>
+
+            </LinearLayout>
+
+            <TextView
+                style="@style/HorizontalLine"
+                android:padding="50dp"
+                android:visibility="gone"
+                />
+
+
+        </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginBottom="80dp"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:id="@+id/btn_neg"
+            android:layout_width="124dp"
+            android:layout_height="62dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="66dp"
+            android:background="@drawable/alert_cancle_btn_border"
+            android:text="取消"
+            android:textAlignment="center"
+            android:textColor="@color/color_textBlue"
+            android:textSize="30sp" />
+
+        <Button
+            android:id="@+id/btn_pos"
+            android:layout_width="152dp"
+            android:layout_height="62dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:layout_toLeftOf="@+id/btn_neg"
+            android:background="@drawable/alert_sure_btn_border"
+            android:text="投票"
+            android:textAlignment="center"
+            android:textColor="@color/bgColor"
+            android:textSize="30sp" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.activity.MainActivity;
+import com.example.paperlessmeeting_demo.activity.WuHuActivity;
 import com.example.paperlessmeeting_demo.base.BaseFragment;
 import com.example.paperlessmeeting_demo.bean.UserBehaviorBean;
 import com.example.paperlessmeeting_demo.enums.MessageReceiveType;
@@ -259,7 +260,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                 //  判断receiveIPArr是否被清了
                 if(UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr.size() >= currentSelIndex+1){
                     List<String> ipcodeInfo = FLUtil.dealUDPMsg(UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr.get(currentSelIndex));
-                    Intent intent1 = new Intent(getActivity(), MainActivity.class);
+                    Intent intent1 = new Intent(getActivity(), WuHuActivity.class);
                     intent1.putExtra("ip", ipcodeInfo.get(0));
 //                        intent1.putExtra("code",ipcodeInfo.get(1));
                     startActivity(intent1);
@@ -353,7 +354,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                                 UserUtil.isTempMeeting = true;
                                 Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageClient);
 
-                                Intent intent1 = new Intent(getActivity(), MainActivity.class);
+                                Intent intent1 = new Intent(getActivity(), WuHuActivity.class);
 
                                 List<String> ipcodeInfo = FLUtil.dealUDPMsg(UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr.get(index));
                                 intent1.putExtra("ip", ipcodeInfo.get(0));
@@ -373,7 +374,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                                 initMeetingDialog.dismiss();
                                 UserUtil.isTempMeeting = true;
                                 Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
-                                Intent intent = new Intent(getActivity(), MainActivity.class);
+                                Intent intent = new Intent(getActivity(), WuHuActivity.class);
                                 intent.putExtra("code", content);
                                 startActivity(intent);
 
@@ -386,7 +387,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                 initMeetingDialog.dismiss();
                 UserUtil.isTempMeeting = true;
                 Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
-                Intent intent = new Intent(getActivity(), MainActivity.class);
+                Intent intent = new Intent(getActivity(), WuHuActivity.class);
                 intent.putExtra("code", content);
                 startActivity(intent);
 

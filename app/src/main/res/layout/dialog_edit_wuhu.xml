@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dialg_rl_root"
+    android:layout_width="776dp"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    >
+
+    <EditText
+        android:id="@+id/company_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="185dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginRight="185dp"
+        android:background="@drawable/bg_wuhu_edit"
+        android:gravity="center"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="南京某某公司"
+        android:textColor="#ff1d1d1d"
+        android:textSize="42sp" />
+
+    <EditText
+        android:id="@+id/tittle2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/company_name"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="185dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="185dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:background="@drawable/bg_wuhu_edit"
+        android:gravity="center"
+        android:text="会议纪要"
+        android:textColor="#ff1d1d1d"
+        android:textSize="42sp" />
+
+    <View
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_below="@id/tittle2"
+        android:layout_marginLeft="56dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginRight="56dp"
+        android:background="#EA4318" />
+<RelativeLayout
+    android:id="@+id/color_rl"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/line"
+    android:layout_marginTop="15dp"
+    >
+
+    <TextView
+        android:id="@+id/aa"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="56dp"
+        android:gravity="center"
+        android:text="横线颜色："
+        android:textColor="#ff1d1d1d"
+        android:textSize="33sp" />
+
+    <RadioGroup
+        android:id="@+id/line_colors"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/aa"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:orientation="horizontal"
+        >
+
+        <RadioButton
+            android:id="@+id/color_rb1"
+            android:layout_width="60dp"
+            android:layout_height="35dp"
+            android:background="@drawable/radiobutton_background_checked"
+            android:button="@null" />
+
+        <RadioButton
+            android:id="@+id/color_rb2"
+            android:layout_width="60dp"
+            android:layout_height="35dp"
+            android:layout_marginLeft="27dp"
+            android:background="@drawable/radiobutton_background_checked2"
+            android:button="@null" />
+    </RadioGroup>
+</RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/theme_colors_rl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/color_rl"
+        android:layout_marginTop="15dp"
+        >
+
+        <TextView
+            android:id="@+id/bb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="56dp"
+            android:gravity="center"
+            android:text="主  题  色："
+            android:textColor="#ff1d1d1d"
+            android:textSize="33sp" />
+
+        <RadioGroup
+            android:id="@+id/theme_colors"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/bb"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:orientation="horizontal"
+            >
+            <RadioButton
+                android:id="@+id/color_rb3"
+                android:layout_width="60dp"
+                android:layout_height="35dp"
+                android:background="@mipmap/bg_radiobutton3"
+                android:button="@null"
+                />
+
+            <RadioButton
+                android:id="@+id/color_rb4"
+                android:layout_width="60dp"
+                android:layout_height="35dp"
+                android:layout_marginLeft="27dp"
+                android:background="@mipmap/bg_radiobutton4"
+                android:button="@null"
+                />
+            <RadioButton
+                android:id="@+id/color_rb5"
+                android:layout_width="60dp"
+                android:layout_height="35dp"
+                android:layout_marginLeft="27dp"
+                android:background="@drawable/radiobutton_background_checked3"
+                android:button="@null"
+                />
+
+            <RadioButton
+                android:id="@+id/color_rb6"
+                android:layout_width="60dp"
+                android:layout_height="35dp"
+                android:layout_marginLeft="27dp"
+                android:background="@drawable/radiobutton_background_checked4"
+                android:button="@null"
+                />
+            <RadioButton
+                android:id="@+id/color_rb7"
+                android:layout_width="60dp"
+                android:layout_height="35dp"
+                android:layout_marginLeft="27dp"
+                android:background="@drawable/radiobutton_background_checked5"
+                android:button="@null"
+                />
+
+        </RadioGroup>
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/theme_colors_rl"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="130dp"
+        android:background="#fff"
+        android:scrollbars="none">
+
+        <com.example.paperlessmeeting_demo.widgets.MyListView
+            android:id="@+id/myList_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#fff"
+            android:divider="@null"
+            >
+
+        </com.example.paperlessmeeting_demo.widgets.MyListView>
+
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginBottom="50dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:background="#fff"
+        android:weightSum="2"
+        >
+  <RelativeLayout
+      android:id="@+id/add_topic_rl"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+      android:layout_weight="0.6"
+      android:background="@drawable/bg_wuhu_add"
+
+    >
+
+      <ImageView
+          android:layout_width="42dp"
+          android:layout_height="42dp"
+          android:layout_centerInParent="true"
+          android:scaleType="fitCenter"
+          android:src="@mipmap/ic_wuhu_add" />
+      </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/sava_all"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1.4"
+            android:background="@drawable/bg_wuhu_add"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:text="全部保存"
+                android:textColor="#ff1d1d1d"
+                android:textSize="30sp" />
+        </RelativeLayout>
+    </LinearLayout>
+</RelativeLayout>
