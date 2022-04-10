@@ -245,7 +245,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
     private FragmentManager fragmentManager;
     private String titles;
     private Context context;
-    private String currentEndDate;
+    private String currentEndDate="22222";
     private int positionIma = -1;
 
     public WuHUVoteListFragment(FragmentManager fragmentManager) {
@@ -535,10 +535,10 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                 }
 
 
-                if (TextUtils.isEmpty(currentEndDate)) {
+               /* if (TextUtils.isEmpty(currentEndDate)) {
                     Toast.makeText(getActivity(), "请选择结束时间", Toast.LENGTH_SHORT).show();
                     return;
-                }
+                }*/
                 ArrayList<String> options_list = new ArrayList();
                 ArrayList<VoteBean.TemporBean> temporBeanArrayList = new ArrayList();
                 VoteBean.TemporBean  temporBean1=new VoteBean.TemporBean();
