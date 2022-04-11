@@ -612,7 +612,8 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
 
                 VoteBean voteBean = new VoteBean();
                 VoteBean.FromBean fromBean = new VoteBean.FromBean();
-                fromBean.setName(Hawk.get(constant.myNumber));
+               // fromBean.setName(Hawk.get(constant.myNumber));
+                fromBean.setName(UserUtil.user_name);
                 fromBean.set_id(FLUtil.getMacAddress());
 
                 voteBean.setTemporBeanList(temporBeanArrayList);

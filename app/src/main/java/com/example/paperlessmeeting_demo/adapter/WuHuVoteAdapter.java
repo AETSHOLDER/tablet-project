@@ -116,9 +116,10 @@ public class WuHuVoteAdapter extends RecyclerView.Adapter<WuHuVoteAdapter.MyView
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.title.setText(list.get(position).getTopic());
         VoteListBean.VoteBean  voteBean=list.get(position);
+        VoteListBean.VoteBean.FromBean  fromBean=voteBean.getFrom();
         List<ChoseBean> dataList = new ArrayList<>();
         int status = list.get(position).getMvoteStatus();
-
+        holder.creator.setText("发起人："+fromBean.getName());
         if (list.get(position).getType().equals("0")) {
             holder.danxaun.setText("单选");
 

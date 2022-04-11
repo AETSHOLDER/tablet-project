@@ -484,6 +484,7 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                     socketShareFileManager.SendFile(fileNames, paths, stringListIp.get(i), constant.SHARE_PORT,"1");
                 }
             }
+
         });
         sendThread.start();
         // Message.obtain(handler, 0, response).sendToTarget();
