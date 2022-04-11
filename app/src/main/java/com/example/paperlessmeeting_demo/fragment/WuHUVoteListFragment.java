@@ -119,7 +119,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 @SuppressLint("ValidFragment")
 public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.voteClickListener, WuHuVoteAdapter.voteClickListener, EasyPermissions.PermissionCallbacks, WuHuRecycleAdapter.ChoseOptionItemImaListener, WuHuRecycleAdapter.SeePhotosItemImaListener, View.OnClickListener,WuHuVoteAdapter.viewResultsInterface,WuHuVoteAdapter.voteInterFace,WuHuVoteAdapter.endInterFace{
 
-
+  private boolean isOptionShow=false;
     @Override
     protected int getLayoutId() {
         if (UserUtil.ISCHAIRMAN) {
@@ -142,6 +142,9 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
         vote_text_rl.setOnClickListener(this);
         add_wuhu_vote_rl.setOnClickListener(this);
         back_ll.setOnClickListener(this);
+        if (!UserUtil.ISCHAIRMAN) {
+            add_wuhu_vote_rl.setVisibility(View.GONE);
+        }
     }
     @Override
     public void onClick(View v) {
@@ -157,8 +160,17 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                 showNewVoteItem("1");
                 break;
             case R.id.add_wuhu_vote_rl:
-                vote_type_ll.setVisibility(View.VISIBLE);
-                add_wuhu_vote.setImageResource(R.mipmap.ic_add_wuhu_vote);
+                if (!isOptionShow){
+                    vote_type_ll.setVisibility(View.VISIBLE);
+                    isOptionShow=true;
+                    add_wuhu_vote.setImageResource(R.mipmap.ic_add_wuhu_vote);
+                }else {
+                    vote_type_ll.setVisibility(View.GONE);
+                    add_wuhu_vote.setImageResource(R.mipmap.ic_add_wuhu_vote_un);
+                    isOptionShow=false;
+                }
+
+
                 break;
             case R.id.back_ll:
                 Intent intent = new Intent();
@@ -1198,10 +1210,6 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
 
                 if (isNoUser || isAllNoChoose) {
                     ToastUtils.showShort("暂无人投票!");
-                    return;
-                }
-                if(flag.equals("1")){
-                    ToastUtils.showShort("批注暂不支持查看!");
                     return;
                 }
 

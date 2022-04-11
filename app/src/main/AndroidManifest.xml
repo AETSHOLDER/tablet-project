@@ -103,6 +103,9 @@
         <activity
             android:name=".activity.StartActivity"
             android:screenOrientation="landscape" />
+        <activity
+            android:name=".activity.TempFileActivity"
+            android:screenOrientation="landscape" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

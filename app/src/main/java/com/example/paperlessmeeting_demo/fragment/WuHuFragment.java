@@ -118,7 +118,7 @@ import okhttp3.RequestBody;
 public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfilePthInterface, WuHuFileListAdapter.upLoadFileInterface, WuHuFileListAdapter.PlayerClickInterface, WuHuFileListAdapter.ShareFileInterface, WuHuFileListAdapter.PushFileInterface , View.OnClickListener,WuHuListAdapter.saveSeparatelyInterface {
     Unbinder unbinder;
     private static final String TAG = "TestFragment";
-    private String text;
+    private String textNub;
  /*   @BindView(R.id.tv_test)
     TextView mTextView;*/
 
@@ -407,9 +407,9 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
     //保存单个数据
     @Override
     public void saveData(int position) {
-      if (text.equals(position+"")){
-          topic.setText("会议议题："+wuHuEditBeanList.get(Integer.valueOf(text)).getSubTopics());
-          attend.setText("参会人员："+wuHuEditBeanList.get(Integer.valueOf(text)).getAttendeBean());
+      if (textNub.equals(position+"")){
+          topic.setText("会议议题："+wuHuEditBeanList.get(Integer.valueOf(textNub)).getSubTopics());
+          attend.setText("参会人员："+wuHuEditBeanList.get(Integer.valueOf(textNub)).getAttendeBean());
 
       }
 
@@ -793,8 +793,8 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
         }
         tittle1.setText(wuHuEditBean.getTopics());
         tittle2.setText(wuHuEditBean.getTopic_type());
-        topic.setText(wuHuEditBeanList.get(Integer.valueOf(text)).getSubTopics());
-        attend.setText(wuHuEditBeanList.get(Integer.valueOf(text)).getAttendeBean());
+        topic.setText(wuHuEditBeanList.get(Integer.valueOf(textNub)).getSubTopics());
+        attend.setText(wuHuEditBeanList.get(Integer.valueOf(textNub)).getAttendeBean());
         switch (wuHuEditBean.getLine_color()){
 
             case "1":
@@ -963,7 +963,8 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-         text=getArguments().getString("text");
+        textNub=getArguments().getString("text");
+
      if (isVisibleToUser) {
          if (Hawk.contains("WuHuFragmentData")) {
              WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
@@ -972,8 +973,10 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                  return;
              }
              editListBeanList = wuHuEditBean.getEditListBeanList();
-             topic.setText(editListBeanList.get(Integer.valueOf(text)).getSubTopics());
-             attend.setText(editListBeanList.get(Integer.valueOf(text)).getAttendeBean());
+
+             Log.d("fdafafaff",textNub+"editListBeanList=   "+editListBeanList.size());
+             topic.setText(editListBeanList.get(Integer.valueOf(textNub)).getSubTopics());
+             attend.setText(editListBeanList.get(Integer.valueOf(textNub)).getAttendeBean());
          }
      }
 
@@ -994,7 +997,7 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG+toString(), "onCreate: "+text);
+        Log.d(TAG+toString(), "onCreate: "+textNub);
     }
 
     @Nullable
@@ -1305,6 +1308,7 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
     @Override
     public void onResume() {
         super.onResume();
+   /*     Log.d(TAG+toString(), "onResume: "+"text="+text);
         if (Hawk.contains("WuHuFragmentData")) {
             WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
             List<WuHuEditBean.EditListBean> editListBeanList = new ArrayList<>();
@@ -1315,7 +1319,7 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
             topic.setText(editListBeanList.get(Integer.valueOf(text)).getSubTopics());
             attend.setText(editListBeanList.get(Integer.valueOf(text)).getAttendeBean());
         }
-        Log.d(TAG+toString(), "onResume: ");
+        Log.d(TAG+toString(), "onResume: ");*/
 
     }
 
@@ -1340,7 +1344,7 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
 
     @Override
     public String toString() {
-        return text;
+        return textNub;
     }
     @Override
     public void onClick(View v) {
@@ -1389,10 +1393,6 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                 WuHuEditBean.EditListBean editListBean=new WuHuEditBean.EditListBean();
                 editListBean.setSubTopics("总结2022年");
                 editListBean.setAttendeBean("王二狗，李狐狸，张太郎，刘毛毛");
-                WuHuEditBean.EditListBean editListBean1=new WuHuEditBean.EditListBean();
-                editListBean1.setSubTopics("总结2022年");
-                editListBean1.setAttendeBean("王二发狗，李狐请问狸，张恶热太郎，刘恶热毛毛");
-                wuHuEditBeanList.add(editListBean1);
                 wuHuEditBeanList.add(editListBean);
                 Hawk.put("WuHuFragmentData",wuHuEditBean);
             }
@@ -1542,12 +1542,32 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                 intent.putExtra("isNetFile", false);
                 startActivity(intent);
             }else if (fileBean.getFile_type().equals("4")){
+                if(UserUtil.isNetworkOnline){
+                    intent = new Intent();
+                    intent.setClass(getActivity(), SignActivity.class);
+                    intent.putExtra("url", fileBean.getPath());
+                    intent.putExtra("isOpenFile", true);
+                    intent.putExtra("isNetFile", false);
+                    intent.putExtra("tempPath", false);
+                    intent.putExtra("fileName",fileBean.getName());
+                    startActivity(intent);
+                }else {
+                    CVIPaperDialogUtils.showConfirmDialog(getActivity(), "当前无外网，会使用wps打开文件", "知道了", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                        @Override
+                        public void onClickButton(boolean clickConfirm, boolean clickCancel) {
+                            startActivity(FileUtils.openFile(fileBean.getPath(), getActivity()));
+                        }
+                    });
+                }
+            }
+
+            /*else if (fileBean.getFile_type().equals("4")){
                 intent=new Intent(getActivity(), PdfActivity.class);
                 Bundle bundle=new Bundle();
                 bundle.putString("pdfPath", fileBean.getPath());
                 intent.putExtras(bundle);
                 getActivity().startActivity(intent);
-            }
+            }*/
 
         }else if (in.getAction().equals(constant.SAVE_SEPARATELY_BROADCAST)){
            String type=in.getStringExtra("refreshType");
@@ -1581,8 +1601,8 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                        return;
                    }
                    editListBeanList = wuHuEditBean.getEditListBeanList();
-                   topic.setText(editListBeanList.get(Integer.valueOf(text)).getSubTopics());
-                   attend.setText(editListBeanList.get(Integer.valueOf(text)).getAttendeBean());
+                   topic.setText(editListBeanList.get(Integer.valueOf(textNub)).getSubTopics());
+                   attend.setText(editListBeanList.get(Integer.valueOf(textNub)).getAttendeBean());
 
                }
 
