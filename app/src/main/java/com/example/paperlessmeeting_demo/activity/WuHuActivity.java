@@ -160,7 +160,14 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                     Log.e("hahahahahahaa","case 3");
                     int flag= msg.arg1;
                     int flag2=msg.arg2;
-
+                    String filePath1=(String) msg.obj;
+                    Intent intent1 = new Intent();
+                    Bundle bundle1=new Bundle();
+                    bundle1.putString("flag","1");
+                    bundle1.putString("filePath",filePath1);
+                    intent1.putExtras(bundle1);
+                    intent1.setAction(constant.SHARE_FILE_BROADCAST);
+                    sendBroadcast(intent1);
                     break;
                 case 4:
                     Toast.makeText(WuHuActivity.this, "文件接收失败", Toast.LENGTH_SHORT).show();
@@ -171,6 +178,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                     String filePath=(String) msg.obj;
                     Intent intent = new Intent();
                     Bundle bundle=new Bundle();
+                    bundle.putString("flag","2");
                     bundle.putString("filePath",filePath);
                     intent.putExtras(bundle);
                     intent.setAction(constant.SHARE_FILE_BROADCAST);

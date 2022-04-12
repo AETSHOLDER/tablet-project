@@ -89,7 +89,7 @@ public class constant {
     public final static int SHARE_PORT = 9999;////临时会议分享的文件端口
     public final static String SHARE_FILE_BROADCAST = "sharefile";////临时会议分享文件成功后，通知会议更新文件列表
     public final static String ADD_FRAGMENT_BROADCAST = "addfragment";////增加芜湖fragment
-    public final static String SAVE_SEPARATELY_BROADCAST = "save_separately ";//从议题列表中单独保存某个会议议题
+    public final static String SAVE_SEPARATELY_BROADCAST = "save_separately";//从议题列表中单独保存某个会议议题
     public final static String REFRESH_BROADCAST = "refresh_ui";//自己刷新芜湖界面
     public final static String FINISH_SHARE_SCREEN_BROADCAST = "finishscreen";////结束同屏广播
     public final static String SHARE_FILE_IP = "share  file ip";//socket 临时会议分享文件收集设备IP全局标识

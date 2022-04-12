@@ -517,6 +517,33 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
             }
         });
         sendThread.start();
+        Intent intent;
+        if (fileBean.getFile_type().equals("3")){
+            intent = new Intent();
+            intent.setClass(getActivity(), ActivityImage.class);
+            intent.putExtra("url", path);
+            intent.putExtra("isOpenFile", true);
+            intent.putExtra("isNetFile", false);
+            startActivity(intent);
+        }else if (fileBean.getFile_type().equals("4")){
+            if(UserUtil.isNetworkOnline){
+                intent = new Intent();
+                intent.setClass(getActivity(), SignActivity.class);
+                intent.putExtra("url", path);
+                intent.putExtra("isOpenFile", true);
+                intent.putExtra("isNetFile", false);
+                intent.putExtra("tempPath", false);
+                intent.putExtra("fileName",name);
+                startActivity(intent);
+            }else {
+                CVIPaperDialogUtils.showConfirmDialog(getActivity(), "当前无外网，会使用wps打开文件", "知道了", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                    @Override
+                    public void onClickButton(boolean clickConfirm, boolean clickCancel) {
+                        startActivity(FileUtils.openFile(path ,getActivity()));
+                    }
+                });
+            }
+        }
     }
 
     @Override
@@ -1520,6 +1547,7 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
             }
             getShareFile(files);
             String filePath=in.getStringExtra("filePath");
+            String flag=in.getStringExtra("flag");
             File file=new File(filePath);
             String fileName = file.getName();
             String endStr = fileName.substring(fileName.lastIndexOf(".") + 1);
@@ -1532,7 +1560,10 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
             fileBean.setSuffix(endStr);//上传文件后缀名和文件类型；setSuffix和setType所赋值内容一样。
             //  fileBean.setType(endStr);
             fileBean.setType(getFileType(endStr));
-
+            //flag为1时是文件分享功能，只需更新文件列表，不需打开文件
+           if (flag .equals("1")) {
+               return;
+           }
 
             Intent intent;
             if (fileBean.getFile_type().equals("3")){
