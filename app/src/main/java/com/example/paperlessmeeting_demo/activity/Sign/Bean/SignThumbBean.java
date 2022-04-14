@@ -6,6 +6,15 @@ public class SignThumbBean {
     private String creatTime;  // 创建时间
     private String path;      // 路径
     private Bitmap thumb;
+    private boolean isShowDel;
+    public boolean isShowDel() {
+        return isShowDel;
+    }
+
+    public void setShowDel(boolean showDel) {
+        isShowDel = showDel;
+    }
+
 
     public SignThumbBean(String creatTime, String path, Bitmap thumb) {
         this.creatTime = creatTime;

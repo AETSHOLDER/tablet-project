@@ -2,6 +2,8 @@ package com.example.paperlessmeeting_demo.activity.Sign.Adapter_holder;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +18,20 @@ public class SignViewRecyclerViewAdapter extends RecyclerView.Adapter<SignViewRe
     public List<SignThumbBean> mDatas = new ArrayList<SignThumbBean>();
     private Context mContext;
     private OnRecyclerItemClickListener listener;
-
+    private boolean isShowDelet = false;
     public SignViewRecyclerViewAdapter(Context context, List<SignThumbBean> datas){
         this.mContext = context;
         this.mDatas = datas;
+
+    }
+
+
+    public void showDeletImg(boolean isShow) {
+        isShowDelet = isShow;
+//        for (int i = 0;i<mDatas.size(); i++){
+//           mDatas.get(i).setShowDel(isShow);
+//        }
+        notifyDataSetChanged();
     }
 
     @Override
@@ -42,6 +54,8 @@ public class SignViewRecyclerViewAdapter extends RecyclerView.Adapter<SignViewRe
                 }
             }
         });
+        holder.getImg_delete().setVisibility(isShowDelet ? View.VISIBLE : View.GONE);
+        holder.getImg_delete().bringToFront();
     }
 
     @Override

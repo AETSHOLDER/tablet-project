@@ -46,7 +46,10 @@ public class SignListActivity extends BaseActivity {
     LinearLayout mLinear;
     @BindView(R.id.content_rl)
     RelativeLayout contentRl;
+    @BindView(R.id.sign_delete)
+    TextView sign_delete;
     private SignViewRecyclerViewAdapter adapter;
+    private List<SignViewRecyclerViewAdapter> adapterList = new ArrayList<>();
     private int fileCount = 0;
 
     @Override
@@ -60,6 +63,21 @@ public class SignListActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 finish();
+            }
+        });
+        sign_delete.setSelected(false);
+        sign_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sign_delete.setSelected(!sign_delete.isSelected());
+                boolean isShow = sign_delete.isSelected();
+                String text = isShow ? "取消删除" : "删除批注";
+                sign_delete.setText(text);
+//                adapter.sellectAll();
+//                adapter.showDeletImg(isShow);
+                for (SignViewRecyclerViewAdapter adapter : adapterList) {
+                    adapter.showDeletImg(isShow);
+                }
             }
         });
     }
@@ -185,7 +203,8 @@ public class SignListActivity extends BaseActivity {
 
             textView.setText(signViewBean.getSignAuthor());
             recyclerView.setLayoutManager(new GridLayoutManager(this, 5));
-            adapter = new SignViewRecyclerViewAdapter(this, signViewBean.getListDatas());
+            SignViewRecyclerViewAdapter adapter = new SignViewRecyclerViewAdapter(this, signViewBean.getListDatas());
+            adapterList.add(adapter);
             adapter.setOnItemClickListener(new OnRecyclerItemClickListener() {
                 @Override
                 public void onRecyclerItemClick(int position) {

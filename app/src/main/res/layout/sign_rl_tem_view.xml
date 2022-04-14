@@ -1,45 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:gravity="center"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/transparent">
+    android:background="@color/transparent"
+    android:gravity="center"
+    android:orientation="vertical">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="210dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
             android:layout_marginBottom="10dp">
+
                 <ImageView
+                    android:id="@+id/img_title"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/sign_view_txt_shape_bg"
-                    android:id="@+id/img_title"
                     android:scaleType="fitXY"
-                    android:src="@mipmap/sign_view_default"/>
+                    android:src="@mipmap/sign_view_default" />
+
                 <com.example.paperlessmeeting_demo.widgets.BlurringView
                     android:id="@+id/blurView"
                     android:layout_width="122dp"
                     android:layout_height="23dp"
-                    android:layout_alignParentBottom="true"
                     android:layout_alignParentStart="true"
-                    android:gravity="center"
+                    android:layout_alignParentBottom="true"
                     android:background="@drawable/sign_view_txt_shape_bg"
+                    android:gravity="center"
                     app:blurRadius="20"
                     app:downsampleFactor="9"
-                    app:overlayColor="#26FFFFFF"/>
+                    app:overlayColor="#26FFFFFF" />
+
                 <TextView
                     android:id="@+id/txt_info"
                     android:layout_width="122dp"
                     android:layout_height="23dp"
-                    android:text="2022 03 16 15:10"
-                    android:layout_alignParentBottom="true"
                     android:layout_alignParentStart="true"
+                    android:layout_alignParentBottom="true"
                     android:gravity="center"
+                    android:text="2022 03 16 15:10"
                     android:textColor="#1D1D1D"
-                    android:textSize="10sp"/>
+                    android:textSize="10sp" />
+
+                <RelativeLayout
+                    android:id="@+id/sign_delete"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/com_bg_gray">
+
+                        <ImageView
+                            android:layout_width="61dp"
+                            android:layout_height="65dp"
+                            android:layout_centerInParent="true"
+                            android:scaleType="fitXY"
+                            android:src="@mipmap/sign_delete"></ImageView>
+                </RelativeLayout>
+
         </RelativeLayout>
 </LinearLayout>
