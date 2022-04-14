@@ -119,7 +119,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 @SuppressLint("ValidFragment")
 public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.voteClickListener, WuHuVoteAdapter.voteClickListener, EasyPermissions.PermissionCallbacks, WuHuRecycleAdapter.ChoseOptionItemImaListener, WuHuRecycleAdapter.SeePhotosItemImaListener, View.OnClickListener,WuHuVoteAdapter.viewResultsInterface,WuHuVoteAdapter.voteInterFace,WuHuVoteAdapter.endInterFace{
 
-
+  private boolean isOptionShow=false;
     @Override
     protected int getLayoutId() {
         if (UserUtil.ISCHAIRMAN) {
@@ -142,6 +142,9 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
         vote_text_rl.setOnClickListener(this);
         add_wuhu_vote_rl.setOnClickListener(this);
         back_ll.setOnClickListener(this);
+        if (!UserUtil.ISCHAIRMAN) {
+            add_wuhu_vote_rl.setVisibility(View.GONE);
+        }
     }
     @Override
     public void onClick(View v) {
@@ -157,8 +160,17 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                 showNewVoteItem("1");
                 break;
             case R.id.add_wuhu_vote_rl:
-                vote_type_ll.setVisibility(View.VISIBLE);
-                add_wuhu_vote.setImageResource(R.mipmap.ic_add_wuhu_vote);
+                if (!isOptionShow){
+                    vote_type_ll.setVisibility(View.VISIBLE);
+                    isOptionShow=true;
+                    add_wuhu_vote.setImageResource(R.mipmap.ic_add_wuhu_vote);
+                }else {
+                    vote_type_ll.setVisibility(View.GONE);
+                    add_wuhu_vote.setImageResource(R.mipmap.ic_add_wuhu_vote_un);
+                    isOptionShow=false;
+                }
+
+
                 break;
             case R.id.back_ll:
                 Intent intent = new Intent();
@@ -245,7 +257,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
     private FragmentManager fragmentManager;
     private String titles;
     private Context context;
-    private String currentEndDate;
+    private String currentEndDate="22222";
     private int positionIma = -1;
 
     public WuHUVoteListFragment(FragmentManager fragmentManager) {
@@ -535,10 +547,10 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                 }
 
 
-                if (TextUtils.isEmpty(currentEndDate)) {
+               /* if (TextUtils.isEmpty(currentEndDate)) {
                     Toast.makeText(getActivity(), "请选择结束时间", Toast.LENGTH_SHORT).show();
                     return;
-                }
+                }*/
                 ArrayList<String> options_list = new ArrayList();
                 ArrayList<VoteBean.TemporBean> temporBeanArrayList = new ArrayList();
                 VoteBean.TemporBean  temporBean1=new VoteBean.TemporBean();
@@ -600,7 +612,8 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
 
                 VoteBean voteBean = new VoteBean();
                 VoteBean.FromBean fromBean = new VoteBean.FromBean();
-                fromBean.setName(Hawk.get(constant.myNumber));
+               // fromBean.setName(Hawk.get(constant.myNumber));
+                fromBean.setName(UserUtil.user_name);
                 fromBean.set_id(FLUtil.getMacAddress());
 
                 voteBean.setTemporBeanList(temporBeanArrayList);
@@ -1198,10 +1211,6 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
 
                 if (isNoUser || isAllNoChoose) {
                     ToastUtils.showShort("暂无人投票!");
-                    return;
-                }
-                if(flag.equals("1")){
-                    ToastUtils.showShort("批注暂不支持查看!");
                     return;
                 }
 

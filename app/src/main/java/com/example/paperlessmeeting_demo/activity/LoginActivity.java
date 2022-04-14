@@ -576,9 +576,29 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
         projectionManager = (MediaProjectionManager) getSystemService(MEDIA_PROJECTION_SERVICE);
         PermissionManager.RequestOverlayPermission(this);
         Log.d("fgdgg222", selfIp);
+        File file = new File("这里是文件夹得路径");
+        deleteDirWihtFile(new File(fileShare));
 
     }
+   /* private void deleteFile(String filePath) {
+        File file = new File(filePath);
+        if (file.isFile() && file.exists()) {
+           file.;
+        }
 
+    }*/
+
+    //删除文件夹和文件夹里面的文件
+    private   void deleteDirWihtFile(File dir) {
+        if (dir == null || !dir.exists() || !dir.isDirectory())
+            return;
+        for (File file : dir.listFiles()) {
+            if (file.isFile())
+                file.delete(); // 删除所有文件
+            else if (file.isDirectory())
+                deleteDirWihtFile(file); // 递规的方式删除文件夹
+        }
+    }
     @Override
     protected void onResume() {
         super.onResume();

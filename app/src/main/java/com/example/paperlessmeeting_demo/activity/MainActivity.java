@@ -524,7 +524,13 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
                     Log.e("hahahahahahaa","case 3");
                     int flag= msg.arg1;
                     int flag2=msg.arg2;
-
+                    String filePath1=(String) msg.obj;
+                    Intent intent1 = new Intent();
+                    Bundle bundle1=new Bundle();
+                    bundle1.putString("filePath",filePath1);
+                    intent1.putExtras(bundle1);
+                    intent1.setAction(constant.SHARE_FILE_BROADCAST);
+                    sendBroadcast(intent1);
                     break;
                 case 4:
                     Toast.makeText(MainActivity.this, "文件接收失败", Toast.LENGTH_SHORT).show();
@@ -606,8 +612,8 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
                             return;
                         }
                     }
-                    Intent intent1 = new Intent(MainActivity.this, ActivityMemberSsignApproval.class);
-                    startActivity(intent1);
+                    Intent intent2 = new Intent(MainActivity.this, ActivityMemberSsignApproval.class);
+                    startActivity(intent2);
                     break;
             }
 

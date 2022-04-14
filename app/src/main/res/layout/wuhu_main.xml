@@ -19,24 +19,49 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         android:text="添加"/>
+
     <RelativeLayout
         android:id="@+id/tittle"
         android:layout_width="match_parent"
         android:layout_height="95dp"
         android:background="#FDFEFF"
         >
+        <TextView
+            android:id="@+id/temp_file"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="临时文件入口"
+            android:textColor="#000"
+            android:visibility="gone"
+            android:layout_centerHorizontal="true"
+            android:textSize="35sp"
+            android:layout_centerVertical="true"
+            />
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3月16日   周三  14:22"
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="55dp"
+            android:textColor="#ff1d1d1d"
+            android:textSize="35sp"
+            />
         <RelativeLayout
             android:id="@+id/name_rl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true">
+
             <TextView
                 android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="20dp"
+                android:layout_marginLeft="15dp"
                 android:gravity="center"
                 android:text="王小二"
                 android:textColor="#ff000000"

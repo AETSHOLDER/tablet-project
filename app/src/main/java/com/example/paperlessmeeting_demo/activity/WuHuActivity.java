@@ -8,13 +8,18 @@ import com.example.paperlessmeeting_demo.base.BaseActivity;
 
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.SparseArray;
@@ -42,11 +47,14 @@ import com.example.paperlessmeeting_demo.bean.WuHuEditBean;
 import com.example.paperlessmeeting_demo.enums.MessageReceiveType;
 import com.example.paperlessmeeting_demo.fragment.WuHuFragment;
 import com.example.paperlessmeeting_demo.R;
+import com.example.paperlessmeeting_demo.sharefile.BroadcastUDPFileService;
+import com.example.paperlessmeeting_demo.sharefile.SocketShareFileManager;
 import com.example.paperlessmeeting_demo.tool.FLUtil;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.ServerManager;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.UDPBroadcastManager;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.EventMessage;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.JWebSocketClientService;
+import com.example.paperlessmeeting_demo.tool.TimeUtils;
 import com.example.paperlessmeeting_demo.tool.UrlConstant;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.example.paperlessmeeting_demo.tool.constant;
@@ -60,7 +68,14 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
@@ -85,7 +100,11 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
     EditText edit_name;
     @BindView(R.id.name)
     TextView name;
-
+    @BindView(R.id.time)
+    TextView timeTv;
+    @BindView(R.id.temp_file)
+    TextView temp_file;
+    private List<String> stringsIp = new ArrayList<>();//临时会议存储各个设备Ip
   /*  @BindView(R.id.tittle2)*/
   private   EditText tittle2;
    /* @BindView(R.id.company_name)*/
@@ -106,14 +125,90 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
     private PagerAdapter mPagerAdapter;
     private int key;
     private int mCurPos;
-    private int fragmentPos;
+    private int fragmentPos=0;
      private MyBroadcastReceiver myBroadcastReceiver;
     private MyBroadcastReceiver myRefreshBroadcastReceiver;
+    private InetAddress address;
+    private boolean isBind = false;
+    /*
+     * 临时会议分享文件，service和InetAddress
+     * */
+    private BroadcastUDPFileService broadcastUDPFileService;
+    private BroadcastUDPFileService.BroadcastUDPFileServiceBinder binder;
     private  WuHuEditBean wuHuEditBean;
     //表示红线的flag
     private String lineFlag;
     //标识主题的颜色
     private String themFlag;
+    private boolean  isEditRl=false;
+    private SocketShareFileManager socketShareFileManager;
+    private ServiceConnection serviceConnection;
+    private Handler mHander = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            // TODO Auto-generated method stub
+            String selfIp = "";
+            String stIp = "";
+            switch (msg.what) {
+
+                case 2:
+                    Toast.makeText(WuHuActivity.this, "正在接受文件", Toast.LENGTH_SHORT).show();
+                    break;
+                case 3:
+                    Toast.makeText(WuHuActivity.this, "文件已成功接收，请在文件管理页面查看", Toast.LENGTH_SHORT).show();
+                    Log.e("hahahahahahaa","case 3");
+                    int flag= msg.arg1;
+                    int flag2=msg.arg2;
+                    String filePath1=(String) msg.obj;
+                    Intent intent1 = new Intent();
+                    Bundle bundle1=new Bundle();
+                    bundle1.putString("flag","1");
+                    bundle1.putString("filePath",filePath1);
+                    intent1.putExtras(bundle1);
+                    intent1.setAction(constant.SHARE_FILE_BROADCAST);
+                    sendBroadcast(intent1);
+                    break;
+                case 4:
+                    Toast.makeText(WuHuActivity.this, "文件接收失败", Toast.LENGTH_SHORT).show();
+                    break;
+                case 8:
+                    Toast.makeText(WuHuActivity.this, "推送文件已成功接收，请在文件管理页面查看", Toast.LENGTH_SHORT).show();
+                    Log.e("hahahahahahaa","case 8");
+                    String filePath=(String) msg.obj;
+                    Intent intent = new Intent();
+                    Bundle bundle=new Bundle();
+                    bundle.putString("flag","2");
+                    bundle.putString("filePath",filePath);
+                    intent.putExtras(bundle);
+                    intent.setAction(constant.SHARE_FILE_BROADCAST);
+                    sendBroadcast(intent);
+
+                    break;
+                case 119:
+                    String adressIp = (String) msg.obj;
+                    String strIp = "";
+                    if (Hawk.contains("SelfIpAddress")) {
+                        strIp = Hawk.get("SelfIpAddress");
+                    }
+                    if (!adressIp.equals(strIp)) {
+                        stringsIp.add(adressIp);
+                    }
+                    for (int i = 0; i < stringsIp.size() - 1; i++) {
+//                        Log.d("gdhh222", stringsIp.get(i) + "");
+                        for (int j = stringsIp.size() - 1; j > i; j--) {
+                            if (stringsIp.get(i).equals(stringsIp.get(j)))
+                                stringsIp.remove(j);
+                        }
+                    }
+                    Hawk.put("stringsIp", stringsIp);
+                    break;
+
+            }
+
+
+        }
+    };
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -156,6 +251,146 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
             }
         }
         EventBus.getDefault().register(this);
+        wuHuEditBeanList.clear();
+        if (UserUtil.ISCHAIRMAN) {
+            edit_ll.setVisibility(View.VISIBLE);
+            if (Hawk.contains("WuHuFragmentData")){
+                wuHuEditBean= Hawk.get("WuHuFragmentData");
+                wuHuEditBean.setTopics("2022年临时会议");
+                wuHuEditBean.setTopic_type("会议记录");
+                WuHuEditBean.EditListBean editListBean=new WuHuEditBean.EditListBean();
+                editListBean.setSubTopics("总结2022年");
+                editListBean.setAttendeBean("王二狗，李狐狸，张太郎，刘毛毛");
+                wuHuEditBeanList.add(editListBean);
+                Hawk.put("WuHuFragmentData",wuHuEditBean);
+            }
+        }else {
+            edit_ll.setVisibility(View.GONE);
+        }
+
+        wuHuListAdapter=new WuHuListAdapter(WuHuActivity.this,wuHuEditBeanList);
+        wuHuListAdapter.setSaveSeparatelyInterface(this);
+        /*
+         *
+         * 当是临时会议时，开启Servive随时监听各参会人人员分享的文件。正常网络会议时监听同屏关闭操作
+         * */
+        socketShareFileManager = new SocketShareFileManager(mHander);
+        serviceConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                binder = (BroadcastUDPFileService.BroadcastUDPFileServiceBinder) service;
+                broadcastUDPFileService = binder.getService();
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        byte[] bytes = new byte[1024];
+                        try {
+                            address = InetAddress.getByName(constant.EXTRAORDINARY_MEETING_INETADDRESS);
+                        } catch (UnknownHostException e) {
+                            e.printStackTrace();
+                        }
+                        DatagramSocket datagramSocket = null;
+                        try {
+                            datagramSocket = new DatagramSocket(constant.EXTRAORDINARY_MEETING_PORT);
+                            datagramSocket.setBroadcast(true);
+                            DatagramPacket datagramPacket = new DatagramPacket(bytes,
+                                    bytes.length);
+                            while (true) {
+                                String strMsg = null;
+                                int p = datagramPacket.getPort();
+                                // 准备接收数据
+                                try {
+                                    // datagramSocket.setSoTimeout(20000);
+                                    datagramSocket.receive(datagramPacket);
+                                    strMsg = new String(datagramPacket.getData(), 0, datagramPacket.getData().length, "UTF-8");
+                                    if (strMsg.contains(constant.SHARE_FILE_IP)) {
+                                        String ip = datagramPacket.getAddress().getHostAddress();
+                                        Message message = new Message();
+                                        message.what = 119;
+                                        message.obj = ip;
+                                        mHander.sendMessage(message);
+                                    } else if (strMsg.contains(constant.TEMP_MEETINGSHARE_FILE)) {
+                                        /*
+                                         * 接收分享文件
+                                         * */
+                                        Log.e("5555555","接收分享文件");
+                                        socketShareFileManager.SendFlag("1");
+                                    }
+                                    else if (strMsg.contains(constant.TEMP_MEETINGPUSH_FILE)) {
+                                        /*
+                                         * 接收推送文件
+                                         * */
+                                        Log.e("5555555","接收推送文件");
+                                        socketShareFileManager.SendFlag("2");
+                                    }
+
+                                    else if (strMsg.contains(constant.FINISH_SHARE_SCEEN)) {
+                                        /*
+                                         * 结束同频，通知其他设备自动关闭同屏接收界面
+                                         * */
+                                        String ip = datagramPacket.getAddress().getHostAddress();
+                                        Message mes = new Message();
+                                        mes.what = 911;
+                                        mes.obj = ip;
+                                        mHander.sendMessage(mes);
+                                    } else if (strMsg.contains(constant.START_SHARE_SCEEN)) {
+                                        String ip = datagramPacket.getAddress().getHostAddress();
+                                        /*
+                                         * 开始同屏，通知其他设备打开同频界面,如果是自身IP 则不跳转
+                                         * */
+
+                                        Message mes = new Message();
+                                        mes.what = 120;
+                                        mes.obj = ip;
+                                        mHander.sendMessage(mes);
+                                  /*  Intent intent = new Intent(MainActivity.this, ScreenReceiveActivity2.class);
+                                    startActivity(intent);*/
+                                    } else if (strMsg.contains(constant.INIATE_ENDORSEMENT)) {
+                                        String ip = datagramPacket.getAddress().getHostAddress();
+                                        Message mes = new Message();
+                                        mes.what = 102;
+                                        mes.obj = ip;
+                                        mHander.sendMessage(mes);
+
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                //  String str = ByteToString.byteArrayToHexString(datagramPacket.getData());
+                                /*    Message msg = new Message();
+                                    msg.what = 1;
+                                    msg.obj = dataBean;
+                                    mHander.sendMessage(msg);*/
+                                //    createFileWithByte(strMsg.getBytes());
+                            }
+
+                        } catch (SocketException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                }).start();
+
+                broadcastUDPFileService.setListener(new BroadcastUDPFileService.errorMsgListener() {
+                    @Override
+                    public void getErrorMsg(String msg) {
+                        Log.d("gsfgdgg", msg.toString());
+                    }
+                });
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                broadcastUDPFileService = null;
+            }
+        };
+
+        Intent intent = new Intent(this, BroadcastUDPFileService.class);
+        isBind = bindService(intent, serviceConnection, BIND_AUTO_CREATE);
+        Log.d("gsfgdgg3333", isBind + "");
+
     }
 
     @Override
@@ -170,6 +405,35 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
             String  n=Hawk.get(constant.myNumber);
             name.setText(n);
         }
+        String time = TimeUtils.getTime(System.currentTimeMillis(), TimeUtils.DATA_FORMAT_NO_HOURS_DATA13);//会议-月日时分
+        String week = "";
+        Calendar c1 = Calendar.getInstance();
+        int day = c1.get(Calendar.DAY_OF_WEEK);
+        switch (day){
+            case 1:
+                week = "星期日";
+                break;
+            case 2:
+                week = "星期一";
+                break;
+            case 3:
+                week = "星期二";
+                break;
+            case 4:
+                week = "星期三";
+                break;
+            case 5:
+                week = "星期四";
+                break;
+            case 6:
+                week = "星期五";
+                break;
+            case 7:
+                week = "星期六";
+                break;
+        }
+        timeTv.setText(time+" "+week);
+        temp_file.setOnClickListener(this);
         edit_rl.setOnClickListener(this);
         edit_ll.setOnClickListener(this);
         comfirm.setOnClickListener(this);
@@ -180,8 +444,6 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
         mBtnAdd = (Button) findViewById(R.id.btn_add);
         edit_name_rl.setVisibility(View.GONE);
         mTestFragments = new SparseArray<>();
-        mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos+""));
-        fragmentPos++;
         mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos+""));
         fragmentPos++;
 
@@ -244,7 +506,14 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
 
                 break;
             case R.id.edit_rl:
-                edit_name_rl.setVisibility(View.VISIBLE);
+                if (!isEditRl){
+                    edit_name_rl.setVisibility(View.VISIBLE);
+                    isEditRl=true;
+                }else {
+                    edit_name_rl.setVisibility(View.GONE);
+                    isEditRl=false;
+                }
+
                 break;
             case R.id.edit_ll:
                 showRightDialog();
@@ -264,7 +533,10 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                 intent=new Intent(WuHuActivity.this, WuHuVoteActivity.class);
                 startActivity(intent);
                 break;
-
+            case R.id.temp_file:
+                intent=new Intent(WuHuActivity.this, TempFileActivity.class);
+                startActivity(intent);
+                break;
         }
 
     }
@@ -355,26 +627,8 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
         add_topic_rl=inflate.findViewById(R.id.add_topic_rl);
         dialg_rl_root=inflate.findViewById(R.id.dialg_rl_root);
         sava_all=inflate.findViewById(R.id.sava_all);
-        Log.d("reyeyrty",UserUtil.ISCHAIRMAN+"");
-        if (UserUtil.ISCHAIRMAN) {
-            if (Hawk.contains("WuHuFragmentData")){
-                 wuHuEditBean= Hawk.get("WuHuFragmentData");
-                wuHuEditBean.setTopics("2022年临时会议");
-                wuHuEditBean.setTopic_type("会议记录");
-                WuHuEditBean.EditListBean editListBean=new WuHuEditBean.EditListBean();
-                editListBean.setSubTopics("总结2022年");
-                editListBean.setAttendeBean("王二狗，李狐狸，张太郎，刘毛毛");
-                WuHuEditBean.EditListBean editListBean1=new WuHuEditBean.EditListBean();
-                editListBean1.setSubTopics("总结2022年");
-                editListBean1.setAttendeBean("王二发狗，李狐请问狸，张恶热太郎，刘恶热毛毛");
-                wuHuEditBeanList.add(editListBean1);
-                wuHuEditBeanList.add(editListBean);
-                Hawk.put("WuHuFragmentData",wuHuEditBean);
-            }
-        }
+        Log.d("reyeyrty222",UserUtil.ISCHAIRMAN+"");
 
-        wuHuListAdapter=new WuHuListAdapter(WuHuActivity.this,wuHuEditBeanList);
-        wuHuListAdapter.setSaveSeparatelyInterface(this);
         myListView.setAdapter(wuHuListAdapter);
         wuHuListAdapter.notifyDataSetChanged();
 
@@ -433,7 +687,6 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                     case R.id.color_rb7:
                         bundle.putString("refreshType","7");
                         themFlag="7";
-
                         break;
 
                 }
@@ -463,9 +716,9 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                     wsUpdata(wuHuEditBean,constant.WUHUADDFRAGMENT);
                 }
                 //自己增加frgament
-                mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos+""));
+             /*   mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos+""));
                 fragmentPos++;
-                mPagerAdapter.notifyDataSetChanged();
+                mPagerAdapter.notifyDataSetChanged();*/
 
               /*  Intent intent = new Intent();
                 Bundle bundle=new Bundle();
@@ -499,6 +752,10 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
         if (myBroadcastReceiver!=null){
             unregisterReceiver(myBroadcastReceiver);
         }
+        if (serviceConnection!=null){
+            unbindService(serviceConnection);
+
+        }
     }
     /**
      * websocket发送数据至其他设备
@@ -514,7 +771,10 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
     }
     @Override
     protected void initData() {
-
+      /*  if (!UserUtil.ISCHAIRMAN) {
+            edit_ll.setVisibility(View.GONE);
+        }*/
+        Log.d("reyeyrty333",UserUtil.ISCHAIRMAN+"");
     }
     private class MyBroadcastReceiver extends BroadcastReceiver {
         @Override

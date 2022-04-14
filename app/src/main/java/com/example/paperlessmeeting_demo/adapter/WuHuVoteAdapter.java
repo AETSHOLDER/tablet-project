@@ -20,6 +20,7 @@ import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.bean.ChoseBean;
 import com.example.paperlessmeeting_demo.bean.VoteListBean;
 import com.example.paperlessmeeting_demo.tool.Constants;
+import com.example.paperlessmeeting_demo.widgets.MyListView;
 import com.orhanobut.hawk.Hawk;
 
 import java.util.ArrayList;
@@ -115,9 +116,10 @@ public class WuHuVoteAdapter extends RecyclerView.Adapter<WuHuVoteAdapter.MyView
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.title.setText(list.get(position).getTopic());
         VoteListBean.VoteBean  voteBean=list.get(position);
+        VoteListBean.VoteBean.FromBean  fromBean=voteBean.getFrom();
         List<ChoseBean> dataList = new ArrayList<>();
         int status = list.get(position).getMvoteStatus();
-
+        holder.creator.setText("发起人："+fromBean.getName());
         if (list.get(position).getType().equals("0")) {
             holder.danxaun.setText("单选");
 
@@ -259,7 +261,7 @@ public class WuHuVoteAdapter extends RecyclerView.Adapter<WuHuVoteAdapter.MyView
         @BindView(R.id.btn_end)
         Button btn_end;
         @BindView(R.id.listview)
-        ListView  listview;
+        MyListView listview;
         @BindView(R.id.endtimeClock)
         TextView endtimeClock;
         @BindView(R.id.creator)

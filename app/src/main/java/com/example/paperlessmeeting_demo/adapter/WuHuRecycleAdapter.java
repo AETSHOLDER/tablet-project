@@ -119,7 +119,7 @@ public class WuHuRecycleAdapter extends RecyclerView.Adapter<WuHuRecycleAdapter.
             holder.option_ima_rl.setVisibility(View.VISIBLE);
             holder.chose_text.setText("选项" + (position + 1) + ":");
             ImageLoader.getInstance().displayImage("file://" +itemObj.getText(),  holder.option_ima);
-            holder.add_delet.setVisibility(View.GONE);
+            holder.add_delet.setVisibility(View.INVISIBLE);
 
         }
 

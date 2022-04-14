@@ -2,6 +2,7 @@ package com.example.paperlessmeeting_demo.dialog;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,6 +14,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.paperlessmeeting_demo.R;
+import com.example.paperlessmeeting_demo.activity.Sign.MyImageDialog;
+import com.example.paperlessmeeting_demo.activity.Sign.SignListActivity;
 import com.example.paperlessmeeting_demo.bean.PieEntry;
 import com.example.paperlessmeeting_demo.bean.VoteListBean;
 import com.example.paperlessmeeting_demo.tool.Base642BitmapTool;
@@ -22,7 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class WuHuPieChartDialog extends AlertDialog {
+public class WuHuPieChartDialog extends AlertDialog implements View.OnClickListener {
+
     private Context context;
     private View.OnClickListener mButtonClickListener;
     private View mLayout;
@@ -46,6 +50,8 @@ public class WuHuPieChartDialog extends AlertDialog {
     private ImageView option_ima4;
     private LinearLayout option_ll;
     private ArrayList<PieEntry> dataList = new ArrayList<>();
+    private  List<VoteListBean.VoteBean.UserListBean> userListBeans = new ArrayList<>();
+    private List<VoteListBean.VoteBean.TemporBean>  temporBeanList=new ArrayList<>();
     public WuHuPieChartDialog(Context context, @StyleRes int themeResId, ArrayList<PieEntry> dataList, VoteListBean.VoteBean vote) {
         super(context, themeResId);
         this.context = context;
@@ -81,6 +87,10 @@ public class WuHuPieChartDialog extends AlertDialog {
         number_tv4= mLayout.findViewById(R.id.number_tv4);
 
         option_ll= mLayout.findViewById(R.id.option_ll);
+        option_ima1.setOnClickListener(this);
+        option_ima2.setOnClickListener(this);
+        option_ima3.setOnClickListener(this);
+        option_ima3.setOnClickListener(this);
 
         mButton.setOnClickListener(view -> {
             if (mButtonClickListener != null)
@@ -94,8 +104,7 @@ public class WuHuPieChartDialog extends AlertDialog {
 
         setTitle(vote.getTopic());
 
-        List<VoteListBean.VoteBean.UserListBean> userListBeans = new ArrayList<>();
-       List<VoteListBean.VoteBean.TemporBean>  temporBeanList=new ArrayList<>();
+
         temporBeanList=vote.getTemporBeanList();
      if (vote.getFlag().equals("1")){
       option_ll.setVisibility(View.GONE);
@@ -214,6 +223,40 @@ public class WuHuPieChartDialog extends AlertDialog {
         colorLists.add(Color.parseColor("#41D230"));
         colorLists.add(Color.parseColor("#4FAAFF"));
         return colorLists;
+    }
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.option_ima1:
+                if (temporBeanList.size()>0){
+                    showImage(Base642BitmapTool.base642Bitmap(temporBeanList.get(0).getContent()));
+                }
+                break;
+            case R.id.option_ima2:
+                if (temporBeanList.size()>1){
+                    showImage(Base642BitmapTool.base642Bitmap(temporBeanList.get(1).getContent()));
+                }
+                break;
+            case R.id.option_ima3:
+                if (temporBeanList.size()>2){
+                    showImage(Base642BitmapTool.base642Bitmap(temporBeanList.get(2).getContent()));
+                }
+                break;
+            case R.id.option_ima4:
+                if (temporBeanList.size()>3){
+                    showImage(Base642BitmapTool.base642Bitmap(temporBeanList.get(4).getContent()));
+                }
+                break;
+
+
+        }
+
+    }
+    //展示图片大图
+    private void showImage(Bitmap  bitmap){
+        MyImageDialog myImageDialog = new MyImageDialog(context,R.style.mypopwindow_anim_style,0,-300,bitmap);
+        myImageDialog.show();
+
     }
 
 }
