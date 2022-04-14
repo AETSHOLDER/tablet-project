@@ -219,7 +219,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void initData() {
         socketShareFileManager = new SocketShareFileManager(mHandler);
-        SignOperationUtils.getInstance().DISABLE = true;
+        SignOperationUtils.getInstance().DISABLE = false;
         if (Hawk.contains("UserBehaviorBean")) {
             UserBehaviorBean userBehaviorBean = Hawk.get("UserBehaviorBean");
             UserBehaviorBean.DataBean dataBean = new UserBehaviorBean.DataBean();
@@ -239,6 +239,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                         @Override
                         public void onClickButton(boolean clickConfirm, boolean clickCancel) {
                             if (clickConfirm) {
+                                mDbView.clearImage();
                                 finish();
                             }
                         }
@@ -256,7 +257,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                 if (sign_Door.isSelected()) {
                     changeSignUI();
                     //签批
-                    SignOperationUtils.getInstance().DISABLE = false;
+                    SignOperationUtils.getInstance().DISABLE = true;
                     Bitmap bitmap = getBitmap(tbsReaderView);
                     mDbView.setmBottomBitmap(bitmap);
                     onSaveBitmap(bitmap, "2");
@@ -267,7 +268,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                             @Override
                             public void onClickButton(boolean clickConfirm, boolean clickCancel) {
                                 if (clickConfirm){
-                                    SignOperationUtils.getInstance().DISABLE = true;
+                                    SignOperationUtils.getInstance().DISABLE = false;
                                     changeSignUI();
                                     mDbView.clearImage();
                                     mDbView.setVisibility(View.GONE);
@@ -280,7 +281,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                             }
                         });
                     }else {
-                        SignOperationUtils.getInstance().DISABLE = true;
+                        SignOperationUtils.getInstance().DISABLE = false;
                         changeSignUI();
                         mDbView.clearImage();
                         mDbView.setVisibility(View.GONE);

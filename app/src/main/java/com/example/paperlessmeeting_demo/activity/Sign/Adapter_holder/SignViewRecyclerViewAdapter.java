@@ -18,19 +18,17 @@ public class SignViewRecyclerViewAdapter extends RecyclerView.Adapter<SignViewRe
     public List<SignThumbBean> mDatas = new ArrayList<SignThumbBean>();
     private Context mContext;
     private OnRecyclerItemClickListener listener;
+    private int adapterIndex;
     private boolean isShowDelet = false;
-    public SignViewRecyclerViewAdapter(Context context, List<SignThumbBean> datas){
+    public SignViewRecyclerViewAdapter(Context context, List<SignThumbBean> datas,int adapterIndex){
         this.mContext = context;
         this.mDatas = datas;
-
+        this.adapterIndex = adapterIndex;
     }
 
 
     public void showDeletImg(boolean isShow) {
         isShowDelet = isShow;
-//        for (int i = 0;i<mDatas.size(); i++){
-//           mDatas.get(i).setShowDel(isShow);
-//        }
         notifyDataSetChanged();
     }
 
@@ -50,12 +48,20 @@ public class SignViewRecyclerViewAdapter extends RecyclerView.Adapter<SignViewRe
             @Override
             public void onClick(View view) {
                 if(listener != null){
-                    listener.onRecyclerItemClick(position);
+                    listener.onRecyclerItemClick(adapterIndex,position);
                 }
             }
         });
         holder.getImg_delete().setVisibility(isShowDelet ? View.VISIBLE : View.GONE);
         holder.getImg_delete().bringToFront();
+        holder.getImg_delete().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(listener != null){
+                    listener.onRecyclerDeletClick(adapterIndex,position);
+                }
+            }
+        });
     }
 
     @Override

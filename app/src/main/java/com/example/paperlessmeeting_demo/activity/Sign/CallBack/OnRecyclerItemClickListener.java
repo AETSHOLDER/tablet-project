@@ -5,5 +5,6 @@ package com.example.paperlessmeeting_demo.activity.Sign.CallBack;
  */
 
 public interface OnRecyclerItemClickListener {
-    void onRecyclerItemClick(int position);
+    void onRecyclerItemClick(int adapterIndex,int position);
+    void onRecyclerDeletClick(int adapterIndex,int position);
 }

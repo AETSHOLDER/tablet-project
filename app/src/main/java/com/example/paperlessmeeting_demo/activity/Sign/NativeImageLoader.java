@@ -89,11 +89,9 @@ public class NativeImageLoader {
                     vo.setThumb(mBitmap);
                     vo.setPath(path);
                     vo.setCreatTime(getCreatTime(path));
-                    vo.setShowDel(false);
                     Message msg = mHander.obtainMessage();
                     msg.obj = vo;
                     mHander.sendMessage(msg);
-
                     //将图片加入到内存缓存
                     addBitmapToMemoryCache(path, vo);
                 }

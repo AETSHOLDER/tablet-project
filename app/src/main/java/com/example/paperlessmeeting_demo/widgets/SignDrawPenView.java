@@ -59,7 +59,6 @@ public class SignDrawPenView extends View {
      * 当前白板类型
      */
     private DrawType drawType = DrawType.my;
-    public boolean DISABLE = true;
     public void setDrawType(DrawType drawType) {
         this.drawType = drawType;
     }
@@ -133,7 +132,7 @@ public class SignDrawPenView extends View {
      * 橡皮擦模式
      */
     public void changeEraser() {
-        mPaint.setColor(mContext.getResources().getColor(R.color.transparent));
+//        mPaint.setColor(mContext.getResources().getColor(R.color.transparent));
         mPaint.setStrokeWidth(2 * getInstance().mCurrentEraserSize);
         mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));//擦除模式
         postInvalidate();
@@ -165,7 +164,10 @@ public class SignDrawPenView extends View {
         super.onSizeChanged(w, h, oldw, oldh);
         Log.e("xxx","onSizeChanged");
         if(w>0&&h>0){
-            mBottomBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+            if(mBottomBitmap==null){
+                Log.e("xxx","mBottomBitmap===null");
+                mBottomBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+            }
             mCanvas = new Canvas(mBottomBitmap);
         }
     }
@@ -185,7 +187,7 @@ public class SignDrawPenView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        if (DISABLE && (getInstance().mCurrentDrawType == SignOperationUtils.DRAW_PEN || getInstance().mCurrentDrawType == SignOperationUtils.DRAW_ERASER)) {
+        if (SignOperationUtils.getInstance().DISABLE && (getInstance().mCurrentDrawType == SignOperationUtils.DRAW_PEN || getInstance().mCurrentDrawType == SignOperationUtils.DRAW_ERASER)) {
             float x = event.getX();
             float y = event.getY();
 

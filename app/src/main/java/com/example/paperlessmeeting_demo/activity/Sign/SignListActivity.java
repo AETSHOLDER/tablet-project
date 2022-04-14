@@ -22,8 +22,12 @@ import com.example.paperlessmeeting_demo.activity.Sign.Bean.SignThumbBean;
 import com.example.paperlessmeeting_demo.activity.Sign.Bean.SignViewBean;
 import com.example.paperlessmeeting_demo.activity.Sign.CallBack.OnRecyclerItemClickListener;
 import com.example.paperlessmeeting_demo.base.BaseActivity;
+import com.example.paperlessmeeting_demo.tool.CVIPaperDialogUtils;
+import com.example.paperlessmeeting_demo.tool.ToastUtils;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.example.paperlessmeeting_demo.util.SysUtils;
+import com.example.paperlessmeeting_demo.util.ToastUtil;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -48,7 +52,6 @@ public class SignListActivity extends BaseActivity {
     RelativeLayout contentRl;
     @BindView(R.id.sign_delete)
     TextView sign_delete;
-    private SignViewRecyclerViewAdapter adapter;
     private List<SignViewRecyclerViewAdapter> adapterList = new ArrayList<>();
     private int fileCount = 0;
 
@@ -73,8 +76,6 @@ public class SignListActivity extends BaseActivity {
                 boolean isShow = sign_delete.isSelected();
                 String text = isShow ? "取消删除" : "删除批注";
                 sign_delete.setText(text);
-//                adapter.sellectAll();
-//                adapter.showDeletImg(isShow);
                 for (SignViewRecyclerViewAdapter adapter : adapterList) {
                     adapter.showDeletImg(isShow);
                 }
@@ -188,6 +189,9 @@ public class SignListActivity extends BaseActivity {
     private void init(List<SignViewBean> data){
         for (int i=0;i<data.size();i++){
             final SignViewBean signViewBean = data.get(i);
+            if(signViewBean.getListDatas().size()==0){
+                continue;
+            }
             LayoutInflater inflater= LayoutInflater.from(this);
             View layout = (View) inflater.inflate(R.layout.sample_my_recycle_view, null);
             int id = 100+i;
@@ -203,11 +207,11 @@ public class SignListActivity extends BaseActivity {
 
             textView.setText(signViewBean.getSignAuthor());
             recyclerView.setLayoutManager(new GridLayoutManager(this, 5));
-            SignViewRecyclerViewAdapter adapter = new SignViewRecyclerViewAdapter(this, signViewBean.getListDatas());
+            SignViewRecyclerViewAdapter adapter = new SignViewRecyclerViewAdapter(this, signViewBean.getListDatas(),i);
             adapterList.add(adapter);
             adapter.setOnItemClickListener(new OnRecyclerItemClickListener() {
                 @Override
-                public void onRecyclerItemClick(int position) {
+                public void onRecyclerItemClick(int adapterIndex,int position) {
                     SignThumbBean signThumbBean = signViewBean.getListDatas().get(position);
                     File file = new File(signThumbBean.getPath());
                     FileInputStream fis = null;
@@ -222,6 +226,28 @@ public class SignListActivity extends BaseActivity {
                     }
 
                     Log.d("xxx","getCreatTime=="+signThumbBean.getCreatTime());
+                }
+
+                @Override
+                public void onRecyclerDeletClick(int adapterIndex, int position) {
+                    CVIPaperDialogUtils.showCustomDialog(SignListActivity.this, "确定要删除吗？", "", "确定", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                        @Override
+                        public void onClickButton(boolean clickConfirm, boolean clickCancel) {
+                            if(clickConfirm){
+                                SignThumbBean signThumbBean = signViewBean.getListDatas().get(position);
+                                File file = new File(signThumbBean.getPath());
+                                if(file.delete()) {
+                                    ToastUtils.showShort("删除成功!");
+                                    signViewBean.getListDatas().remove(position);
+                                    adapter.notifyDataSetChanged();
+
+//                                    sign_delete.performClick();
+                                }else {
+                                    ToastUtils.showShort("删除失败!");
+                                }
+                            }
+                        }
+                    });
                 }
             });
             recyclerView.setAdapter(adapter);
