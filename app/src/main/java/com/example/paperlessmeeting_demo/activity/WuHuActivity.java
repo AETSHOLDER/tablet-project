@@ -263,6 +263,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
         wuHuEditBeanList.clear();
         if (UserUtil.ISCHAIRMAN) {
             edit_ll.setVisibility(View.VISIBLE);
+            finish_ll.setVisibility(View.VISIBLE);
             if (Hawk.contains("WuHuFragmentData")){
                 wuHuEditBean= Hawk.get("WuHuFragmentData");
                 wuHuEditBean.setTopics("2022年临时会议");
@@ -275,6 +276,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
             }
         }else {
             edit_ll.setVisibility(View.GONE);
+            finish_ll.setVisibility(View.GONE);
         }
 
         wuHuListAdapter=new WuHuListAdapter(WuHuActivity.this,wuHuEditBeanList);
