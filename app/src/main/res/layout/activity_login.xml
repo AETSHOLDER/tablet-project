@@ -124,7 +124,7 @@
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/bb"
                     android:gravity="center"
-                    android:text="陈晨臣"
+                    android:text="XXX"
                     android:textColor="#4091FF"
                     android:textSize="28sp" />
 
@@ -176,7 +176,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/left_rl"
             android:layout_marginLeft="140dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <View
                 android:layout_width="match_parent"

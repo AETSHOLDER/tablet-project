@@ -17,6 +17,7 @@ import com.example.paperlessmeeting_demo.bean.UUIdBean;
 import com.example.paperlessmeeting_demo.bean.VoteListBean;
 import com.example.paperlessmeeting_demo.bean.MeetingInfoBean;
 import com.example.paperlessmeeting_demo.bean.UploadBean;
+import com.example.paperlessmeeting_demo.bean.WuHuNetFileBean;
 
 import retrofit2.http.Body;
 import retrofit2.http.HTTP;
@@ -51,16 +52,27 @@ public interface NetWorkApi {
     @FormUrlEncoded
     Observable<BasicResponse<LoginBean>> loginByUserId(@FieldMap Map<String, Object> map);
 
+    /*
+     *  通过userId登录，临时使用
+     * */
+    @POST("ppl/register")
+    @FormUrlEncoded
+    Observable<BasicResponse<String>> pplRegister(@FieldMap Map<String, Object> map);
+
     @POST("loginUser")
     @FormUrlEncoded
     Observable<BasicResponse<LoginBean>> login(@FieldMap Map<String, Object> map);
 
-    @GET("proxy/findPaperlessInfo")
-    Observable<BasicResponse<PaperlessBean>> findPaperLessInfo(@Query("mac") String mac); // 查询发言单元注册信息
+    @GET("ppl/findPPLByMac")
+    Observable<BasicResponse<String>> findPaperLessInfo(@Query("mac") String mac); // 查询发言单元注册信息
 
     //获取文件列表
     @GET("findMeetingFileList")
     Observable<BasicResponse<NewFileBean>> getFileList(@Query("meeting_record_id") String meeting_record_id, @Query("type") String type);
+//
+    @GET("meetingFile/getMeetingFile")
+    Observable<BasicResponse<List<WuHuNetFileBean.DataBean>>> getWuHuFileList(@Query("meeting_id") String meeting_record_id);
+
 
     //获取文件列表
     @GET("fqMeetingFile")

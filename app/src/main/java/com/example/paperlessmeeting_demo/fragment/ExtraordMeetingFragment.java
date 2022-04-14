@@ -355,7 +355,10 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                                 Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageClient);
 
                                 Intent intent1 = new Intent(getActivity(), WuHuActivity.class);
-
+                                if(index>=UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr.size()){
+                                    ToastUtils.showShort("加入不了会议!");
+                                    return;
+                                }
                                 List<String> ipcodeInfo = FLUtil.dealUDPMsg(UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr.get(index));
                                 intent1.putExtra("ip", ipcodeInfo.get(0));
                                 startActivity(intent1);

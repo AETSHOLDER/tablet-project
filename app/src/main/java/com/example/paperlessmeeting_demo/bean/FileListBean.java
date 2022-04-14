@@ -22,6 +22,15 @@ public class FileListBean implements Serializable {
         this.time = time;
     }
     private boolean isPlaying;
+    private boolean isNet;
+
+    public boolean isNet() {
+        return isNet;
+    }
+
+    public void setNet(boolean net) {
+        isNet = net;
+    }
 
     public boolean isPlaying() {
         return isPlaying;

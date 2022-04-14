@@ -27,6 +27,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.storage.StorageManager;
 import android.provider.DocumentsContract;
+import android.provider.FontRequest;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
@@ -47,9 +48,11 @@ import android.widget.Toast;
 
 import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.activity.ActivityImage;
+import com.example.paperlessmeeting_demo.activity.ActivityVideoView;
 import com.example.paperlessmeeting_demo.activity.EditWuHuActivity;
 import com.example.paperlessmeeting_demo.activity.PdfActivity;
 import com.example.paperlessmeeting_demo.activity.Sign.SignActivity;
+import com.example.paperlessmeeting_demo.adapter.FileListAdapter;
 import com.example.paperlessmeeting_demo.adapter.WuHuFileListAdapter;
 import com.example.paperlessmeeting_demo.adapter.WuHuListAdapter;
 import com.example.paperlessmeeting_demo.base.BaseFragment;
@@ -57,19 +60,24 @@ import com.example.paperlessmeeting_demo.bean.BasicResponse;
 import com.example.paperlessmeeting_demo.bean.CreateFileBeanRequest;
 import com.example.paperlessmeeting_demo.bean.CreateFileBeanResponse;
 import com.example.paperlessmeeting_demo.bean.FileListBean;
+import com.example.paperlessmeeting_demo.bean.NewFileBean;
 import com.example.paperlessmeeting_demo.bean.TempWSBean;
 import com.example.paperlessmeeting_demo.bean.UploadBean;
 import com.example.paperlessmeeting_demo.bean.WuHuEditBean;
+import com.example.paperlessmeeting_demo.bean.WuHuNetFileBean;
 import com.example.paperlessmeeting_demo.enums.MessageReceiveType;
 import com.example.paperlessmeeting_demo.network.DefaultObserver;
 import com.example.paperlessmeeting_demo.network.NetWorkManager;
 import com.example.paperlessmeeting_demo.sharefile.SocketShareFileManager;
 import com.example.paperlessmeeting_demo.tool.CVIPaperDialogUtils;
+import com.example.paperlessmeeting_demo.tool.Define;
+import com.example.paperlessmeeting_demo.tool.DownloadUtil;
 import com.example.paperlessmeeting_demo.tool.FLUtil;
 import com.example.paperlessmeeting_demo.tool.FileUtils;
 import com.example.paperlessmeeting_demo.tool.MediaReceiver;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.EventMessage;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.JWebSocketClientService;
+import com.example.paperlessmeeting_demo.tool.ToastUtils;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.example.paperlessmeeting_demo.tool.constant;
 import com.example.paperlessmeeting_demo.util.ToastUtil;
@@ -165,7 +173,7 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
     private WuHuFileListAdapter fileListAdapter;
     private List<FileListBean> fileBeans = new ArrayList<>();
     private List<FileListBean> shareFileBeans = new ArrayList<>();//其他设备分享得到的文件集合
-    private FileListBean fileBean;
+    private FileListBean meetingFileListBeanfileBean;
     private String titles;
     private Context context;
     private List<String> name = new ArrayList<>();
@@ -191,13 +199,24 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
     private WuHuListAdapter wuHuListAdapter;
     private  int  k=0;
     private List<WuHuEditBean.EditListBean> wuHuEditBeanList=new ArrayList<>();
-
+    private   List<WuHuNetFileBean.DataBean> fileListBeanList = new ArrayList<>();
+    private List<FileListBean> fileOtherBeans = new ArrayList<>();//音视频文件
+    private FileListBean fileBean;
     private Handler mHandler = new Handler() {
 
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
+                case 0:
+                    FileListBean fileBean=(FileListBean)msg.obj;
+                    fileBeans.add(fileBean);
+                    fileListAdapter.setGridViewBeanList(fileBeans);
+                    fileListAdapter.notifyDataSetChanged();
+                    //完成主界面更新,拿到数据
+                    //   getDownload(fileListBean.get_id(), fileListBean.getUser_id(), fileListBean.getUnclassified());
+                    //    getActivity().startActivity(FileUtils.openFile(fileBean.getPath(), getActivity()));
+                    break;
                 case 1:
                     //    fileBeans.clear();
                     getCopyFile();
@@ -247,6 +266,7 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
     @Override
     protected void initData() {
         fileBeans.clear();
+        getNetFile();
         for (int i = 0; i < fileBeans.size(); i++) {
             String endStr = fileBeans.get(i).getName().substring(fileBeans.get(i).getName().lastIndexOf(".") + 1);
             fileBeans.get(i).setResImage(getIamge(endStr));
@@ -367,6 +387,205 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
 
 
     }
+    private  void getNetFile(){
+
+
+if (Hawk.contains(constant._id)) {
+    UserUtil.meeting_record_id = Hawk.get(constant._id);
+    String _id = UserUtil.meeting_record_id;
+    int publice = 0;
+    //绑定生命周期
+    NetWorkManager.getInstance().getNetWorkApiService().getWuHuFileList(_id).compose(this.<BasicResponse<List<WuHuNetFileBean.DataBean>>>bindToLifecycle())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new DefaultObserver<BasicResponse<List<WuHuNetFileBean.DataBean>>>() {
+                @Override
+                protected void onSuccess(BasicResponse<List<WuHuNetFileBean.DataBean>> response) {
+                    if (response != null) {
+                        if(response.getData()==null){
+                            return;
+                        }
+                        fileListBeanList = (List<WuHuNetFileBean.DataBean>) response.getData();
+
+                        if (fileListBeanList==null|fileListBeanList.size()<1){
+
+                            return;
+                        }
+
+                        netFileName(fileListBeanList);
+
+                    }
+                }
+            });
+
+}
+    }
+
+
+    private void netFileName(List<WuHuNetFileBean.DataBean> fileListBeanList) {
+        name.clear();
+        fileOtherBeans.clear();
+        fileBeans.clear();
+        for (int i = 0; i < fileListBeanList.size(); i++) {
+            WuHuNetFileBean.DataBean fileListBean = fileListBeanList.get(i);
+
+            String c_id = fileListBeanList.get(i).get_id();
+            String endStr = fileListBeanList.get(i).getFile_path().substring(fileListBeanList.get(i).getFile_path().lastIndexOf(".") + 1);
+            Log.d("vrdvafd", "文件类型=" + fileListBeanList.get(i).getName() + "文件名字" + fileListBeanList.get(i).getFile_path() + "p====" + fileListBeanList.get(i).getName());
+            //下载文件--子线程
+                if ("4".equals(getType(endStr))) {
+
+                    String path = fileListBeanList.get(i).getFile_path();
+                    String name = fileListBeanList.get(i).getName();
+                    String fileId = fileListBeanList.get(i).get_id();
+
+                   // Log.d("FileDownloader0000", fileListBean.getFile_path() + "fileId=" + fileListBeanList.get(i).get_id() + "userIdBean=" + userIdBean.get_id());
+                    //       HttpDownloader httpDownloader = new HttpDownloader();
+               /* if (Hawk.contains("fileName")) {
+                    String fileName = Hawk.get("fileName");
+                    if (fileListBeanList.get(i).getFile_name().equals(fileName)) {
+                        return;
+                    }
+                }
+
+                Hawk.put("fileName", fileListBeanList.get(i).getFile_name());*/
+                    //   String fileData = httpDownloader.downloadFiles(fileListBeanList.get(i).getFile_path());
+                    DownloadUtil.get().download(fileListBeanList.get(i).getFile_path(), fileStrPath, fileListBeanList.get(i).getName(), new DownloadUtil.OnDownloadListener() {
+                        @Override
+                        public void onDownloadSuccess(File file) {
+                            Log.v("dfsfff111", "下載成功,文件已存入手机内部存储设备根目录下Download文件夾中");
+                      /*  Looper.prepare();//增加部分
+                        Looper.loop();//增加部分*/
+
+                            Message msg = new Message();
+                            fileListBean.setName(name);
+                            fileListBean.setPath(fileStrPath + name);
+                            fileListBean.set_id(fileId);
+                            fileListBean.set_id(fileId);
+                            fileListBean.setNet(true);
+                            fileBean =new FileListBean(name,fileStrPath + name,"","");
+                            msg.obj = fileBean;//可以是基本类型，可以是对象，可以是List、map等；
+                            msg.what = 0;
+                            mHandler.sendMessage(msg);
+                            Log.v("dfsfff222", "下載成功,文件已存入手机内部存储设备根目录下Download文件夾中");
+                        }
+
+                        @Override
+                        public void onDownloading(int progress) {
+                            Log.v(TAG, "下載進度" + progress);
+//                progressDialog.setProgress(progress);
+                        }
+
+                        @Override
+                        public void onDownloadFailed(Exception e) {
+//                if (progressDialog != null && progressDialog.isShowing()) {
+//                    progressDialog.dismiss();
+//                }
+
+                        }
+                    });
+
+
+
+                } else {
+                    //除了文件外（doc,excle,pdf,ppt）,其他格式文件执行正常网络数据
+                    fileBean =new FileListBean(fileListBeanList.get(i).getName(),fileListBeanList.get(i).getFile_path() + fileListBeanList.get(i).getName(),"","");
+                   // fileBean = new NewFileBean.MeetingFileListBean(fileListBeanList.get(i).getFile_name(), fileListBeanList.get(i).getFile_path(), fileListBeanList.get(i).getUser_id().getName(), fileListBeanList.get(i).getUpload_time());
+                    fileBean.setResImage(getIamge(endStr));
+                    fileBean.setFile_type(getType(endStr));
+                    fileListBean.setNet(true);
+                  /*  fileListBean.setC_id(c_id);
+                    fileListBean.setC_id(c_id);*/
+                    //  fileListBean.setUser_id(userIdBean);
+                    fileBean.setC_id(c_id);
+                    fileBean.set_id(fileListBeanList.get(i).get_id());
+                    //fileListBean.setUser_id(fileListBeanList.get(i).getUser_id());
+                    fileBeans.add(fileBean);
+                }
+
+            if (fileBeans != null) {
+                Log.d("requestCodeUr666", fileOtherBeans.size() + "  ");
+            }
+           // fileListAdapter = new FileListAdapter(getActivity(), fileOtherBeans);
+            fileListAdapter.setGridViewBeanList(fileBeans);
+            fileListAdapter.notifyDataSetChanged();
+//
+//            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                @Override
+//                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                    NewFileBean.MeetingFileListBean fileBean = (NewFileBean.MeetingFileListBean) adapterView.getAdapter().getItem(i);
+//                    Log.d("requestCodeUr333", fileBean.getPath());
+//                    Intent intent;
+//                    switch (fileBean.getFile_type()) {
+//                        case "1"://音乐
+//                            startPlayer(fileBean.getPath());
+//                            //getActivity().startActivity(FileUtils.openFile(fileBean.getPath(), getActivity()));
+//                            // FileUtils.openFile("file://"+fileBean.getPath(), getActivity());
+//                            break;
+//                        case "2"://视频
+//                            intent = new Intent();
+//                            intent.setClass(getActivity(), ActivityVideoView.class);
+//                            intent.putExtra("url", fileBean.getPath());
+//                            intent.putExtra("isOpenFile", true);
+//                            intent.putExtra("isNetFile", true);
+//                            startActivity(intent);
+//                            //  FileUtils.openFile(fileBean.getPath(), getActivity());
+//                            break;
+//                        case "3"://图片
+//                            intent = new Intent();
+//                            intent.setClass(getActivity(), ActivityImage.class);
+//                            intent.putExtra("url", fileBean.getPath());
+//                            intent.putExtra("isOpenFile", true);
+//                            intent.putExtra("isNetFile", true);
+//                            startActivity(intent);
+//                            break;
+//                        case "4":
+//                            String wpsPackageName;
+//                            if (FLUtil.checkPackage(context, Define.PACKAGENAME_KING_PRO))
+//                            {
+//                                wpsPackageName = Define.PACKAGENAME_KING_PRO;
+//                            }
+//                            else if (FLUtil.checkPackage(context, Define.PACKAGENAME_PRO_DEBUG))
+//                            {
+//                                wpsPackageName = Define.PACKAGENAME_PRO_DEBUG;
+//                            }
+//                            else if (FLUtil.checkPackage(context, Define.PACKAGENAME_ENG))
+//                            {
+//                                wpsPackageName = Define.PACKAGENAME_ENG;
+//                            }
+//                            else if (FLUtil.checkPackage(context, Define.PACKAGENAME_KING_PRO_HW))
+//                            {
+//                                wpsPackageName = Define.PACKAGENAME_KING_PRO_HW;
+//                            }
+//                            else if (FLUtil.checkPackage(context, Define.PACKAGENAME_K_ENG))
+//                            {
+//                                wpsPackageName = Define.PACKAGENAME_K_ENG;
+//                            }
+//                            else {
+//                                ToastUtils.showToast(context,"文件打开失败，请安装WPS Office专业版");
+//                                return;
+//                            }
+//
+//
+//                            getActivity().startActivity(FileUtils.openFile(fileBean.getPath(), getActivity()));
+//                            // FileUtils.openFile(fileBean.getPath(), getActivity());
+//                          /*  intent = new Intent();
+//                            intent.setClass(getActivity(), CommonWebViewActivity.class);
+//                            intent.putExtra("url", fileBean.getPath());
+//                            intent.putExtra("isOpenFile", true);
+//                            startActivity(intent);*/
+//                            break;
+//                    }
+//
+//                }
+//            });
+            fileListAdapter.notifyDataSetChanged();
+        }
+
+    }
+
+
+
     private void getCopyFile() {
         if (fileStrPath.isEmpty()) {
             return;
@@ -686,7 +905,7 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                     fileBean.setSuffix(endStr);//上传文件后缀名和文件类型；setSuffix和setType所赋值内容一样。
                     //  fileBean.setType(endStr);
                     fileBean.setType(getFileType(endStr));
-
+                    fileBean.setNet(false);
                     fileBeans.add(fileBean);
 
                 }
@@ -772,7 +991,7 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                     //  收到vote的websocket的信息
                     if (wsebean != null) {
                         WuHuEditBean     wuHuEditBean = wsebean.getBody();
-                        Log.d("gdgsdgetEditListBeanList大小=", wuHuEditBean.getEditListBeanList().size()+ "");
+                        Log.d("gdgsdgetEditListB大小=", wuHuEditBean.getEditListBeanList().size()+ "");
 
                     }
                 } catch (Exception e) {
@@ -1092,6 +1311,7 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                     fileBean.setFile_type(getType(endStr));
                     fileBean.setSuffix(endStr);//上传文件后缀名和文件类型；setSuffix和setType所赋值内容一样。
                     fileBean.setType(getFileType(endStr));
+                    fileBean.setNet(false);
                     fileBeans.add(fileBean);
                   /*  //复制文件到指定目录
                     new Thread() {
@@ -1129,6 +1349,7 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                             }.start();
                             fileBean.setResImage(getIamge(endStr));
                             fileBean.setFile_type(getType(endStr));
+                            fileBean.setNet(false);
                             fileBeans.add(fileBean);
                         } catch (URISyntaxException e) {
                             e.printStackTrace();
@@ -1315,6 +1536,7 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                     Log.d("requestCodeUr555", uri.getScheme() + "===" + uri.getPath() + "==" + file.getName());
                     fileBean.setResImage(getIamge(endStr));
                     fileBean.setFile_type(getType(endStr));
+                    fileBean.setNet(false);
                     fileBean.setSuffix(endStr);//上传文件后缀名和文件类型；setSuffix和setType所赋值内容一样。
                     //  fileBean.setType(endStr);
                     fileBean.setType(getFileType(endStr));
@@ -1557,6 +1779,7 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
             Log.d("requestCodeUr555", uri.getScheme() + "===" + uri.getPath() + "==" + file.getName());
             fileBean.setResImage(getIamge(endStr));
             fileBean.setFile_type(getType(endStr));
+           fileBean.setNet(false);
             fileBean.setSuffix(endStr);//上传文件后缀名和文件类型；setSuffix和setType所赋值内容一样。
             //  fileBean.setType(endStr);
             fileBean.setType(getFileType(endStr));

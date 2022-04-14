@@ -288,15 +288,26 @@ public class FLUtil {
                                  *   第一次进来肯定不相等，初始化一次即可
                                  * */
                                 if (!ip.equals(BroadCastIP)) {
-                                    UrlConstant.initSocketUrl = "http://" + ip + ":13000" + "/innerPlatform";
-                                    UrlConstant.initUuIdSocketUrl = UrlConstant.initSocketUrl;
-//                                    UrlConstant.baseUrl = "http://"+ip + ":3000";
-//                                    UrlConstant.wsUrl = "ws://"+ip + ":8010";
-//                                    UrlConstant.steamUrl = "rtmp://"+ip+":1935/live/123";
-//                                    UrlConstant.webUrl = "http://"+ip + ":8077";
+                                    UrlConstant.initSocketUrl = "http://" + ip + ":3006" ;
+                                    UrlConstant.baseUrl = "http://"+ip + ":3005";
+                                    UrlConstant.wsUrl = "ws://"+ip + ":8010";
 
                                     FLUtil.initSocketIO();
                                     BroadCastIP = ip;
+
+                                    NetWorkManager.getInstance().resetNetworkApi();
+
+                                    Activity topActivity = (Activity) ActivityUtils.getTopActivity();
+                                    if(topActivity!=null){
+                                        topActivity.runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                //  发黏性事件
+                                                EventMessage msg = new EventMessage(MessageReceiveType.MessageClient, constant.get_server_ip);
+                                                EventBus.getDefault().postSticky(msg);
+                                            }
+                                        });
+                                    }
                                 }
                             }
                         }
@@ -306,8 +317,6 @@ public class FLUtil {
                 } catch (SocketException e) {
                     e.printStackTrace();
                 }
-
-
             }
         }).start();
     }
@@ -329,20 +338,17 @@ public class FLUtil {
                         Gson gson = new Gson();
                         try {
                             InitiaMeeting Meeting = gson.fromJson(msg.toString(), InitiaMeeting.class);
-
 //                            Hawk.put(constant.InitiaMeeting,Meeting);
 
+                            Hawk.put(constant.InitiaMeeting,Meeting);
+
                             //  赋值会议ID
-                            UserUtil.meeting_record_id = Meeting.getMeetingId();
-                            UserUtil.user_id = Meeting.getUserInfo().get_id();
-                            UserUtil.user_name = Meeting.getUserInfo().getName();
-
+                            UserUtil.meeting_record_id = Meeting.getMeeting_id();
                             Hawk.put(constant._id, UserUtil.meeting_record_id);
-                            Hawk.put(constant.user_id, UserUtil.user_id);
                             Hawk.put(constant.user_name, UserUtil.user_name);
-                            //  do soming
 
-                            String aa = String.format("收到会议消息，会议id=%s,人员信息=%s", UserUtil.meeting_record_id, Meeting.getUserInfo().getName());
+
+//                            String aa = String.format("收到会议消息，会议id=%s", UserUtil.meeting_record_id);
                             if (topActivity != null) {
                                 topActivity.runOnUiThread(new Runnable() {
                                     @Override
@@ -358,69 +364,7 @@ public class FLUtil {
                         }
                     }
                 });
-                /**
-                 * 获取会议服务ip
-                 * {"data":"192.168.1.160","code":1,"msg":"success"}
-                 * */
-                Runnable runnable=new Runnable(){
-                    @Override
-                    public void run() {
-                        if(InitSocketManager.socket == null){
-                            return;
-                        }
-                        InitSocketManager.socket.emit(constant.get_server_ip, new Ack() {
-                            @Override
-                            public void call(Object... args) {
-                                JSONObject msg = (JSONObject) args[0];
-                                BasicResponse<String> ipData;
-                                Gson gson = new Gson();
-                                try {
-                                    ipData = gson.fromJson(msg.toString(), new TypeToken<BasicResponse<String>>(){}.getType());
-                                    if(ipData.getCode()==1){
-                                        Log.d("get_server_ip",msg.toString());
-                                    }
-                                    String server_ip = ipData.getData();
-                                    if (server_ip.equals("127.0.0.1")||server_ip.equals("localhost")){
-                                        if(UrlConstant.baseUrl.contains(BroadCastIP)){
-                                            Log.d("Flutil","server_ip 没变，退出");
-                                            return;
-                                        }
-                                        UrlConstant.baseUrl = "http://"+BroadCastIP + ":3000";
-                                        UrlConstant.wsUrl = "ws://"+BroadCastIP + ":8010";
-                                        UrlConstant.webUrl = "http://"+BroadCastIP+":8888";
-                                    }else {
-                                        if(UrlConstant.baseUrl.contains(server_ip)){
-                                            Log.d("Flutil","server_ip 没变，退出");
-                                            return;
-                                        }
-                                        UrlConstant.baseUrl = "http://"+server_ip + ":3000";
-                                        UrlConstant.wsUrl = "ws://"+server_ip + ":8010";
-                                        UrlConstant.webUrl = "http://"+server_ip+":8888";
-                                    }
 
-                                    NetWorkManager.getInstance().resetNetworkApi();
-
-                                    Activity topActivity = (Activity) ActivityUtils.getTopActivity();
-                                    if(topActivity!=null){
-                                        topActivity.runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                //  发黏性事件
-                                                EventMessage msg = new EventMessage(MessageReceiveType.MessageClient, constant.get_server_ip);
-                                                EventBus.getDefault().postSticky(msg);
-                                            }
-                                        });
-                                    }
-
-                                }catch (JsonParseException e){
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
-                        handler.postDelayed(this, 30000);
-                    }
-                };
-                handler.postDelayed(runnable, 10);
             }
 
             @Override

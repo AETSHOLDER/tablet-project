@@ -70,9 +70,9 @@ public class NetWorkManager {
                         .build();
             }
             // 临时会议,取消所有请求
-            if(UserUtil.isTempMeeting){
-                chain.call().cancel();
-            }
+//            if(UserUtil.isTempMeeting){
+//                chain.call().cancel();
+//            }
 
             Response originalResponse = chain.proceed(request);
             if (NetWorkUtils.isNetWorkAvailable(MeetingAPP.getInstance())){

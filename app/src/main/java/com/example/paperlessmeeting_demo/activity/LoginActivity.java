@@ -37,6 +37,7 @@ import com.example.paperlessmeeting_demo.bean.AttendeBean;
 import com.example.paperlessmeeting_demo.bean.BasicResponse;
 import com.example.paperlessmeeting_demo.bean.CreateFileBeanRequest;
 import com.example.paperlessmeeting_demo.bean.CreateFileBeanResponse;
+import com.example.paperlessmeeting_demo.bean.InitiaBean.InitiaMeeting;
 import com.example.paperlessmeeting_demo.bean.MeetingInfoBean;
 import com.example.paperlessmeeting_demo.bean.PaperlessBean;
 import com.example.paperlessmeeting_demo.bean.UploadBean;
@@ -204,6 +205,10 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
 
     @Override
     protected void initView() {
+        if(Hawk.contains(constant.user_name)){
+            UserUtil.user_name = Hawk.get(constant.user_name);
+            Log.e("存在user你ame","name ==="+UserUtil.user_name);
+        }
 
         //如芜湖数据存在则清除
         if (Hawk.contains("WuHuFragmentData")){
@@ -256,18 +261,52 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
         if (message.getMessage().equals(constant.start_meeting)) {
             String aa = String.format("收到会议消息，会议id=%s,人员信息=%s", UserUtil.meeting_record_id, UserUtil.user_name);
 //            name.setVisibility(View.VISIBLE);
-            loginToFragmentListener.onUserInfoReceive();
-//            //获取参会人员列表，显示议程界面
-            getMeeingInfo(UserUtil.meeting_record_id);
+//            loginToFragmentListener.onUserInfoReceive();
+
+            agendaRl.setVisibility(View.VISIBLE);
+            loginLeft.setVisibility(View.GONE);
+//            getAttenData();
+            if(Hawk.contains(constant.InitiaMeeting)){
+                InitiaMeeting initiaMeeting = Hawk.get(constant.InitiaMeeting);
+                if (initiaMeeting != null) {
+//                    Drawable drawable = MeetingAPP.getContext().getResources().getDrawable(R.mipmap.bg_login);
+//                    DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(drawable).showImageForEmptyUri(drawable).showImageOnFail(drawable).resetViewBeforeLoading(false).delayBeforeLoading(1000).
+//                            cacheInMemory(true).bitmapConfig(Bitmap.Config.RGB_565).displayer(new SimpleBitmapDisplayer()).handler(new Handler()).build();
+//                    ImageLoader.getInstance().displayImage(meetingInfoBean.getBackground_img(), theme_bg_ima, options);
+
+                    Log.d("getStart_time", ""+initiaMeeting.getStart_time());
+                    Log.d("getEnd_time", ""+initiaMeeting.getEnd_time());
+//                    Hawk.put("background_img", meetingInfoBean.getBackground_img());//会议动态主题图片
+//                    Hawk.put("getStart_time", initiaMeeting.getStart_time());//会议名字
+//                    Hawk.put("meetingInfoBean", meetingInfoBean);//会议实体类
+                    long startTime = TimeUtils.getStringToDate(initiaMeeting.getStart_time(), TimeUtils.DATA_FORMAT);//开始的时间戳
+                    String yaer = TimeUtils.getTime(startTime, TimeUtils.DATA_FORMAT_NO_HOURS_DATA10);//会议-年
+                    String month = TimeUtils.getTime(startTime, TimeUtils.DATA_FORMAT_NO_HOURS_DATA11);//会议-月
+                    String starHous = TimeUtils.getTime(startTime, TimeUtils.DATA_FORMAT_NO_HOURS_DATA12);//会议-时间
+
+                    long endTime = TimeUtils.getStringToDate(initiaMeeting.getEnd_time(), TimeUtils.DATA_FORMAT);//结束的时间戳
+                    String endHous = TimeUtils.getTime(endTime, TimeUtils.DATA_FORMAT_NO_HOURS_DATA12);//会议-时间
+
+                    yaerTv.setText(yaer);
+                    monthTv.setText(month);
+                    dateTv.setText(starHous + "-" + endHous);
+                    Hawk.put("meeting_time", yaer + "/" + month + " " + starHous + "-" + endHous);
+                    issues.setText(initiaMeeting.getMeeting_name());
+                    if(Hawk.contains(constant.user_name)){
+                        nameAttendee.setText(Hawk.get(constant.user_name));
+                    }
+//                    name.setText(UserUtil.user_name);
+                }
+            }
         }
         if (message.getMessage().equals(constant.get_server_ip)) {
-//           getMacIsRegister();
-           resumeToGetMeetingInfo();
+           getMacIsRegister();
+//           resumeToGetMeetingInfo();
         }
         if (message.getMessage().equals(constant.continusClick)) {
-            String tips = "！您已在连续点击8次了！开启游客模式！！！";
-            Toast.makeText(this, tips, Toast.LENGTH_SHORT).show();
-            visitor.setVisibility(View.VISIBLE);
+//            String tips = "！您已在连续点击8次了！开启游客模式！！！";
+//            Toast.makeText(this, tips, Toast.LENGTH_SHORT).show();
+//            visitor.setVisibility(View.VISIBLE);
         }
         if (message.getType().equals(MessageReceiveType.MessageCreatTempMeeting)) {
             Activity topActivity = (Activity) ActivityUtils.getTopActivity();
@@ -466,27 +505,24 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
 
     private void getMacIsRegister() {
 
-        NetWorkManager.getInstance().getNetWorkApiService().findPaperLessInfo(FLUtil.getMacAddress().toLowerCase()).compose(this.<BasicResponse<PaperlessBean>>bindToLifecycle())
+        NetWorkManager.getInstance().getNetWorkApiService().findPaperLessInfo(FLUtil.getMacAddress()).compose(this.<BasicResponse<String>>bindToLifecycle())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DefaultObserver<BasicResponse<PaperlessBean>>() {
+                .subscribe(new DefaultObserver<BasicResponse<String>>() {
                     @Override
-                    protected void onSuccess(BasicResponse<PaperlessBean> response) {
+                    protected void onSuccess(BasicResponse<String> response) {
                         if (response != null) {
-                            PaperlessBean paperlessBean = response.getData();
-                            if(!Hawk.contains(constant.myNumber)){
-                                Hawk.put(constant.myNumber,paperlessBean.getNumber());
-
+                            if(StringUtils.isEmpty(response.getData())){
+                                // 设备没有注册
+                                Intent intent = new Intent(LoginActivity.this, InitiaActivity.class);
+                                startActivity(intent);
                             }
                         }
                     }
 
                     @Override
-                    protected void onFail(BasicResponse<PaperlessBean> response) {
+                    protected void onFail(BasicResponse<String> response) {
                         super.onFail(response);
-                        // 设备没有注册
-                        Intent intent = new Intent(LoginActivity.this, InitiaActivity.class);
-                        startActivity(intent);
 
                     }
                 });
@@ -616,14 +652,14 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
         name.setVisibility(View.INVISIBLE);
         // 重新获取一次会议信息
 
-        requestRunable = new Runnable() {
-            @Override
-            public void run() {
-                resumeToGetMeetingInfo();
-                requestMeetingHandler.postDelayed(this,6000);
-            }
-        };
-        requestMeetingHandler.postDelayed(requestRunable,100);
+//        requestRunable = new Runnable() {
+//            @Override
+//            public void run() {
+//                resumeToGetMeetingInfo();
+//                requestMeetingHandler.postDelayed(this,6000);
+//            }
+//        };
+//        requestMeetingHandler.postDelayed(requestRunable,100);
 
         //关闭同屏Servive
         Intent intent = new Intent();

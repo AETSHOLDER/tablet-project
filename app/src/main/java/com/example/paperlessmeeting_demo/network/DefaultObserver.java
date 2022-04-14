@@ -40,7 +40,7 @@ public abstract class DefaultObserver<T extends BasicResponse> implements Observ
 
     @Override
     public void onNext(@NonNull T response) {
-        if (response.getCode() == 0){
+        if (response.getCode() == 1){
             onSuccess(response);
         }else{
             onFail(response);

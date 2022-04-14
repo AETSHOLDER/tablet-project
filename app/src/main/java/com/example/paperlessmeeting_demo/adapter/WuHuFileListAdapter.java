@@ -114,6 +114,12 @@ public class WuHuFileListAdapter extends BaseAdapter {
         } else {
             viHolder = (ViewHolder) view.getTag();
         }
+       if (gridViewBean.isNet()){
+
+
+           viHolder.open.setVisibility(View.GONE);
+           viHolder.proprietary.setVisibility(View.GONE);
+       }
         viHolder.typeIma.setImageResource(gridViewBean.getResImage());
         viHolder.fielName.setText(gridViewBean.getName());
         viHolder.person.setText(gridViewBean.getAuthor());

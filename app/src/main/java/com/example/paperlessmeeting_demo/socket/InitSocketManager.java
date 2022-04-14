@@ -49,7 +49,6 @@ public class InitSocketManager {
 
 
     private static void initSocket() {
-
         IO.Options opts = IO.Options.builder().setQuery("mac="+ FLUtil.getMacAddress()).build();
 //        opts.forceNew = false;
 //        opts.reconnection = true;

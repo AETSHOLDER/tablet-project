@@ -11,50 +11,41 @@ public class InitiaMeeting implements Serializable {
      * duration : 60
      */
 
-    private String meetingId;
-    private MeetingRoomInfoBean meetingRoomInfo;
-    private UserInfoBean userInfo;
-    private int startTime;
-    private int duration;
+    private String meeting_id;
+    private String meeting_name;
+    private String start_time;
+    private String end_time;
 
-    public String getMeetingId() {
-        return meetingId;
+    public String getMeeting_id() {
+        return meeting_id;
     }
 
-    public void setMeetingId(String meetingId) {
-        this.meetingId = meetingId;
+    public void setMeeting_id(String meeting_id) {
+        this.meeting_id = meeting_id;
     }
 
-    public MeetingRoomInfoBean getMeetingRoomInfo() {
-        return meetingRoomInfo;
+    public String getMeeting_name() {
+        return meeting_name;
     }
 
-    public void setMeetingRoomInfo(MeetingRoomInfoBean meetingRoomInfo) {
-        this.meetingRoomInfo = meetingRoomInfo;
+    public void setMeeting_name(String meeting_name) {
+        this.meeting_name = meeting_name;
     }
 
-    public UserInfoBean getUserInfo() {
-        return userInfo;
+    public String getStart_time() {
+        return start_time;
     }
 
-    public void setUserInfo(UserInfoBean userInfo) {
-        this.userInfo = userInfo;
+    public void setStart_time(String start_time) {
+        this.start_time = start_time;
     }
 
-    public int getStartTime() {
-        return startTime;
+    public String getEnd_time() {
+        return end_time;
     }
 
-    public void setStartTime(int startTime) {
-        this.startTime = startTime;
-    }
-
-    public int getDuration() {
-        return duration;
-    }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
+    public void setEnd_time(String end_time) {
+        this.end_time = end_time;
     }
 
     public static class MeetingRoomInfoBean {
