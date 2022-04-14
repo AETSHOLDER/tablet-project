@@ -22,15 +22,17 @@
     <!-- 头部   -->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp">
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/text_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:layout_centerInParent="true"
             android:layout_marginLeft="20dp"
             android:gravity="center"
+            android:layout_marginTop="45dp"
             android:text="新增投票-图片"
             android:textColor="@color/color_textBlack2e"
             android:textSize="35sp"
@@ -40,6 +42,7 @@
             android:layout_width="12dp"
             android:layout_height="12dp"
             android:layout_centerVertical="true"
+            android:visibility="gone"
             android:layout_alignParentRight="true"
             android:layout_marginRight="22dp"
             android:src="@drawable/close_3" />
@@ -268,7 +271,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_toRightOf="@+id/tv_content1"
                 android:gravity="center_horizontal"
-                android:src="@drawable/radio_unselected" />
+                android:src="@mipmap/radio_unselected" />
 
             <TextView
                 android:id="@+id/tv_content2"

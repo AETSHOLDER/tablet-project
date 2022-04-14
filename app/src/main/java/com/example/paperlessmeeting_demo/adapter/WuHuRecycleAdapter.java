@@ -105,7 +105,7 @@ public class WuHuRecycleAdapter extends RecyclerView.Adapter<WuHuRecycleAdapter.
             holder.editText.setVisibility(View.VISIBLE);
             holder.option_ima.setVisibility(View.GONE);
             holder.chose_ima_tv.setVisibility(View.GONE);
-            holder.chose_text.setText("选项" + (position + 3) + ":");
+            holder.chose_text.setText("选  项   " + (position + 3) + ":");
             holder.editText.setText(itemObj.getText());
             holder.add_delet.setVisibility(View.VISIBLE);
             holder.dete_option_ima.setVisibility(View.GONE);

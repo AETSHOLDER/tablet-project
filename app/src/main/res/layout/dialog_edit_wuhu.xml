@@ -11,16 +11,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginLeft="185dp"
+        android:layout_marginLeft="70dp"
         android:layout_marginTop="25dp"
-        android:layout_marginRight="185dp"
+        android:layout_marginRight="70dp"
         android:background="@drawable/bg_wuhu_edit"
         android:gravity="center"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:text="南京某某公司"
-        android:textColor="#ff1d1d1d"
-        android:textSize="42sp" />
+        android:textColor="#333333"
+        android:textSize="37sp" />
 
     <EditText
         android:id="@+id/tittle2"
@@ -36,8 +36,8 @@
         android:background="@drawable/bg_wuhu_edit"
         android:gravity="center"
         android:text="会议纪要"
-        android:textColor="#ff1d1d1d"
-        android:textSize="42sp" />
+        android:textColor="#333333"
+        android:textSize="37sp" />
 
     <View
         android:id="@+id/line"
@@ -64,7 +64,7 @@
         android:layout_marginLeft="56dp"
         android:gravity="center"
         android:text="横线颜色："
-        android:textColor="#ff1d1d1d"
+        android:textColor="#333333"
         android:textSize="33sp" />
 
     <RadioGroup
@@ -109,7 +109,7 @@
             android:layout_marginLeft="56dp"
             android:gravity="center"
             android:text="主  题  色："
-            android:textColor="#ff1d1d1d"
+            android:textColor="#333333"
             android:textSize="33sp" />
 
         <RadioGroup

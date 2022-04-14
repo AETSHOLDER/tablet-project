@@ -40,6 +40,7 @@ import android.widget.Toast;
 
 import com.example.paperlessmeeting_demo.adapter.PagerAdapter;
 import com.example.paperlessmeeting_demo.bean.AttendeBean;
+import com.example.paperlessmeeting_demo.bean.BasicResponse;
 import com.example.paperlessmeeting_demo.bean.FileListBean;
 import com.example.paperlessmeeting_demo.bean.TempWSBean;
 import com.example.paperlessmeeting_demo.bean.VoteListBean;
@@ -47,8 +48,11 @@ import com.example.paperlessmeeting_demo.bean.WuHuEditBean;
 import com.example.paperlessmeeting_demo.enums.MessageReceiveType;
 import com.example.paperlessmeeting_demo.fragment.WuHuFragment;
 import com.example.paperlessmeeting_demo.R;
+import com.example.paperlessmeeting_demo.network.DefaultObserver;
+import com.example.paperlessmeeting_demo.network.NetWorkManager;
 import com.example.paperlessmeeting_demo.sharefile.BroadcastUDPFileService;
 import com.example.paperlessmeeting_demo.sharefile.SocketShareFileManager;
+import com.example.paperlessmeeting_demo.tool.CVIPaperDialogUtils;
 import com.example.paperlessmeeting_demo.tool.FLUtil;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.ServerManager;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.UDPBroadcastManager;
@@ -76,10 +80,14 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 public class WuHuActivity  extends BaseActivity implements View.OnClickListener,WuHuListAdapter.saveSeparatelyInterface{
     @BindView(R.id.edit_ll)
@@ -93,6 +101,9 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
     @BindView(R.id.consult_ll)
     RelativeLayout consult_ll;
 
+    @BindView(R.id.finish_ll)
+    RelativeLayout finish_ll;
+
     private Dialog dialog;
     @BindView(R.id.comfirm)
     ImageView comfirm;
@@ -102,8 +113,6 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
     TextView name;
     @BindView(R.id.time)
     TextView timeTv;
-    @BindView(R.id.temp_file)
-    TextView temp_file;
     private List<String> stringsIp = new ArrayList<>();//临时会议存储各个设备Ip
   /*  @BindView(R.id.tittle2)*/
   private   EditText tittle2;
@@ -433,12 +442,12 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                 break;
         }
         timeTv.setText(time+" "+week);
-        temp_file.setOnClickListener(this);
         edit_rl.setOnClickListener(this);
         edit_ll.setOnClickListener(this);
         comfirm.setOnClickListener(this);
         vote_ll.setOnClickListener(this);
         consult_ll.setOnClickListener(this);
+        finish_ll.setOnClickListener(this);
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mBtnDelete = (Button) findViewById(R.id.btn_delete);
         mBtnAdd = (Button) findViewById(R.id.btn_add);
@@ -533,10 +542,10 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                 intent=new Intent(WuHuActivity.this, WuHuVoteActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.temp_file:
-                intent=new Intent(WuHuActivity.this, TempFileActivity.class);
-                startActivity(intent);
+            case R.id.finish_ll:
+                showFinishMeetingDialog();
                 break;
+
         }
 
     }
@@ -558,6 +567,58 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
         }
     }
 
+    //结束会议
+    private void showFinishMeetingDialog() {
+        CVIPaperDialogUtils.showCustomDialog(WuHuActivity.this, "确定要结束会议？", "请保存/上传好会议文件!!!", "确定", true, new CVIPaperDialogUtils.ConfirmDialogListener() {
+            @Override
+            public void onClickButton(boolean clickConfirm, boolean clickCancel) {
+                if (clickConfirm) {
+
+                    if (UserUtil.isTempMeeting) {
+                        if (Hawk.get(constant.TEMPMEETING).equals(MessageReceiveType.MessageServer) || ServerManager.getInstance().isServerIsOpen()) {
+                            // 如果是服务端，关掉服务，关停广播
+                            String code = getIntent().getStringExtra("code");
+                            UDPBroadcastManager.getInstance().sendDestroyCode(code);
+                            ServerManager.getInstance().StopMyWebsocketServer();
+                            UDPBroadcastManager.getInstance().removeUDPBroastcast();
+                        }
+                        JWebSocketClientService.closeConnect();
+
+                        finish();
+                    } else {
+                        String _id = UserUtil.meeting_record_id;
+                        String c_id = Hawk.contains(constant.c_id) ? Hawk.get(constant.c_id) : "";
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("id", _id);
+                        map.put("status", "FINISH");
+                        map.put("c_id", c_id);
+                        //绑定生命周期
+                        NetWorkManager.getInstance().getNetWorkApiService().finishMeeting(map).compose(WuHuActivity.this.<BasicResponse>bindToLifecycle())
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new DefaultObserver<BasicResponse>() {
+                                    @Override
+                                    protected void onSuccess(BasicResponse response) {
+                                        if (response != null) {
+                                            JWebSocketClientService.closeConnect();
+
+                                            UserUtil.user_id = "";
+                                            UserUtil.meeting_record_id = "";
+                                            UserUtil.user_name = "";
+
+                                            Hawk.delete(constant._id);
+                                            Hawk.delete(constant.user_id);
+                                            Hawk.delete(constant.user_name);
+                                            finish();
+                                        }
+                                    }
+                                });
+                    }
+
+                }
+            }
+        });
+    }
 
     /**
      * 收到websocket 信息

@@ -77,4 +77,9 @@
         <attr name="downsampleFactor" format="integer"/>
         <attr name="overlayColor" format="color"/>
     </declare-styleable>
+    <declare-styleable name="AutoAdjustTextSize">
+        <attr name="minTextSize" format="dimension" />
+        <attr name="maxTextSize" format="dimension">
+        </attr>
+    </declare-styleable>
 </resources>

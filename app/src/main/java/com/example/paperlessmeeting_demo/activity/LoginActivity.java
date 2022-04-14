@@ -200,7 +200,7 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
     private Runnable requestRunable = null;
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_login;
+        return R.layout.activity_wuhu_login;
     }
 
     @Override
@@ -231,8 +231,12 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
             Hawk.delete("handWritingBean");
         }
         initViewPagerFragment();
+
         agendaRl.setVisibility(View.GONE);
         loginLeft.setVisibility(View.VISIBLE);
+
+
+
         name.setVisibility(View.INVISIBLE);
         Log.d("22", "mac===" + FLUtil.getMacAddress());
 

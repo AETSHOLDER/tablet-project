@@ -20,6 +20,7 @@ import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.bean.ChoseBean;
 import com.example.paperlessmeeting_demo.bean.VoteListBean;
 import com.example.paperlessmeeting_demo.tool.Constants;
+import com.example.paperlessmeeting_demo.widgets.MyGridView;
 import com.example.paperlessmeeting_demo.widgets.MyListView;
 import com.orhanobut.hawk.Hawk;
 
@@ -129,9 +130,17 @@ public class WuHuVoteAdapter extends RecyclerView.Adapter<WuHuVoteAdapter.MyView
                 object.setChecked(false);
                 dataList.add(object);
             }
-            WuHuRadioAdapter  radioAdapter = new WuHuRadioAdapter(context, dataList,voteBean.getFlag(),voteBean);
-            holder.listview.setAdapter(radioAdapter);
-            radioAdapter.notifyDataSetChanged();
+            if (voteBean.getFlag().equals("1")){
+                WuHuRadioAdapter  radioAdapter = new WuHuRadioAdapter(context, dataList,voteBean.getFlag(),voteBean);
+                holder.listview.setAdapter(radioAdapter);
+                radioAdapter.notifyDataSetChanged();
+            }else {
+
+                WuHuSingleGridleAdapter wuHuSingleGridleAdapter=new WuHuSingleGridleAdapter(context, dataList,voteBean.getFlag(),voteBean);
+                holder.gridview.setAdapter(wuHuSingleGridleAdapter);
+                wuHuSingleGridleAdapter.notifyDataSetChanged();
+            }
+
 
 
         } else {
@@ -142,9 +151,17 @@ public class WuHuVoteAdapter extends RecyclerView.Adapter<WuHuVoteAdapter.MyView
                 object.setChecked(false);
                 dataList.add(object);
             }
-            WuHuCheckBoxAdapter checkBoxAdapter=new WuHuCheckBoxAdapter(context, dataList,voteBean.getFlag(),voteBean);
-            holder.listview.setAdapter(checkBoxAdapter);
-            checkBoxAdapter.notifyDataSetChanged();
+            if (voteBean.getFlag().equals("1")){
+                WuHuCheckBoxAdapter checkBoxAdapter=new WuHuCheckBoxAdapter(context, dataList,voteBean.getFlag(),voteBean);
+                holder.listview.setAdapter(checkBoxAdapter);
+                checkBoxAdapter.notifyDataSetChanged();
+            }else {
+                WuHuSingleGridleAdapter wuHuSingleGridleAdapter=new WuHuSingleGridleAdapter(context, dataList,voteBean.getFlag(),voteBean);
+                holder.gridview.setAdapter(wuHuSingleGridleAdapter);
+                wuHuSingleGridleAdapter.notifyDataSetChanged();
+
+            }
+
         }
 
 
@@ -276,8 +293,8 @@ public class WuHuVoteAdapter extends RecyclerView.Adapter<WuHuVoteAdapter.MyView
         TextView niming;
         @BindView(R.id.avater_img)
         ImageView avater_img;
-
-
+        @BindView(R.id.gridview)
+        MyGridView gridview;
         //因为删除有可能会删除中间条目，然后会造成角标越界，所以必须整体刷新一下！
         public MyViewHolder(View view) {
             super(view);

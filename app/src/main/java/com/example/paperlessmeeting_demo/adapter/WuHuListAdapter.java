@@ -89,6 +89,8 @@ public class WuHuListAdapter extends BaseAdapter {
         } else {
             viHolder = (ViewHolder) view.getTag();
         }
+
+
         if (viHolder.tittle2.getTag() instanceof TextWatcher) {
             viHolder.tittle2.removeTextChangedListener((TextWatcher) viHolder.tittle2.getTag());
         }
@@ -114,10 +116,9 @@ public class WuHuListAdapter extends BaseAdapter {
                 }
             }
         };
-
+        viHolder.tittle_pos.setText("议题"+(i+1));
         viHolder.tittle2.addTextChangedListener(tittle2Watcher);
         viHolder.tittle2.setTag(tittle2Watcher);
-
         TextWatcher tittle3Watcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

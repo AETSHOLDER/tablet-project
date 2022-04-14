@@ -156,12 +156,12 @@
         android:id="@+id/edit_name_rl"
         android:layout_width="489dp"
         android:layout_height="wrap_content"
-         android:layout_below="@id/tittle"
+        android:layout_below="@id/tittle"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="21dp"
         android:layout_marginTop="12dp"
-        android:background="@drawable/bg_wuhu_name"
-        >
+        android:visibility="gone"
+        android:layout_marginRight="21dp"
+        android:background="@drawable/bg_wuhu_name">
 
         <ImageView
             android:id="@+id/comfirm"
@@ -184,8 +184,8 @@
             android:gravity="left"
             android:hint="请输入姓名"
             android:textColor="#ff1d1d1d"
-            android:textSize="37sp" />
-
+            android:textSize="37sp"
+            android:visibility="gone" />
 
 
     </RelativeLayout>
@@ -197,9 +197,9 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="128dp"
         android:gravity="center"
-        android:text="南京某某科技有限公司"
+        android:text="某某某某科技有限公司"
         android:textColor="#ff1d1d1d"
-        android:textSize="68sp" />
+        android:textSize="60sp" />
 
     <TextView
         android:id="@+id/tittle2"
@@ -211,7 +211,7 @@
         android:gravity="center"
         android:text="会议纪要"
         android:textColor="#ff1d1d1d"
-        android:textSize="60sp" />
+        android:textSize="50sp" />
 
     <View
         android:id="@+id/aa"
@@ -230,6 +230,7 @@
         android:layout_marginLeft="190dp"
         android:layout_marginTop="25dp"
         android:layout_marginRight="190dp"
+        android:scrollbars="none"
         android:background="@drawable/bg_wuhu">
 
         <LinearLayout
@@ -244,29 +245,65 @@
                 android:layout_marginTop="15dp"
                 android:gravity="center"
                 android:text="议题1"
-                android:textColor="#ffea431b"
-                android:textSize="37sp" />
-
-            <TextView
-                android:id="@+id/topic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="190dp"
-                android:layout_marginTop="50dp"
-                android:gravity="center"
-                android:text="会议议题："
-                android:textColor="#ff1d1d1d"
+                android:textColor="#EA1818"
                 android:textSize="48sp" />
-
-            <TextView
-                android:id="@+id/attend"
+            <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="190dp"
-                android:gravity="center"
-                android:text="参会人员："
-                android:textColor="#ff1d1d1d"
-                android:textSize="48sp" />
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="190dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="35dp"
+                    android:gravity="center"
+                    android:text="会议议题："
+                    android:textColor="#848484"
+                    android:textSize="48sp" />
+                <TextView
+                    android:id="@+id/topic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:layout_toRightOf="@id/tc"
+                    android:text="参会人员："
+                    android:textColor="#333333"
+                    android:textSize="50sp" />
+
+            </RelativeLayout>
+
+     <RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+         <TextView
+             android:id="@+id/ad"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_centerVertical="true"
+             android:layout_marginLeft="190dp"
+             android:gravity="center"
+             android:text="参会人员："
+             android:textColor="#848484"
+             android:textSize="48sp" />
+         <TextView
+             android:id="@+id/attend"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_marginLeft="15dp"
+             android:gravity="center"
+             android:layout_centerVertical="true"
+             android:layout_toRightOf="@id/ad"
+             android:text="参会人员："
+             android:textColor="#333333"
+             android:textSize="50sp" />
+
+    </RelativeLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -326,6 +363,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:divider="@drawable/bg_list_div"
+                    android:layout_marginTop="20dp"
                     android:dividerHeight="1dp"
                     android:scrollbars="none">
 

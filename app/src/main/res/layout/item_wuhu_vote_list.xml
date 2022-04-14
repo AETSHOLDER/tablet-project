@@ -113,19 +113,46 @@
     android:layout_height="match_parent"
     android:scrollbars="none"
     >
-    <com.example.paperlessmeeting_demo.widgets.MyListView
-        android:id="@+id/listview"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/title"
-        android:layout_marginLeft="50dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginRight="50dp"
-        android:background="@color/bgColor"
-        android:divider="#00000000"
-        android:listSelector="@drawable/trans_bg"
-        android:scrollIndicators="none"
-        android:scrollbars="none"></com.example.paperlessmeeting_demo.widgets.MyListView>
+        android:orientation="vertical"
+        >
+        <com.example.paperlessmeeting_demo.widgets.MyGridView
+            android:id="@+id/gridview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="30dp"
+            android:layout_marginLeft="60dp"
+            android:layout_marginRight="60dp"
+            android:layout_marginTop="30dp"
+            android:background="#fff"
+            android:gravity="center"
+            android:horizontalSpacing="40dp"
+            android:numColumns="2"
+            android:scrollbars="none"
+            android:verticalSpacing="40dp">
+
+        </com.example.paperlessmeeting_demo.widgets.MyGridView>
+        <com.example.paperlessmeeting_demo.widgets.MyListView
+            android:id="@+id/listview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="50dp"
+            android:visibility="gone"
+            android:background="@color/bgColor"
+            android:divider="#00000000"
+            android:listSelector="@drawable/trans_bg"
+            android:scrollIndicators="none"
+            android:scrollbars="none"></com.example.paperlessmeeting_demo.widgets.MyListView>
+
+
+    </LinearLayout>
 
 </ScrollView>
 
@@ -182,7 +209,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="20dp"
             android:layout_toLeftOf="@+id/btn_pos"
-            android:background="@drawable/alert_sure_btn_border"
+            android:background="@drawable/wuhu_alert_sure_btn_border"
             android:text="结束"
             android:textAlignment="center"
             android:textColor="@color/bgColor"

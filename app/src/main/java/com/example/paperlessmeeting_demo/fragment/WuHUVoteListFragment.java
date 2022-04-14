@@ -43,6 +43,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.codbking.widget.DatePickDialog;
@@ -140,23 +141,26 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
         vote_type_ll.setVisibility(View.GONE);
         vote_imag_rl.setOnClickListener(this);
         vote_text_rl.setOnClickListener(this);
+        no_vote_add_rl.setOnClickListener(this);
+        no_vote_add_type.setOnClickListener(this);
         add_wuhu_vote_rl.setOnClickListener(this);
+        no_vote_iam_rl.setOnClickListener(this);
+        no_vote_text_rl.setOnClickListener(this);
+        RelativeLayout no_vote_text_rl;
         back_ll.setOnClickListener(this);
-        if (!UserUtil.ISCHAIRMAN) {
-            add_wuhu_vote_rl.setVisibility(View.GONE);
-        }
+
     }
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.vote_imag_rl:
                 vote_type_ll.setVisibility(View.GONE);
-                add_wuhu_vote.setImageResource(R.mipmap.ic_add_wuhu_vote_un);
+                add_wuhu_vote.setImageResource(R.mipmap.ic_add_wuhu_vote);
                 showNewVoteItem("2");
                 break;
             case R.id.vote_text_rl:
                 vote_type_ll.setVisibility(View.GONE);
-                add_wuhu_vote.setImageResource(R.mipmap.ic_add_wuhu_vote_un);
+                add_wuhu_vote.setImageResource(R.mipmap.ic_add_wuhu_vote);
                 showNewVoteItem("1");
                 break;
             case R.id.add_wuhu_vote_rl:
@@ -166,10 +170,9 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                     add_wuhu_vote.setImageResource(R.mipmap.ic_add_wuhu_vote);
                 }else {
                     vote_type_ll.setVisibility(View.GONE);
-                    add_wuhu_vote.setImageResource(R.mipmap.ic_add_wuhu_vote_un);
+                    add_wuhu_vote.setImageResource(R.mipmap.ic_add_wuhu_vote);
                     isOptionShow=false;
                 }
-
 
                 break;
             case R.id.back_ll:
@@ -177,6 +180,20 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                 intent.setAction(constant.FINISH_WUHUVOTEACTIVITY_BROADCAST);
                 getActivity().sendBroadcast(intent);
                 break;
+            case R.id.no_vote_add_rl:
+            no_vote_add_rl.setVisibility(View.GONE);
+            no_vote_add_type.setVisibility(View.VISIBLE);
+                break ;
+
+            case R.id.no_vote_iam_rl:
+               showNewVoteItem("2");
+                no_vote_add_type.setVisibility(View.GONE);
+            break ;
+            case R.id.no_vote_text_rl:
+                showNewVoteItem("1");
+                no_vote_add_type.setVisibility(View.GONE);
+                break;
+
 
         }
 
@@ -218,6 +235,17 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
     ImageView add_wuhu_vote;
     @BindView(R.id.back_ll)
     LinearLayout back_ll;
+    @BindView(R.id.no_vote_add_rl)
+    RelativeLayout no_vote_add_rl;
+
+    @BindView(R.id.no_vote_add_type)
+    RelativeLayout no_vote_add_type;
+
+    @BindView(R.id.no_vote_iam_rl)
+    RelativeLayout no_vote_iam_rl;
+
+    @BindView(R.id.no_vote_text_rl)
+    RelativeLayout no_vote_text_rl;
 
     ArrayList<VoteBean> voteList = new ArrayList<>();
     private LucklyPopopWindow mLucklyPopopWindow;
@@ -250,7 +278,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
     EditText edit_text;
     EditText edit_text2;
     EditText edit_text3;
-
+    TextView  text_title;
     private AlertDialog results;
     private AlertDialog optionFormDialog;
     private AlertDialog imaDialog;
@@ -285,7 +313,6 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
         DrawableTextView new_vote = null;
         if (UserUtil.ISCHAIRMAN) {
             new_vote = rootView.findViewById(R.id.new_vote);
-
             voteAdapter2.setOnVoteListener(this);
             new_vote.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -320,6 +347,23 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
         }
         // 监听socket信息
         EventBus.getDefault().register(this);
+
+        if (!UserUtil.ISCHAIRMAN) {
+            no_vote_add_rl.setVisibility(View.GONE);
+            add_wuhu_vote_rl.setVisibility(View.GONE);
+            no_vote_add_type.setVisibility(View.GONE);
+        }else {
+            if (voteList.size()<1){
+                add_wuhu_vote_rl.setVisibility(View.GONE);
+                no_vote_add_rl.setVisibility(View.VISIBLE);
+                no_vote_add_type.setVisibility(View.GONE);
+            }else {
+                add_wuhu_vote_rl.setVisibility(View.VISIBLE);
+                no_vote_add_rl.setVisibility(View.GONE);
+                no_vote_add_type.setVisibility(View.GONE);
+            }
+
+        }
         return rootView;
     }
 
@@ -343,7 +387,6 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                         Log.d("gdgsdgsdgdgf444555",flag+"");
                         for (VoteBean bean : voteList) {
                             bean.setStatus(bean.getStatus());
-
                         }
                         refreshUI(voteList, flag);
                     }
@@ -471,7 +514,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
         edit_text = view.findViewById(R.id.edit_text);
         edit_text2 = view.findViewById(R.id.edit_text2);
         edit_text3 = view.findViewById(R.id.edit_text3);
-
+        text_title= view.findViewById(R.id.text_title);
         edit_text3.setFocusable(false);
         edit_text3.setKeyListener(null);
         currentSelDanxuan = ivCheckState1;
@@ -492,6 +535,11 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
         p.width = (int) (width * 0.8);//设置宽
         p.height = (int) (height * 0.8);//设置高
         window.setAttributes(p);
+        if (flag.equals("1")) {
+            text_title.setText("新增投票-文字");
+        } else {
+            text_title.setText("新增投票-图片");
+        }
 
         initRecycle(flag);
         edit_text3.setOnClickListener(new View.OnClickListener() {
@@ -531,6 +579,23 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
         btn_neg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if (!UserUtil.ISCHAIRMAN) {
+                    no_vote_add_rl.setVisibility(View.GONE);
+                    add_wuhu_vote_rl.setVisibility(View.GONE);
+                    no_vote_add_type.setVisibility(View.GONE);
+                }else {
+                    if (voteList.size()<1){
+                        add_wuhu_vote_rl.setVisibility(View.GONE);
+                        no_vote_add_rl.setVisibility(View.VISIBLE);
+                        no_vote_add_type.setVisibility(View.GONE);
+                    }else {
+                        add_wuhu_vote_rl.setVisibility(View.VISIBLE);
+                        no_vote_add_rl.setVisibility(View.GONE);
+                        no_vote_add_type.setVisibility(View.GONE);
+                    }
+
+                }
                 results.dismiss();
             }
         });
@@ -958,7 +1023,23 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
             voteAdapter1.notifyDataSetChanged();
         }
         home_refreshLayout.finishRefresh();
+        if (!UserUtil.ISCHAIRMAN) {
+            no_vote_add_rl.setVisibility(View.GONE);
+            add_wuhu_vote_rl.setVisibility(View.GONE);
+            no_vote_add_type.setVisibility(View.GONE);
+        }else {
+            if (data.size()<1){
+                add_wuhu_vote_rl.setVisibility(View.GONE);
+                no_vote_add_rl.setVisibility(View.VISIBLE);
+                no_vote_add_type.setVisibility(View.GONE);
+            }else {
+                add_wuhu_vote_rl.setVisibility(View.VISIBLE);
+                no_vote_add_rl.setVisibility(View.GONE);
+                no_vote_add_type.setVisibility(View.GONE);
+            }
 
+
+        }
 
 
     }

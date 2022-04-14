@@ -216,8 +216,8 @@
         <item name="android:backgroundDimEnabled">true</item><!--模糊-->
     </style>
 
-    <style name="TabLayoutTextStyle">
-        <item name="android:textSize">38sp</item>
+    <style name="TabLayoutTextStyle"  parent="TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse">
+        <item name="android:textSize">48sp</item>
     </style>
 
     <style name="ProgressBar" parent="@android:style/Widget.ProgressBar">
@@ -265,7 +265,16 @@
         <item name="android:textSize">22sp</item>
     </style>
     <style name="option_form_tv">
+        <item name="android:textSize">35sp</item>
+        <item name="textColor">#333333</item>
+    </style>
+    <style name="option_form_check">
+        <item name="android:textSize">35sp</item>
+        <item name="textColor">#3D4966</item>
+    </style>
+    <style name="option_form_edit">
         <item name="android:textSize">32sp</item>
+        <item name="textColor">#777777</item>
     </style>
     <style name="agenda_name">
         <item name="android:layout_centerVertical">true</item>
@@ -303,7 +312,27 @@
         <item name="android:background">@drawable/bg_launch_tv</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:padding">13dp</item>
+    </style>
 
+    <style name="wuhu_tittle_tv">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">#ff1d1d1d</item>
+        <item name="android:textSize">27sp</item>
+        <item name="android:layout_centerHorizontal">true</item>
+
+    </style>
+    <style name="wuhu_tittle_rl">
+      <item name="android:layout_marginTop">20dp</item>
+        <item name="android:layout_marginBottom">20dp</item>
+
+    </style>
+
+
+    <style name="wuhu_tittle_ima">
+      <item name="android:scaleType">fitCenter</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_width">80dp</item>
+        <item name="android:layout_height">80dp</item>
     </style>
     <style name="DialogActivityTheme" parent="Theme.AppCompat.Dialog">
         <item name="windowNoTitle">true</item>
