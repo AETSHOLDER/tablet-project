@@ -52,19 +52,22 @@ public interface NetWorkApi {
     @FormUrlEncoded
     Observable<BasicResponse<LoginBean>> loginByUserId(@FieldMap Map<String, Object> map);
 
-    /*
-     *  通过userId登录，临时使用
-     * */
-    @POST("ppl/register")
-    @FormUrlEncoded
-    Observable<BasicResponse<String>> pplRegister(@FieldMap Map<String, Object> map);
-
     @POST("loginUser")
     @FormUrlEncoded
     Observable<BasicResponse<LoginBean>> login(@FieldMap Map<String, Object> map);
 
+    //芜湖版注册
+    @POST("ppl/register")
+    @FormUrlEncoded
+    Observable<BasicResponse<String>> pplRegister(@FieldMap Map<String, Object> map);
+
+    //芜湖版查询注册信息
     @GET("ppl/findPPLByMac")
     Observable<BasicResponse<String>> findPaperLessInfo(@Query("mac") String mac); // 查询发言单元注册信息
+
+    //芜湖版结束会议
+    @POST("meeting/finishMeeting")
+    Observable<BasicResponse> finishWUHUMeeting(@Body Map<String, Object> map);
 
     //获取文件列表
     @GET("findMeetingFileList")

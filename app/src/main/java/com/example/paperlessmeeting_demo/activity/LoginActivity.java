@@ -207,7 +207,6 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
     protected void initView() {
         if(Hawk.contains(constant.user_name)){
             UserUtil.user_name = Hawk.get(constant.user_name);
-            Log.e("存在user你ame","name ==="+UserUtil.user_name);
         }
 
         //如芜湖数据存在则清除

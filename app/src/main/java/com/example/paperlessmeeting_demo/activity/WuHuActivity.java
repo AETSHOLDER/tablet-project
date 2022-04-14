@@ -584,6 +584,30 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                         }
                         JWebSocketClientService.closeConnect();
 
+                        String _id = Hawk.contains(constant._id) ? Hawk.get(constant._id) : "";
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("id", _id);
+                        //绑定生命周期
+                        NetWorkManager.getInstance().getNetWorkApiService().finishWUHUMeeting(map).compose(WuHuActivity.this.<BasicResponse>bindToLifecycle())
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new DefaultObserver<BasicResponse>() {
+                                    @Override
+                                    protected void onSuccess(BasicResponse response) {
+                                        if (response != null) {
+
+                                            UserUtil.user_id = "";
+                                            UserUtil.meeting_record_id = "";
+                                            if(Hawk.contains(constant._id)){
+                                                Hawk.delete(constant._id);
+                                            }
+                                            if(Hawk.contains(constant.user_id)){
+                                                Hawk.delete(constant.user_id);
+                                            }
+                                        }
+                                    }
+                                });
+
                         finish();
                     } else {
                         String _id = UserUtil.meeting_record_id;
