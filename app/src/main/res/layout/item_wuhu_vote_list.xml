@@ -17,12 +17,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="30dp"
                 >
+
                 <TextView
                     android:id="@+id/endtimeClock"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_centerHorizontal="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="20dp"
                     android:text="距离结束还剩 10:50"
                     android:textColor="#333333"
                     android:textSize="45sp"

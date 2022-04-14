@@ -270,7 +270,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                 wuHuEditBean.setTopic_type("会议记录");
                 WuHuEditBean.EditListBean editListBean=new WuHuEditBean.EditListBean();
                 editListBean.setSubTopics("总结2022年");
-                editListBean.setAttendeBean("王二狗，李狐狸，张太郎，刘毛毛");
+                editListBean.setAttendeBean("某某，某某，某某，某");
                 wuHuEditBeanList.add(editListBean);
                 Hawk.put("WuHuFragmentData",wuHuEditBean);
             }

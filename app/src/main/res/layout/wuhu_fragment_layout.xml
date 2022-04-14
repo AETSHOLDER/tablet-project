@@ -255,8 +255,8 @@
                     android:id="@+id/tc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="190dp"
                     android:layout_centerVertical="true"
+                    android:layout_marginLeft="190dp"
                     android:layout_marginTop="35dp"
                     android:gravity="center"
                     android:text="会议议题："
@@ -270,7 +270,7 @@
                     android:layout_centerVertical="true"
                     android:gravity="center"
                     android:layout_toRightOf="@id/tc"
-                    android:text="参会人员："
+                    android:text="请编辑会议议题"
                     android:textColor="#333333"
                     android:textSize="50sp" />
 
@@ -298,7 +298,7 @@
              android:gravity="center"
              android:layout_centerVertical="true"
              android:layout_toRightOf="@id/ad"
-             android:text="参会人员："
+             android:text="某某，某某某 ，某某"
              android:textColor="#333333"
              android:textSize="50sp" />
 
