@@ -208,7 +208,7 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
-                case 0:
+                case 99:
                     FileListBean fileBean=(FileListBean)msg.obj;
                     fileBeans.add(fileBean);
                     fileListAdapter.setGridViewBeanList(fileBeans);
@@ -465,7 +465,7 @@ if (Hawk.contains(constant._id)) {
                             fileListBean.setNet(true);
                             fileBean =new FileListBean(name,fileStrPath + name,"","");
                             msg.obj = fileBean;//可以是基本类型，可以是对象，可以是List、map等；
-                            msg.what = 0;
+                            msg.what = 99;
                             mHandler.sendMessage(msg);
                             Log.v("dfsfff222", "下載成功,文件已存入手机内部存储设备根目录下Download文件夾中");
                         }

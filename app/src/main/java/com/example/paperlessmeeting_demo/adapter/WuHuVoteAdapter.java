@@ -135,13 +135,10 @@ public class WuHuVoteAdapter extends RecyclerView.Adapter<WuHuVoteAdapter.MyView
                 holder.listview.setAdapter(radioAdapter);
                 radioAdapter.notifyDataSetChanged();
             }else {
-
                 WuHuSingleGridleAdapter wuHuSingleGridleAdapter=new WuHuSingleGridleAdapter(context, dataList,voteBean.getFlag(),voteBean);
                 holder.gridview.setAdapter(wuHuSingleGridleAdapter);
                 wuHuSingleGridleAdapter.notifyDataSetChanged();
             }
-
-
 
         } else {
             holder.danxaun.setText("多选");
@@ -291,8 +288,8 @@ public class WuHuVoteAdapter extends RecyclerView.Adapter<WuHuVoteAdapter.MyView
         TextView danxaun;
         @BindView(R.id.niming)
         TextView niming;
-        @BindView(R.id.avater_img)
-        ImageView avater_img;
+      /*  @BindView(R.id.avater_img)
+        ImageView avater_img;*/
         @BindView(R.id.gridview)
         MyGridView gridview;
         //因为删除有可能会删除中间条目，然后会造成角标越界，所以必须整体刷新一下！

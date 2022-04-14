@@ -12,75 +12,60 @@
             android:orientation="vertical">
 
             <RelativeLayout
+                android:id="@+id/kk"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/avater_img"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:visibility="gone"
-                    android:layout_marginLeft="60dp"
-                    android:background="@drawable/shape_corner_avater"
-                    android:src="@mipmap/avater_default" />
-
-
+                android:layout_marginBottom="30dp"
+                >
                 <TextView
                     android:id="@+id/endtimeClock"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignTop="@+id/avater_img"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="60dp"
-                    android:layout_toRightOf="@+id/avater_img"
+                    android:layout_centerHorizontal="true"
                     android:text="距离结束还剩 10:50"
-                    android:textColor="@color/color_textBlack"
-                    android:textSize="35sp"
+                    android:textColor="#333333"
+                    android:textSize="45sp"
                     android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/danxaun"
-                    android:layout_width="78dp"
-                    android:layout_height="34dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="12dp"
-                    android:layout_toRightOf="@+id/endtimeClock"
-                    android:background="@drawable/rectangle_yellow"
-                    android:scaleType="fitXY"
-                    android:gravity="center"
-                    android:text="单选"
-                    android:textColor="@color/alertdialog_danxuan_yellow"
-                    android:textSize="24sp"></TextView>
-
-                <TextView
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_below="@id/kk"
+                android:layout_height="40dp">
+                <Button
                     android:id="@+id/niming"
                     android:layout_width="78dp"
                     android:layout_height="34dp"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_toRightOf="@+id/danxaun"
+                    android:layout_marginLeft="15dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="95dp"
                     android:background="@drawable/rectangle_blue"
                     android:scaleType="fitXY"
                     android:text="匿名"
-                    android:gravity="center"
                     android:textColor="@color/alertdialog_niming_blue"
-                    android:textSize="24sp"></TextView>
-
+                    android:textSize="24sp"></Button>
+                <Button
+                    android:id="@+id/danxaun"
+                    android:layout_width="78dp"
+                    android:layout_height="34dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@id/niming"
+                    android:background="@drawable/rectangle_yellow"
+                    android:scaleType="fitXY"
+                    android:text="单选"
+                    android:textColor="@color/alertdialog_danxuan_yellow"
+                    android:textSize="24sp"></Button>
                 <TextView
                     android:id="@+id/creator"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="80dp"
+                    android:layout_marginLeft="50dp"
                     android:text="发起人：吴呆呆"
                     android:textColor="@color/color_textBlack65"
                     android:textSize="33sp"
                     android:textStyle="normal" />
-
 
             </RelativeLayout>
 
