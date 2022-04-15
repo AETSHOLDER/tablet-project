@@ -376,6 +376,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                             if (clickConfirm) {
                                 initMeetingDialog.dismiss();
                                 UserUtil.isTempMeeting = true;
+                                constant.temp_code = content;
                                 Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
                                 Intent intent = new Intent(getActivity(), WuHuActivity.class);
                                 intent.putExtra("code", content);
@@ -389,6 +390,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
             } else {
                 initMeetingDialog.dismiss();
                 UserUtil.isTempMeeting = true;
+                constant.temp_code = content;
                 Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
                 Intent intent = new Intent(getActivity(), WuHuActivity.class);
                 intent.putExtra("code", content);

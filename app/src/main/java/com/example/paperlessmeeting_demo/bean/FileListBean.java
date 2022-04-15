@@ -47,6 +47,7 @@ public class FileListBean implements Serializable {
     private String time;
     private String file_type;
 
+
     public String getName() {
         return name;
     }

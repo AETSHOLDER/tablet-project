@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.blankj.utilcode.util.Utils;
 import com.example.paperlessmeeting_demo.tool.Constants;
+import com.example.paperlessmeeting_demo.tool.CrashHandler;
 import com.example.paperlessmeeting_demo.tool.FLUtil;
 import com.example.paperlessmeeting_demo.tool.NetWorkUtils;
 import com.example.paperlessmeeting_demo.tool.SdCardStatus;
@@ -145,10 +146,10 @@ public class MeetingAPP extends Application {
 //            return;
 //        }
 //
-//        // 异常处理，不需要处理时注释掉这两句即可！
-//        CrashHandler crashHandler = CrashHandler.getInstance();
-//        // 注册crashHandler
-//        crashHandler.init(getApplicationContext());
+        // 异常处理，不需要处理时注释掉这两句即可！
+        CrashHandler crashHandler = CrashHandler.getInstance();
+        // 注册crashHandler
+        crashHandler.init(getApplicationContext());
 //         mRefWatcher = LeakCanary.install(this);
         //内存泄漏-end
         //下载文件

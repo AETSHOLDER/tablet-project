@@ -78,6 +78,7 @@ import com.example.paperlessmeeting_demo.tool.MediaReceiver;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.EventMessage;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.JWebSocketClientService;
 import com.example.paperlessmeeting_demo.tool.ToastUtils;
+import com.example.paperlessmeeting_demo.tool.UrlConstant;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.example.paperlessmeeting_demo.tool.constant;
 import com.example.paperlessmeeting_demo.util.ToastUtil;
@@ -210,6 +211,7 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
             switch (msg.what) {
                 case 99:
                     FileListBean fileBean=(FileListBean)msg.obj;
+                    fileBean.setNet(true);
                     fileBeans.add(fileBean);
                     fileListAdapter.setGridViewBeanList(fileBeans);
                     fileListAdapter.notifyDataSetChanged();
@@ -435,35 +437,30 @@ if (Hawk.contains(constant._id)) {
             //下载文件--子线程
                 if ("4".equals(getType(endStr))) {
 
-                    String path = fileListBeanList.get(i).getFile_path();
+                    String path = UrlConstant.baseUrl+"/" + fileListBeanList.get(i).getFile_path();
                     String name = fileListBeanList.get(i).getName();
                     String fileId = fileListBeanList.get(i).get_id();
+                    Log.d("网络文件地址","path====="+path);
 
-                   // Log.d("FileDownloader0000", fileListBean.getFile_path() + "fileId=" + fileListBeanList.get(i).get_id() + "userIdBean=" + userIdBean.get_id());
-                    //       HttpDownloader httpDownloader = new HttpDownloader();
-               /* if (Hawk.contains("fileName")) {
-                    String fileName = Hawk.get("fileName");
-                    if (fileListBeanList.get(i).getFile_name().equals(fileName)) {
-                        return;
-                    }
-                }
 
-                Hawk.put("fileName", fileListBeanList.get(i).getFile_name());*/
                     //   String fileData = httpDownloader.downloadFiles(fileListBeanList.get(i).getFile_path());
-                    DownloadUtil.get().download(fileListBeanList.get(i).getFile_path(), fileStrPath, fileListBeanList.get(i).getName(), new DownloadUtil.OnDownloadListener() {
+                    DownloadUtil.get().download(path, fileStrPath, fileListBeanList.get(i).getName(), new DownloadUtil.OnDownloadListener() {
                         @Override
                         public void onDownloadSuccess(File file) {
                             Log.v("dfsfff111", "下載成功,文件已存入手机内部存储设备根目录下Download文件夾中");
                       /*  Looper.prepare();//增加部分
                         Looper.loop();//增加部分*/
-
                             Message msg = new Message();
                             fileListBean.setName(name);
                             fileListBean.setPath(fileStrPath + name);
                             fileListBean.set_id(fileId);
                             fileListBean.set_id(fileId);
+
                             fileListBean.setNet(true);
                             fileBean =new FileListBean(name,fileStrPath + name,"","");
+                            fileBean.setResImage(getIamge(endStr));
+                            fileBean.setFile_type(getType(endStr));
+
                             msg.obj = fileBean;//可以是基本类型，可以是对象，可以是List、map等；
                             msg.what = 99;
                             mHandler.sendMessage(msg);
@@ -472,7 +469,7 @@ if (Hawk.contains(constant._id)) {
 
                         @Override
                         public void onDownloading(int progress) {
-                            Log.v(TAG, "下載進度" + progress);
+//                            Log.v(TAG, "下載進度" + progress);
 //                progressDialog.setProgress(progress);
                         }
 

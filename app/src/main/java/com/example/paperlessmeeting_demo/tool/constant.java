@@ -100,6 +100,8 @@ public class constant {
     public final static String INIATE_ENDORSEMENT = "initiate endorsement";//socket 秘书发起签批时，普通会员自动打开签名页面
 
     public final static String FINISH_WUHUVOTEACTIVITY_BROADCAST = "finishactivity";//自己刷新芜湖界面
+
+    public static String temp_code = "temp_code";//临时会议code
     /**
      * 发言单元
      */

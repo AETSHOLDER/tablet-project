@@ -11,6 +11,13 @@ import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
 
+import com.example.paperlessmeeting_demo.sharefile.BroadcastUDPFileService;
+import com.example.paperlessmeeting_demo.tool.TempMeetingTools.ServerManager;
+import com.example.paperlessmeeting_demo.tool.TempMeetingTools.UDPBroadcastManager;
+import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.JWebSocketClient;
+import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.JWebSocketClientService;
+import com.orhanobut.hawk.Hawk;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
@@ -128,26 +135,35 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             @Override
             public void run() {
                 Looper.prepare();
+                if(Hawk.contains(constant._id)){
+                    Hawk.delete(constant._id);
+                }
+                if(JWebSocketClientService.client != null && JWebSocketClientService.client.isOpen()){
+                    JWebSocketClientService.closeConnect();
+                }
+                String code = constant.temp_code;
+                UDPBroadcastManager.getInstance().sendDestroyCode(code);
+                ServerManager.getInstance().StopMyWebsocketServer();
+                UDPBroadcastManager.getInstance().removeUDPBroastcast();
 
                 if(DEBUG){
                     Log.d(TAG, "异常信息->"+msg);
 
-                    String vName = "数据采集";
-                    String subject = vName
-                            +  " 错误报告";
+//                    String vName = "数据采集";
+//                    String subject = vName +  " 错误报告";
                     // 发送异常报告
-                    Intent i = new Intent(Intent.ACTION_SEND);
-                    // i.setType("text/plain"); //模拟器
-                    i.setType("message/rfc822"); // 真机
-                    // i.putExtra(Intent.EXTRA_EMAIL, new String[] {
-                    // "15724885838@139.com" });
-
-                    i.putExtra(Intent.EXTRA_EMAIL,
-                            new String[] { "3066894640@qq.com" });
-                    i.putExtra(Intent.EXTRA_SUBJECT, subject);
-                    i.putExtra(Intent.EXTRA_TEXT, msg);
-
-                    mContext.startActivity(Intent.createChooser(i, "发送错误报告"));
+//                    Intent i = new Intent(Intent.ACTION_SEND);
+//                    // i.setType("text/plain"); //模拟器
+//                    i.setType("message/rfc822"); // 真机
+//                    // i.putExtra(Intent.EXTRA_EMAIL, new String[] {
+//                    // "15724885838@139.com" });
+//
+//                    i.putExtra(Intent.EXTRA_EMAIL,
+//                            new String[] { "3066894640@qq.com" });
+//                    i.putExtra(Intent.EXTRA_SUBJECT, subject);
+//                    i.putExtra(Intent.EXTRA_TEXT, msg);
+//
+//                    mContext.startActivity(Intent.createChooser(i, "发送错误报告"));
                     // 退出应用程序
                     android.os.Process.killProcess(android.os.Process
                             .myPid());

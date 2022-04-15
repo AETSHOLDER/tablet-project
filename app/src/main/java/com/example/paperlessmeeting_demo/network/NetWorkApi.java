@@ -66,7 +66,7 @@ public interface NetWorkApi {
     Observable<BasicResponse<String>> findPaperLessInfo(@Query("mac") String mac); // 查询发言单元注册信息
 
     //芜湖版结束会议
-    @POST("meeting/finishMeeting")
+    @PUT("meeting/finishMeeting")
     Observable<BasicResponse> finishWUHUMeeting(@Body Map<String, Object> map);
 
     //获取文件列表
