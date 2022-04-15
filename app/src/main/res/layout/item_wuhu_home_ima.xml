@@ -74,15 +74,15 @@
         android:scaleType="fitXY"
         android:src="@mipmap/ic_minu_wuhu_options" />
 
-    <ImageView
-        android:id="@+id/add_chose"
-        android:layout_width="53dp"
-        android:layout_height="53dp"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="20dp"
-        android:layout_toRightOf="@id/add_delet"
-        android:scaleType="fitXY"
-        android:src="@mipmap/ic_add_wuhu_options" />
+     <ImageView
+         android:id="@+id/add_chose"
+         android:layout_width="53dp"
+         android:layout_height="53dp"
+         android:layout_centerVertical="true"
+         android:layout_marginLeft="20dp"
+         android:layout_toRightOf="@id/add_delet"
+         android:scaleType="fitXY"
+         android:src="@mipmap/ic_add_wuhu_options" />
 
      <ImageView
          android:id="@+id/chose_ima_tv"

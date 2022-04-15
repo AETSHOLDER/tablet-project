@@ -9,14 +9,14 @@
         android:id="@+id/tittle_pos"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="15dp"
-        android:layout_centerHorizontal="true"
         android:gravity="center"
         android:text="1"
-        android:textStyle="bold"
         android:textColor="#333333"
-        android:textSize="37sp" />
+        android:textSize="32sp"
+        android:textStyle="bold" />
    <ScrollView
     android:id="@+id/scrollView"
     android:layout_width="match_parent"

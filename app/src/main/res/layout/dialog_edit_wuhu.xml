@@ -81,6 +81,7 @@
             android:id="@+id/color_rb1"
             android:layout_width="60dp"
             android:layout_height="35dp"
+            android:checked="true"
             android:background="@drawable/radiobutton_background_checked"
             android:button="@null" />
 
@@ -126,6 +127,7 @@
                 android:id="@+id/color_rb3"
                 android:layout_width="60dp"
                 android:layout_height="match_parent"
+                android:checked="true"
                 android:background="@drawable/bg_radiobutton3"
                 android:button="@null" />
 
