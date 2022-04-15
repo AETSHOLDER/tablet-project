@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Base64;
 import android.util.Log;
-
 import com.blankj.utilcode.util.ActivityUtils;
 import com.example.paperlessmeeting_demo.activity.LoginActivity;
 import com.example.paperlessmeeting_demo.activity.WhiteBoardActivity;
@@ -30,15 +29,13 @@ import com.example.paperlessmeeting_demo.util.AutomaticVoteUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.orhanobut.hawk.Hawk;
-
 import org.greenrobot.eventbus.EventBus;
+import org.java_websocket.enums.ReadyState;
 import org.java_websocket.handshake.ServerHandshake;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
 import static com.blankj.utilcode.util.ActivityUtils.startActivity;
 
 public class JWebSocketClientService {
@@ -503,11 +500,17 @@ public class JWebSocketClientService {
         new Thread() {
             @Override
             public void run() {
-                try {
-                    //connectBlocking多出一个等待操作，会先连接再发送，否则未连接发送会报错
-                    client.connectBlocking();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                if (!client.isOpen()) {
+                    if (client.getReadyState().equals(ReadyState.NOT_YET_CONNECTED)) {
+                        try {
+                            //connectBlocking多出一个等待操作，会先连接再发送，否则未连接发送会报错
+                            client.connectBlocking();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    } else if (client.getReadyState().equals(ReadyState.CLOSING) || client.getReadyState().equals(ReadyState.CLOSED)) {
+                        client.reconnect();
+                    }
                 }
             }
         }.start();

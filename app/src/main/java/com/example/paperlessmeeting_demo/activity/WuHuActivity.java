@@ -554,7 +554,6 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
     //保存单个数据
     @Override
     public void saveData(int position) {
-
         if (Hawk.contains("WuHuFragmentData")) {
             WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
             wuHuEditBean.setTopics(company_name.getText().toString());
