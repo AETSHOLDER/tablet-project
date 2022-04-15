@@ -195,7 +195,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="128dp"
+        android:layout_marginTop="115dp"
         android:gravity="center"
         android:text="某某某某科技有限公司"
         android:textColor="#ff1d1d1d"
@@ -230,8 +230,8 @@
         android:layout_marginLeft="190dp"
         android:layout_marginTop="25dp"
         android:layout_marginRight="190dp"
-        android:scrollbars="none"
-        android:background="@drawable/bg_wuhu">
+        android:background="@drawable/bg_wuhu"
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -239,6 +239,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tittle_num"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
@@ -246,7 +247,8 @@
                 android:gravity="center"
                 android:text="议题1"
                 android:textColor="#EA1818"
-                android:textSize="48sp" />
+                android:textSize="45sp" />
+
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
@@ -261,61 +263,65 @@
                     android:gravity="center"
                     android:text="会议议题："
                     android:textColor="#848484"
-                    android:textSize="48sp" />
+                    android:textSize="45sp" />
+
                 <TextView
                     android:id="@+id/topic"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
                     android:layout_centerVertical="true"
-                    android:gravity="center"
+                    android:layout_marginLeft="15dp"
                     android:layout_toRightOf="@id/tc"
+                    android:gravity="center"
                     android:text="请编辑会议议题"
                     android:textColor="#333333"
-                    android:textSize="50sp" />
+                    android:textSize="45sp" />
 
             </RelativeLayout>
 
-     <RelativeLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
-         <TextView
-             android:id="@+id/ad"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:layout_centerVertical="true"
-             android:layout_marginLeft="190dp"
-             android:gravity="center"
-             android:text="参会人员："
-             android:textColor="#848484"
-             android:textSize="48sp" />
-         <TextView
-             android:id="@+id/attend"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:layout_marginLeft="15dp"
-             android:gravity="center"
-             android:layout_centerVertical="true"
-             android:layout_toRightOf="@id/ad"
-             android:text="某某，某某某 ，某某"
-             android:textColor="#333333"
-             android:textSize="50sp" />
+                <TextView
+                    android:id="@+id/ad"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="190dp"
+                    android:gravity="center"
+                    android:text="参会人员："
+                    android:textColor="#848484"
+                    android:textSize="45sp" />
 
-    </RelativeLayout>
+                <TextView
+                    android:id="@+id/attend"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="15dp"
+                    android:layout_toRightOf="@id/ad"
+                    android:gravity="center"
+                    android:text="某某，某某某 ，某某"
+                    android:textColor="#333333"
+                    android:textSize="45sp" />
+
+            </RelativeLayout>
 
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="176dp"
+                android:layout_marginTop="30dp"
                 android:layout_marginRight="176dp"
-                android:background="@drawable/bg_list_meet"
+                android:background="@drawable/wuhu_bg_list_meet"
                 android:orientation="vertical">
 
                 <RelativeLayout
+                    android:id="@+id/sb"
                     android:layout_width="match_parent"
-                    android:layout_height="106dp">
+                    android:layout_height="90dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -352,8 +358,6 @@
                             android:text="导入文件"
                             android:textColor="#ff3c3c3c"
                             android:textSize="37sp" />
-
-
                     </RelativeLayout>
 
                 </RelativeLayout>
@@ -362,8 +366,8 @@
                     android:id="@+id/listView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:divider="@drawable/bg_list_div"
                     android:layout_marginTop="20dp"
+                    android:divider="@drawable/bg_list_div"
                     android:dividerHeight="1dp"
                     android:scrollbars="none">
 

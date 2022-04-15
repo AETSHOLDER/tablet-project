@@ -50,6 +50,8 @@ import com.codbking.widget.DatePickDialog;
 import com.codbking.widget.OnSureLisener;
 import com.codbking.widget.bean.DateType;
 import com.example.paperlessmeeting_demo.R;
+import com.example.paperlessmeeting_demo.activity.Sign.MyImageDialog;
+import com.example.paperlessmeeting_demo.activity.WuHuActivity;
 import com.example.paperlessmeeting_demo.adapter.RecycleAdapter;
 import com.example.paperlessmeeting_demo.adapter.VoteAdapter;
 import com.example.paperlessmeeting_demo.adapter.VoteChairmanAdapter;
@@ -74,9 +76,13 @@ import com.example.paperlessmeeting_demo.dialog.WuHuRadioDialog;
 import com.example.paperlessmeeting_demo.enums.MessageReceiveType;
 import com.example.paperlessmeeting_demo.network.DefaultObserver;
 import com.example.paperlessmeeting_demo.network.NetWorkManager;
+import com.example.paperlessmeeting_demo.tool.Base642BitmapTool;
+import com.example.paperlessmeeting_demo.tool.CVIPaperDialogUtils;
 import com.example.paperlessmeeting_demo.tool.Constants;
 import com.example.paperlessmeeting_demo.tool.FLUtil;
 import com.example.paperlessmeeting_demo.tool.PermissionManager;
+import com.example.paperlessmeeting_demo.tool.TempMeetingTools.ServerManager;
+import com.example.paperlessmeeting_demo.tool.TempMeetingTools.UDPBroadcastManager;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.EventMessage;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.JWebSocketClientService;
 import com.example.paperlessmeeting_demo.tool.TimeUtils;
@@ -118,9 +124,10 @@ import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
 @SuppressLint("ValidFragment")
-public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.voteClickListener, WuHuVoteAdapter.voteClickListener, EasyPermissions.PermissionCallbacks, WuHuRecycleAdapter.ChoseOptionItemImaListener, WuHuRecycleAdapter.SeePhotosItemImaListener, View.OnClickListener,WuHuVoteAdapter.viewResultsInterface,WuHuVoteAdapter.voteInterFace,WuHuVoteAdapter.endInterFace{
+public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.voteClickListener, WuHuVoteAdapter.voteClickListener, EasyPermissions.PermissionCallbacks, WuHuRecycleAdapter.ChoseOptionItemImaListener, WuHuRecycleAdapter.SeePhotosItemImaListener, View.OnClickListener,WuHuVoteAdapter.viewResultsInterface,WuHuVoteAdapter.voteInterFace,WuHuVoteAdapter.endInterFace,WuHuRecycleAdapter.deleteOpitionIntetface{
 
-  private boolean isOptionShow=false;
+
+    private boolean isOptionShow=false;
     @Override
     protected int getLayoutId() {
         if (UserUtil.ISCHAIRMAN) {
@@ -762,13 +769,48 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
         });
 
     }
+    //芜湖删除
+    @Override
+    public void deleteOpition(int i) {
+
+        CVIPaperDialogUtils.showCustomDialog(getActivity(), "是否要删除选项", "", "确定", true, new CVIPaperDialogUtils.ConfirmDialogListener() {
+            @Override
+            public void onClickButton(boolean clickConfirm, boolean clickCancel) {
+                if (clickConfirm) {
+                    list.remove(i);
+                    adapter.notifyDataSetChanged();
+                    if (list.size() > 0) {
+                        add_chose.setVisibility(View.INVISIBLE);
+                    } else {
+                        add_chose.setVisibility(View.VISIBLE);
+                    }
+                   /* if (list.size() == 0) {
+                        mchoseClickListener.clickListener(position,flag);
+                    }
+                    //删除动画
+                    notifyItemRemoved(position);
+                    notifyDataSetChanged();
+                    itemObj.setText("");
+                    removeData(position);*/
+
+                }
+            }
+        });
+    }
     //芜湖结束投票
     @Override
     public void end(int a,String flag) {
-        Log.d("gsdrwerbiumr","芜湖结束投票"+flag);
-        VoteBean model=voteList.get(a);
-        model.setStatus("FINISH");
-        finishVote(model, flag);
+        CVIPaperDialogUtils.showCustomDialog(getActivity(), "是否要结束投票", "", "确定", true, new CVIPaperDialogUtils.ConfirmDialogListener() {
+            @Override
+            public void onClickButton(boolean clickConfirm, boolean clickCancel) {
+                if (clickConfirm) {
+                    Log.d("gsdrwerbiumr","芜湖结束投票"+flag);
+                    VoteBean model=voteList.get(a);
+                    model.setStatus("FINISH");
+                    finishVote(model, flag);
+                }
+            }
+        });
 
     }
     //芜湖投票
@@ -994,6 +1036,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
         }, flag);
         adapter.setChoseOptionItemImaListener(this);
         adapter.setSeePhotosItemImaListener(this);
+        adapter.setDeleteOpition(this);
         mRecyclerView.setAdapter(adapter);
         //      添加动画
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -1060,11 +1103,18 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
     //查看大图
     @Override
     public void seeImaistener(int position) {
+        Bitmap bitmap = BitmapFactory.decodeFile("file://" + list.get(position).getText());
 
-        showIma(position);
-
+        showImage(bitmap);
     }
 
+
+    //展示图片大图
+    private void showImage(Bitmap  bitmap){
+        MyImageDialog myImageDialog = new MyImageDialog(getActivity(),R.style.mypopwindow_anim_style,0,-300,bitmap);
+        myImageDialog.show();
+
+    }
     //选择图片-选项
     @Override
     public void choseImaistener(int position) {

@@ -164,6 +164,8 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
 
     @BindView(R.id.attend)
     TextView attend;
+    @BindView(R.id.tittle_num)
+    TextView tittle_num;
 
     private RelativeLayout  add_topic_rl;
     private RelativeLayout  dialg_rl_root;
@@ -1037,6 +1039,8 @@ if (Hawk.contains(constant._id)) {
         }
         tittle1.setText(wuHuEditBean.getTopics());
         tittle2.setText(wuHuEditBean.getTopic_type());
+        String s=textNub+1;
+        tittle_num.setText("议题"+s);
         topic.setText(wuHuEditBeanList.get(Integer.valueOf(textNub)).getSubTopics());
         attend.setText(wuHuEditBeanList.get(Integer.valueOf(textNub)).getAttendeBean());
         switch (wuHuEditBean.getLine_color()){
@@ -1856,6 +1860,8 @@ if (Hawk.contains(constant._id)) {
                    topic.setText(editListBeanList.get(Integer.valueOf(textNub)).getSubTopics());
                    attend.setText(editListBeanList.get(Integer.valueOf(textNub)).getAttendeBean());
 
+                   tittle1.setText(wuHuEditBean.getTopics());
+                   tittle2.setText(wuHuEditBean.getTopic_type());
                }
 
            }

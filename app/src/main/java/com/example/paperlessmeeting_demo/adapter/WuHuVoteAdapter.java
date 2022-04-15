@@ -136,13 +136,13 @@ public class WuHuVoteAdapter extends RecyclerView.Adapter<WuHuVoteAdapter.MyView
                 WuHuRadioAdapter  radioAdapter = new WuHuRadioAdapter(context, dataList,voteBean.getFlag(),voteBean);
                 holder.listview.setAdapter(radioAdapter);
                 radioAdapter.notifyDataSetChanged();
-            }/*else {
+            }else {
                holder.listview.setVisibility(View.GONE);
                 holder.gridview.setVisibility(View.VISIBLE);
                 WuHuSingleGridleAdapter wuHuSingleGridleAdapter=new WuHuSingleGridleAdapter(context, dataList,voteBean.getFlag(),voteBean);
                 holder.gridview.setAdapter(wuHuSingleGridleAdapter);
                 wuHuSingleGridleAdapter.notifyDataSetChanged();
-            }*/
+            }
 
         } else {
             holder.danxaun.setText("多选");
@@ -158,14 +158,14 @@ public class WuHuVoteAdapter extends RecyclerView.Adapter<WuHuVoteAdapter.MyView
                 WuHuCheckBoxAdapter checkBoxAdapter=new WuHuCheckBoxAdapter(context, dataList,voteBean.getFlag(),voteBean);
                 holder.listview.setAdapter(checkBoxAdapter);
                 checkBoxAdapter.notifyDataSetChanged();
-            }/*else {
+            }else {
               holder.listview.setVisibility(View.GONE);
                 holder.gridview.setVisibility(View.VISIBLE);
                 WuHuSingleGridleAdapter wuHuSingleGridleAdapter=new WuHuSingleGridleAdapter(context, dataList,voteBean.getFlag(),voteBean);
                 holder.gridview.setAdapter(wuHuSingleGridleAdapter);
                 wuHuSingleGridleAdapter.notifyDataSetChanged();
 
-            }*/
+            }
 
         }
 

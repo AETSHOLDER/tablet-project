@@ -33,7 +33,7 @@
             android:gravity="left"
             android:text="新增投票-图片"
             android:textColor="#000000"
-            android:textSize="56sp"
+            android:textSize="35sp"
             android:textStyle="bold" />
 
         <ImageView
@@ -47,15 +47,13 @@
             android:src="@drawable/close_3" />
     </RelativeLayout>
 
-    <!-- 头部分割线   -->
-    <TextView
-        android:layout_width="match_parent"
-        android:padding="20dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginBottom="50dp"
-        android:layout_height="0.5dp"
-        android:background="@color/alertdialog_line" />
-    <!-- 投票内容   -->
+        <!-- 头部分割线   -->
+        <TextView
+            android:layout_width="match_parent"
+            android:padding="20dp"
+            android:layout_height="0.5dp"
+            android:background="@color/alertdialog_line" />
+        <!-- 投票内容   -->
 
         <RelativeLayout
             android:layout_width="match_parent"

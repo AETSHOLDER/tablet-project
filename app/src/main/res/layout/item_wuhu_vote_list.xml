@@ -3,7 +3,8 @@
     android:id="@+id/layout_content"
     android:layout_width="match_parent"
     android:background="@drawable/bg_item_wuhu_vote_list"
-    android:layout_height="700dp">
+    android:layout_marginTop="25dp"
+    android:layout_height="500dp">
 
 
         <LinearLayout
@@ -96,7 +97,7 @@
                     android:textStyle="normal" />
 <ScrollView
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:scrollbars="none"
     >
     <LinearLayout

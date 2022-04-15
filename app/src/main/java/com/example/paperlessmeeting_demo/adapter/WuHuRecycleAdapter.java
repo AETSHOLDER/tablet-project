@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.bean.ItemBean;
+import com.example.paperlessmeeting_demo.bean.VoteListBean;
+import com.example.paperlessmeeting_demo.tool.CVIPaperDialogUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
@@ -28,6 +30,15 @@ public class WuHuRecycleAdapter extends RecyclerView.Adapter<WuHuRecycleAdapter.
     private Context context;
     private List<ItemBean> list;
     private String flag;
+private deleteOpitionIntetface  deleteOpition;
+
+    public deleteOpitionIntetface getDeleteOpition() {
+        return deleteOpition;
+    }
+
+    public void setDeleteOpition(deleteOpitionIntetface deleteOpition) {
+        this.deleteOpition = deleteOpition;
+    }
 
     public WuHuRecycleAdapter(Context context, List<ItemBean> list, ChoseClickListener mchoseClickListener, String flag) {
         this.context = context;
@@ -77,9 +88,19 @@ public class WuHuRecycleAdapter extends RecyclerView.Adapter<WuHuRecycleAdapter.
     }
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        MyViewHolder holder = new MyViewHolder(LayoutInflater.from(
-                context).inflate(R.layout.item_wuhu_home, parent,
-                false));
+        MyViewHolder holder;
+        if (flag.equals("1")){
+
+            holder = new MyViewHolder(LayoutInflater.from(
+                    context).inflate(R.layout.item_wuhu_home, parent,
+                    false));
+        }else {
+             holder = new MyViewHolder(LayoutInflater.from(
+                    context).inflate(R.layout.item_wuhu_home_ima, parent,
+                    false));
+
+        }
+
 
         return holder;
     }
@@ -108,18 +129,18 @@ public class WuHuRecycleAdapter extends RecyclerView.Adapter<WuHuRecycleAdapter.
             holder.chose_text.setText("选  项   " + (position + 3) + ":");
             holder.editText.setText(itemObj.getText());
             holder.add_delet.setVisibility(View.VISIBLE);
-            holder.dete_option_ima.setVisibility(View.GONE);
+             holder.dete_option_ima.setVisibility(View.GONE);
             holder.option_ima_rl.setVisibility(View.GONE);
 
         } else {
             holder.editText.setVisibility(View.GONE);
             holder.option_ima.setVisibility(View.VISIBLE);
             holder.chose_ima_tv.setVisibility(View.GONE);
-            holder.dete_option_ima.setVisibility(View.VISIBLE);
+        //    holder.dete_option_ima.setVisibility(View.VISIBLE);
             holder.option_ima_rl.setVisibility(View.VISIBLE);
             holder.chose_text.setText("选项" + (position + 1) + ":");
             ImageLoader.getInstance().displayImage("file://" +itemObj.getText(),  holder.option_ima);
-            holder.add_delet.setVisibility(View.INVISIBLE);
+            holder.add_delet.setVisibility(View.VISIBLE);
 
         }
 
@@ -160,18 +181,17 @@ public class WuHuRecycleAdapter extends RecyclerView.Adapter<WuHuRecycleAdapter.
         holder.add_delet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                itemObj.setText("");
-                removeData(position);
+                deleteOpition.deleteOpition(position);
             }
         });
-        //图片选项删除功能
+   /*     //图片选项删除功能
         holder.dete_option_ima.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 itemObj.setText("");
                 removeData(position);
             }
-        });
+        });*/
         //  添加
         holder.add_chose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -195,7 +215,11 @@ public class WuHuRecycleAdapter extends RecyclerView.Adapter<WuHuRecycleAdapter.
             }
         });
     }
+public interface  deleteOpitionIntetface{
+        public  void  deleteOpition(int  i);
 
+
+}
     @Override
     public int getItemCount() {
         return list.size();
