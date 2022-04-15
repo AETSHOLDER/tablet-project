@@ -30,13 +30,14 @@
         android:background="@android:drawable/editbox_background_normal"
         android:hint="请输入"
         android:textColorHint="#1D1D1D" />
+
     <ImageView
         android:id="@+id/option_ima"
-        android:layout_width="300dp"
-        android:layout_height="80dp"
+        android:layout_width="260dp"
+        android:layout_height="200dp"
         android:layout_centerInParent="true"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
+        android:layout_marginLeft="12dp"
+        android:layout_toRightOf="@id/text_chose"
         android:scaleType="fitCenter"
         android:src="@mipmap/ic_option"
         android:visibility="visible" />
@@ -49,6 +50,7 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:scaleType="fitCenter"
+        android:visibility="gone"
         android:src="@mipmap/ic_dele_wuhu_options_ima" />
 
     <RelativeLayout
@@ -58,7 +60,6 @@
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/add_chose">
 
-
     </RelativeLayout>
 
 
@@ -66,9 +67,9 @@
         android:id="@+id/add_delet"
         android:layout_width="53dp"
         android:layout_height="53dp"
-        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="102dp"
+        android:layout_toRightOf="@id/option_ima"
+      android:layout_marginLeft="30dp"
         android:scaleType="fitXY"
         android:src="@mipmap/ic_minu_wuhu_options" />
 
@@ -77,19 +78,18 @@
         android:layout_width="53dp"
         android:layout_height="53dp"
         android:layout_centerVertical="true"
-        android:layout_marginRight="13dp"
-        android:layout_toLeftOf="@+id/add_delet"
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@id/add_delet"
         android:scaleType="fitXY"
         android:src="@mipmap/ic_add_wuhu_options" />
 
     <ImageView
         android:id="@+id/chose_ima_tv"
         android:layout_width="66dp"
-        android:visibility="gone"
         android:layout_height="66dp"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="-85dp"
-        android:layout_toRightOf="@id/add_delet"
+       android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@id/add_chose"
         android:scaleType="fitXY"
         android:src="@mipmap/ic_chose_ima" />
 

@@ -11,7 +11,6 @@ import android.widget.FrameLayout;
 import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.base.BaseActivity;
 import com.example.paperlessmeeting_demo.fragment.FileFragment;
-import com.example.paperlessmeeting_demo.fragment.WuHUVoteListFragment;
 import com.example.paperlessmeeting_demo.tool.constant;
 
 import java.util.ArrayList;
