@@ -1224,7 +1224,10 @@ if (Hawk.contains(constant._id)) {
 
              Log.d("fdafafaff",textNub+"editListBeanList=   "+editListBeanList.size());
              topic.setText(editListBeanList.get(Integer.valueOf(textNub)).getSubTopics());
-             attend.setText(editListBeanList.get(Integer.valueOf(textNub)).getAttendeBean());
+             if(attend!=null){
+                 attend.setText(editListBeanList.get(Integer.valueOf(textNub)).getAttendeBean());
+             }
+
          }
      }
 
