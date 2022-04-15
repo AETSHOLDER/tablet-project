@@ -7,13 +7,10 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.base.BaseActivity;
-import com.example.paperlessmeeting_demo.fragment.TempVoteListFragment;
 import com.example.paperlessmeeting_demo.fragment.WuHUVoteListFragment;
-import com.example.paperlessmeeting_demo.fragment.WuHuFragment;
 import com.example.paperlessmeeting_demo.tool.constant;
 
 import java.util.ArrayList;
