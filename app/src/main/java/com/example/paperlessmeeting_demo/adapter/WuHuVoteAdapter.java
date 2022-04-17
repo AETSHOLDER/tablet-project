@@ -20,6 +20,7 @@ import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.bean.ChoseBean;
 import com.example.paperlessmeeting_demo.bean.VoteListBean;
 import com.example.paperlessmeeting_demo.tool.Constants;
+import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.example.paperlessmeeting_demo.widgets.MyGridView;
 import com.example.paperlessmeeting_demo.widgets.MyListView;
 import com.orhanobut.hawk.Hawk;
@@ -174,6 +175,12 @@ public class WuHuVoteAdapter extends RecyclerView.Adapter<WuHuVoteAdapter.MyView
         switch (status){
             case Constants.VoteStatusEnum.hasStartUnVote:
                 holder.endtimeClock.setText("进行中");
+                if (UserUtil.ISCHAIRMAN) {
+                    holder.btn_end.setVisibility(View.VISIBLE);
+                }else {
+                    holder.btn_end.setVisibility(View.GONE);
+                }
+
               //  ((WuHuVoteChairmanViewHolder) holder).status_desc.setVisibility(View.INVISIBLE);
                 holder.btn_pos.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -198,6 +205,12 @@ public class WuHuVoteAdapter extends RecyclerView.Adapter<WuHuVoteAdapter.MyView
                 });
                 break;
             case Constants.VoteStatusEnum.hasFinshed:
+                if (UserUtil.ISCHAIRMAN) {
+                    holder.btn_end.setVisibility(View.GONE);
+                }else {
+                    holder.btn_end.setVisibility(View.GONE);
+                }
+                holder. btn_end.setVisibility(View.GONE);
              //   ((WuHuVoteChairmanViewHolder) holder).status.setText("查看结果");
               //  ((WuHuVoteChairmanViewHolder) holder).status.setTextColor( Color.parseColor("#3377FF"));
                 holder.endtimeClock.setText("已结束");

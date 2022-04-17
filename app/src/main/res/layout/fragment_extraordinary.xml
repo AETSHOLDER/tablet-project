@@ -7,7 +7,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="160dp"
+        android:layout_marginTop="220dp"
         android:orientation="vertical">
 
         <TextView
@@ -30,7 +30,7 @@
             android:layout_width="400dp"
             android:layout_height="160dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="26dp"
+            android:layout_marginTop="50dp"
             android:background="@drawable/bg_jion_meeting"
             android:gravity="center"
             android:shadowColor="#ff2fb7a5"

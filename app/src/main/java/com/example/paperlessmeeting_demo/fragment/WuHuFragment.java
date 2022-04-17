@@ -997,6 +997,7 @@ if (Hawk.contains(constant._id)) {
                     e.printStackTrace();
                 }
             }else if(message.getMessage().contains(constant.REFRASHWuHUSIGLEDATA)){
+                Log.d("onReceiveMsg",  "REFRASHWuHUSIGLEDATA");
                 try {
                     TempWSBean<WuHuEditBean> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<WuHuEditBean>>() {
                     }.getType());
@@ -1039,7 +1040,7 @@ if (Hawk.contains(constant._id)) {
         }
         tittle1.setText(wuHuEditBean.getTopics());
         tittle2.setText(wuHuEditBean.getTopic_type());
-        String s=textNub+1;
+        int s=Integer.valueOf(textNub)+1;
         tittle_num.setText("议题"+s);
         topic.setText(wuHuEditBeanList.get(Integer.valueOf(textNub)).getSubTopics());
         attend.setText(wuHuEditBeanList.get(Integer.valueOf(textNub)).getAttendeBean());
@@ -1215,6 +1216,8 @@ if (Hawk.contains(constant._id)) {
 
      if (isVisibleToUser) {
          if (Hawk.contains("WuHuFragmentData")) {
+           /*  int s=Integer.valueOf(textNub)+1;
+             tittle_num.setText("议题"+s);*/
              WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
              List<WuHuEditBean.EditListBean> editListBeanList = new ArrayList<>();
              if (wuHuEditBean.getEditListBeanList() == null || wuHuEditBean.getEditListBeanList().size() == 0) {
@@ -1309,6 +1312,12 @@ if (Hawk.contains(constant._id)) {
                     Log.d("requestCodeUrl111", uri.getScheme() + "===" + uri.getPath() + "==" + file.getName() + "++++++++++" + getFilePath(getActivity(), uri) + "===" + uri.getAuthority());
                     String endStr = file.getName().substring(file.getName().lastIndexOf(".") + 1);
                     Log.d("requestCodeUr7788", "文件类型=" + endStr + "文件名字" + file.getName() + getFilePath(getActivity(), uri));
+                    if ("jpg".equals(endStr) || "gif".equals(endStr) || "png".equals(endStr) || "jpeg".equals(endStr) || "bmp".equals(endStr)||!endStr.equals("m4a") || !endStr.equals("mp3") || !endStr.equals("mid") ||
+                            !endStr.equals("xmf") || !endStr.equals("ogg") || !endStr.equals("wav")||!endStr.equals("3gp") || !endStr.equals("mp4")||!endStr.equals("ppt") || !endStr.equals("pptx")||
+                            !endStr.equals("xls") || !endStr.equals("xlsx")||!endStr.equals("doc") || !endStr.equals("docx")||!endStr.equals("pdf") || !endStr.equals("txt")) {
+                        Toast.makeText(getActivity(), "请选择正确的文件格式", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     // fileBean = new FileListBean(file.getName(), "/storage/84BE-981E/声学在图书馆智慧空间建设中的应用.docx", "", "");
                     fileBean = new FileListBean(file.getName(), file.getPath(), "", "");
                     fileBean.setResImage(getIamge(endStr));
@@ -1342,6 +1351,12 @@ if (Hawk.contains(constant._id)) {
                             ToastUtil.makeText(getActivity(), "uri.getPath()=====" + uri.getPath());
                             Log.d("requestCodeUr2222", uri.getScheme() + "===" + uri.getPath() + "==" + file.getName() + "++++++++++" + getFilePath(getActivity(), uri) + "===" + uri.getAuthority());
                             String endStr = file.getName().substring(file.getName().lastIndexOf(".") + 1);
+                            if ("jpg".equals(endStr) || "gif".equals(endStr) || "png".equals(endStr) || "jpeg".equals(endStr) || "bmp".equals(endStr)||!endStr.equals("m4a") || !endStr.equals("mp3") || !endStr.equals("mid") ||
+                                    !endStr.equals("xmf") || !endStr.equals("ogg") || !endStr.equals("wav")||!endStr.equals("3gp") || !endStr.equals("mp4")||!endStr.equals("ppt") || !endStr.equals("pptx")||
+                                    !endStr.equals("xls") || !endStr.equals("xlsx")||!endStr.equals("doc") || !endStr.equals("docx")||!endStr.equals("pdf") || !endStr.equals("txt")) {
+                                Toast.makeText(getActivity(), "请选择正确的文件格式", Toast.LENGTH_SHORT).show();
+                            return;
+                            }
                             Log.d(TAG, "文件类型=" + endStr + "文件名字" + file.getName());
                             fileBean = new FileListBean(file.getName(), file.getPath(), "", "");
                             //复制文件到指定目录
@@ -1562,6 +1577,8 @@ if (Hawk.contains(constant._id)) {
     @Override
     public void onResume() {
         super.onResume();
+        int s=Integer.valueOf(textNub)+1;
+        tittle_num.setText("议题"+s);
    /*     Log.d(TAG+toString(), "onResume: "+"text="+text);
         if (Hawk.contains("WuHuFragmentData")) {
             WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");

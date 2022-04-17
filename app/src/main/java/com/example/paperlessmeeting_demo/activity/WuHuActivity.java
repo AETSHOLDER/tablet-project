@@ -80,6 +80,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -152,6 +153,15 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
     private boolean  isEditRl=false;
     private SocketShareFileManager socketShareFileManager;
     private ServiceConnection serviceConnection;
+    private Handler handler ;
+    private Runnable runnable;
+    /**
+     * 点击返回时间
+     */
+    private long time = 2000;
+    private long first_time = 0;
+    private String meetingTime ;//会议-月日时分
+    private  String week = "";
     private Handler mHander = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -402,6 +412,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
         isBind = bindService(intent, serviceConnection, BIND_AUTO_CREATE);
         Log.d("gsfgdgg3333", isBind + "");
 
+
     }
 
     @Override
@@ -411,13 +422,12 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
 
     @Override
     protected void initView() {
-
+        handler = new Handler();
         if ( Hawk.contains(constant.myNumber)){
             String  n=Hawk.get(constant.myNumber);
             name.setText(n);
         }
-        String time = TimeUtils.getTime(System.currentTimeMillis(), TimeUtils.DATA_FORMAT_NO_HOURS_DATA13);//会议-月日时分
-        String week = "";
+        meetingTime = TimeUtils.getTime(System.currentTimeMillis(), TimeUtils.DATA_FORMAT_NO_HOURS_DATA13);//会议-月日时分
         Calendar c1 = Calendar.getInstance();
         int day = c1.get(Calendar.DAY_OF_WEEK);
         switch (day){
@@ -443,7 +453,18 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                 week = "星期六";
                 break;
         }
-        timeTv.setText(time+" "+week);
+        timeTv.setText(meetingTime+" "+week);
+         runnable = new Runnable(){
+            @Override
+            public void run() {
+                meetingTime = TimeUtils.getTime(System.currentTimeMillis(), TimeUtils.DATA_FORMAT_NO_HOURS_DATA13);//会议-月日时分
+                timeTv.setText(meetingTime+" "+week);
+                handler.postDelayed(this, 50);// 50是延时时长
+            }
+        };
+
+        handler.postDelayed(runnable, 1000 * 60);// 打开定时器，执行操作
+
         edit_rl.setOnClickListener(this);
         edit_ll.setOnClickListener(this);
         comfirm.setOnClickListener(this);
@@ -686,7 +707,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                     //  收到vote的websocket的信息
                     if (wsebean != null) {
                         WuHuEditBean     wuHuEditBean = wsebean.getBody();
-                        Log.d("onReceiveMsg11111大小=", wuHuEditBean.getEditListBeanList().size()+ "");
+                        Log.d("onReceiveMsg11111大小=", fragmentPos+ "");
                         mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos+""));
                         fragmentPos++;
                         mPagerAdapter.notifyDataSetChanged();
@@ -849,6 +870,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
             unbindService(serviceConnection);
 
         }
+
     }
     /**
      * websocket发送数据至其他设备
@@ -868,6 +890,20 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
             edit_ll.setVisibility(View.GONE);
         }*/
         Log.d("reyeyrty333",UserUtil.ISCHAIRMAN+"");
+    }
+    @Override
+    public void onBackPressed() {
+        long cTime = new Date().getTime();
+        if (first_time == 0 || cTime - first_time > time) {
+            first_time = cTime;
+            Toast.makeText(getApplicationContext(), "再按一次程序退出", Toast.LENGTH_SHORT).show();
+        } else {
+            //  断开连接
+            //  App.getContext().getNettyClient().disconnect();
+            //  取消心跳
+            handler.removeCallbacks(runnable);
+            super.onBackPressed();
+        }
     }
     private class MyBroadcastReceiver extends BroadcastReceiver {
         @Override

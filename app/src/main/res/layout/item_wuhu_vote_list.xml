@@ -4,10 +4,11 @@
     android:layout_width="match_parent"
     android:background="@drawable/bg_item_wuhu_vote_list"
     android:layout_marginTop="25dp"
-    android:layout_height="500dp">
-
+    android:layout_marginBottom="20dp"
+    android:layout_height="wrap_content">
 
         <LinearLayout
+            android:id="@+id/root_conten"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -16,7 +17,7 @@
                 android:id="@+id/kk"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="30dp"
+                android:layout_marginBottom="20dp"
                 >
 
                 <TextView
@@ -24,7 +25,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="30dp"
                     android:text="距离结束还剩 10:50"
                     android:textColor="#333333"
                     android:textSize="45sp"
@@ -58,6 +59,7 @@
                     android:text="单选"
                     android:textColor="@color/alertdialog_danxuan_yellow"
                     android:textSize="24sp"></Button>
+
                 <TextView
                     android:id="@+id/creator"
                     android:layout_width="wrap_content"
@@ -65,7 +67,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="50dp"
                     android:text="发起人：吴呆呆"
-                    android:textColor="@color/color_textBlack65"
+                    android:textColor="#1D1D1D"
                     android:textSize="33sp"
                     android:textStyle="normal" />
 
@@ -74,6 +76,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
+                android:layout_marginTop="20dp"
                 android:background="@color/alertdialog_line"
                 android:padding="50dp" />
 
@@ -92,26 +95,24 @@
                     android:ellipsize="end"
                     android:maxLines="2"
                     android:text="投票内容投票内容投票内容投票内容投票内容投票内容投票内容投票内容投票内容投票内容投票"
-                    android:textColor="@color/color_textBlack2b"
+                    android:textColor="#333333"
                     android:textSize="34sp"
                     android:textStyle="normal" />
-<ScrollView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:scrollbars="none"
-    >
+
     <LinearLayout
+        android:id="@+id/list_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="150dp"
         >
         <com.example.paperlessmeeting_demo.widgets.MyGridView
             android:id="@+id/gridview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:layout_marginBottom="30dp"
             android:layout_marginLeft="60dp"
             android:layout_marginRight="60dp"
             android:layout_marginTop="30dp"
@@ -126,7 +127,7 @@
         <com.example.paperlessmeeting_demo.widgets.MyListView
             android:id="@+id/listview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_below="@+id/title"
             android:layout_marginLeft="50dp"
             android:layout_marginTop="15dp"
@@ -137,11 +138,7 @@
             android:listSelector="@drawable/trans_bg"
             android:scrollIndicators="none"
             android:scrollbars="none"></com.example.paperlessmeeting_demo.widgets.MyListView>
-
-
     </LinearLayout>
-
-</ScrollView>
 
             </LinearLayout>
             <TextView
@@ -149,16 +146,23 @@
                 android:padding="50dp"
                 android:visibility="gone"
                 />
-
-
         </LinearLayout>
-
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_alignParentBottom="true"
+    >
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="30dp"
+        android:background="#7C7F81" />
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="40dp">
-
+        android:layout_height="wrap_content"
+      >
         <Button
             android:id="@+id/btn_result"
             android:layout_width="144dp"
@@ -169,6 +173,7 @@
             android:background="@drawable/alert_cancle_btn_border"
             android:gravity="center"
             android:paddingLeft="5dp"
+            android:layout_marginBottom="40dp"
             android:paddingRight="5dp"
             android:text="查看结果"
             android:textAlignment="center"
@@ -185,6 +190,7 @@
             android:background="@drawable/alert_sure_btn_border"
             android:gravity="center"
             android:text="投票"
+            android:layout_marginBottom="40dp"
             android:textAlignment="center"
             android:textColor="@color/bgColor"
             android:textSize="30sp" />
@@ -195,6 +201,7 @@
             android:layout_height="62dp"
             android:layout_centerVertical="true"
             android:layout_marginRight="20dp"
+            android:layout_marginBottom="40dp"
             android:layout_toLeftOf="@+id/btn_pos"
             android:background="@drawable/wuhu_alert_sure_btn_border"
             android:text="结束"
@@ -202,5 +209,5 @@
             android:textColor="@color/bgColor"
             android:textSize="30sp" />
     </RelativeLayout>
-
+</LinearLayout>
 </RelativeLayout>

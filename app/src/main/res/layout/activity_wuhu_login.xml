@@ -433,7 +433,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_marginRight="330dp"
-        android:layout_marginTop="133dp"
+        android:layout_marginTop="260dp"
         android:layout_toRightOf="@id/vv"
         android:orientation="vertical">
         <!--        <TextView-->
@@ -447,16 +447,16 @@
         <android.support.design.widget.TabLayout
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="90dp"
             android:background="#ffffff"
             app:tabBackground="@drawable/wuhu_login_background_selector"
             app:tabGravity="center"
             app:tabIndicatorHeight="0dp"
-            app:tabMaxWidth="150dp"
-            app:tabMinWidth="120dp"
+            app:tabMaxWidth="260dp"
+            app:tabMinWidth="240dp"
             app:tabMode="scrollable"
             app:tabSelectedTextColor="#ffffff"
-            app:tabTextAppearance="@style/TabLayoutTextStyle"
+            app:tabTextAppearance="@style/wallet_third_tab_layout"
             app:tabTextColor="#666666" />
 
         <com.example.paperlessmeeting_demo.widgets.NoScrollViewPager

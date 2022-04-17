@@ -649,6 +649,11 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                     for (int i = 0; i < list.size(); i++) {
                         ItemBean bean = list.get(i);
                         VoteBean.TemporBean  temporBean3=new VoteBean.TemporBean();
+                        if (TextUtils.isEmpty(bean.getText())){
+                            Toast.makeText(getActivity(),"选项不能为空",Toast.LENGTH_SHORT).show();
+                            return;
+
+                        }
                         if (!TextUtils.isEmpty(bean.getText())) {
                             bean.setFlag("1");
                             options_list.add(bean.getText().toString());
@@ -665,6 +670,11 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                     for (int i = 0; i < list.size(); i++) {
                         ItemBean bean = list.get(i);
                         VoteBean.TemporBean  temporBean4=new VoteBean.TemporBean();
+                        if (TextUtils.isEmpty(bean.getText())){
+                            Toast.makeText(getActivity(),"选项不能为空",Toast.LENGTH_SHORT).show();
+                            return;
+
+                        }
                         if (!TextUtils.isEmpty(bean.getText())) {
                             try {
                                 bean.setFlag("2");

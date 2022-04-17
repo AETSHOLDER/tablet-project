@@ -138,7 +138,12 @@ private deleteOpitionIntetface  deleteOpition;
             holder.chose_ima_tv.setVisibility(View.GONE);
         //    holder.dete_option_ima.setVisibility(View.VISIBLE);
             holder.option_ima_rl.setVisibility(View.VISIBLE);
-            holder.chose_text.setText("选项" + (position + 1) + ":");
+           /* if (itemObj.getText()==null||itemObj.getText().equals("")){
+                Toast.makeText(context,"您未选择图片，请重新添加",Toast.LENGTH_SHORT).show();
+                list.remove(position);
+                return;
+            }*/
+            holder.chose_text.setText("选  项   " + (position + 1) + ":");
             ImageLoader.getInstance().displayImage("file://" +itemObj.getText(),  holder.option_ima);
             holder.add_delet.setVisibility(View.VISIBLE);
 
@@ -197,10 +202,10 @@ private deleteOpitionIntetface  deleteOpition;
             @Override
             public void onClick(View v) {
                 if ("1".equals(flag)){
-                    if (list.size() < 8) {
+                    if (list.size() < 6) {
                         addData(list.size());
                     } else {
-                        Toast.makeText(context, "最多只能添加10个选项!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "最多只能添加8个选项!", Toast.LENGTH_SHORT).show();
                     }
                 }else if ("2".equals(flag)){
                     if (list.size() < 4) {

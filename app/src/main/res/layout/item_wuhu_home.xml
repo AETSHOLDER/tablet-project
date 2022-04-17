@@ -13,7 +13,8 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="40dp"
         android:gravity="right"
-        android:text="选项1:" />
+        android:text="选项1:"
+        android:textColor="#333333" />
 
     <EditText
         android:id="@+id/edit_text"

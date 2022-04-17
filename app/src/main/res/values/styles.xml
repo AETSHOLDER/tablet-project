@@ -216,9 +216,13 @@
         <item name="android:backgroundDimEnabled">true</item><!--模糊-->
     </style>
 
-    <style name="TabLayoutTextStyle"  parent="TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse">
-        <item name="android:textSize">48sp</item>
+    <style name="TabLayoutTextStyle">
+        <item name="android:textSize">88dp</item>
     </style>
+    <style name="wallet_third_tab_layout">
+        <item name="android:textSize">36dp</item>
+    </style>
+
 
     <style name="ProgressBar" parent="@android:style/Widget.ProgressBar">
         <item name="android:indeterminateOnly">true</item>

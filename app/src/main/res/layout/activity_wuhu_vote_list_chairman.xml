@@ -154,13 +154,13 @@
             app:srlEnableHeaderTranslationContent="false"
             app:srlEnableNestedScrolling="true"
             app:srlEnablePreviewInEditMode="false">
-
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycle_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="580dp"
-                android:layout_marginRight="580dp">
+                android:layout_marginLeft="380dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginRight="380dp">
 
             </android.support.v7.widget.RecyclerView>
 

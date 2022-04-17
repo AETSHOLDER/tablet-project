@@ -2,17 +2,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="#efefef"
     android:orientation="vertical">
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scrollbars="none"
+        android:layout_marginBottom="240dp"
         >
-<LinearLayout
+     <LinearLayout
     android:id="@+id/layout_newvote"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -138,6 +139,7 @@
             android:layout_marginLeft="40dp"
             android:gravity="right"
             android:text="图片选项："
+            android:visibility="invisible"
             android:textColor="#333333"
             android:textSize="35sp" />
         <EditText
@@ -216,197 +218,203 @@
             android:src="@mipmap/addchose" />
     </RelativeLayout>
 
-    <!-- 单选   -->
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <!-- 投票类型   -->
-        <RelativeLayout
-            android:id="@+id/radio1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:layout_marginBottom="50dp">
-
-            <TextView
-                android:id="@+id/text_votetype"
-                style="@style/option_form_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="40dp"
-                android:layout_marginTop="5dp"
-                android:gravity="right"
-                android:textColor="#333333"
-                android:text="投票类型:"
-                android:textSize="35sp" />
-
-            <ImageView
-                android:id="@+id/iv_check_state1"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="37dp"
-                android:layout_toRightOf="@+id/text_votetype"
-                android:gravity="center_horizontal"
-                android:src="@drawable/radio_selected" />
-
-            <TextView
-                android:id="@+id/tv_content1"
-                style="@style/option_form_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="50dp"
-                android:layout_toRightOf="@+id/iv_check_state1"
-                android:ellipsize="end"
-                android:gravity="center_vertical"
-                android:singleLine="true"
-                android:text="单选"
-                android:textColor="#666666"
-                android:textSize="35sp" />
-
-            <ImageView
-                android:id="@+id/iv_check_state2"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
-                android:layout_toRightOf="@+id/tv_content1"
-                android:gravity="center_horizontal"
-                android:src="@mipmap/radio_unselected" />
-
-            <TextView
-                android:id="@+id/tv_content2"
-                style="@style/option_form_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="5dp"
-                android:layout_toRightOf="@+id/iv_check_state2"
-                android:ellipsize="end"
-                android:gravity="center_vertical"
-                android:singleLine="true"
-                android:text="多选"
-                android:textColor="#666666"
-                android:textSize="35sp" />
-        </RelativeLayout>
-
-        <!-- 匿名管理   -->
-        <RelativeLayout
-            android:id="@+id/radio2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/radio1"
-            android:layout_marginTop="49dp">
-
-            <TextView
-                android:id="@+id/text_voteniming"
-                style="@style/option_form_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="40dp"
-                android:layout_marginTop="5dp"
-                android:gravity="right"
-                android:text="匿名管理:"
-                android:textColor="#333333"
-                android:textSize="35sp" />
-
-            <ImageView
-                android:id="@+id/iv_check_state3"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="37dp"
-                android:layout_toRightOf="@+id/text_voteniming"
-                android:gravity="center_horizontal"
-                android:src="@drawable/radio_unselected"
-                android:textSize="35sp" />
-
-            <TextView
-                android:id="@+id/tv_content3"
-                style="@style/option_form_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="50dp"
-                android:layout_toRightOf="@+id/iv_check_state3"
-                android:ellipsize="end"
-                android:gravity="center_vertical"
-                android:singleLine="true"
-                android:text="实名"
-                android:textColor="#666666"
-                android:textSize="35sp" />
-
-            <ImageView
-                android:id="@+id/iv_check_state4"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
-                android:layout_toRightOf="@+id/tv_content3"
-                android:gravity="center_horizontal"
-                android:src="@drawable/radio_selected" />
-
-            <TextView
-                android:id="@+id/tv_content4"
-                style="@style/option_form_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="5dp"
-                android:layout_toRightOf="@+id/iv_check_state4"
-                android:ellipsize="end"
-                android:gravity="center_vertical"
-                android:singleLine="true"
-                android:text="匿名"
-                android:textColor="#666666"
-                android:textSize="35sp" />
-        </RelativeLayout>
-
-    </RelativeLayout>
-
 </LinearLayout>
 </ScrollView>
-    <!-- 底部分割线   -->
-    <TextView style="@style/HorizontalLine"
-        android:padding="20dp"/>
+
     <!-- 底部按钮   -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="50dp"
-        android:layout_height="83dp" >
+        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content" >
+        <!-- 单选   -->
+        <RelativeLayout
+            android:id="@+id/option_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- 投票类型   -->
+            <RelativeLayout
+                android:id="@+id/radio1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="20dp">
+
+                <TextView
+                    android:id="@+id/text_votetype"
+                    style="@style/option_form_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="40dp"
+                    android:gravity="right"
+                    android:text="投票类型:"
+                    android:textColor="#333333"
+                    android:textSize="35sp" />
+
+                <ImageView
+                    android:id="@+id/iv_check_state1"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="37dp"
+                    android:layout_toRightOf="@+id/text_votetype"
+                    android:gravity="center_horizontal"
+                    android:src="@drawable/radio_selected" />
+
+                <TextView
+                    android:id="@+id/tv_content1"
+                    style="@style/option_form_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="50dp"
+                    android:layout_toRightOf="@+id/iv_check_state1"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:singleLine="true"
+                    android:text="单选"
+                    android:textColor="#666666"
+                    android:textSize="35sp" />
+
+                <ImageView
+                    android:id="@+id/iv_check_state2"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:layout_toRightOf="@+id/tv_content1"
+                    android:gravity="center_horizontal"
+                    android:src="@mipmap/radio_unselected" />
+
+                <TextView
+                    android:id="@+id/tv_content2"
+                    style="@style/option_form_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="5dp"
+                    android:layout_toRightOf="@+id/iv_check_state2"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:singleLine="true"
+                    android:text="多选"
+                    android:textColor="#666666"
+                    android:textSize="35sp" />
+            </RelativeLayout>
+
+            <!-- 匿名管理   -->
+            <RelativeLayout
+                android:id="@+id/radio2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/radio1">
+
+                <TextView
+                    android:id="@+id/text_voteniming"
+                    style="@style/option_form_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="40dp"
+                    android:gravity="right"
+                    android:text="匿名管理:"
+                    android:textColor="#333333"
+                    android:textSize="35sp" />
+
+                <ImageView
+                    android:id="@+id/iv_check_state3"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="37dp"
+                    android:layout_toRightOf="@+id/text_voteniming"
+                    android:gravity="center_horizontal"
+                    android:src="@drawable/radio_unselected"
+                    android:textSize="35sp" />
+
+                <TextView
+                    android:id="@+id/tv_content3"
+                    style="@style/option_form_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="50dp"
+                    android:layout_toRightOf="@+id/iv_check_state3"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:singleLine="true"
+                    android:text="实名"
+                    android:textColor="#666666"
+                    android:textSize="35sp" />
+
+                <ImageView
+                    android:id="@+id/iv_check_state4"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:layout_toRightOf="@+id/tv_content3"
+                    android:gravity="center_horizontal"
+                    android:src="@drawable/radio_selected" />
+
+                <TextView
+                    android:id="@+id/tv_content4"
+                    style="@style/option_form_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="5dp"
+                    android:layout_toRightOf="@+id/iv_check_state4"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:singleLine="true"
+                    android:text="匿名"
+                    android:textColor="#666666"
+                    android:textSize="35sp" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/radio2"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:background="#D9D9D9" />
+        </RelativeLayout>
+
         <Button
             android:id="@+id/btn_neg"
+            android:layout_below="@id/option_type"
             android:layout_width="200dp"
-            android:layout_height="80dp"
+            android:layout_height="60dp"
             android:layout_alignParentRight="true"
             android:background="@drawable/alert_cancle_btn_border"
-            android:layout_marginEnd="21dp"
+            android:layout_marginRight="20dp"
             android:layout_centerVertical="true"
+            android:layout_marginBottom="20dp"
             android:textColor="@color/color_textBlue"
-            android:textAlignment="center"
+            android:gravity="center"
             android:text="取消"
             android:textSize="30sp" />
 
         <Button
             android:id="@+id/btn_pos"
             android:layout_width="200dp"
-            android:layout_height="80dp"
+            android:layout_height="60dp"
+            android:layout_below="@id/option_type"
             android:layout_centerVertical="true"
             android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
             android:layout_toLeftOf="@+id/btn_neg"
             android:background="@drawable/alert_sure_btn_border"
+            android:gravity="center"
             android:text="确定"
-            android:textAlignment="center"
             android:textColor="@color/bgColor"
             android:textSize="30sp" />
     </RelativeLayout>
-
 
 </RelativeLayout>
