@@ -99,7 +99,6 @@
             style="@style/wuhu_tittle_rl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="100dp">
 
@@ -123,6 +122,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:visibility="gone"
             android:layout_marginRight="120dp"
             android:layout_toLeftOf="@id/finish_ll">
 
@@ -146,6 +147,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
             android:layout_marginRight="120dp"
             android:layout_toLeftOf="@id/edit_ll">
 

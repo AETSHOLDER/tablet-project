@@ -258,7 +258,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
     private LucklyPopopWindow mLucklyPopopWindow;
     private RecyclerView.LayoutManager mLayoutManager;
     //  修改1
-    VoteAdapter voteAdapter1;
+    WuHuVoteAdapter voteAdapter1;
     WuHuVoteAdapter voteAdapter2;
 
     private String[] popTitleArr;
@@ -294,6 +294,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
     private Context context;
     private String currentEndDate="22222";
     private int positionIma = -1;
+    private ArrayList<VoteBean> tempList = new ArrayList<>();//临时存放
 
     public WuHUVoteListFragment(FragmentManager fragmentManager) {
         this.fragmentManager = fragmentManager;
@@ -312,7 +313,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
         // TODO: inflate a fragment view
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
         unbinder = ButterKnife.bind(this, rootView);
-        voteAdapter1 = new VoteAdapter(getActivity());
+        voteAdapter1 = new WuHuVoteAdapter(getActivity());
         voteAdapter2 = new WuHuVoteAdapter(getActivity());
         voteAdapter2.setEf(this);//结束
         voteAdapter2.setVf(this);//投票
@@ -379,22 +380,32 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReceiveMsg(EventMessage message) {
+        tempList.clear();
         //  client端接收到信息
         if (message.getType().equals(MessageReceiveType.MessageClient)) {
             // 查询投票信息
             if (message.getMessage().contains(constant.QUERYVOTE)) {
+                voteList.clear();
                 Log.e(TAG, "onReceiveMsg11111: " + message.toString());
                 try {
                     TempWSBean<ArrayList> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<ArrayList<VoteBean>>>() {
                     }.getType());
                     //  收到vote的websocket的信息
                     if (wsebean != null) {
-                        voteList = wsebean.getBody();
-                        String flag = wsebean.getFlag();//获取选项是图片还是文字标识
-                        Log.d("gdgsdgsdgdgf444555",flag+"");
-                        for (VoteBean bean : voteList) {
+                        tempList= wsebean.getBody();
+                        for (VoteBean bean : tempList) {
                             bean.setStatus(bean.getStatus());
                         }
+                        for (int i=0;i<tempList.size();i++){
+                            if (!(tempList.get(i).getMvoteStatus()== Constants.VoteStatusEnum.hasFinshed)){
+                                voteList.add(0,tempList.get(i));
+                            }else {
+                                voteList.add(tempList.get(i));
+                            }
+                        }
+                       // voteList = wsebean.getBody();
+                        String flag = wsebean.getFlag();//获取选项是图片还是文字标识
+                        Log.d("gdgsdgsdgdgf444555",flag+"");
                         refreshUI(voteList, flag);
                     }
                 } catch (Exception e) {
@@ -408,12 +419,20 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                     }.getType());
                     //  收到vote的websocket的信息
                     if (wsebean != null) {
-                        voteList = wsebean.getBody();
-                        String flag = wsebean.getFlag();//获取选项是图片还是文字标识
-                        Log.d("gdgsdgsdgdgf444888",flag+"");
-                        for (VoteBean bean : voteList) {
+                        tempList= wsebean.getBody();
+                        for (VoteBean bean : tempList) {
                             bean.setStatus(bean.getStatus());
                         }
+                        for (int i=0;i<tempList.size();i++){
+                            if (!(tempList.get(i).getMvoteStatus()== Constants.VoteStatusEnum.hasFinshed)){
+                                voteList.add(0,tempList.get(i));
+                            }else {
+                                voteList.add(tempList.get(i));
+                            }
+                        }
+                        String flag = wsebean.getFlag();//获取选项是图片还是文字标识
+                        Log.d("gdgsdgsdgdgf444888",flag+"");
+
                         refreshUI(voteList, flag);
                     }
                 } catch (Exception e) {
@@ -1113,8 +1132,8 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
     //查看大图
     @Override
     public void seeImaistener(int position) {
-        Bitmap bitmap = BitmapFactory.decodeFile("file://" + list.get(position).getText());
 
+        Bitmap bitmap = BitmapFactory.decodeFile("file://" + list.get(position).getText());
         showImage(bitmap);
     }
 

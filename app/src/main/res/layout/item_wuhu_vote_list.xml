@@ -163,6 +163,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
       >
+
         <Button
             android:id="@+id/btn_result"
             android:layout_width="144dp"
@@ -170,10 +171,10 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="66dp"
+            android:layout_marginBottom="40dp"
             android:background="@drawable/alert_cancle_btn_border"
             android:gravity="center"
             android:paddingLeft="5dp"
-            android:layout_marginBottom="40dp"
             android:paddingRight="5dp"
             android:text="查看结果"
             android:textAlignment="center"

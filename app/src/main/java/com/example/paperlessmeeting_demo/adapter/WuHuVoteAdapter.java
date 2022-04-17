@@ -179,6 +179,7 @@ public class WuHuVoteAdapter extends RecyclerView.Adapter<WuHuVoteAdapter.MyView
                     holder.btn_end.setVisibility(View.VISIBLE);
                 }else {
                     holder.btn_end.setVisibility(View.GONE);
+
                 }
 
               //  ((WuHuVoteChairmanViewHolder) holder).status_desc.setVisibility(View.INVISIBLE);
@@ -207,8 +208,10 @@ public class WuHuVoteAdapter extends RecyclerView.Adapter<WuHuVoteAdapter.MyView
             case Constants.VoteStatusEnum.hasFinshed:
                 if (UserUtil.ISCHAIRMAN) {
                     holder.btn_end.setVisibility(View.GONE);
+                    holder.btn_result.setVisibility(View.VISIBLE);
                 }else {
                     holder.btn_end.setVisibility(View.GONE);
+                    holder.btn_result.setVisibility(View.GONE);
                 }
                 holder. btn_end.setVisibility(View.GONE);
              //   ((WuHuVoteChairmanViewHolder) holder).status.setText("查看结果");
@@ -244,6 +247,8 @@ public class WuHuVoteAdapter extends RecyclerView.Adapter<WuHuVoteAdapter.MyView
                         Log.d("gdgsdgsdgdgf4448888","flag==="+flag);
                         vr.vr(position,flag);
                         // mvoterClickListener.chairmanClickListener(position,flag);
+                    }else {
+                        Toast.makeText(context,"投票还未结束，暂时不能查看",Toast.LENGTH_SHORT).show();
                     }
                 }
             });

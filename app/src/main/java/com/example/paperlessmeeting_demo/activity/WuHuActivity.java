@@ -417,7 +417,13 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
 
     @Override
     protected int getLayoutId() {
-        return R.layout.wuhu_main;
+
+        if (UserUtil.ISCHAIRMAN) {
+            return R.layout.wuhu_main;
+        }else {
+            return R.layout.wuhu_main_attend;
+        }
+
     }
 
     @Override
@@ -870,7 +876,9 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
             unbindService(serviceConnection);
 
         }
-
+        if (handler!=null&&runnable!=null) {
+            handler.removeCallbacks(runnable);
+        }
     }
     /**
      * websocket发送数据至其他设备
@@ -893,16 +901,13 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
     }
     @Override
     public void onBackPressed() {
-        long cTime = new Date().getTime();
-        if (first_time == 0 || cTime - first_time > time) {
-            first_time = cTime;
-            Toast.makeText(getApplicationContext(), "再按一次程序退出", Toast.LENGTH_SHORT).show();
+        if (!UserUtil.ISCHAIRMAN) {
+            return;
         } else {
-            //  断开连接
-            //  App.getContext().getNettyClient().disconnect();
-            //  取消心跳
-            handler.removeCallbacks(runnable);
-            super.onBackPressed();
+            showFinishMeetingDialog();
+            if (handler!=null&&runnable!=null) {
+                handler.removeCallbacks(runnable);
+            }
         }
     }
     private class MyBroadcastReceiver extends BroadcastReceiver {
