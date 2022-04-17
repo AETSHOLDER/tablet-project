@@ -48,6 +48,7 @@
                     android:text="匿名"
                     android:textColor="@color/alertdialog_niming_blue"
                     android:textSize="24sp"></Button>
+
                 <Button
                     android:id="@+id/danxaun"
                     android:layout_width="78dp"

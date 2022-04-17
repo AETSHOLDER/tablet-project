@@ -1355,12 +1355,7 @@ if (Hawk.contains(constant._id)) {
                             ToastUtil.makeText(getActivity(), "uri.getPath()=====" + uri.getPath());
                             Log.d("requestCodeUr2222", uri.getScheme() + "===" + uri.getPath() + "==" + file.getName() + "++++++++++" + getFilePath(getActivity(), uri) + "===" + uri.getAuthority());
                             String endStr = file.getName().substring(file.getName().lastIndexOf(".") + 1);
-                            if (!"jpg".equals(endStr) || !"gif".equals(endStr) || !"png".equals(endStr) || !"jpeg".equals(endStr) ||! "bmp".equals(endStr)||!endStr.equals("m4a") || !endStr.equals("mp3") || !endStr.equals("mid") ||
-                                    !endStr.equals("xmf") || !endStr.equals("ogg") || !endStr.equals("wav")||!endStr.equals("3gp") || !endStr.equals("mp4")||!endStr.equals("ppt") || !endStr.equals("pptx")||
-                                    !endStr.equals("xls") || !endStr.equals("xlsx")||!endStr.equals("doc") || !endStr.equals("docx")||!endStr.equals("pdf") || !endStr.equals("txt")) {
-                                Toast.makeText(getActivity(), "请选择正确的文件格式", Toast.LENGTH_SHORT).show();
-                                return;
-                            }
+
                             if ("jpg".equals(endStr) || "gif".equals(endStr) || "png".equals(endStr) || "jpeg".equals(endStr) || "bmp".equals(endStr)||endStr.equals("m4a") || endStr.equals("mp3") || endStr.equals("mid") ||
                                     endStr.equals("xmf") || endStr.equals("ogg") || endStr.equals("wav")||endStr.equals("3gp") || endStr.equals("mp4")||endStr.equals("ppt") || endStr.equals("pptx")||
                                     endStr.equals("xls") || endStr.equals("xlsx")||endStr.equals("doc") || endStr.equals("docx")||endStr.equals("pdf") || endStr.equals("txt")) {
