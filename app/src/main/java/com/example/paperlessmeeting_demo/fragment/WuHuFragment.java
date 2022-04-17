@@ -1312,20 +1312,24 @@ if (Hawk.contains(constant._id)) {
                     Log.d("requestCodeUrl111", uri.getScheme() + "===" + uri.getPath() + "==" + file.getName() + "++++++++++" + getFilePath(getActivity(), uri) + "===" + uri.getAuthority());
                     String endStr = file.getName().substring(file.getName().lastIndexOf(".") + 1);
                     Log.d("requestCodeUr7788", "文件类型=" + endStr + "文件名字" + file.getName() + getFilePath(getActivity(), uri));
-                    if ("jpg".equals(endStr) || "gif".equals(endStr) || "png".equals(endStr) || "jpeg".equals(endStr) || "bmp".equals(endStr)||!endStr.equals("m4a") || !endStr.equals("mp3") || !endStr.equals("mid") ||
-                            !endStr.equals("xmf") || !endStr.equals("ogg") || !endStr.equals("wav")||!endStr.equals("3gp") || !endStr.equals("mp4")||!endStr.equals("ppt") || !endStr.equals("pptx")||
-                            !endStr.equals("xls") || !endStr.equals("xlsx")||!endStr.equals("doc") || !endStr.equals("docx")||!endStr.equals("pdf") || !endStr.equals("txt")) {
+                    if ("jpg".equals(endStr) || "gif".equals(endStr) || "png".equals(endStr) || "jpeg".equals(endStr) || "bmp".equals(endStr)||endStr.equals("m4a") || endStr.equals("mp3") || endStr.equals("mid") ||
+                            endStr.equals("xmf") || endStr.equals("ogg") || endStr.equals("wav")||endStr.equals("3gp") || endStr.equals("mp4")||endStr.equals("ppt") || endStr.equals("pptx")||
+                            endStr.equals("xls") || endStr.equals("xlsx")||endStr.equals("doc") || endStr.equals("docx")||endStr.equals("pdf") || endStr.equals("txt")) {
+
+                        fileBean = new FileListBean(file.getName(), file.getPath(), "", "");
+                        fileBean.setResImage(getIamge(endStr));
+                        fileBean.setFile_type(getType(endStr));
+                        fileBean.setSuffix(endStr);//上传文件后缀名和文件类型；setSuffix和setType所赋值内容一样。
+                        fileBean.setType(getFileType(endStr));
+                        fileBean.setNet(false);
+                        fileBeans.add(fileBean);
+
+                    }else {
                         Toast.makeText(getActivity(), "请选择正确的文件格式", Toast.LENGTH_SHORT).show();
                         return;
                     }
                     // fileBean = new FileListBean(file.getName(), "/storage/84BE-981E/声学在图书馆智慧空间建设中的应用.docx", "", "");
-                    fileBean = new FileListBean(file.getName(), file.getPath(), "", "");
-                    fileBean.setResImage(getIamge(endStr));
-                    fileBean.setFile_type(getType(endStr));
-                    fileBean.setSuffix(endStr);//上传文件后缀名和文件类型；setSuffix和setType所赋值内容一样。
-                    fileBean.setType(getFileType(endStr));
-                    fileBean.setNet(false);
-                    fileBeans.add(fileBean);
+
                   /*  //复制文件到指定目录
                     new Thread() {
                         @Override
@@ -1351,25 +1355,34 @@ if (Hawk.contains(constant._id)) {
                             ToastUtil.makeText(getActivity(), "uri.getPath()=====" + uri.getPath());
                             Log.d("requestCodeUr2222", uri.getScheme() + "===" + uri.getPath() + "==" + file.getName() + "++++++++++" + getFilePath(getActivity(), uri) + "===" + uri.getAuthority());
                             String endStr = file.getName().substring(file.getName().lastIndexOf(".") + 1);
-                            if ("jpg".equals(endStr) || "gif".equals(endStr) || "png".equals(endStr) || "jpeg".equals(endStr) || "bmp".equals(endStr)||!endStr.equals("m4a") || !endStr.equals("mp3") || !endStr.equals("mid") ||
+                            if (!"jpg".equals(endStr) || !"gif".equals(endStr) || !"png".equals(endStr) || !"jpeg".equals(endStr) ||! "bmp".equals(endStr)||!endStr.equals("m4a") || !endStr.equals("mp3") || !endStr.equals("mid") ||
                                     !endStr.equals("xmf") || !endStr.equals("ogg") || !endStr.equals("wav")||!endStr.equals("3gp") || !endStr.equals("mp4")||!endStr.equals("ppt") || !endStr.equals("pptx")||
                                     !endStr.equals("xls") || !endStr.equals("xlsx")||!endStr.equals("doc") || !endStr.equals("docx")||!endStr.equals("pdf") || !endStr.equals("txt")) {
                                 Toast.makeText(getActivity(), "请选择正确的文件格式", Toast.LENGTH_SHORT).show();
-                            return;
+                                return;
                             }
-                            Log.d(TAG, "文件类型=" + endStr + "文件名字" + file.getName());
-                            fileBean = new FileListBean(file.getName(), file.getPath(), "", "");
-                            //复制文件到指定目录
-                            new Thread() {
-                                @Override
-                                public void run() {
-                                    copyFile(file.getPath(), fileStrPath + file.getName());
-                                }
-                            }.start();
-                            fileBean.setResImage(getIamge(endStr));
-                            fileBean.setFile_type(getType(endStr));
-                            fileBean.setNet(false);
-                            fileBeans.add(fileBean);
+                            if ("jpg".equals(endStr) || "gif".equals(endStr) || "png".equals(endStr) || "jpeg".equals(endStr) || "bmp".equals(endStr)||endStr.equals("m4a") || endStr.equals("mp3") || endStr.equals("mid") ||
+                                    endStr.equals("xmf") || endStr.equals("ogg") || endStr.equals("wav")||endStr.equals("3gp") || endStr.equals("mp4")||endStr.equals("ppt") || endStr.equals("pptx")||
+                                    endStr.equals("xls") || endStr.equals("xlsx")||endStr.equals("doc") || endStr.equals("docx")||endStr.equals("pdf") || endStr.equals("txt")) {
+                                Log.d(TAG, "文件类型=" + endStr + "文件名字" + file.getName());
+                                fileBean = new FileListBean(file.getName(), file.getPath(), "", "");
+                                //复制文件到指定目录
+                                new Thread() {
+                                    @Override
+                                    public void run() {
+                                        copyFile(file.getPath(), fileStrPath + file.getName());
+                                    }
+                                }.start();
+                                fileBean.setResImage(getIamge(endStr));
+                                fileBean.setFile_type(getType(endStr));
+                                fileBean.setNet(false);
+                                fileBeans.add(fileBean);
+                            }else {
+                                Toast.makeText(getActivity(), "请选择正确的文件格式", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+
+
                         } catch (URISyntaxException e) {
                             e.printStackTrace();
                         }

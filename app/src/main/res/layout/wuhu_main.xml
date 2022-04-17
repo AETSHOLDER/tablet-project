@@ -93,100 +93,164 @@
             </RelativeLayout>
 
         </LinearLayout>
+<RelativeLayout
+    android:id="@+id/cc1"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerVertical="true"
+    android:visibility="gone"
+    >
 
-        <RelativeLayout
-            android:id="@+id/finish_ll"
-            style="@style/wuhu_tittle_rl"
+    <RelativeLayout
+        android:id="@+id/finish_ll"
+        style="@style/wuhu_tittle_rl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="100dp">
+
+        <ImageView
+            android:id="@+id/aa4"
+            style="@style/wuhu_tittle_ima"
+            android:src="@mipmap/ic_wuhu_finish_meeting" />
+
+        <TextView
+            style="@style/wuhu_tittle_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="100dp">
+            android:layout_below="@id/aa4"
+            android:text="退出会议" />
 
-            <ImageView
-                android:id="@+id/aa4"
-                style="@style/wuhu_tittle_ima"
-                android:src="@mipmap/ic_wuhu_finish_meeting" />
+    </RelativeLayout>
 
-            <TextView
-                style="@style/wuhu_tittle_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/aa4"
-                android:text="退出会议" />
+    <RelativeLayout
+        android:id="@+id/edit_ll"
+        style="@style/wuhu_tittle_rl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="120dp"
+        android:layout_toLeftOf="@id/finish_ll">
 
-        </RelativeLayout>
+        <ImageView
+            android:id="@+id/aa3"
+            style="@style/wuhu_tittle_ima"
+            android:src="@mipmap/ic_wuhu_consult" />
 
+        <TextView
+            style="@style/wuhu_tittle_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/aa3"
+            android:text="编辑" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/consult_ll"
+        style="@style/wuhu_tittle_rl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="120dp"
+        android:layout_toLeftOf="@id/edit_ll">
+
+        <ImageView
+            android:id="@+id/aa2"
+            style="@style/wuhu_tittle_ima"
+            android:src="@mipmap/ic_wuhu_edit" />
+
+        <TextView
+            style="@style/wuhu_tittle_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/aa2"
+            android:text="查阅" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/vote_ll"
+        style="@style/wuhu_tittle_rl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="120dp"
+        android:layout_toLeftOf="@id/consult_ll">
+
+        <ImageView
+            android:id="@+id/aa1"
+            style="@style/wuhu_tittle_ima"
+            android:src="@mipmap/ic_wuhu_vote" />
+
+        <TextView
+            style="@style/wuhu_tittle_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/aa1"
+            android:text="投票" />
+
+    </RelativeLayout>
+
+</RelativeLayout>
         <RelativeLayout
-            android:id="@+id/edit_ll"
-            style="@style/wuhu_tittle_rl"
+            android:id="@+id/cc2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginRight="120dp"
-            android:layout_toLeftOf="@id/finish_ll">
-
-            <ImageView
-                android:id="@+id/aa3"
-                style="@style/wuhu_tittle_ima"
-                android:src="@mipmap/ic_wuhu_consult" />
-
-            <TextView
-                style="@style/wuhu_tittle_tv"
+            >
+            <RelativeLayout
+                android:id="@+id/consult_ll1"
+                style="@style/wuhu_tittle_rl"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/aa3"
-                android:text="编辑" />
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="100dp"
+                >
+                <ImageView
+                    android:id="@+id/aa21"
+                    style="@style/wuhu_tittle_ima"
+                    android:src="@mipmap/ic_wuhu_edit" />
 
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/consult_ll"
-            style="@style/wuhu_tittle_rl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="120dp"
-            android:layout_toLeftOf="@id/edit_ll">
-
-            <ImageView
-                android:id="@+id/aa2"
-                style="@style/wuhu_tittle_ima"
-                android:src="@mipmap/ic_wuhu_edit" />
-
-            <TextView
-                style="@style/wuhu_tittle_tv"
+                <TextView
+                    style="@style/wuhu_tittle_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/aa21"
+                    android:text="查阅" />
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/vote_ll1"
+                style="@style/wuhu_tittle_rl"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/aa2"
-                android:text="查阅" />
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/consult_ll1"
+                android:layout_marginRight="120dp"
+                >
+                <ImageView
+                    android:id="@+id/aa11"
+                    style="@style/wuhu_tittle_ima"
+                    android:src="@mipmap/ic_wuhu_vote" />
 
-        </RelativeLayout>
+                <TextView
+                    style="@style/wuhu_tittle_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/aa11"
+                    android:text="投票" />
 
-        <RelativeLayout
-            android:id="@+id/vote_ll"
-            style="@style/wuhu_tittle_rl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="120dp"
-            android:layout_toLeftOf="@id/consult_ll">
+            </RelativeLayout>
 
-            <ImageView
-                android:id="@+id/aa1"
-                style="@style/wuhu_tittle_ima"
-                android:src="@mipmap/ic_wuhu_vote" />
 
-            <TextView
-                style="@style/wuhu_tittle_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/aa1"
-                android:text="投票" />
+
 
         </RelativeLayout>
 
     </RelativeLayout>
+
 
 
     <android.support.v4.view.ViewPager

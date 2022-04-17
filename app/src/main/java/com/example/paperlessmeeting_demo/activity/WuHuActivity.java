@@ -102,9 +102,16 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
     @BindView(R.id.consult_ll)
     RelativeLayout consult_ll;
 
+    @BindView(R.id.consult_ll1)
+    RelativeLayout consult_ll1;
+    @BindView(R.id.vote_ll1)
+    RelativeLayout vote_ll1;
     @BindView(R.id.finish_ll)
     RelativeLayout finish_ll;
-
+    @BindView(R.id.cc1)
+    RelativeLayout cc1;
+    @BindView(R.id.cc2)
+    RelativeLayout cc2;
     private Dialog dialog;
     @BindView(R.id.comfirm)
     ImageView comfirm;
@@ -272,8 +279,8 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
         EventBus.getDefault().register(this);
         wuHuEditBeanList.clear();
         if (UserUtil.ISCHAIRMAN) {
-            edit_ll.setVisibility(View.VISIBLE);
-            finish_ll.setVisibility(View.VISIBLE);
+          cc1.setVisibility(View.VISIBLE);
+          cc2.setVisibility(View.GONE);
             if (Hawk.contains("WuHuFragmentData")){
                 wuHuEditBean= Hawk.get("WuHuFragmentData");
                 wuHuEditBean.setTopics("2022年临时会议");
@@ -285,8 +292,8 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                 Hawk.put("WuHuFragmentData",wuHuEditBean);
             }
         }else {
-            edit_ll.setVisibility(View.GONE);
-            finish_ll.setVisibility(View.GONE);
+            cc1.setVisibility(View.GONE);
+            cc2.setVisibility(View.VISIBLE);
         }
 
         wuHuListAdapter=new WuHuListAdapter(WuHuActivity.this,wuHuEditBeanList);
@@ -417,13 +424,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
 
     @Override
     protected int getLayoutId() {
-
-        if (UserUtil.ISCHAIRMAN) {
-            return R.layout.wuhu_main;
-        }else {
-            return R.layout.wuhu_main_attend;
-        }
-
+        return R.layout.wuhu_main;
     }
 
     @Override
@@ -477,6 +478,8 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
         vote_ll.setOnClickListener(this);
         consult_ll.setOnClickListener(this);
         finish_ll.setOnClickListener(this);
+            consult_ll1.setOnClickListener(this);
+            vote_ll1.setOnClickListener(this);
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mBtnDelete = (Button) findViewById(R.id.btn_delete);
         mBtnAdd = (Button) findViewById(R.id.btn_add);
@@ -574,6 +577,16 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
             case R.id.finish_ll:
                 showFinishMeetingDialog();
                 break;
+            case R.id.vote_ll1:
+                intent=new Intent(WuHuActivity.this, WuHuVoteActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.consult_ll1:
+                intent = new Intent(WuHuActivity.this, SignListActivity.class);
+                startActivity(intent);
+                break;
+
+
 
         }
 
