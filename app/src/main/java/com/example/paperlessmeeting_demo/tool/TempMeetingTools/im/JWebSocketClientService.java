@@ -51,6 +51,9 @@ public class JWebSocketClientService {
      * 初始化websocket连接
      */
     public static void initSocketClient() {
+        if(client != null && client.isOpen()){
+            return;
+        }
         URI uri = null;
         if (UserUtil.isTempMeeting) {
             uri = URI.create(UrlConstant.TempWSIPString);

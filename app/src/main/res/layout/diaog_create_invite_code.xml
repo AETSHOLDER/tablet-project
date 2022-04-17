@@ -70,7 +70,7 @@
             app:vcv_et_inputType="number"
             app:vcv_et_number="4"
             app:vcv_et_text_color="@android:color/black"
-            app:vcv_et_text_size="68sp" />
+            app:vcv_et_text_size="58sp" />
 
     </LinearLayout>
 

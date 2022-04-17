@@ -55,7 +55,6 @@ public abstract class BaseActivity extends RxAppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         if (unbinder != null) {
             unbinder.unbind();
         }

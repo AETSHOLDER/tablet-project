@@ -882,6 +882,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
         if (myBroadcastReceiver!=null){
             unregisterReceiver(myBroadcastReceiver);
         }
