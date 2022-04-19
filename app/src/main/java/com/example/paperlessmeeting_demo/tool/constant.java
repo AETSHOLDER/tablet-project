@@ -57,6 +57,9 @@ public class constant {
     public final static String REFRASHWuHUSIGLEDATA = "refreshdata";//更新单个芜湖数据
     public final static String WUHUADDFRAGMENT = "addfragments";//普通参会人员新增芜湖fragment
     public final static String REFRASHWuHUALL = "refreshdataALL";//更新所有芜湖数据fragment
+    public final static String DELETE_WUHU_FRAGMENT = "deletelwuhufragment";//删除芜湖数据fragment
+
+
 
     public final static String NEWVOTE = "newVote";//新增投票数据
     public final static String UPDATEVOTE = "updateVote";//更新投票数据

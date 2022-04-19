@@ -225,6 +225,22 @@ public class ServerManager {
                 e.printStackTrace();
             }
         }
+        // 删除单个芜湖新增fragment
+        if(message.contains(constant.DELETE_WUHU_FRAGMENT)){
+            try {
+                TempWSBean<WuHuEditBean> wsebean = new Gson().fromJson(message, new TypeToken<TempWSBean<WuHuEditBean>>(){}.getType());
+                WuHuEditBean wuHuEditBean = wsebean.getBody();
+                TempWSBean wsebean1 = new TempWSBean();
+                wsebean1.setReqType(1);
+                wsebean1.setUserMac_id("");
+                wsebean1.setPackType(constant.DELETE_WUHU_FRAGMENT);
+                wsebean1.setBody(wuHuEditBean);
+                String strJson = new Gson().toJson(wsebean1);
+                SendMessageToAll(strJson);
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         // 刷新单个芜湖新增fragment
         if(message.contains(constant.REFRASHWuHUSIGLEDATA)){
             try {

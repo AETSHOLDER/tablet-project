@@ -261,6 +261,20 @@ public class JWebSocketClientService {
 
                     }
                 }
+                //  芜湖删除某个fragment
+                if (message.contains("refreshdata") || message.contains(constant.DELETE_WUHU_FRAGMENT)) {
+                    if (topActivity != null) {
+                     /*
+                        Intent intent = new Intent();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("fileType", fileType);
+                        intent.putExtras(bundle);
+                        intent.setAction(constant.SHOW_CLOSE_SERVICE_BROADCAST);
+                        this.sendBroadcast(intent);*/
+
+                    }
+                }
+
                 //  芜湖更新某个fragment
                 if (message.contains("refreshdata") || message.contains(constant.REFRASHWuHUSIGLEDATA)) {
                     if (topActivity != null) {

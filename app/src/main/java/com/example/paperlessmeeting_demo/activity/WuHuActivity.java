@@ -90,8 +90,7 @@ import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-public class WuHuActivity  extends BaseActivity implements View.OnClickListener,WuHuListAdapter.saveSeparatelyInterface,WuHuListAdapter.deletSeparatelyInterface{
-
+public class WuHuActivity  extends BaseActivity implements View.OnClickListener,WuHuListAdapter.saveSeparatelyInterface,WuHuListAdapter.deletSeparatelyInterface,WuHuListAdapter.addSeparatelyInterface{
     @BindView(R.id.edit_ll)
     RelativeLayout edit_ll;
     @BindView(R.id.edit_rl)
@@ -312,6 +311,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
         wuHuListAdapter=new WuHuListAdapter(WuHuActivity.this,wuHuEditBeanList);
         wuHuListAdapter.setSaveSeparatelyInterface(this);
         wuHuListAdapter.setDeletSeparatelyInterface(this);
+        wuHuListAdapter.setAddSeparatelyInterface(this);
         /*
          *
          * 当是临时会议时，开启Servive随时监听各参会人人员分享的文件。正常网络会议时监听同屏关闭操作
@@ -634,7 +634,25 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
         wuHuEditBeanList.remove(position);*/
 
     }
+    @Override
+    public void addData(int position) {
 
+        WuHuEditBean.EditListBean editListBean=new WuHuEditBean.EditListBean();
+        editListBean.setSubTopics(wuHuEditBeanList.get(wuHuEditBeanList.size()-1).getSubTopics());
+        editListBean.setAttendeBean(wuHuEditBeanList.get(wuHuEditBeanList.size()-1).getAttendeBean());
+        wuHuEditBeanList.add(editListBean);
+        wuHuListAdapter.setWuHuEditBeanList(wuHuEditBeanList);
+        wuHuListAdapter.notifyDataSetChanged();
+
+        if (Hawk.contains("WuHuFragmentData")){
+            WuHuEditBean wuHuEditBean= Hawk.get("WuHuFragmentData");
+            wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
+            Hawk.put("WuHuFragmentData",wuHuEditBean);
+            //通知其他设备增加fragment
+            wsUpdata(wuHuEditBean,constant.WUHUADDFRAGMENT);
+        }
+
+    }
     //结束会议
     private void showFinishMeetingDialog() {
         CVIPaperDialogUtils.showCustomDialog(WuHuActivity.this, "确定要结束会议？", "请保存/上传好会议文件!!!", "确定", true, new CVIPaperDialogUtils.ConfirmDialogListener() {
@@ -763,6 +781,9 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                 }
             }else if(message.getMessage().contains(constant.REFRASHWuHUSIGLEDATA)){
                 Log.e("onReceiveMsg2222: " , message.toString());
+
+            }else if (message.getMessage().contains(constant.DELETE_WUHU_FRAGMENT)){
+                //删除
 
             }
 

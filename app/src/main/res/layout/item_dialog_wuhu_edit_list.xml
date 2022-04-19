@@ -57,6 +57,7 @@
                 android:background="@drawable/bg_wuhu_edit"
                 android:gravity="left|center_vertical"
                 android:hint="请输入…"
+                android:padding="5dp"
                 android:paddingLeft="23dp"
                 android:textColor="#777777"
                 android:textSize="30sp" />
@@ -86,6 +87,7 @@
                 android:layout_below="@id/bb"
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="20dp"
+                android:padding="5dp"
                 android:background="@drawable/bg_wuhu_edit"
                 android:gravity="left|center_vertical"
                 android:hint="请输入…"
@@ -128,6 +130,22 @@
         android:paddingLeft="39dp"
         android:paddingRight="39dp"
         android:text="删  除"
+        android:textColor="#ffffffff"
+        android:textSize="30sp" />
+    <TextView
+        android:id="@+id/add"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_below="@id/scrollView"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="35dp"
+        android:layout_marginBottom="10dp"
+        android:layout_toLeftOf="@id/delete"
+        android:background="@drawable/bg_wuhu_edit_add"
+        android:gravity="center"
+        android:paddingLeft="39dp"
+        android:paddingRight="39dp"
+        android:text="新 增"
         android:textColor="#ffffffff"
         android:textSize="30sp" />
 </RelativeLayout>

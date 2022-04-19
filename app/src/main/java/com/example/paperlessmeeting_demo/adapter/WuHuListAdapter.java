@@ -39,6 +39,15 @@ public class WuHuListAdapter extends BaseAdapter {
     private List<WuHuEditBean.EditListBean> wuHuEditBeanList;
     private saveSeparatelyInterface saveSeparatelyInterface;
     private deletSeparatelyInterface deletSeparatelyInterface;
+  private addSeparatelyInterface  addSeparatelyInterface;
+
+    public WuHuListAdapter.addSeparatelyInterface getAddSeparatelyInterface() {
+        return addSeparatelyInterface;
+    }
+
+    public void setAddSeparatelyInterface(WuHuListAdapter.addSeparatelyInterface addSeparatelyInterface) {
+        this.addSeparatelyInterface = addSeparatelyInterface;
+    }
 
     public WuHuListAdapter.deletSeparatelyInterface getDeletSeparatelyInterface() {
         return deletSeparatelyInterface;
@@ -99,6 +108,14 @@ public class WuHuListAdapter extends BaseAdapter {
             viHolder = (ViewHolder) view.getTag();
         }
 
+        if (wuHuEditBeanList.size() > 1) {
+
+            if (i == wuHuEditBeanList.size() - 1) {
+                viHolder.add.setVisibility(View.VISIBLE);
+            } else {
+                viHolder.add.setVisibility(View.INVISIBLE);
+            }
+        }
 
         if (viHolder.tittle2.getTag() instanceof TextWatcher) {
             viHolder.tittle2.removeTextChangedListener((TextWatcher) viHolder.tittle2.getTag());
@@ -182,6 +199,12 @@ public class WuHuListAdapter extends BaseAdapter {
 
             }
         });
+        viHolder.add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addSeparatelyInterface.addData(i);
+            }
+        });
         return view;
     }
   public interface saveSeparatelyInterface{
@@ -192,7 +215,10 @@ public class WuHuListAdapter extends BaseAdapter {
 
         public void deletData(int position);
     }
+    public interface addSeparatelyInterface{
 
+        public void addData(int position);
+    }
 
     static class ViewHolder {
         @BindView(R.id.tittle_pos)
@@ -205,6 +231,8 @@ public class WuHuListAdapter extends BaseAdapter {
         TextView save;
         @BindView(R.id.delete)
         TextView delete;
+        @BindView(R.id.add)
+        TextView add;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);

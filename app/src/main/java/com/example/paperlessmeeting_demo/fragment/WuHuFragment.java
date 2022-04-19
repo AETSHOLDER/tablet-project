@@ -205,6 +205,7 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
     private   List<WuHuNetFileBean.DataBean> fileListBeanList = new ArrayList<>();
     private List<FileListBean> fileOtherBeans = new ArrayList<>();//音视频文件
     private FileListBean fileBean;
+    private boolean mReceiverTag = false;   //广播接受者标识
     private Handler mHandler = new Handler() {
 
         @Override
@@ -1025,6 +1026,9 @@ if (Hawk.contains(constant._id)) {
                     e.printStackTrace();
                 }
 
+            }else if (message.getMessage().contains(constant.DELETE_WUHU_FRAGMENT)){
+
+
             }
 
         }
@@ -1269,10 +1273,14 @@ if (Hawk.contains(constant._id)) {
         iFilter.addDataScheme("file");
         getActivity().registerReceiver(mBroadcastReceiver, iFilter);
         socketShareFileManager = new SocketShareFileManager(mHandler);
-        myBroadcastReceiver = new MyBroadcastReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(constant.SHARE_FILE_BROADCAST);
-        getActivity().registerReceiver(myBroadcastReceiver, filter);
+        if (!mReceiverTag){     //在注册广播接受者的时候 判断是否已被注册,避免重复多次注册广播
+            myBroadcastReceiver = new MyBroadcastReceiver();
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(constant.SHARE_FILE_BROADCAST);
+            getActivity().registerReceiver(myBroadcastReceiver, filter);
+        }
+
+
 
       mySaveBroadcastReceiver = new MyBroadcastReceiver();
         IntentFilter filter3 = new IntentFilter();
@@ -1528,7 +1536,7 @@ if (Hawk.contains(constant._id)) {
         if (mBroadcastReceiver != null) {
             getActivity().unregisterReceiver(mBroadcastReceiver);
         }
-        if (myBroadcastReceiver != null) {
+        if (myBroadcastReceiver != null&&myBroadcastReceiver.isOrderedBroadcast()) {
             getActivity().unregisterReceiver(myBroadcastReceiver);
         }
        if (mediaPlayer != null) {
@@ -1624,9 +1632,9 @@ if (Hawk.contains(constant._id)) {
         if (mySaveBroadcastReceiver!=null){
             getActivity().unregisterReceiver(mySaveBroadcastReceiver);
         }
-
-        if (myBroadcastReceiver!=null){
-            getActivity().unregisterReceiver(myBroadcastReceiver);
+        if (mReceiverTag) {   //判断广播是否注册
+            mReceiverTag = false;   //Tag值 赋值为false 表示该广播已被注销
+            getActivity().unregisterReceiver(myBroadcastReceiver);  //注销广播
         }
 
     }
