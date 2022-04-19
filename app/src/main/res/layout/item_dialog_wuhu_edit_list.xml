@@ -124,6 +124,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginRight="35dp"
         android:layout_marginBottom="10dp"
+        android:visibility="gone"
         android:layout_toLeftOf="@id/save"
         android:background="@drawable/bg_wuhu_edit_delet"
         android:gravity="center"
