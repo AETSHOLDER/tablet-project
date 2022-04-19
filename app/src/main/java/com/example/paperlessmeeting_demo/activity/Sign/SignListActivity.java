@@ -74,7 +74,7 @@ public class SignListActivity extends BaseActivity {
             public void onClick(View view) {
                 sign_delete.setSelected(!sign_delete.isSelected());
                 boolean isShow = sign_delete.isSelected();
-                String text = isShow ? "取消删除" : "删除批注";
+                String text = isShow ? "完成" : "删除批注";
                 sign_delete.setText(text);
                 for (SignViewRecyclerViewAdapter adapter : adapterList) {
                     adapter.showDeletImg(isShow);
