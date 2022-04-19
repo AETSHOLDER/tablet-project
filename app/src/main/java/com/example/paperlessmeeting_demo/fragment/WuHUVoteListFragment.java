@@ -50,6 +50,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.blankj.utilcode.util.StringUtils;
 import com.codbking.widget.DatePickDialog;
 import com.codbking.widget.OnSureLisener;
 import com.codbking.widget.bean.DateType;
@@ -117,6 +118,7 @@ import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.vudroid.core.utils.MD5StringUtil;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -446,6 +448,12 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
         if (message.getType().equals(MessageReceiveType.MessageClient)) {
             // 查询投票信息
             if (message.getMessage().contains(constant.QUERYVOTE)) {
+                try {
+                    Thread.sleep(1500);
+                } catch (InterruptedException e) {
+
+                    e.printStackTrace();
+                }
               //  voteList.clear();
                 Log.e(TAG, "wuhuonReceiveMsg11111: " + message.toString());
                 try {
@@ -1554,7 +1562,10 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
     @Override
     public void seeImaistener(int position) {
 
-       // Bitmap bitmap = BitmapFactory.decodeFile("file://" + list.get(position).getText());
+        if(StringUtils.isEmpty(list.get(position).getText())){
+            return;
+
+        }
         showImage(openImage( list.get(position).getText()));
     }
 
@@ -2379,6 +2390,10 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
 
             }else if (in.getAction().equals(constant.SEE_IMA_BROADCAST)){
                String path= in.getStringExtra("votefilePath");
+               if(StringUtils.isEmpty(path)){
+                   return;
+
+               }
                 showImage(openImage( path));
             }
 
