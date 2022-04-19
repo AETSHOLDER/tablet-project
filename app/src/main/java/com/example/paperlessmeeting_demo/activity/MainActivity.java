@@ -2193,7 +2193,6 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
 
                                             Hawk.delete(constant._id);
                                             Hawk.delete(constant.user_id);
-                                            Hawk.delete(constant.user_name);
                                             finish();
                                         }
                                     }

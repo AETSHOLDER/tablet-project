@@ -725,7 +725,6 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
 
                                             Hawk.delete(constant._id);
                                             Hawk.delete(constant.user_id);
-                                            Hawk.delete(constant.user_name);
                                             finish();
                                         }
                                     }

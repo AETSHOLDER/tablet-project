@@ -633,7 +633,7 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
 
     //删除文件夹和文件夹里面的文件
     private   void deleteDirWihtFile(File dir) {
-        if (dir == null || !dir.exists() || !dir.isDirectory() )
+        if (dir == null || !dir.exists() || !dir.isDirectory() || dir.listFiles() == null)
             return;
         for (File file : dir.listFiles()) {
             if (file.isFile())

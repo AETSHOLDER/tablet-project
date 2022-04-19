@@ -320,7 +320,6 @@ public class JWebSocketClientService {
 
                                             Hawk.delete(constant._id);
                                             Hawk.delete(constant.user_id);
-                                            Hawk.delete(constant.user_name);
 
                                             Intent intent = new Intent(topActivity, LoginActivity.class);
                                             topActivity.startActivity(intent);
