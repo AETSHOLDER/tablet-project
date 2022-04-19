@@ -448,12 +448,12 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
         if (message.getType().equals(MessageReceiveType.MessageClient)) {
             // 查询投票信息
             if (message.getMessage().contains(constant.QUERYVOTE)) {
-                try {
+           /*     try {
                     Thread.sleep(1500);
                 } catch (InterruptedException e) {
 
                     e.printStackTrace();
-                }
+                }*/
               //  voteList.clear();
                 Log.e(TAG, "wuhuonReceiveMsg11111: " + message.toString());
                 try {
@@ -747,7 +747,8 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
 
                     temporBean2.setContent(edit_text2.getText().toString());
                     temporBean2.setChecked(false);
-
+                    temporBeanArrayList.add(temporBean1);
+                    temporBeanArrayList.add(temporBean2);
                     options_list.add(edit_text.getText().toString());
                     options_list.add(edit_text2.getText().toString());
                     //  拼接选项字符串

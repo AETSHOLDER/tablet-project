@@ -99,14 +99,20 @@
                     android:textColor="#333333"
                     android:textSize="34sp"
                     android:textStyle="normal" />
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:scrollbars="none"
+    android:layout_marginTop="20dp"
+    android:layout_marginBottom="150dp"
+    >
 
     <LinearLayout
         android:id="@+id/list_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="150dp"
+
         >
         <com.example.paperlessmeeting_demo.widgets.MyGridView
             android:id="@+id/gridview"
@@ -140,7 +146,7 @@
             android:scrollIndicators="none"
             android:scrollbars="none"></com.example.paperlessmeeting_demo.widgets.MyListView>
     </LinearLayout>
-
+</ScrollView>
             </LinearLayout>
             <TextView
                 style="@style/HorizontalLine"
