@@ -31,5 +31,5 @@
         android:layout_toRightOf="@id/orderNumb"
         android:gravity="center_vertical"
         android:scaleType="fitCenter"
-        android:src="@mipmap/ic_chose_ima" />
+         />
 </RelativeLayout>

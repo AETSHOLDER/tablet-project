@@ -125,9 +125,10 @@ public class WuHuVoteAdapter extends RecyclerView.Adapter<WuHuVoteAdapter.MyView
         if (list.get(position).getType().equals("0")) {
             holder.danxaun.setText("单选");
 
-            for (int i = 0; i < voteBean.getOptions().size(); i++) {
+            for (int i = 0; i < voteBean.getTemporBeanList().size(); i++) {
                 ChoseBean object = new ChoseBean();
-                object.setContent(voteBean.getOptions().get(i));
+                object.setContent(voteBean.getTemporBeanList().get(i).getContent());
+                object.setVotePath(voteBean.getTemporBeanList().get(i).getVotePath());
                 object.setChecked(false);
                 dataList.add(object);
             }
@@ -147,9 +148,11 @@ public class WuHuVoteAdapter extends RecyclerView.Adapter<WuHuVoteAdapter.MyView
 
         } else {
             holder.danxaun.setText("多选");
-            for (int i = 0; i < voteBean.getOptions().size(); i++) {
+            for (int i = 0; i < voteBean.getTemporBeanList().size(); i++) {
                 ChoseBean object = new ChoseBean();
                 object.setContent(voteBean.getOptions().get(i));
+                object.setContent(voteBean.getTemporBeanList().get(i).getContent());
+                object.setVotePath(voteBean.getTemporBeanList().get(i).getVotePath());
                 object.setChecked(false);
                 dataList.add(object);
             }
@@ -162,7 +165,7 @@ public class WuHuVoteAdapter extends RecyclerView.Adapter<WuHuVoteAdapter.MyView
             }else {
               holder.listview.setVisibility(View.GONE);
                 holder.gridview.setVisibility(View.VISIBLE);
-                WuHuSingleGridleAdapter wuHuSingleGridleAdapter=new WuHuSingleGridleAdapter(context, dataList,voteBean.getFlag(),voteBean);
+                WuHuMultipleGridleAdapter wuHuSingleGridleAdapter=new WuHuMultipleGridleAdapter(context, dataList,voteBean.getFlag(),voteBean);
                 holder.gridview.setAdapter(wuHuSingleGridleAdapter);
                 wuHuSingleGridleAdapter.notifyDataSetChanged();
 
@@ -175,11 +178,12 @@ public class WuHuVoteAdapter extends RecyclerView.Adapter<WuHuVoteAdapter.MyView
         switch (status){
             case Constants.VoteStatusEnum.hasStartUnVote:
                 holder.endtimeClock.setText("进行中");
+                holder.btn_pos.setText("投票");
+                holder.btn_pos.setEnabled(true);
                 if (UserUtil.ISCHAIRMAN) {
                     holder.btn_end.setVisibility(View.VISIBLE);
                 }else {
                     holder.btn_end.setVisibility(View.GONE);
-
                 }
 
               //  ((WuHuVoteChairmanViewHolder) holder).status_desc.setVisibility(View.INVISIBLE);
@@ -200,6 +204,7 @@ public class WuHuVoteAdapter extends RecyclerView.Adapter<WuHuVoteAdapter.MyView
                             return;
                         }
                         Hawk.put("ChoseBean",dataList);
+                        Log.d("ggsgg","position="+position+"  voteBean.getFlag()"+voteBean.getFlag());
                         vf.vote(position,voteBean.getFlag());
                       //  radioAdapter.notifyDataSetChanged();
                     }
@@ -211,12 +216,14 @@ public class WuHuVoteAdapter extends RecyclerView.Adapter<WuHuVoteAdapter.MyView
                     holder.btn_result.setVisibility(View.VISIBLE);
                 }else {
                     holder.btn_end.setVisibility(View.GONE);
-                    holder.btn_result.setVisibility(View.GONE);
+
                 }
                 holder. btn_end.setVisibility(View.GONE);
              //   ((WuHuVoteChairmanViewHolder) holder).status.setText("查看结果");
               //  ((WuHuVoteChairmanViewHolder) holder).status.setTextColor( Color.parseColor("#3377FF"));
                 holder.endtimeClock.setText("已结束");
+                holder.btn_pos.setText("已投票");
+                holder.btn_pos.setEnabled(false);
              //   ((WuHuVoteChairmanViewHolder) holder).status_desc.setVisibility(View.VISIBLE);
                // ((WuHuVoteChairmanViewHolder) holder).operation.setVisibility(View.INVISIBLE);
                 break;

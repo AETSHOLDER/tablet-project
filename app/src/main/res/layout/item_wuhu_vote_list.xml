@@ -188,11 +188,11 @@
             android:layout_height="62dp"
             android:layout_centerVertical="true"
             android:layout_marginRight="20dp"
+            android:layout_marginBottom="40dp"
             android:layout_toLeftOf="@+id/btn_result"
             android:background="@drawable/alert_sure_btn_border"
             android:gravity="center"
             android:text="投票"
-            android:layout_marginBottom="40dp"
             android:textAlignment="center"
             android:textColor="@color/bgColor"
             android:textSize="30sp" />

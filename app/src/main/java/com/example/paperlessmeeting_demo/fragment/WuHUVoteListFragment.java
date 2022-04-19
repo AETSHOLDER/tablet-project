@@ -3,10 +3,12 @@ package com.example.paperlessmeeting_demo.fragment;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,6 +18,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.Message;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
@@ -40,6 +43,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -55,17 +59,24 @@ import com.example.paperlessmeeting_demo.activity.WuHuActivity;
 import com.example.paperlessmeeting_demo.adapter.RecycleAdapter;
 import com.example.paperlessmeeting_demo.adapter.VoteAdapter;
 import com.example.paperlessmeeting_demo.adapter.VoteChairmanAdapter;
+import com.example.paperlessmeeting_demo.adapter.WuHuImaResultAdapter;
+import com.example.paperlessmeeting_demo.adapter.WuHuMultipleGridleAdapter;
 import com.example.paperlessmeeting_demo.adapter.WuHuRecycleAdapter;
+import com.example.paperlessmeeting_demo.adapter.WuHuSingleGridleAdapter;
+import com.example.paperlessmeeting_demo.adapter.WuHuTextResultAdapter;
 import com.example.paperlessmeeting_demo.adapter.WuHuVoteAdapter;
 import com.example.paperlessmeeting_demo.base.BaseFragment;
 import com.example.paperlessmeeting_demo.bean.BasicResponse;
 import com.example.paperlessmeeting_demo.bean.ChoseBean;
+import com.example.paperlessmeeting_demo.bean.FileListBean;
 import com.example.paperlessmeeting_demo.bean.ItemBean;
 import com.example.paperlessmeeting_demo.bean.PieEntry;
 import com.example.paperlessmeeting_demo.bean.TempWSBean;
 import com.example.paperlessmeeting_demo.bean.UserBehaviorBean;
 import com.example.paperlessmeeting_demo.bean.VoteListBean;
 import com.example.paperlessmeeting_demo.bean.VoteListBean.VoteBean;
+import com.example.paperlessmeeting_demo.bean.WuHuNetFileBean;
+import com.example.paperlessmeeting_demo.bean.WuHuVoteResultBean;
 import com.example.paperlessmeeting_demo.dialog.CheckBoxDialog;
 import com.example.paperlessmeeting_demo.dialog.PieChartDialog;
 import com.example.paperlessmeeting_demo.dialog.RadioDialog;
@@ -76,9 +87,11 @@ import com.example.paperlessmeeting_demo.dialog.WuHuRadioDialog;
 import com.example.paperlessmeeting_demo.enums.MessageReceiveType;
 import com.example.paperlessmeeting_demo.network.DefaultObserver;
 import com.example.paperlessmeeting_demo.network.NetWorkManager;
+import com.example.paperlessmeeting_demo.sharefile.SocketShareFileManager;
 import com.example.paperlessmeeting_demo.tool.Base642BitmapTool;
 import com.example.paperlessmeeting_demo.tool.CVIPaperDialogUtils;
 import com.example.paperlessmeeting_demo.tool.Constants;
+import com.example.paperlessmeeting_demo.tool.DownloadUtil;
 import com.example.paperlessmeeting_demo.tool.FLUtil;
 import com.example.paperlessmeeting_demo.tool.PermissionManager;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.ServerManager;
@@ -87,10 +100,12 @@ import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.EventMessage;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.JWebSocketClientService;
 import com.example.paperlessmeeting_demo.tool.TimeUtils;
 import com.example.paperlessmeeting_demo.tool.ToastUtils;
+import com.example.paperlessmeeting_demo.tool.UrlConstant;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.example.paperlessmeeting_demo.tool.constant;
 import com.example.paperlessmeeting_demo.util.ToastUtil;
 import com.example.paperlessmeeting_demo.widgets.DrawableTextView;
+import com.example.paperlessmeeting_demo.widgets.MyListView;
 import com.example.paperlessmeeting_demo.widgets.ZoomImageView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -103,12 +118,17 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -124,10 +144,36 @@ import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
 @SuppressLint("ValidFragment")
-public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.voteClickListener, WuHuVoteAdapter.voteClickListener, EasyPermissions.PermissionCallbacks, WuHuRecycleAdapter.ChoseOptionItemImaListener, WuHuRecycleAdapter.SeePhotosItemImaListener, View.OnClickListener,WuHuVoteAdapter.viewResultsInterface,WuHuVoteAdapter.voteInterFace,WuHuVoteAdapter.endInterFace,WuHuRecycleAdapter.deleteOpitionIntetface{
-
-
+public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.voteClickListener, WuHuVoteAdapter.voteClickListener, EasyPermissions.PermissionCallbacks, WuHuRecycleAdapter.ChoseOptionItemImaListener, WuHuRecycleAdapter.SeePhotosItemImaListener, View.OnClickListener,WuHuVoteAdapter.viewResultsInterface,WuHuVoteAdapter.voteInterFace,WuHuVoteAdapter.endInterFace,WuHuRecycleAdapter.deleteOpitionIntetface {
+    private SocketShareFileManager socketShareFileManager;
     private boolean isOptionShow=false;
+    private MyBroadcastReceiver  myBroadcastReceiver;
+    private  ArrayList<String> fileNames = new ArrayList<>();
+    private  ArrayList<String> paths = new ArrayList<>();
+    private List<String> stringListIp = new ArrayList<>();
+    private String   votePath = Environment.getExternalStorageDirectory().getPath() + constant.VOTE_FILE;
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            // TODO Auto-generated method stub
+            String selfIp = "";
+            String stIp = "";
+            switch (msg.what) {
+                case 0:
+                    progressBar_ll.setVisibility(View.GONE);
+                    break;
+
+
+            }
+
+
+        }
+    };
+
+
+
+
     @Override
     protected int getLayoutId() {
         if (UserUtil.ISCHAIRMAN) {
@@ -253,6 +299,8 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
 
     @BindView(R.id.no_vote_text_rl)
     RelativeLayout no_vote_text_rl;
+    @BindView(R.id.progressBar_ll)
+    RelativeLayout progressBar_ll;
 
     ArrayList<VoteBean> voteList = new ArrayList<>();
     private LucklyPopopWindow mLucklyPopopWindow;
@@ -287,6 +335,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
     EditText edit_text3;
     TextView  text_title;
     private AlertDialog results;
+    private AlertDialog newResults;
     private AlertDialog optionFormDialog;
     private AlertDialog imaDialog;
     private FragmentManager fragmentManager;
@@ -295,7 +344,9 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
     private String currentEndDate="22222";
     private int positionIma = -1;
     private ArrayList<VoteBean> tempList = new ArrayList<>();//临时存放
-
+    private int a,b,c,d,e,f,g,h;
+    private StringBuilder strA,strB,strC,strD,strE,strF,strG,strH;
+    private int allVoteNumb;//总票数
     public WuHUVoteListFragment(FragmentManager fragmentManager) {
         this.fragmentManager = fragmentManager;
     }
@@ -313,11 +364,21 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
         // TODO: inflate a fragment view
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
         unbinder = ButterKnife.bind(this, rootView);
+
+        myBroadcastReceiver = new MyBroadcastReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(constant.SEE_IMA_BROADCAST);
+        getActivity().registerReceiver(myBroadcastReceiver, filter);
+
         voteAdapter1 = new WuHuVoteAdapter(getActivity());
         voteAdapter2 = new WuHuVoteAdapter(getActivity());
         voteAdapter2.setEf(this);//结束
         voteAdapter2.setVf(this);//投票
         voteAdapter2.setVr(this);//查看结果
+        socketShareFileManager = new SocketShareFileManager(mHandler);
+     //普通参会人员
+        voteAdapter1.setVf(this);//投票
+        voteAdapter1.setVr(this);//查看结果
         DrawableTextView new_vote = null;
         if (UserUtil.ISCHAIRMAN) {
             new_vote = rootView.findViewById(R.id.new_vote);
@@ -385,14 +446,14 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
         if (message.getType().equals(MessageReceiveType.MessageClient)) {
             // 查询投票信息
             if (message.getMessage().contains(constant.QUERYVOTE)) {
-                voteList.clear();
-                Log.e(TAG, "onReceiveMsg11111: " + message.toString());
+              //  voteList.clear();
+                Log.e(TAG, "wuhuonReceiveMsg11111: " + message.toString());
                 try {
                     TempWSBean<ArrayList> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<ArrayList<VoteBean>>>() {
                     }.getType());
                     //  收到vote的websocket的信息
                     if (wsebean != null) {
-                        tempList= wsebean.getBody();
+                      /*  tempList= wsebean.getBody();
                         for (VoteBean bean : tempList) {
                             bean.setStatus(bean.getStatus());
                         }
@@ -403,9 +464,28 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                                 voteList.add(tempList.get(i));
                             }
                         }
-                       // voteList = wsebean.getBody();
+
+                      */
+
+                        voteList = wsebean.getBody();
                         String flag = wsebean.getFlag();//获取选项是图片还是文字标识
                         Log.d("gdgsdgsdgdgf444555",flag+"");
+                        for (VoteListBean.VoteBean bean : voteList) {
+                            bean.setStatus(bean.getStatus());
+                        }
+                        Collections.reverse(voteList);
+                        Log.d("gdgsdgsdgdgf444555",flag+"");
+                        if (UserUtil.ISCHAIRMAN){
+
+                        }else {
+                            File path = new File(votePath);
+                            File[] files = path.listFiles();// 读取
+                            if (files == null) {
+                                return;
+                            }
+                            getVoteFile(files);
+                        }
+
                         refreshUI(voteList, flag);
                     }
                 } catch (Exception e) {
@@ -413,24 +493,19 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                 }
             }
             if (message.getMessage().contains(constant.NEWVOTE)) {
-                Log.e(TAG, "onReceiveMsg22222: " + message.toString());
+             //   progressBar_ll.setVisibility(View.VISIBLE);
+                Log.e(TAG, "wuhuonReceiveMsg1111122222: " + message.toString());
                 try {
                     TempWSBean<ArrayList> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<ArrayList<VoteBean>>>() {
                     }.getType());
                     //  收到vote的websocket的信息
                     if (wsebean != null) {
-                        tempList= wsebean.getBody();
-                        for (VoteBean bean : tempList) {
+                        voteList = wsebean.getBody();
+                        String flag = wsebean.getFlag();//获取选项是图片还是文字标识
+                        Log.d("gdgsdgsdgdgf444888",flag+"");
+                        for (VoteListBean.VoteBean bean : voteList) {
                             bean.setStatus(bean.getStatus());
                         }
-                        for (int i=0;i<tempList.size();i++){
-                            if (!(tempList.get(i).getMvoteStatus()== Constants.VoteStatusEnum.hasFinshed)){
-                                voteList.add(0,tempList.get(i));
-                            }else {
-                                voteList.add(tempList.get(i));
-                            }
-                        }
-                        String flag = wsebean.getFlag();//获取选项是图片还是文字标识
                         Log.d("gdgsdgsdgdgf444888",flag+"");
 
                         refreshUI(voteList, flag);
@@ -518,6 +593,9 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
 
     //flag  1:文字选项  2：图片选项
     private void showNewVoteItem(String flag) {
+        fileNames.clear();
+        paths.clear();
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         View view = null;
         if (flag.equals("1")) {
@@ -697,10 +775,14 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                         if (!TextUtils.isEmpty(bean.getText())) {
                             try {
                                 bean.setFlag("2");
-                                temporBean4.setContent(byte2Base64(readStream(bean.getText())));
+                              //  temporBean4.setContent(byte2Base64(readStream(bean.getText())));
+                                temporBean4.setContent(bean.getText());
                                 temporBean4.setChecked(false);
+                                temporBean4.setFileName(bean.getFileName());//下载Bitmap
+                              // temporBean4.setVotePath(bean.);
                                 temporBeanArrayList.add(temporBean4);
-                                options_list.add(byte2Base64(readStream(bean.getText())));
+                                options_list.add(bean.getText());
+                               // options_list.add(byte2Base64(readStream(bean.getText())));
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -744,6 +826,29 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                     creatVote(voteBean, "1");
                 } else {
                     //选项是图片
+                    /*
+                     * 通知其他设备Service，这是分享文件
+                     * */
+                         for (int i=0;i<list.size();i++){
+                             fileNames.add(list.get(i).getFileName());
+                             paths.add(list.get(i).getText());
+                         }
+
+                    Thread sendThread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            if (Hawk.contains("stringsIp")) {
+                                stringListIp = Hawk.get("stringsIp");
+                            }
+                            //根据Ip将文件发送到不同的设备
+                            for (int i = 0; i < stringListIp.size(); i++) {
+                                socketShareFileManager.SendNewVoteFile(fileNames, paths, stringListIp.get(i), constant.SHARE_PORT,"3");
+                            }
+                        }
+
+                    });
+                    sendThread.start();
                     creatVote(voteBean, "2");
                 }
 
@@ -864,16 +969,29 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
             VoteBean.TemporBean  temporBean=new VoteBean.TemporBean();
             temporBean.setOrderNumb(choseBeanList.get(i).getOrderNumb());
             temporBean.setContent(choseBeanList.get(i).getContent());
+            temporBean.setVotePath(choseBeanList.get(i).getVotePath());
             temporBeanList.add(temporBean);
 
-            if (choseBeanList.get(i).isChecked()) {
+        if (choseBeanList.get(i).isChecked()) {
                 choseBean.setOrderNumb(choseBeanList.get(i).getOrderNumb());
                 choseBean.setContent(choseBeanList.get(i).getContent());
                 choseBean.setChecked(true);
+                choseBean.setUserName(UserUtil.user_name);//实名显示用
+            choseBean.setVotePath(choseBeanList.get(i).getVotePath());
                 choseBeans.add(choseBean);
                 //保持原有的
                 chose.add(choseBeanList.get(i).getOrderNumb());
-            }
+            }else {
+            choseBean.setOrderNumb(choseBeanList.get(i).getOrderNumb());
+            choseBean.setContent(choseBeanList.get(i).getContent());
+            choseBean.setChecked(false);
+            choseBean.setUserName(UserUtil.user_name);//实名显示用
+            choseBean.setVotePath(choseBeanList.get(i).getVotePath());
+            choseBeans.add(choseBean);
+            //保持原有的
+            chose.add(choseBeanList.get(i).getOrderNumb());
+
+        }
         }
 
         Log.d("gdgfggf",chose.size()+"   "+choseBeans.size()+"   ");
@@ -967,8 +1085,8 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                     ToastUtils.showShort("暂无人投票!");
                     return;
                 }
-
-                WuHuPieChartDialog piechartDialog = new WuHuPieChartDialog(getActivity(), R.style.AlertDialogStyle, createData(model), voteList.get(position));
+                newSeeResult(voteList.get(position),  flag);
+             /*   WuHuPieChartDialog piechartDialog = new WuHuPieChartDialog(getActivity(), R.style.AlertDialogStyle, createData(model), voteList.get(position));
                 piechartDialog.show();
 
                 Window window = piechartDialog.getWindow();//获取dialog屏幕对象
@@ -981,7 +1099,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                 int height = size.y;
                 p.width = (int) (width * 0.8);//设置宽
                 p.height = (int) (height * 0.85);//设置宽
-                window.setAttributes(p);
+                window.setAttributes(p);*/
             }
             Log.d("fgsdfgsdg445555", flag);
             //  投票
@@ -994,11 +1112,309 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
             }*/
         }
 
+    }
+  //查看看结果新布局
+    private void newSeeResult(VoteBean voteBean, String flag){
+        allVoteNumb=0;
+                a=0;
+                b=0;
+                c=0;
+                d=0;
+                e=0;
+                f=0;
+                g=0;
+                h=0;
+                strA=new StringBuilder();
+                strB=new StringBuilder();
+        strC=new StringBuilder();
+        strD=new StringBuilder();
+        strE=new StringBuilder();
+        strF=new StringBuilder();
+        strG=new StringBuilder();
+        strH=new StringBuilder();
+                /*String chooseChar;
+                String chooseContent;
+                String */
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            View view   = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_wuhu_voting_results, null);
+            Button danxaun=view.findViewById(R.id.danxaun);
+            Button niming=view.findViewById(R.id.niming);
+            TextView vote_topic=view.findViewById(R.id.vote_topic);
+             MyListView myList_view=view.findViewById(R.id.myList_view);
+            TextView  personnel=view.findViewById(R.id.personnel);
+
+        if (voteBean.getType().equals("0")) {
+            danxaun.setText("单选");
+        }else {
+            danxaun.setText("多选");
+        }
+        if (voteBean.getAnonymity().equals("1")) {
+            niming.setText("实名");
+        } else {
+            niming.setText("匿名");
+        }
+        vote_topic.setText("投票标题："+voteBean.getTopic());
+       List<VoteBean.UserListBean>userListBeanList=new ArrayList<>();
+        userListBeanList=voteBean.getUser_list();
+       List<WuHuVoteResultBean>wuHuVoteResultBeanList=new ArrayList<>();
+
+        for (int i=0;i<userListBeanList.size();i++){
+            List<VoteBean.UserListBean.ChoseBean> choseBeanList=new ArrayList<>();
+            choseBeanList=userListBeanList.get(i).getChoseBeanList();
+            wuHuVoteResultBeanList.clear();
+            for (int n=0;n<choseBeanList.size();n++){
+                if (choseBeanList.get(n).isChecked()){
+                    allVoteNumb++;
+                }
+                    WuHuVoteResultBean wuHuVoteResultBean=new WuHuVoteResultBean();
+              switch (choseBeanList.get(n).getOrderNumb()){
+                  case "A":
+                      if (choseBeanList.get(n).isChecked()){
+                      a++;
+                          strA.append(choseBeanList.get(n).getUserName()+",");
+                      }
+                      wuHuVoteResultBean.setVoteNumb(a+"");
+                      wuHuVoteResultBean.setChoosenNumb(choseBeanList.get(n).getOrderNumb());
+                      wuHuVoteResultBean.setContent(choseBeanList.get(n).getContent());
+                      wuHuVoteResultBean.setVotePath(choseBeanList.get(n).getVotePath());
+                      wuHuVoteResultBean.setName(choseBeanList.get(n).getUserName());
+
+                  break;
+                  case "B":
+                      if (choseBeanList.get(n).isChecked()){
+                      b++;
+                          strB.append(choseBeanList.get(n).getUserName()+",");
+                      }
+                      wuHuVoteResultBean.setVoteNumb(b+"");
+                      wuHuVoteResultBean.setChoosenNumb(choseBeanList.get(n).getOrderNumb());
+                      wuHuVoteResultBean.setContent(choseBeanList.get(n).getContent());
+                      wuHuVoteResultBean.setName(choseBeanList.get(n).getUserName());
+                      wuHuVoteResultBean.setVotePath(choseBeanList.get(n).getVotePath());
+                      break;
+                  case "C":
+                      if (choseBeanList.get(n).isChecked()) {
+                          c++;
+                          strC.append(choseBeanList.get(n).getUserName()+",");
+                      }
+                      wuHuVoteResultBean.setVoteNumb(c+"");
+                      wuHuVoteResultBean.setChoosenNumb(choseBeanList.get(n).getOrderNumb());
+                      wuHuVoteResultBean.setContent(choseBeanList.get(n).getContent());
+                      wuHuVoteResultBean.setVotePath(choseBeanList.get(n).getVotePath());
+                      break;
+                  case "D":
+                      if (choseBeanList.get(n).isChecked()) {
+                          d++;
+                          strD.append(choseBeanList.get(n).getUserName()+",");
+                      }
+                      wuHuVoteResultBean.setVoteNumb(d+"");
+                      wuHuVoteResultBean.setChoosenNumb(choseBeanList.get(n).getOrderNumb());
+                      wuHuVoteResultBean.setContent(choseBeanList.get(n).getContent());
+                      wuHuVoteResultBean.setName(choseBeanList.get(n).getUserName());
+                      wuHuVoteResultBean.setVotePath(choseBeanList.get(n).getVotePath());
+                      break;
+                  case "E":
+                      if (choseBeanList.get(n).isChecked()) {
+                      e++;
+                          strE.append(choseBeanList.get(n).getUserName()+",");
+                      }
+                      wuHuVoteResultBean.setVoteNumb(e+"");
+                      wuHuVoteResultBean.setChoosenNumb(choseBeanList.get(n).getOrderNumb());
+                      wuHuVoteResultBean.setContent(choseBeanList.get(n).getContent());
+                      wuHuVoteResultBean.setName(choseBeanList.get(n).getUserName());
+                      wuHuVoteResultBean.setVotePath(choseBeanList.get(n).getVotePath());
+                      break;
+                  case "F":
+                      if (choseBeanList.get(n).isChecked()) {
+                          f++;
+                          strF.append(choseBeanList.get(n).getUserName()+",");
+                      }
+                      wuHuVoteResultBean.setVoteNumb(f+"");
+                      wuHuVoteResultBean.setChoosenNumb(choseBeanList.get(n).getOrderNumb());
+                      wuHuVoteResultBean.setContent(choseBeanList.get(n).getContent());
+                      wuHuVoteResultBean.setName(choseBeanList.get(n).getUserName());
+                      wuHuVoteResultBean.setVotePath(choseBeanList.get(n).getVotePath());
+                      break;
+                  case "G":
+                      if (choseBeanList.get(n).isChecked()) {
+                          g++;
+                          strG.append(choseBeanList.get(n).getUserName()+",");
+                      }
+                      wuHuVoteResultBean.setVoteNumb(g+"");
+                      wuHuVoteResultBean.setChoosenNumb(choseBeanList.get(n).getOrderNumb());
+                      wuHuVoteResultBean.setContent(choseBeanList.get(n).getContent());
+                      wuHuVoteResultBean.setName(choseBeanList.get(n).getUserName());
+                      wuHuVoteResultBean.setVotePath(choseBeanList.get(n).getVotePath());
+                      break;
+                  case "H":
+                      if (choseBeanList.get(n).isChecked()) {
+                          h++;
+                          strH.append(choseBeanList.get(n).getUserName()+",");
+                      }
+                      wuHuVoteResultBean.setVoteNumb(h+"");
+                      wuHuVoteResultBean.setChoosenNumb(choseBeanList.get(n).getOrderNumb());
+                      wuHuVoteResultBean.setContent(choseBeanList.get(n).getContent());
+                      wuHuVoteResultBean.setName(choseBeanList.get(n).getUserName());
+                      wuHuVoteResultBean.setVotePath(choseBeanList.get(n).getVotePath());
+                      break;
+              }
+                      wuHuVoteResultBeanList.add(wuHuVoteResultBean);
+
+            }
+        }
+
+        Log.d("sdas111",strA.length()+"  "+strB.length()+"  "+strC.length()+" "+strD.length()+"   "+strE.length()+"   "+strF.length()+"  "+strG.length()+"  "+strH.length());
+        StringBuilder nameString=new StringBuilder();
+      if (strA.length()>0){
+          nameString.append("A:"+strA.substring(0,strA.length()-1)).append("\n"+"\n");
+        }
+        if (strB.length()>0){
+            nameString.append("B:"+strB.substring(0,strB.length()-1)).append("\n"+"\n");
+        }else {
+
+        }
+        if (strC.length()>0){
+            nameString.append("C:"+strC.substring(0,strC.length()-1)).append("\n"+"\n");
+        }else {
+
+
+        }
+        if (strD.length()>0){
+            nameString.append("D:"+strD.substring(0,strD.length()-1)).append("\n"+"\n");
+        }else {
+
+
+        }
+        if (strE.length()>0){
+            nameString.append("E:"+strE.substring(0,strE.length()-1)).append("\n"+"\n");
+        }else {
+
+
+        }
+        if (strF.length()>0){
+            nameString.append("F:"+strF.substring(0,strF.length()-1)).append("\n"+"\n");
+        }  else {
+
+
+        }
+        if (strG.length()>0){
+            nameString.append("G:"+strG.substring(0,strG.length()-1)).append("\n"+"\n");
+        }else {
+
+        }
+        if (strH.length()>0){
+            nameString.append("H:"+strH.substring(0,strH.length()-1)).append("\n"+"\n");
+        }else {
+
+        }
+
+        personnel.setText(nameString);
+    /*    //计算每一项百分比
+        for (int i=0;i<wuHuVoteResultBeanList.size();i++ ){
+            int prossNumb=0;
+
+        WuHuVoteResultBean  wuHuVoteResultBean=wuHuVoteResultBeanList.get(i);
+         switch (wuHuVoteResultBean.getChoosenNumb()){
+             case "A":
+                 prossNumb=(Integer)(Integer.valueOf(wuHuVoteResultBean.getVoteNumb())/allVoteNumb)*100;
+                 wuHuVoteResultBeanList.get(i).setProssBarNumb(prossNumb);
+                 Log.d("ggsdfgg222",prossNumb+"  "+wuHuVoteResultBean.getVoteNumb()+"   "+Integer.valueOf(wuHuVoteResultBean.getVoteNumb())/allVoteNumb+"  allVoteNumb="+allVoteNumb);
+                 break;
+             case "B":
+                 prossNumb=(Integer)(Integer.valueOf(wuHuVoteResultBean.getVoteNumb())/allVoteNumb)*100;
+                 wuHuVoteResultBeanList.get(i).setProssBarNumb(prossNumb);
+                 Log.d("ggsdfgg333",prossNumb+"    "+wuHuVoteResultBean.getVoteNumb()+"   "+Integer.valueOf(wuHuVoteResultBean.getVoteNumb())/allVoteNumb+"  allVoteNumb="+allVoteNumb);
+                 break;
+             case "C":
+                 prossNumb=(Integer)(Integer.valueOf("1")/allVoteNumb)*100;
+                 wuHuVoteResultBeanList.get(i).setProssBarNumb(prossNumb);
+                 Log.d("ggsdfgg444",prossNumb+""+wuHuVoteResultBean.getVoteNumb()+"   "+Integer.valueOf(wuHuVoteResultBean.getVoteNumb())/allVoteNumb+"  allVoteNumb="+allVoteNumb);
+                 break;
+             case "D":
+                 prossNumb=(Integer)(Integer.valueOf(wuHuVoteResultBean.getVoteNumb())/allVoteNumb)*100;
+                 wuHuVoteResultBeanList.get(i).setProssBarNumb(prossNumb);
+                 Log.d("ggsdfgg555",prossNumb+"   "+wuHuVoteResultBean.getVoteNumb()+"   "+Integer.valueOf(wuHuVoteResultBean.getVoteNumb())/allVoteNumb+"  allVoteNumb="+allVoteNumb);
+                 break;
+             case "E":
+                 prossNumb=(Integer)(Integer.valueOf(wuHuVoteResultBean.getVoteNumb())/allVoteNumb)*100;
+                 wuHuVoteResultBeanList.get(i).setProssBarNumb(prossNumb);
+                 break;
+             case "F":
+                 prossNumb=(Integer)(Integer.valueOf(wuHuVoteResultBean.getVoteNumb())/allVoteNumb)*100;
+                 wuHuVoteResultBeanList.get(i).setProssBarNumb(prossNumb);
+                 break;
+             case "G":
+                 prossNumb=(Integer)(Integer.valueOf(wuHuVoteResultBean.getVoteNumb())/allVoteNumb)*100;
+                 wuHuVoteResultBeanList.get(i).setProssBarNumb(prossNumb);
+                 break;
+             case "H":
+                 prossNumb=(Integer)(Integer.valueOf(wuHuVoteResultBean.getVoteNumb())/allVoteNumb)*100;
+                 wuHuVoteResultBeanList.get(i).setProssBarNumb(prossNumb);
+                 break;
+         }
+            Log.d("ggsdfgg1111",prossNumb+"");
+        }*/
+        Log.d("ggsdfgg8888",allVoteNumb+"");
+
+        //封装图片
+        for (int i=0;i<userListBeanList.size();i++){
+            VoteBean.UserListBean  userListBean=userListBeanList.get(i);
+            if (FLUtil.getMacAddress().equals(userListBean)){
+                List<VoteBean.UserListBean.ChoseBean> choseBeanList=new ArrayList<>();
+                choseBeanList=userListBeanList.get(i).getChoseBeanList();
+                for (int n=0;n<choseBeanList.size();n++){
+                    for (int k=0;k<wuHuVoteResultBeanList.size();k++){
+                        if (wuHuVoteResultBeanList.get(k).getChoosenNumb().equals(choseBeanList.get(n).getOrderNumb())){
+                            wuHuVoteResultBeanList.get(k).setVotePath(choseBeanList.get(n).getVotePath());
+                            wuHuVoteResultBeanList.get(k).setContent(choseBeanList.get(n).getContent());
+
+                        }
+
+                    }
+
+                }
+
+            }
 
 
 
 
+        }
+        for (int i=0;i<wuHuVoteResultBeanList.size();i++){
+            String numb=wuHuVoteResultBeanList.get(i).getVoteNumb();
+            int  numbInt=Integer.parseInt(numb);
 
+            float pressent = (float) numbInt / allVoteNumb * 100;
+            int per=(int)pressent;
+            wuHuVoteResultBeanList.get(i).setProssBarNumb(per);
+        }
+
+
+       if (flag.equals("1")){
+        WuHuTextResultAdapter  wuHuTextResultAdapter=new WuHuTextResultAdapter(getActivity(),wuHuVoteResultBeanList);
+        myList_view.setAdapter(wuHuTextResultAdapter);
+        wuHuTextResultAdapter.notifyDataSetChanged();
+
+       }else {
+           WuHuImaResultAdapter wuHuImaResultAdapter = new WuHuImaResultAdapter(getActivity(), wuHuVoteResultBeanList);
+           myList_view.setAdapter(wuHuImaResultAdapter);
+           wuHuImaResultAdapter.notifyDataSetChanged();
+       }
+
+            builder.setView(view);
+            builder.setCancelable(true);
+            newResults = builder.create();
+            newResults.show();
+            Window window = newResults.getWindow();//获取dialog屏幕对象
+            window.setGravity(Gravity.CENTER);//设置展示位置
+            Display d = window.getWindowManager().getDefaultDisplay(); // 获取屏幕宽，高
+            WindowManager.LayoutParams p = window.getAttributes(); // 获取对话框当前的参数值
+            Point size = new Point();
+            d.getSize(size);
+            int width = size.x;
+            int height = size.y;
+            p.width = (int) (width * 0.8);//设置宽
+            p.height = (int) (height * 0.8);//设置高
+            window.setAttributes(p);
 
     }
     //  单选按钮选择
@@ -1133,10 +1549,29 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
     @Override
     public void seeImaistener(int position) {
 
-        Bitmap bitmap = BitmapFactory.decodeFile("file://" + list.get(position).getText());
-        showImage(bitmap);
+       // Bitmap bitmap = BitmapFactory.decodeFile("file://" + list.get(position).getText());
+        showImage(openImage( list.get(position).getText()));
     }
 
+    public  Bitmap openImage(String path){
+        Bitmap bitmap = null;
+
+        BufferedInputStream bis = null;
+        try {
+            bis = new BufferedInputStream(new FileInputStream(path));
+            bitmap = BitmapFactory.decodeStream(bis);
+            try {
+                bis.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        } catch (FileNotFoundException fileNotFoundException) {
+            fileNotFoundException.printStackTrace();
+        }
+
+
+        return bitmap;
+    }
 
     //展示图片大图
     private void showImage(Bitmap  bitmap){
@@ -1206,6 +1641,8 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                     String endStr = file.getName().substring(file.getName().lastIndexOf(".") + 1);
                     if ("jpg".equals(endStr) || "gif".equals(endStr) || "png".equals(endStr) || "jpeg".equals(endStr) || "bmp".equals(endStr)) {
                         list.get(positionIma).setText(file.getPath());
+                        list.get(positionIma).setFileName(file.getName());
+
                         adapter.notifyDataSetChanged();
                         Log.d("requestCodeUr779999大小", list.size()+"   ");
                     } else {
@@ -1233,6 +1670,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                             String endStr = file.getName().substring(file.getName().lastIndexOf(".") + 1);
                             if ("jpg".equals(endStr) || "gif".equals(endStr) || "png".equals(endStr) || "jpeg".equals(endStr) || "bmp".equals(endStr)) {
                                 list.get(positionIma).setText(file.getPath());
+                                list.get(positionIma).setFileName(file.getName());
                                 adapter.notifyDataSetChanged();
                             } else {
 
@@ -1615,8 +2053,6 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
         }
 
         WuHuRadioDialog dialog = new WuHuRadioDialog(getActivity(), R.style.AlertDialogStyle, list, flag);
-
-
         dialog.show();
 
        Window window = dialog.getWindow();//获取dialog屏幕对象
@@ -1822,7 +2258,58 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
         });
     }
 
+    /*
+     * 遍历得到投票文件
+     * */
+    private void getVoteFile(File[] files) {
+       //shareFileBeans.clear();
+        Log.d(TAG, "路过~~~~~11");
+        String content = "";
+        if (files != null) {// 先判断目录是否为空，否则会报空指针
+            for (File file : files) {
+                Log.d(TAG, "路过~~~~~11" + file.getPath());
 
+                if (file.isDirectory()) {
+                    Log.d(TAG, "若是文件目录。继续读1" + file.getName().toString()
+                            + file.getPath().toString());
+
+                    getVoteFile(file.listFiles());
+                    Log.d(TAG, "若是文件目录。继续读2" + file.getName().toString()
+                            + file.getPath().toString());
+                } else {
+                    String fileName = file.getName();
+                    String endStr = fileName.substring(fileName.lastIndexOf(".") + 1);
+                    Log.d(TAG, "文件类型=" + endStr + "文件名字" + fileName);
+                    Uri uri = Uri.fromFile(file);
+
+                    for (int i=0;i<voteList.size();i++){
+                       List <VoteBean.TemporBean>temporBeanList=new ArrayList<>();
+                        temporBeanList=voteList.get(i).getTemporBeanList();
+                       for (int  n=0;n<temporBeanList.size();n++){
+                           if (fileName.equals(temporBeanList.get(n).getFileName())){
+                               temporBeanList.get(n).setVotePath(file.getPath().toString());
+
+                           }
+
+                       }
+
+                    }
+                    Log.d("requestCodeUr555", uri.getScheme() + "===" + uri.getPath() + "==" + file.getName());
+                  /*  fileBean.setResImage(getIamge(endStr));
+                    fileBean.setFile_type(getType(endStr));
+                    fileBean.setNet(false);
+                    fileBean.setSuffix(endStr);//上传文件后缀名和文件类型；setSuffix和setType所赋值内容一样。
+                    //  fileBean.setType(endStr);
+                    fileBean.setType(getFileType(endStr));
+                    shareFileBeans.add(fileBean);*/
+
+                }
+            }
+            /*fileBeans.addAll(shareFileBeans);
+            fileListAdapter.setGridViewBeanList(fileBeans);
+            fileListAdapter.notifyDataSetChanged();*/
+        }
+    }
     /**
      * 检查读写权限权限
      */
@@ -1875,6 +2362,23 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
     public void onDestroyView() {
         EventBus.getDefault().unregister(this);
         super.onDestroyView();
+        if (myBroadcastReceiver!=null){
+            getActivity().unregisterReceiver(myBroadcastReceiver);
+
+        }
+    }
+    private class MyBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent in) {
+            if (in.getAction().equals(constant.RUSH_VOTE_LIST_BROADCAST)){
+
+            }else if (in.getAction().equals(constant.SEE_IMA_BROADCAST)){
+               String path= in.getStringExtra("votefilePath");
+                showImage(openImage( path));
+            }
+
+        }
+
     }
 }
 

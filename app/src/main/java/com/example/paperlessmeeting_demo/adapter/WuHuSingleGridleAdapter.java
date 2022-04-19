@@ -1,6 +1,8 @@
 package com.example.paperlessmeeting_demo.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,9 @@ import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.bean.ChoseBean;
 import com.example.paperlessmeeting_demo.bean.VoteListBean;
 import com.example.paperlessmeeting_demo.tool.Base642BitmapTool;
+import com.example.paperlessmeeting_demo.tool.UserUtil;
+import com.example.paperlessmeeting_demo.tool.constant;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +32,16 @@ public class WuHuSingleGridleAdapter extends BaseAdapter {
     ChoseBean lastDataBean = null;
    // List< VoteListBean.VoteBean.UserListBean>  userListBeanList;
     VoteListBean.VoteBean  voteBean;
+    private SeeVoteItemImaListener seeVoteItemImaListener;
+
+    public SeeVoteItemImaListener getSeeVoteItemImaListener() {
+        return seeVoteItemImaListener;
+    }
+
+    public void setSeeVoteItemImaListener(SeeVoteItemImaListener seeVoteItemImaListener) {
+        this.seeVoteItemImaListener = seeVoteItemImaListener;
+    }
+
     public String getFlag() {
         return flag;
     }
@@ -56,18 +71,20 @@ public class WuHuSingleGridleAdapter extends BaseAdapter {
     public long getItemId(int position) {
         return position;
     }
-
+    public interface SeeVoteItemImaListener {
+        public void seeVoteImaistener(String filePath);
+    }
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         View view;
-    final     WuHuSingleGridleAdapter.ViewHolder viewHolder ;
+    final     ViewHolder viewHolder ;
         if (convertView == null) {
             view = ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.item_wuhu_vote_image_list, null);
-            viewHolder = new WuHuSingleGridleAdapter.ViewHolder(view);
+            viewHolder = new ViewHolder(view);
             view.setTag(viewHolder);
         } else {
             view = convertView;
-            viewHolder = (WuHuSingleGridleAdapter.ViewHolder) view.getTag();
+            viewHolder = (ViewHolder) view.getTag();
         }
         switch (position){
             case  0:
@@ -124,15 +141,39 @@ public class WuHuSingleGridleAdapter extends BaseAdapter {
             }else {
               //  viewHolder.tvContent.setVisibility(View.GONE);
                 viewHolder.ima_content.setVisibility(View.VISIBLE);
-                viewHolder.ima_content.setImageBitmap(Base642BitmapTool.base642Bitmap(bean.getContent()));
-            }
+                if (UserUtil.ISCHAIRMAN){
+                    ImageLoader.getInstance().displayImage("file://" +bean.getContent(),  viewHolder.ima_content);
 
+                }else {
+                    //普通参会人员
+                    ImageLoader.getInstance().displayImage("file://" +bean.getVotePath(), viewHolder.ima_content);
+                }
+
+            }
+            bean.setOrderNumb(viewHolder.orderNumb.getText().toString());
             if (bean.isChecked()) {
                 viewHolder.ivCheckState.setImageResource(R.drawable.radio_selected);
             } else {
                 viewHolder.ivCheckState.setImageResource(R.drawable.radio_unselected);
             }
+            viewHolder.ima_content.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent();
+                    Bundle bundle=new Bundle();
+                    if (UserUtil.ISCHAIRMAN){
+                        bundle.putString("votefilePath",bean.getContent());
+                    }else {
+                        bundle.putString("votefilePath",bean.getVotePath());
+                    }
 
+                    intent.putExtras(bundle);
+                    intent.setAction(constant.SEE_IMA_BROADCAST);
+                    context.sendBroadcast(intent);
+
+
+                }
+            });
 
 
 /*
@@ -162,6 +203,11 @@ public class WuHuSingleGridleAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View v) {
                     ChoseBean dataBean = listData.get(position);
+                   /* if (UserUtil.ISCHAIRMAN){
+                        dataBean.setContent(bean.getContent());
+                    }else {
+                        dataBean.setContent(bean.getVotePath());
+                    }*/
                     try {
                         if (dataBean.isChecked()) {
                             return;
@@ -173,7 +219,7 @@ public class WuHuSingleGridleAdapter extends BaseAdapter {
                             if(flag.equals("1")){
                                // dataBean.setContent(viewHolder.tvContent.getText().toString());
                             }else {
-                                dataBean.setContent(bean.getContent());
+
                             }
                             dataBean.setOrderNumb(viewHolder.orderNumb.getText().toString());
 

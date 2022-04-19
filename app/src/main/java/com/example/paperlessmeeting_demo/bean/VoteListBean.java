@@ -276,6 +276,24 @@ public class VoteListBean implements Serializable {
             private String userName;
             private String choosWhich;
             private String  orderNumb;
+            private String  fileName;
+           private String votePath;
+
+            public String getVotePath() {
+                return votePath;
+            }
+
+            public void setVotePath(String votePath) {
+                this.votePath = votePath;
+            }
+
+            public String getFileName() {
+                return fileName;
+            }
+
+            public void setFileName(String fileName) {
+                this.fileName = fileName;
+            }
 
             public String getOrderNumb() {
                 return orderNumb;
@@ -408,6 +426,15 @@ public class VoteListBean implements Serializable {
                 private String userName;
                 private String choosWhich;
                 private String  orderNumb;
+               private String votePath;
+
+                public String getVotePath() {
+                    return votePath;
+                }
+
+                public void setVotePath(String votePath) {
+                    this.votePath = votePath;
+                }
 
                 public String getOrderNumb() {
                     return orderNumb;

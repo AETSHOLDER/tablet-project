@@ -38,6 +38,15 @@ public class WuHuListAdapter extends BaseAdapter {
     private Context context;
     private List<WuHuEditBean.EditListBean> wuHuEditBeanList;
     private saveSeparatelyInterface saveSeparatelyInterface;
+    private deletSeparatelyInterface deletSeparatelyInterface;
+
+    public WuHuListAdapter.deletSeparatelyInterface getDeletSeparatelyInterface() {
+        return deletSeparatelyInterface;
+    }
+
+    public void setDeletSeparatelyInterface(WuHuListAdapter.deletSeparatelyInterface deletSeparatelyInterface) {
+        this.deletSeparatelyInterface = deletSeparatelyInterface;
+    }
 
     public WuHuListAdapter.saveSeparatelyInterface getSaveSeparatelyInterface() {
         return saveSeparatelyInterface;
@@ -97,7 +106,12 @@ public class WuHuListAdapter extends BaseAdapter {
         if (viHolder.tittle3.getTag() instanceof TextWatcher) {
             viHolder.tittle3.removeTextChangedListener((TextWatcher) viHolder.tittle3.getTag());
         }
+        if (i==0){
+            viHolder.delete.setVisibility(View.GONE);
 
+        }else {
+            viHolder.delete.setVisibility(View.VISIBLE);
+        }
         TextWatcher tittle2Watcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -111,7 +125,9 @@ public class WuHuListAdapter extends BaseAdapter {
             public void afterTextChanged(Editable s) {
                 if (TextUtils.isEmpty(s)) {
                     wuHuEditBean.setTemporarySubTopics("");
+                    wuHuEditBean.setSubTopics("");
                 } else {
+                    wuHuEditBean.setSubTopics(s.toString());
                     wuHuEditBean.setTemporarySubTopics(s.toString());
                 }
             }
@@ -132,7 +148,9 @@ public class WuHuListAdapter extends BaseAdapter {
             public void afterTextChanged(Editable s) {
                 if (TextUtils.isEmpty(s)) {
                     wuHuEditBean.setTemporaryAttendeBean("");
+                    wuHuEditBean.setAttendeBean("");
                 } else {
+                    wuHuEditBean.setAttendeBean(s.toString());
                     wuHuEditBean.setTemporaryAttendeBean(s.toString());
                 }
             }
@@ -142,6 +160,12 @@ public class WuHuListAdapter extends BaseAdapter {
 
         viHolder.tittle2.setText(wuHuEditBean.getSubTopics());
         viHolder.tittle3.setText(wuHuEditBean.getAttendeBean());
+        viHolder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deletSeparatelyInterface.deletData(i);
+            }
+        });
         //单独保存
         viHolder.save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,7 +173,6 @@ public class WuHuListAdapter extends BaseAdapter {
                 wuHuEditBean.setSubTopics(viHolder.tittle2.getText().toString());
                 wuHuEditBean.setAttendeBean(viHolder.tittle3.getText().toString());
                  saveSeparatelyInterface.saveData(i);
-
                 Intent intent = new Intent();
                 Bundle bundle=new Bundle();
                 bundle.putString("refreshType","8");
@@ -165,6 +188,10 @@ public class WuHuListAdapter extends BaseAdapter {
 
     public void saveData(int position);
 }
+    public interface deletSeparatelyInterface{
+
+        public void deletData(int position);
+    }
 
 
     static class ViewHolder {
@@ -176,6 +203,9 @@ public class WuHuListAdapter extends BaseAdapter {
         EditText tittle3;
         @BindView(R.id.save)
         TextView save;
+        @BindView(R.id.delete)
+        TextView delete;
+
         ViewHolder(View view) {
             ButterKnife.bind(this, view);
         }

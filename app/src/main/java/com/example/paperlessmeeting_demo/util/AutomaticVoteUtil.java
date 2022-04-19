@@ -1,6 +1,7 @@
 package com.example.paperlessmeeting_demo.util;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Point;
 import android.view.Display;
 import android.view.Gravity;
@@ -8,9 +9,11 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.Toast;
 
 import com.blankj.utilcode.util.ActivityUtils;
 import com.example.paperlessmeeting_demo.R;
+import com.example.paperlessmeeting_demo.activity.WuHuVoteActivity;
 import com.example.paperlessmeeting_demo.bean.ChoseBean;
 import com.example.paperlessmeeting_demo.bean.TempWSBean;
 import com.example.paperlessmeeting_demo.bean.VoteListBean;
@@ -60,13 +63,25 @@ public class AutomaticVoteUtil {
             object.setChecked(false);
             list.add(object);
         }
-        topActivity.runOnUiThread(new Runnable() {
+        String whiteName = "activity.WuHuVoteActivity";
+        // 在白板页面内 提示，出了白板不再提示
+        if (topActivity.getLocalClassName().contains(whiteName)) {
+            return;
+
+        }
+       // Toast.makeText(topActivity.getApplicationContext(),"您收到一个投票信息，即将前往投票页面",Toast.LENGTH_SHORT).show();
+        Intent intent=new Intent(topActivity, WuHuVoteActivity.class);
+        topActivity.startActivity(intent);
+      /*  topActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 RadioDialog dialog = new RadioDialog(topActivity, R.style.AlertDialogStyle, list,flag);
+
+
                 topActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+
                         dialog.show();
                     }
                 });
@@ -129,7 +144,7 @@ public class AutomaticVoteUtil {
                     }
                 });
             }
-        });
+        });*/
     }
 
     //  复选框
@@ -145,7 +160,15 @@ public class AutomaticVoteUtil {
             object.setChecked(false);
             list.add(object);
         }
-        topActivity.runOnUiThread(new Runnable() {
+        String whiteName = "activity.WuHuVoteActivity";
+        // 在白板页面内 提示，出了白板不再提示
+        if (topActivity.getLocalClassName().contains(whiteName)) {
+            return;
+
+        }
+        Intent intent=new Intent(topActivity, WuHuVoteActivity.class);
+        topActivity.startActivity(intent);
+       /* topActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 CheckBoxDialog dialog = new CheckBoxDialog(topActivity, R.style.AlertDialogStyle, list,flag);
@@ -208,7 +231,7 @@ public class AutomaticVoteUtil {
                     }
                 });
             }
-        });
+        });*/
 
     }
 

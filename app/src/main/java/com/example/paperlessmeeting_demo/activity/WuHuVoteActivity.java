@@ -56,6 +56,14 @@ public class WuHuVoteActivity extends BaseActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (myBroadcastReceiver!=null){
+            unregisterReceiver(myBroadcastReceiver);
+        }
+    }
+
     private class MyBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent in) {

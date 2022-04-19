@@ -180,6 +180,7 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
     private String fileName;//会议议程生成的纪要文件名
     private String fileShare = Environment.getExternalStorageDirectory() + constant.SHARE_FILE;//其他设备分享得到的文件夹路径
     private String COPY_PATH = Environment.getExternalStorageDirectory() + constant.COPY_PATH;
+    private String VOTE_FILE = Environment.getExternalStorageDirectory() + constant.VOTE_FILE;
     private String selfIp = "";
     private Handler handler = new Handler() {
         @Override
@@ -616,9 +617,10 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
         projectionManager = (MediaProjectionManager) getSystemService(MEDIA_PROJECTION_SERVICE);
         PermissionManager.RequestOverlayPermission(this);
         Log.d("fgdgg222", selfIp);
-        File file = new File("这里是文件夹得路径");
+       // File file = new File("这里是文件夹得路径");
         deleteDirWihtFile(new File(fileShare));
         deleteDirWihtFile(new File(COPY_PATH));
+        deleteDirWihtFile(new File(VOTE_FILE));
 
     }
    /* private void deleteFile(String filePath) {

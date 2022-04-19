@@ -1,6 +1,8 @@
 package com.example.paperlessmeeting_demo.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,9 @@ import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.bean.ChoseBean;
 import com.example.paperlessmeeting_demo.bean.VoteListBean;
 import com.example.paperlessmeeting_demo.tool.Base642BitmapTool;
+import com.example.paperlessmeeting_demo.tool.UserUtil;
+import com.example.paperlessmeeting_demo.tool.constant;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +29,20 @@ public class WuHuMultipleGridleAdapter extends BaseAdapter {
     List<ChoseBean> listData;
     Context context;
     private  String flag;
-    ChoseBean lastDataBean = null;
+    //ChoseBean lastDataBean = null;
    // List< VoteListBean.VoteBean.UserListBean>  userListBeanList;
     VoteListBean.VoteBean  voteBean;
     public String getFlag() {
         return flag;
+    }
+private SeeVoteMultipItemImaListener seeVoteMultipItemImaListener;
+
+    public SeeVoteMultipItemImaListener getSeeVoteMultipItemImaListener() {
+        return seeVoteMultipItemImaListener;
+    }
+
+    public void setSeeVoteMultipItemImaListener(SeeVoteMultipItemImaListener seeVoteMultipItemImaListener) {
+        this.seeVoteMultipItemImaListener = seeVoteMultipItemImaListener;
     }
 
     public void setFlag(String flag) {
@@ -56,18 +70,20 @@ public class WuHuMultipleGridleAdapter extends BaseAdapter {
     public long getItemId(int position) {
         return position;
     }
-
+    public interface SeeVoteMultipItemImaListener {
+        public void seeVoteMultipImaistener(String filePath);
+    }
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         View view;
-    final     WuHuMultipleGridleAdapter.ViewHolder viewHolder ;
+    final     ViewHolder viewHolder ;
         if (convertView == null) {
             view = ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.item_wuhu_vote_image_list, null);
-            viewHolder = new WuHuMultipleGridleAdapter.ViewHolder(view);
+            viewHolder = new ViewHolder(view);
             view.setTag(viewHolder);
         } else {
             view = convertView;
-            viewHolder = (WuHuMultipleGridleAdapter.ViewHolder) view.getTag();
+            viewHolder = (ViewHolder) view.getTag();
         }
         switch (position){
             case  0:
@@ -124,32 +140,38 @@ public class WuHuMultipleGridleAdapter extends BaseAdapter {
             }else {
               //  viewHolder.tvContent.setVisibility(View.GONE);
                 viewHolder.ima_content.setVisibility(View.VISIBLE);
-                viewHolder.ima_content.setImageBitmap(Base642BitmapTool.base642Bitmap(bean.getContent()));
-            }
+                if (UserUtil.ISCHAIRMAN){
+                    ImageLoader.getInstance().displayImage("file://" +bean.getContent(),  viewHolder.ima_content);
 
+                }else {
+                    //普通参会人员
+                  ImageLoader.getInstance().displayImage("file://" +bean.getVotePath(), viewHolder.ima_content);
+                }
+
+            }
+            bean.setOrderNumb( viewHolder.orderNumb.getText().toString());
             if (bean.isChecked()) {
                 viewHolder.ivCheckState.setImageResource(R.drawable.radio_selected);
             } else {
                 viewHolder.ivCheckState.setImageResource(R.drawable.radio_unselected);
             }
-
-
-
-/*
-            for (int i=0;i<userListBeanList.size();i++){
-                Log.d("fdssgg1111","1111111");
-                VoteListBean.VoteBean.UserListBean userListBean=userListBeanList.get(i);
-                if (userListBean.getUser_id().equals(FLUtil.getMacAddress())){
-                    Log.d("fdssgg2222","2222222"+"   "+userListBean.getChoose().size());
-                for (int h=0;h<userListBean.getChoose().size();h++){
-                    Log.d("fdssgg333",userListBean.getChoose().get(h));
-                    if (bean.getContent().equals(userListBean.getChoose().get(h))) {
-                        Log.d("fdssgg4444",userListBean.getChoose().get(h));
-                        viewHolder.ivCheckState.setImageResource(R.drawable.radio_selected);
+            viewHolder.ima_content.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent();
+                    Bundle bundle=new Bundle();
+                    if (UserUtil.ISCHAIRMAN){
+                        bundle.putString("votefilePath",bean.getContent());
+                    }else {
+                        bundle.putString("votefilePath",bean.getVotePath());
                     }
+
+                    intent.putExtras(bundle);
+                    intent.setAction(constant.SEE_IMA_BROADCAST);
+                    context.sendBroadcast(intent);
+
                 }
-                }
-            }*/
+            });
             //创建投票用户
             VoteListBean.VoteBean.UserListBean  userListBean=new VoteListBean.VoteBean.UserListBean();
             //创建投票类
@@ -162,48 +184,32 @@ public class WuHuMultipleGridleAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View v) {
                     ChoseBean dataBean = listData.get(position);
+                 /*   if (UserUtil.ISCHAIRMAN){
+                        dataBean.setContent(bean.getContent());
+                    }else {
+                        dataBean.setVotePath(bean.getVotePath());
+                    }*/
                     try {
                         if (dataBean.isChecked()) {
-                            return;
+                            dataBean.setChecked(false);
+                            viewHolder.ivCheckState.setImageResource(R.drawable.radio_unselected);
+                            notifyDataSetChanged();
+
                         } else {
-                            if(lastDataBean!=null){
+                           /* if(lastDataBean!=null){
                                 lastDataBean.setChecked(false);
-                            }
+                            }*/
                             dataBean.setChecked(true);
                             if(flag.equals("1")){
                                // dataBean.setContent(viewHolder.tvContent.getText().toString());
                             }else {
-                                dataBean.setContent(bean.getContent());
+
                             }
                             dataBean.setOrderNumb(viewHolder.orderNumb.getText().toString());
 
-                            lastDataBean = dataBean;
+                          //  lastDataBean = dataBean;
                             viewHolder.ivCheckState.setImageResource(R.drawable.radio_selected);
                           notifyDataSetChanged();
-
-/*
-                                //当前设备持有人初始化投票信息
-                                    viewHolder.ivCheckState.setImageResource(R.drawable.radio_selected);
-                                    //选项设置
-                                    choseBean.setChecked(true);
-                                    choseBean.setContent(viewHolder.tvContent.getText().toString());
-                                    choseBean.setOrderNumb(viewHolder.orderNumb.getText().toString());
-                                    choseBeanList.add(choseBean);
-                                    userListBean.setChoseBeanList(choseBeanList);
-
-                            //投票人赋值
-                           // userListBean.setStatus("FINISH");
-                            userListBean.setUser_name(Hawk.get(constant.myNumber));
-                            userListBean.setUser_id(FLUtil.getMacAddress());
-                            userListBean.setMeeting_vote_id(voteBean.get_id());
-
-                            choseString.add(viewHolder.tvContent.getText().toString());
-
-                            userListBean.setChoose(choseString);
-                            userListBeanList.add(userListBean);
-                            voteBean.setUser_list(userListBeanList);*/
-                                    //notifyDataSetChanged();
-
 
                         }
                     }catch (Exception e){}

@@ -345,7 +345,53 @@
                 android:textColor="#4379F0"
                 android:textSize="53sp" />
         </RelativeLayout>
-        
-        
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/progressBar_ll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#fff"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/x"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:indeterminateDrawable="@anim/cycle_anim"
+            android:indeterminateDuration="1000" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/x"
+            android:layout_centerHorizontal="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="70dp"
+                android:gravity="center"
+                android:textColor="#ff8f9bb3"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:text="投票数据加载中...."
+                android:textColor="#ff8f9bb3"
+                android:textSize="22sp" />
+
+        </LinearLayout>
+
     </RelativeLayout>
 </RelativeLayout>

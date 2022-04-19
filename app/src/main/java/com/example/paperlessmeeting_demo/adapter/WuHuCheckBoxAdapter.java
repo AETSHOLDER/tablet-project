@@ -123,11 +123,13 @@ public class WuHuCheckBoxAdapter extends BaseAdapter {
                 viewHolder.tvContent.setVisibility(View.VISIBLE);
                 viewHolder.ima_content.setVisibility(View.GONE);
                 viewHolder.tvContent.setText(bean.getContent());
+                bean.setOrderNumb(viewHolder.orderNumb.getText().toString());
 
             }else {
                 viewHolder.tvContent.setVisibility(View.GONE);
                 viewHolder.ima_content.setVisibility(View.VISIBLE);
                 viewHolder.ima_content.setImageBitmap(Base642BitmapTool.base642Bitmap(bean.getContent()));
+                bean.setOrderNumb(viewHolder.orderNumb.getText().toString());
             }
 
             if (bean.isChecked()) {
@@ -166,25 +168,15 @@ public class WuHuCheckBoxAdapter extends BaseAdapter {
                     try {
                         if (dataBean.isChecked()) {
                             dataBean.setChecked(false);
-
-
-                         /*   List<VoteListBean.VoteBean.UserListBean> userListBeanList=voteBean.getUser_list();
-                            userListBeanList.clear();
-                         for (int i=0;i<userListBeanList.size();i++){
-                                VoteListBean.VoteBean.UserListBean userListBean=userListBeanList.get(i);
-                                if (userListBeanList.get(i).getUser_id().equals(FLUtil.getMacAddress())) {
-                                    userListBean.getChoseBeanList().clear();
-                                    userListBean.getChoose().clear();
-                                }
-                            }*/
-
                             notifyDataSetChanged();
                         } else {
                             dataBean.setChecked(true);
                             if(flag.equals("1")){
                                 dataBean.setContent(viewHolder.tvContent.getText().toString());
+                                dataBean.setOrderNumb(viewHolder.orderNumb.getText().toString());
                             }else {
                                 dataBean.setContent(bean.getContent());
+                                dataBean.setOrderNumb(viewHolder.orderNumb.getText().toString());
                             }
                             dataBean.setOrderNumb(viewHolder.orderNumb.getText().toString());
 

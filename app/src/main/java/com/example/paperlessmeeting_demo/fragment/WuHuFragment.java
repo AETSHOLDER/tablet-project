@@ -1012,6 +1012,7 @@ if (Hawk.contains(constant._id)) {
                 }
 
             }else if(message.getMessage().contains(constant.REFRASHWuHUALL)){
+
                 try {
                     TempWSBean<WuHuEditBean> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<WuHuEditBean>>() {
                     }.getType());
@@ -1585,7 +1586,8 @@ if (Hawk.contains(constant._id)) {
     @Override
     public void onResume() {
         super.onResume();
-        int s=Integer.valueOf(textNub)+1;
+        int s=Integer.valueOf(textNub);
+         s= s+1;
         tittle_num.setText("议题"+s);
    /*     Log.d(TAG+toString(), "onResume: "+"text="+text);
         if (Hawk.contains("WuHuFragmentData")) {
@@ -1619,6 +1621,14 @@ if (Hawk.contains(constant._id)) {
     public void onDestroy() {
         super.onDestroy();
         Log.d(TAG+toString(), "onDestroy: ");
+        if (mySaveBroadcastReceiver!=null){
+            getActivity().unregisterReceiver(mySaveBroadcastReceiver);
+        }
+
+        if (myBroadcastReceiver!=null){
+            getActivity().unregisterReceiver(myBroadcastReceiver);
+        }
+
     }
 
     @Override

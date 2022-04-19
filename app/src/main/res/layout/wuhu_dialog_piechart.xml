@@ -9,17 +9,18 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="110dp">
+
         <TextView
             android:id="@+id/dialog_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
             android:layout_centerHorizontal="true"
-            android:textColor="@color/bgColor"
+            android:layout_marginTop="40dp"
             android:text="我是标题我是标题我是标题我是标题"
             android:textAlignment="center"
+            android:textColor="@color/bgColor"
             android:textSize="30sp"
-            android:textStyle="normal"/>
+            android:textStyle="normal" />
 
         <ImageView
             android:id="@+id/dialog_close_icon"

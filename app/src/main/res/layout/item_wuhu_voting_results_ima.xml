@@ -1,6 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+
+        <TextView
+            android:id="@+id/topic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#1D1D1D"
+          android:layout_centerVertical="true"
+        android:layout_marginTop="25dp"
+            android:textSize="28sp"
+            android:layout_marginLeft="45dp"
+            android:text="A. "
+            />
+
+        <ImageView
+            android:id="@+id/ima_option"
+            android:layout_width="145dp"
+            android:layout_height="80dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:layout_toRightOf="@id/topic"
+            android:scaleType="fitXY"
+
+            />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginLeft="45dp"
+        android:layout_marginTop="10dp"
+        >
+
+        <TextView
+            android:id="@+id/vote_numb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="35dp"
+            android:text="8票"
+            android:textColor="#1D1D1D"
+            android:textSize="28sp" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="30dp"
+            android:layout_toLeftOf="@id/vote_numb"
+            android:background="#E1DEE1"
+            android:max="100"
+            android:progress="0"
+            android:progressDrawable="@drawable/bg_pro" />
+
+    </RelativeLayout>
+
 
 </LinearLayout>

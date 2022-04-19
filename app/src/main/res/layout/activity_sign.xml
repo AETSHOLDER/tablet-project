@@ -269,13 +269,13 @@
             android:layout_width="150dp"
             android:layout_height="40dp"
             android:layout_alignParentEnd="true"
-            android:layout_marginRight="350dp"
             android:layout_centerVertical="true"
+            android:layout_marginRight="350dp"
+            android:fontFamily="sans-serif-medium"
             android:gravity="center"
             android:text="查阅批注"
             android:textColor="#1D1D1D"
-            android:textSize="30sp"
-            android:fontFamily="sans-serif-medium"/>
+            android:textSize="30sp" />
         <TextView
             android:id="@+id/sign_door"
             android:layout_width="145dp"

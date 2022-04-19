@@ -90,7 +90,8 @@ import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-public class WuHuActivity  extends BaseActivity implements View.OnClickListener,WuHuListAdapter.saveSeparatelyInterface{
+public class WuHuActivity  extends BaseActivity implements View.OnClickListener,WuHuListAdapter.saveSeparatelyInterface,WuHuListAdapter.deletSeparatelyInterface{
+
     @BindView(R.id.edit_ll)
     RelativeLayout edit_ll;
     @BindView(R.id.edit_rl)
@@ -211,6 +212,18 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                     sendBroadcast(intent);
 
                     break;
+                case 32:
+                    Log.e("hahahahahahaa","case 32");
+                    String filePath2=(String) msg.obj;
+                    Intent intent2 = new Intent();
+                    Bundle bundle2=new Bundle();
+                    bundle2.putString("flag","2");
+                    bundle2.putString("filePath",filePath2);
+                    intent2.putExtras(bundle2);
+                    intent2.setAction(constant.RUSH_VOTE_LIST_BROADCAST);
+                    sendBroadcast(intent2);
+
+                    break;
                 case 119:
                     String adressIp = (String) msg.obj;
                     String strIp = "";
@@ -298,6 +311,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
 
         wuHuListAdapter=new WuHuListAdapter(WuHuActivity.this,wuHuEditBeanList);
         wuHuListAdapter.setSaveSeparatelyInterface(this);
+        wuHuListAdapter.setDeletSeparatelyInterface(this);
         /*
          *
          * 当是临时会议时，开启Servive随时监听各参会人人员分享的文件。正常网络会议时监听同屏关闭操作
@@ -351,6 +365,12 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                                          * */
                                         Log.e("5555555","接收推送文件");
                                         socketShareFileManager.SendFlag("2");
+                                    }else if (strMsg.contains(constant.TEMP_VOTE_IMAGE_FILE)){
+                                        /*
+                                        * 投票图片
+                                        * */
+                                        socketShareFileManager.SendFlag("3");
+
                                     }
 
                                     else if (strMsg.contains(constant.FINISH_SHARE_SCEEN)) {
@@ -607,6 +627,13 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
             wsUpdata(wuHuEditBean,constant.REFRASHWuHUSIGLEDATA);
         }
     }
+    @Override
+    public void deletData(int position) {
+      /*  mTestFragments.removeAt(position);
+        mPagerAdapter.notifyDataSetChanged();
+        wuHuEditBeanList.remove(position);*/
+
+    }
 
     //结束会议
     private void showFinishMeetingDialog() {
@@ -760,6 +787,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
         add_topic_rl=inflate.findViewById(R.id.add_topic_rl);
         dialg_rl_root=inflate.findViewById(R.id.dialg_rl_root);
         sava_all=inflate.findViewById(R.id.sava_all);
+
         Log.d("reyeyrty222",UserUtil.ISCHAIRMAN+"");
 
         myListView.setAdapter(wuHuListAdapter);
@@ -829,7 +857,6 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
             }
         });
 
-
         add_topic_rl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -859,6 +886,25 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                 intent.putExtras(bundle);
                 intent.setAction(constant.REFRESH_BROADCAST);
                   sendBroadcast(intent);*/
+
+            }
+        });
+        sava_all.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Hawk.contains("WuHuFragmentData")) {
+                    WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
+                    wuHuEditBean.setTopics(company_name.getText().toString());
+                    wuHuEditBean.setTopic_type(tittle2.getText().toString());
+                    wuHuEditBean.setLine_color(lineFlag);
+                    wuHuEditBean.setThem_color(themFlag);
+                    wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
+                    Hawk.put("WuHuFragmentData",wuHuEditBean);
+                    //更新单个数据
+                    wsUpdata(wuHuEditBean,constant.REFRASHWuHUALL);
+                }
+
+
 
             }
         });

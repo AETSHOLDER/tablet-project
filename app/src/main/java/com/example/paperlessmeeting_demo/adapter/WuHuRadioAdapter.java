@@ -123,11 +123,14 @@ public class WuHuRadioAdapter extends BaseAdapter {
                 viewHolder.tvContent.setVisibility(View.VISIBLE);
                 viewHolder.ima_content.setVisibility(View.GONE);
                 viewHolder.tvContent.setText(bean.getContent());
+                bean.setOrderNumb(viewHolder.orderNumb.getText().toString());
 
             }else {
                 viewHolder.tvContent.setVisibility(View.GONE);
                 viewHolder.ima_content.setVisibility(View.VISIBLE);
                 viewHolder.ima_content.setImageBitmap(Base642BitmapTool.base642Bitmap(bean.getContent()));
+                bean.setOrderNumb(viewHolder.orderNumb.getText().toString());
+
             }
 
             if (bean.isChecked()) {

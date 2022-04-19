@@ -6,6 +6,15 @@ public class ChoseBean extends Object implements Serializable {
     private String content;
     private boolean isChecked;
     private String  orderNumb;
+     private String votePath;
+
+    public String getVotePath() {
+        return votePath;
+    }
+
+    public void setVotePath(String votePath) {
+        this.votePath = votePath;
+    }
 
     public String getOrderNumb() {
         return orderNumb;
