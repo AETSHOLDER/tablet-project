@@ -25,6 +25,7 @@ import com.example.paperlessmeeting_demo.base.BaseActivity;
 import com.example.paperlessmeeting_demo.bean.UserBehaviorBean;
 import com.example.paperlessmeeting_demo.sharefile.SocketShareFileManager;
 import com.example.paperlessmeeting_demo.tool.CVIPaperDialogUtils;
+import com.example.paperlessmeeting_demo.tool.FileUtils;
 import com.example.paperlessmeeting_demo.tool.StoreUtil;
 import com.example.paperlessmeeting_demo.tool.TimeUtils;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
@@ -1156,8 +1157,11 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
             Uri uri = Uri.fromFile(file);
             intent.setData(uri);
             sendBroadcast(intent);//这个广播的目的就是更新图库
-
-            showMessage(getString(R.string.white_board_export_tip) + StoreUtil.getPersonalSignPhotoPath());
+            String title = getString(R.string.white_board_export_tip)+ StoreUtil.getPersonalSignPhotoPath();
+            if(title.contains("/storage/emulated/0")){
+                title = title.replace("/storage/emulated/0","内部存储器");
+            }
+            CVIPaperDialogUtils.showConfirmDialog(SignActivity.this, title, "知道了", false, null);
             return fileName;
         } catch (Exception e) {
             showMessage(getString(R.string.white_board_export_fail));
