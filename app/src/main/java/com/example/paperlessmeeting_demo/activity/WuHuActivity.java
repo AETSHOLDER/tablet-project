@@ -91,6 +91,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 public class WuHuActivity  extends BaseActivity implements View.OnClickListener,WuHuListAdapter.saveSeparatelyInterface,WuHuListAdapter.deletSeparatelyInterface,WuHuListAdapter.addSeparatelyInterface{
+
+
     @BindView(R.id.edit_ll)
     RelativeLayout edit_ll;
     @BindView(R.id.edit_rl)
@@ -450,10 +452,18 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
     @Override
     protected void initView() {
         handler = new Handler();
+
+        name.setText(edit_name.getText().toString());
+        if ( Hawk.contains(constant.user_name)){
+            String  n=Hawk.get(constant.user_name);
+            UserUtil.user_name = edit_name.getText().toString();
+            name.setText(n);
+        }
+     /*
         if ( Hawk.contains(constant.myNumber)){
             String  n=Hawk.get(constant.myNumber);
             name.setText(n);
-        }
+        }*/
         meetingTime = TimeUtils.getTime(System.currentTimeMillis(), TimeUtils.DATA_FORMAT_NO_HOURS_DATA13);//会议-月日时分
         Calendar c1 = Calendar.getInstance();
         int day = c1.get(Calendar.DAY_OF_WEEK);
