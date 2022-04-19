@@ -758,6 +758,13 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
             if (message.getMessage().contains(constant.SURENAME)) {
                 UserUtil.user_name = Hawk.get(constant.myNumber);
                // ttendeesName.setText(Hawk.get(constant.myNumber) + "号   您好");
+                if ( Hawk.contains(constant.myNumber)){
+                    UserUtil.user_name = Hawk.get(constant.myNumber);
+                }
+
+                if ( Hawk.contains(constant.user_name)){
+                    UserUtil.user_name = Hawk.get(constant.user_name);
+                }
             }
 
             if (UserUtil.ISCHAIRMAN) {
