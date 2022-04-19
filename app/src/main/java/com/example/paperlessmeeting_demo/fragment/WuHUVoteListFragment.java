@@ -1142,7 +1142,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
             TextView vote_topic=view.findViewById(R.id.vote_topic);
              MyListView myList_view=view.findViewById(R.id.myList_view);
             TextView  personnel=view.findViewById(R.id.personnel);
-
+            View vv=view.findViewById(R.id.vv);
         if (voteBean.getType().equals("0")) {
             danxaun.setText("单选");
         }else {
@@ -1150,8 +1150,13 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
         }
         if (voteBean.getAnonymity().equals("1")) {
             niming.setText("实名");
+            vv.setVisibility(View.VISIBLE);
+            personnel.setVisibility(View.VISIBLE);
         } else {
             niming.setText("匿名");
+            vv.setVisibility(View.GONE);
+            personnel.setVisibility(View.GONE);
+
         }
         vote_topic.setText("投票标题："+voteBean.getTopic());
        List<VoteBean.UserListBean>userListBeanList=new ArrayList<>();
