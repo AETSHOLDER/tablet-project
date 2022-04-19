@@ -252,7 +252,7 @@ public class WuHuVoteAdapter extends RecyclerView.Adapter<WuHuVoteAdapter.MyView
                     //  未投票，或者已有结果
                     if(status==Constants.VoteStatusEnum.hasFinshed){
                         Log.d("gdgsdgsdgdgf4448888","flag==="+flag);
-                        vr.vr(position,flag);
+                        vr.vr(position,voteBean.getFlag());
                         // mvoterClickListener.chairmanClickListener(position,flag);
                     }else {
                         Toast.makeText(context,"投票还未结束，暂时不能查看",Toast.LENGTH_SHORT).show();
