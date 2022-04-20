@@ -1034,11 +1034,8 @@ if (Hawk.contains(constant._id)) {
                     }.getType());
                     if (wsebean != null){
                         WuHuDeleteFragmentBean wuHuDeleteFragmentBean=wsebean.getBody();
-                        int size=Integer.valueOf(wuHuDeleteFragmentBean.getListSize());
-                        size=size+1;
-                        if (Integer.valueOf(textNub)>size){
-                            textNub=String.valueOf(Integer.valueOf(textNub)-1);
-                        }
+                        deletRefreUi(wuHuDeleteFragmentBean);
+
                     }
                 } catch (JsonSyntaxException e) {
                     e.printStackTrace();
@@ -1051,6 +1048,17 @@ if (Hawk.contains(constant._id)) {
     }
     @Override
     public void sendfilePth(String filePth) {
+
+    }
+    private void deletRefreUi(WuHuDeleteFragmentBean wuHuDeleteFragmentBean){
+
+        int size=Integer.valueOf(wuHuDeleteFragmentBean.getListSize());
+        size=size+1;
+        if (Integer.valueOf(textNub)>size){
+            textNub=String.valueOf(Integer.valueOf(textNub)-1);
+            tittle_num.setText("议题"+textNub);
+
+        }
 
     }
     private void  refreshUi( WuHuEditBean wuHuEditBean){

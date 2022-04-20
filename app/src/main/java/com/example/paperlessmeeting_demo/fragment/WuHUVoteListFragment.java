@@ -201,6 +201,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
         add_wuhu_vote_rl.setOnClickListener(this);
         no_vote_iam_rl.setOnClickListener(this);
         no_vote_text_rl.setOnClickListener(this);
+        refresh_rl.setOnClickListener(this);
         RelativeLayout no_vote_text_rl;
         back_ll.setOnClickListener(this);
 
@@ -248,8 +249,12 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                 showNewVoteItem("1");
                 no_vote_add_type.setVisibility(View.GONE);
                 break;
-
-
+            case R.id.refresh_rl:
+                if (voteList==null||refreshDataFlag==null){
+                    return;
+                }
+               refreshUI(voteList,  refreshDataFlag);
+                break;
         }
 
     }
@@ -304,6 +309,8 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
     @BindView(R.id.progressBar_ll)
     RelativeLayout progressBar_ll;
 
+    @BindView(R.id.refresh_rl)
+    RelativeLayout refresh_rl;
     ArrayList<VoteBean> voteList = new ArrayList<>();
     private LucklyPopopWindow mLucklyPopopWindow;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -350,6 +357,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
     private StringBuilder strA,strB,strC,strD,strE,strF,strG,strH;
     private int allVoteNumb;//总票数
     private boolean isJustComeIn=true;
+    private String refreshDataFlag="0";
     public WuHUVoteListFragment(FragmentManager fragmentManager) {
         this.fragmentManager = fragmentManager;
     }
@@ -477,6 +485,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                       */
 
                         voteList = wsebean.getBody();
+                        refreshDataFlag= wsebean.getFlag();
                         String flag = wsebean.getFlag();//获取选项是图片还是文字标识
                         Log.d("gdgsdgsdgdgf444555",flag+"");
                         for (VoteListBean.VoteBean bean : voteList) {
@@ -509,6 +518,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                     }.getType());
                     //  收到vote的websocket的信息
                     if (wsebean != null) {
+                        refreshDataFlag= wsebean.getFlag();
                         voteList = wsebean.getBody();
                         String flag = wsebean.getFlag();//获取选项是图片还是文字标识
                         Log.d("gdgsdgsdgdgf444888",flag+"");
@@ -655,6 +665,9 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
         }
 
         initRecycle(flag);
+        if (list.size()>0){
+            add_chose.setVisibility(View.GONE);
+        }
         edit_text3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1483,6 +1496,12 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
         mRecyclerView.setLayoutManager(linearLayoutManager);
         //      获取数据，向适配器传数据，绑定适配器
 //        list = initData();
+        if (flag.equals("2")){
+            ItemBean itemBean1=new ItemBean();
+            ItemBean itemBean2=new ItemBean();
+            list.add(itemBean1);
+            list.add(itemBean2);
+        }
         adapter = new WuHuRecycleAdapter(getActivity(), list, new WuHuRecycleAdapter.ChoseClickListener() {
             @Override
             public void clickListener(int position, String flag) {
@@ -1512,7 +1531,12 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
 
     // 刷新页面，无数据显示空白页面
     protected void refreshUI(ArrayList<VoteBean> data, String flag) {
+     if (data.size()>0){
+         refresh_rl.setVisibility(View.VISIBLE);
+     }else {
+         refresh_rl.setVisibility(View.GONE);
 
+     }
         Log.d("gdgsdgsdgdgf444",flag+"");
         if (UserUtil.ISCHAIRMAN) {
 //            voteAdapter2.addFinalVotestate(data);
@@ -1565,10 +1589,15 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
     public void seeImaistener(int position) {
 
         if(StringUtils.isEmpty(list.get(position).getText())){
-            return;
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("*/*");//无类型限制
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            startActivityForResult(intent, 1);
+            positionIma = position;
 
-        }
-        showImage(openImage( list.get(position).getText()));
+        }else {
+        showImage(openImage( list.get(position).getText()));}
     }
 
     public  Bitmap openImage(String path){
@@ -1606,7 +1635,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         startActivityForResult(intent, 1);
-        positionIma = position+1;
+        positionIma = position;
     }
 
     /**
@@ -1660,7 +1689,6 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                     if ("jpg".equals(endStr) || "gif".equals(endStr) || "png".equals(endStr) || "jpeg".equals(endStr) || "bmp".equals(endStr)) {
                         list.get(positionIma).setText(file.getPath());
                         list.get(positionIma).setFileName(file.getName());
-
                         adapter.notifyDataSetChanged();
                         Log.d("requestCodeUr779999大小", list.size()+"   ");
                     } else {

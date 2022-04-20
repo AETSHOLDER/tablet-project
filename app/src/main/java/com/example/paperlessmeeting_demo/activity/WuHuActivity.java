@@ -127,6 +127,10 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
     TextView name;
     @BindView(R.id.time)
     TextView timeTv;
+    @BindView(R.id.rigth_rl)
+    RelativeLayout rigth_rl;
+    @BindView(R.id.left_rl)
+    RelativeLayout left_rl;
     private List<String> stringsIp = new ArrayList<>();//临时会议存储各个设备Ip
   /*  @BindView(R.id.tittle2)*/
   private   EditText tittle2;
@@ -512,6 +516,8 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
         vote_ll.setOnClickListener(this);
         consult_ll.setOnClickListener(this);
         finish_ll.setOnClickListener(this);
+        left_rl.setOnClickListener(this);
+        rigth_rl.setOnClickListener(this);
             consult_ll1.setOnClickListener(this);
             vote_ll1.setOnClickListener(this);
         mViewPager = (ViewPager) findViewById(R.id.pager);
@@ -521,7 +527,8 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
         mTestFragments = new SparseArray<>();
         mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos+""));
         fragmentPos++;
-
+        left_rl.setVisibility(View.GONE);
+        rigth_rl.setVisibility(View.GONE);
       /*  mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos+""));
         fragmentPos++;
         mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos+""));
@@ -540,6 +547,21 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
             @Override
             public void onPageSelected(int position) {
                 mCurPos = position;
+                if (mTestFragments.size()>1) {
+                    if (mCurPos == 0) {
+                        left_rl.setVisibility(View.GONE);
+                        rigth_rl.setVisibility(View.VISIBLE);
+
+                    }else if (mCurPos==(mTestFragments.size()-1)){
+
+                        left_rl.setVisibility(View.VISIBLE);
+                        rigth_rl.setVisibility(View.GONE);
+                    }else {
+                        left_rl.setVisibility(View.VISIBLE);
+                        rigth_rl.setVisibility(View.VISIBLE);
+
+                    }
+                }
                 Log.d("sort:", "onPageSelected: " + position);
 
             }
@@ -549,6 +571,15 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
 
             }
         });
+
+
+
+
+
+
+
+
+
         mBtnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -619,8 +650,20 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                 intent = new Intent(WuHuActivity.this, SignListActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.rigth_rl:
+
+                int totalcount = mTestFragments.size();//autoChangeViewPager.getChildCount();
+                int currentItem1 = mViewPager.getCurrentItem();
+                currentItem1=currentItem1+1;
+                mViewPager.setCurrentItem(currentItem1, true);
 
 
+                break;
+            case R.id.left_rl:
+                int currentItem2 = mViewPager.getCurrentItem();
+                currentItem2=currentItem2-1;
+                mViewPager.setCurrentItem(currentItem2, true);
+                break;
 
         }
 
@@ -645,13 +688,25 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
     }
     @Override
     public void deletData(int position) {
-        WuHuDeleteFragmentBean wuHuDeleteFragmentBean=new WuHuDeleteFragmentBean();
-        wuHuDeleteFragmentBean.setListPosition(position+"");
-        wuHuDeleteFragmentBean.setListSize(wuHuEditBeanList.size()+"");
-        //通知其他设备增加fragment
-        wsUpdata(wuHuDeleteFragmentBean,constant.DELETE_WUHU_FRAGMENT);
-        wuHuEditBeanList.remove(position);
-        wuHuListAdapter.notifyDataSetChanged();
+
+        CVIPaperDialogUtils.showCustomDialog(WuHuActivity.this, "是否要删除当前议题", "", "确定", true, new CVIPaperDialogUtils.ConfirmDialogListener() {
+            @Override
+            public void onClickButton(boolean clickConfirm, boolean clickCancel) {
+                if (clickConfirm) {
+                    WuHuDeleteFragmentBean wuHuDeleteFragmentBean=new WuHuDeleteFragmentBean();
+                    wuHuDeleteFragmentBean.setListPosition(position+"");
+                    wuHuDeleteFragmentBean.setListSize(wuHuEditBeanList.size()+"");
+                    //通知其他设备增加fragment
+                    wsUpdata(wuHuDeleteFragmentBean,constant.DELETE_WUHU_FRAGMENT);
+                    wuHuEditBeanList.remove(position);
+                    wuHuListAdapter.notifyDataSetChanged();
+
+                }
+            }
+        });
+
+
+
 
     }
     @Override
@@ -801,6 +856,24 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                         mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos+""));
                         fragmentPos++;
                         mPagerAdapter.notifyDataSetChanged();
+
+                        int totalcount = mTestFragments.size();
+                        int currentItem = mViewPager.getCurrentItem();
+
+                        if (totalcount>1){
+                            if (currentItem==0){
+                                left_rl.setVisibility(View.GONE);
+                                rigth_rl.setVisibility(View.VISIBLE);
+                            }else if (currentItem>0){
+                                left_rl.setVisibility(View.VISIBLE);
+                                rigth_rl.setVisibility(View.VISIBLE);
+                            }else if (currentItem==(totalcount-1)){
+                                left_rl.setVisibility(View.VISIBLE);
+                                rigth_rl.setVisibility(View.GONE);
+                            }
+
+                        }
+
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -818,6 +891,25 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                          mTestFragments.removeAt(Integer.valueOf(wuHuDeleteFragmentBean.getListPosition()));
                          mPagerAdapter.notifyDataSetChanged();
 
+                        int totalcount = mTestFragments.size();
+                        int currentItem = mViewPager.getCurrentItem();
+                         if (totalcount==1){
+                             left_rl.setVisibility(View.GONE);
+                             rigth_rl.setVisibility(View.GONE);
+                         }
+                        else  if (totalcount>1){
+                            if (currentItem==0){
+                                left_rl.setVisibility(View.GONE);
+                                rigth_rl.setVisibility(View.VISIBLE);
+                            }else if (currentItem>0&&currentItem<(totalcount-1)){
+                                left_rl.setVisibility(View.VISIBLE);
+                                rigth_rl.setVisibility(View.VISIBLE);
+                            }else if (currentItem==(totalcount-1)){
+                                left_rl.setVisibility(View.VISIBLE);
+                                rigth_rl.setVisibility(View.GONE);
+                            }
+
+                        }
                     }
                 } catch (JsonSyntaxException e) {
                     e.printStackTrace();
