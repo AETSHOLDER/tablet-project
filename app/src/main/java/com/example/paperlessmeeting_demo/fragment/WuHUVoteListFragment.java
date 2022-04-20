@@ -250,10 +250,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                 no_vote_add_type.setVisibility(View.GONE);
                 break;
             case R.id.refresh_rl:
-                if (voteList==null||refreshDataFlag==null){
-                    return;
-                }
-               refreshUI(voteList,  refreshDataFlag);
+                loadData();
                 break;
         }
 

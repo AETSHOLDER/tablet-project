@@ -35,7 +35,9 @@ public class PagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         Log.d(TAG, "getItem: "+position);
+
         WuHuFragment wuHuFragment =mTestFragments.valueAt(position);
+
         return wuHuFragment;
     }
 
@@ -58,11 +60,26 @@ public class PagerAdapter extends FragmentPagerAdapter {
         return mTestFragments.keyAt(position);
     }
 
-    @Override
+ /*   @Override
     public Object instantiateItem(ViewGroup container, int position) {
         Log.d(TAG, "instantiateItem: "+position);
         return super.instantiateItem(container, position);
+    }*/
+
+    @Override
+    public Object instantiateItem(ViewGroup container, int position) {
+
+        WuHuFragment fragment = (WuHuFragment) super.instantiateItem(container, position);
+
+        fragment.updateArguments(position+"");
+
+        return fragment;
+
     }
+
+
+
+
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {

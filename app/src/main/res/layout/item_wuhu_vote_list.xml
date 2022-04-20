@@ -5,12 +5,12 @@
     android:background="@drawable/bg_item_wuhu_vote_list"
     android:layout_marginTop="25dp"
     android:layout_marginBottom="20dp"
-    android:layout_height="wrap_content">
+    android:layout_height="1000dp">
 
         <LinearLayout
             android:id="@+id/root_conten"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <RelativeLayout
@@ -101,7 +101,7 @@
                     android:textStyle="normal" />
 <ScrollView
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:scrollbars="none"
     android:layout_marginTop="20dp"
     android:layout_marginBottom="150dp"
