@@ -14,12 +14,14 @@ public class SignViewRecycleViewHolder extends RecyclerView.ViewHolder {
     private ImageView img_title;
     private BlurringView bleryV;
     private RelativeLayout img_delete;
+    private ImageView del_img;
     public SignViewRecycleViewHolder(View view){
         super(view);
         txt_info = (TextView)view.findViewById(R.id.txt_info);
         img_title = (ImageView)view.findViewById(R.id.img_title);
         bleryV  = (BlurringView)view.findViewById(R.id.blurView);
         img_delete = (RelativeLayout)view.findViewById(R.id.sign_delete);
+        del_img = (ImageView)view.findViewById(R.id.del_img);
         img_delete.bringToFront();
     }
 
@@ -37,5 +39,9 @@ public class SignViewRecycleViewHolder extends RecyclerView.ViewHolder {
 
     public RelativeLayout getImg_delete() {
         return img_delete;
+    }
+
+    public ImageView getDel_img() {
+        return del_img;
     }
 }

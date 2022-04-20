@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -129,6 +130,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     @BindView(R.id.iv_white_board_confirm)
     ImageView mIvWhiteBoardConfirm;
 
+
     private String url;
     TbsReaderView tbsReaderView;
     //是否打开文件
@@ -147,21 +149,21 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
             switch (msg.what) {
                 case 1:
                     int port = (int)msg.obj;
-                    Log.e("","port===="+port);
+                    Log.d("","port===="+port);
                     break;
                 case 2:
                      String ss = (String)msg.obj;
                      Log.e("正在接收文件",""+ss);
-                    Toast.makeText(SignActivity.this, "正在接收文件", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(SignActivity.this, "正在接收文件", Toast.LENGTH_SHORT).show();
                     break;
                 case 4:
 
                     break;
                 case 5:
-                    Toast.makeText(SignActivity.this, "文件分享成功", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(SignActivity.this, "文件分享成功", Toast.LENGTH_SHORT).show();
                     break;
                 case 6:
-                    Toast.makeText(SignActivity.this, "文件分享失败", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(SignActivity.this, "文件分享失败", Toast.LENGTH_SHORT).show();
                     String df = msg.obj.toString();
                     Log.d("文件分享失败++", df);
                     break;
@@ -260,8 +262,11 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                     //签批
                     SignOperationUtils.getInstance().DISABLE = true;
                     Bitmap bitmap = getBitmap(tbsReaderView);
-                    mDbView.setmBottomBitmap(bitmap);
+                    Bitmap bitmap22 = bitmap.copy(Bitmap.Config.ARGB_8888,true);
+//                    mDbView.setmBottomBitmap(bitmap);
                     onSaveBitmap(bitmap, "2");
+                    // 如过直接设置bitmap 会提示recycle
+                    mDbView.setBackground(new BitmapDrawable(bitmap22));
                 }else {
                     int size = SignOperationUtils.getInstance().getSavePoints().size();
                     if(size>0){
@@ -550,8 +555,8 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
 
         mIvWhiteBoardUndo.setOnClickListener(this);
         mIvWhiteBoardRedo.setOnClickListener(this);
-        mIvWhiteBoardRedo.setVisibility(View.GONE);
-        mIvWhiteBoardUndo.setVisibility(View.GONE);
+//        mIvWhiteBoardRedo.setVisibility(View.GONE);
+//        mIvWhiteBoardUndo.setVisibility(View.GONE);
     }
 
     @Override
@@ -1159,7 +1164,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
             sendBroadcast(intent);//这个广播的目的就是更新图库
             String title = getString(R.string.white_board_export_tip)+ StoreUtil.getPersonalSignPhotoPath();
             if(title.contains("/storage/emulated/0")){
-                title = title.replace("/storage/emulated/0","内部存储器");
+                title = title.replace("/storage/emulated/0"," ");
             }
             CVIPaperDialogUtils.showConfirmDialog(SignActivity.this, title, "知道了", false, null);
             return fileName;
@@ -1182,19 +1187,15 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     // TODO 撤销 重做 有问题待解决
     @ReceiveEvents(name = Events.WHITE_BOARD_UNDO_REDO)
     private void showUndoRedo() {//是否显示撤销、重装按钮
-//        if (SignOperationUtils.getInstance().getSavePoints().isEmpty()) {
-//            mIvWhiteBoardUndo.setVisibility(View.INVISIBLE);
-////            mIvWhiteBoardExport.setVisibility(View.INVISIBLE);
-////            mIvWhiteBoardSave.setVisibility(View.INVISIBLE);
-//        } else {
-//            mIvWhiteBoardUndo.setVisibility(View.VISIBLE);
-////            mIvWhiteBoardExport.setVisibility(View.VISIBLE);
-////            mIvWhiteBoardSave.setVisibility(View.VISIBLE);
-//        }
-//        if (SignOperationUtils.getInstance().getDeletePoints().isEmpty()) {
-//            mIvWhiteBoardRedo.setVisibility(View.INVISIBLE);
-//        } else {
-//            mIvWhiteBoardRedo.setVisibility(View.VISIBLE);
-//        }
+        if (SignOperationUtils.getInstance().getSavePoints().isEmpty()) {
+            mIvWhiteBoardUndo.setVisibility(View.INVISIBLE);
+        } else {
+            mIvWhiteBoardUndo.setVisibility(View.VISIBLE);
+        }
+        if (SignOperationUtils.getInstance().getDeletePoints().isEmpty()) {
+            mIvWhiteBoardRedo.setVisibility(View.INVISIBLE);
+        } else {
+            mIvWhiteBoardRedo.setVisibility(View.VISIBLE);
+        }
     }
 }

@@ -184,7 +184,6 @@ public class DrawTextView extends RelativeLayout implements
                             }
                             mDrawPoint.getDrawText().setX(left);
                             mDrawPoint.getDrawText().setY(top);
-                            Log.e("移动", "-" + left + "," + top);
                             mRlContent.layout(left, top, right, bottom);
                             lastX = (int) event.getRawX();
                             lastY = (int) event.getRawY();

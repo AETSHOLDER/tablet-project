@@ -292,9 +292,8 @@ public class SignDrawPenView extends View {
      */
     public void showPoints() {
         Log.e("xxx","showPoints调用");
-//        int width = mCanvas.getWidth();
-//        int height = mCanvas.getHeight();
-////        mBottomBitmap = bitmap.copy(Bitmap.Config.ARGB_8888,true);
+        int width = mCanvas.getWidth();
+        int height = mCanvas.getHeight();
 //        File appDir = new File(Environment.getExternalStorageDirectory(), "comments");
 //        if (!appDir.exists()) {
 //            appDir.mkdir();
@@ -318,7 +317,7 @@ public class SignDrawPenView extends View {
 //        mBottomBitmap.setHeight(height);
 //        Bitmap map = mBottomBitmap.copy(Bitmap.Config.ARGB_8888,true);
 //        mCanvas.setBitmap(bitmap.copy(Bitmap.Config.ARGB_8888,true));
-        Bitmap bitmap  =mBottomBitmap.copy(Bitmap.Config.ARGB_8888,true);
+        mBottomBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         mCanvas.setBitmap(mBottomBitmap);
         Iterator<DrawPoint> iter = getInstance().getSavePoints().iterator();
         DrawPoint temp;

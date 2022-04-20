@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.activity.Sign.Adapter_holder.SignViewRecyclerViewAdapter;
 import com.example.paperlessmeeting_demo.activity.Sign.Bean.SignThumbBean;
@@ -26,15 +27,14 @@ import com.example.paperlessmeeting_demo.tool.CVIPaperDialogUtils;
 import com.example.paperlessmeeting_demo.tool.ToastUtils;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.example.paperlessmeeting_demo.util.SysUtils;
-import com.example.paperlessmeeting_demo.util.ToastUtil;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -52,7 +52,15 @@ public class SignListActivity extends BaseActivity {
     RelativeLayout contentRl;
     @BindView(R.id.sign_delete)
     TextView sign_delete;
+    @BindView(R.id.sign_sure)
+    TextView sign_sure;
+    @BindView(R.id.no_data)
+    TextView noData;
+
+
+    private List<SignViewBean> mDatas = new ArrayList<>();
     private List<SignViewRecyclerViewAdapter> adapterList = new ArrayList<>();
+    private List<View> recycleViewList = new ArrayList<>();
     private int fileCount = 0;
 
     @Override
@@ -74,11 +82,83 @@ public class SignListActivity extends BaseActivity {
             public void onClick(View view) {
                 sign_delete.setSelected(!sign_delete.isSelected());
                 boolean isShow = sign_delete.isSelected();
-                String text = isShow ? "完成" : "删除批注";
+                String text = isShow ? "取消" : "删除批注";
                 sign_delete.setText(text);
                 for (SignViewRecyclerViewAdapter adapter : adapterList) {
                     adapter.showDeletImg(isShow);
                 }
+                int vis = isShow ? View.VISIBLE : View.GONE;
+                sign_sure.setVisibility(vis);
+            }
+        });
+        sign_sure.setVisibility(View.GONE);
+        sign_sure.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean isHaveDataSel = true;
+                for (int i = 0; i < adapterList.size(); i++) {
+                    SignViewRecyclerViewAdapter adapter = adapterList.get(i);
+                    if (adapter.getSelectedItem().size() > 0) {
+                        isHaveDataSel = false;
+                    }
+                }
+                if (isHaveDataSel) {
+                    CVIPaperDialogUtils.showConfirmDialog(SignListActivity.this, "当前没有选择要删除的数据", "知道了", false, null);
+                    return;
+                }
+                CVIPaperDialogUtils.showCustomDialog(SignListActivity.this, "确定要删除选中的数据吗?", "", "确定", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                    @Override
+                    public void onClickButton(boolean clickConfirm, boolean clickCancel) {
+                        if (clickCancel) {
+                            return;
+                        }
+                        // 记录需要移除的adapter,recycleViewList 的下标
+                        List<Integer> integers = new ArrayList<>();
+
+                        for (int i = 0; i < adapterList.size(); i++) {
+                            SignViewRecyclerViewAdapter adapter = adapterList.get(i);
+                            final SignViewBean signViewBean = mDatas.get(i);
+
+                            List<SignThumbBean> indexList = adapter.getSelectedItem();
+                            if (indexList.size() == 0) {
+                                // 当前没有选中
+                                continue;
+                            }
+
+                            for (SignThumbBean signThumbBean : indexList) {
+                                Log.e("222222","当前选中--"+i+"行,第几条数据---"+signViewBean.getListDatas().indexOf(signThumbBean));
+                                File file = new File(signThumbBean.getPath());
+                                if (file.delete()) {
+                                    signViewBean.getListDatas().remove(signThumbBean);
+                                }
+                            }
+                            adapter.setDatas(signViewBean.getListDatas());
+                            if (signViewBean.getListDatas().size() == 0) {
+                                //移除名字显示，整体layout
+                                mLinear.removeView(recycleViewList.get(i));
+                                integers.add(i);
+                            }else {
+                                mDatas.remove(i);
+                                mDatas.add(i, signViewBean);
+                            }
+                        }
+                        // 清除数据
+                        for (int index : integers) {
+                            mDatas.remove(index);
+                            adapterList.remove(index);
+                            recycleViewList.remove(index);
+                        }
+                        // 取消选中状态
+                        for(SignViewRecyclerViewAdapter adapter : adapterList){
+                            adapter.cancelSelectAll();
+                        }
+                        // 处理无数据页面
+                        if (mDatas.size() == 0) {
+                            noData.setVisibility(View.VISIBLE);
+                        }
+                        sign_delete.performClick();
+                    }
+                });
             }
         });
     }
@@ -95,26 +175,33 @@ public class SignListActivity extends BaseActivity {
         fileCount = getFilsSize(appDir);
 //        Log.e("xxx","count1111 ====="+fileCount);
         SignViewBean signViewBean = new SignViewBean();
-        GetFilePath(signViewBean,appDir,0);
+        GetFilePath(signViewBean, appDir, 0);
 
     }
+
     Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case 12345:
-                    // 全部加载完毕
+                    // 全部加载完毕,处理子文件夹下没有文件的数据
                     List<SignViewBean> data = (List<SignViewBean>) msg.obj;
-                    init(data);
+                    for (SignViewBean signViewBean : data) {
+                        if (signViewBean.getListDatas().size() != 0) {
+                            mDatas.add(signViewBean);
+                        }
+                    }
+                    init(mDatas);
                     break;
             }
             return false;
         }
     });
+
     /**
      * 获取文件夹下指定文件的个数
      * 注意不能直接用file.listFiles() ，不会遍历子文件夹
-     * */
+     */
     private int getFilsSize(File file) {
         File[] tempList = file.listFiles();
         int count = 0;
@@ -124,7 +211,7 @@ public class SignListActivity extends BaseActivity {
                 if (fileName.endsWith(".png") || fileName.endsWith(".jpg")) {
                     count++;
                 }
-            }else if(tempList[i].isDirectory()){
+            } else if (tempList[i].isDirectory()) {
                 count += getFilsSize(tempList[i]);
             }
         }
@@ -134,8 +221,9 @@ public class SignListActivity extends BaseActivity {
 
     private static int count = 0;
     private static List<SignViewBean> data = new ArrayList<>();
+
     private void GetFilePath(final SignViewBean signViewBean, File file, final int flag) {
-        count=0;
+        count = 0;
         file.listFiles(new FileFilter() {
             @Override
             public boolean accept(File file) {
@@ -143,7 +231,7 @@ public class SignListActivity extends BaseActivity {
                 int i = name.indexOf('.');
                 if (i != -1) {// 文件
                     name = name.substring(i);
-                    if ( name.equalsIgnoreCase(".png") || name.equalsIgnoreCase(".jpg") ){
+                    if (name.equalsIgnoreCase(".png") || name.equalsIgnoreCase(".jpg")) {
                         //得到文件路径
                         String file_path = file.getAbsolutePath();
                         Point point = new Point();
@@ -156,29 +244,29 @@ public class SignListActivity extends BaseActivity {
                                 listDatas.add(signThumbBean);
                                 signViewBean.setListDatas(listDatas);
 
-                                if(count==fileCount){
+                                if (count == fileCount) {
                                     handler.sendMessage(handler.obtainMessage(12345, data));
                                 }
                             }
                         });
                         return true;
                     }
-                }else if(file.isDirectory()){//如果是文件夹
-                    Log.d("xxx","这是文件夹");
+                } else if (file.isDirectory()) {//如果是文件夹
+                    Log.d("xxx", "这是文件夹");
                     //  指定文件夹下还有子目录，直接返回
-                    if(flag==1){
+                    if (flag == 1) {
                         return false;
                     }
                     //继续递归搜索子目录
                     SignViewBean signViewBean = new SignViewBean();
                     signViewBean.setSignAuthor(name);
                     signViewBean.setListDatas(new ArrayList<SignThumbBean>());
-                    if(name.equals(UserUtil.user_name)){
-                        data.add(0,signViewBean);
-                    }else {
+                    if (name.equals(UserUtil.user_name)) {
+                        data.add(0, signViewBean);
+                    } else {
                         data.add(signViewBean);
                     }
-                    GetFilePath(signViewBean,file,1);
+                    GetFilePath(signViewBean, file, 1);
                 }
                 return false;
             }
@@ -186,19 +274,24 @@ public class SignListActivity extends BaseActivity {
 //        return data;
     }
 
-    private void init(List<SignViewBean> data){
-        for (int i=0;i<data.size();i++){
+    private void init(List<SignViewBean> data) {
+        if (data.size() == 0) {
+            noData.setVisibility(View.VISIBLE);
+            return;
+        }
+
+        for (int i = 0; i < data.size(); i++) {
             final SignViewBean signViewBean = data.get(i);
-            if(signViewBean.getListDatas().size()==0){
+            if (signViewBean.getListDatas().size() == 0) {
                 continue;
             }
-            LayoutInflater inflater= LayoutInflater.from(this);
+            LayoutInflater inflater = LayoutInflater.from(this);
             View layout = (View) inflater.inflate(R.layout.sample_my_recycle_view, null);
-            int id = 100+i;
-            layout.setId(id );
+            int id = 100 + i;
+            layout.setId(id);
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            if(i != 0){
-                params.addRule(RelativeLayout.BELOW, id-1);
+            if (i != 0) {
+                params.addRule(RelativeLayout.BELOW, id - 1);
             }
 //            params.setMargins(0, 0, 0, 0);
 
@@ -207,11 +300,12 @@ public class SignListActivity extends BaseActivity {
 
             textView.setText(signViewBean.getSignAuthor());
             recyclerView.setLayoutManager(new GridLayoutManager(this, 5));
-            SignViewRecyclerViewAdapter adapter = new SignViewRecyclerViewAdapter(this, signViewBean.getListDatas(),i);
+            SignViewRecyclerViewAdapter adapter = new SignViewRecyclerViewAdapter(this, signViewBean.getListDatas(), i);
             adapterList.add(adapter);
+            recycleViewList.add(layout);
             adapter.setOnItemClickListener(new OnRecyclerItemClickListener() {
                 @Override
-                public void onRecyclerItemClick(int adapterIndex,int position) {
+                public void onRecyclerItemClick(int adapterIndex, int position) {
                     SignThumbBean signThumbBean = signViewBean.getListDatas().get(position);
                     File file = new File(signThumbBean.getPath());
                     FileInputStream fis = null;
@@ -219,13 +313,13 @@ public class SignListActivity extends BaseActivity {
                     try {
                         fis = new FileInputStream(file.getPath());
                         mBitmap = BitmapFactory.decodeStream(fis);
-                        MyImageDialog myImageDialog = new MyImageDialog(SignListActivity.this,R.style.mypopwindow_anim_style,0,-300,mBitmap);
+                        MyImageDialog myImageDialog = new MyImageDialog(SignListActivity.this, R.style.mypopwindow_anim_style, 0, -300, mBitmap);
                         myImageDialog.show();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
 
-                    Log.d("xxx","getCreatTime=="+signThumbBean.getCreatTime());
+                    Log.d("xxx", "getCreatTime==" + signThumbBean.getCreatTime());
                 }
 
                 @Override
@@ -233,16 +327,20 @@ public class SignListActivity extends BaseActivity {
                     CVIPaperDialogUtils.showCustomDialog(SignListActivity.this, "确定要删除吗？", "", "确定", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
                         @Override
                         public void onClickButton(boolean clickConfirm, boolean clickCancel) {
-                            if(clickConfirm){
+                            if (clickConfirm) {
                                 SignThumbBean signThumbBean = signViewBean.getListDatas().get(position);
                                 File file = new File(signThumbBean.getPath());
-                                if(file.delete()) {
+                                if (file.delete()) {
                                     ToastUtils.showShort("删除成功!");
                                     signViewBean.getListDatas().remove(position);
-                                    adapter.notifyDataSetChanged();
 
+                                    adapter.notifyDataSetChanged();
+                                    if (signViewBean.getListDatas().size() == 0) {
+                                        //移除名字显示，整体layout
+                                        mLinear.removeView(layout);
+                                    }
 //                                    sign_delete.performClick();
-                                }else {
+                                } else {
                                     ToastUtils.showShort("删除失败!");
                                 }
                             }
@@ -251,7 +349,7 @@ public class SignListActivity extends BaseActivity {
                 }
             });
             recyclerView.setAdapter(adapter);
-            mLinear.addView(layout,params);
+            mLinear.addView(layout, params);
         }
     }
 

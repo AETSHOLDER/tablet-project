@@ -346,7 +346,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                 if (stringList.contains(content)) {
                     int index = stringList.indexOf(content);
                     initMeetingDialog.dismiss();
-                    CVIPaperDialogUtils.showCustomDialog(getActivity(), "已存在该邀请码对应的临时会议，是否加入?", null, "加入会议", true, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                    CVIPaperDialogUtils.showCustomDialog(getActivity(), "已存在该邀请码对应的临时会议，是否加入?", null, "加入会议", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
                         @Override
                         public void onClickButton(boolean clickConfirm, boolean clickCancel) {
                             if (clickConfirm) {
@@ -370,7 +370,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                     return;
                 } else {
                     initMeetingDialog.dismiss();
-                    CVIPaperDialogUtils.showCustomDialog(getActivity(), "存在其他已经创建的临时会议", "是否仍然创建?", "继续创建", true, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                    CVIPaperDialogUtils.showCustomDialog(getActivity(), "存在其他已经创建的临时会议", "是否仍然创建?", "继续创建", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
                         @Override
                         public void onClickButton(boolean clickConfirm, boolean clickCancel) {
                             if (clickConfirm) {
