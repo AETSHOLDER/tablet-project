@@ -173,7 +173,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/theme_colors_rl"
         android:layout_marginTop="15dp"
-        android:layout_marginBottom="130dp"
+        android:layout_marginBottom="81dp"
         android:background="#fff"
         android:scrollbars="none">
 
@@ -192,7 +192,6 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="50dp"
         android:orientation="horizontal"
         android:background="@drawable/bg_wuhu_edit_confirm"
         android:weightSum="2"

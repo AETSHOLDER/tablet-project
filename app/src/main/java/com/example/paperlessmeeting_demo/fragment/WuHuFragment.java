@@ -208,6 +208,7 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
     private List<FileListBean> fileOtherBeans = new ArrayList<>();//音视频文件
     private FileListBean fileBean;
     private boolean mReceiverTag = false;   //广播接受者标识
+    private boolean isDeletOption=false;//是否做了删除操作
     private Handler mHandler = new Handler() {
 
         @Override
@@ -1033,6 +1034,7 @@ if (Hawk.contains(constant._id)) {
                     TempWSBean<WuHuDeleteFragmentBean> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<WuHuDeleteFragmentBean>>() {
                     }.getType());
                     if (wsebean != null){
+                        isDeletOption=true;
                         WuHuDeleteFragmentBean wuHuDeleteFragmentBean=wsebean.getBody();
                         deletRefreUi(wuHuDeleteFragmentBean);
 
@@ -1057,12 +1059,12 @@ if (Hawk.contains(constant._id)) {
         if (Integer.valueOf(textNub)>size){
             textNub=String.valueOf(Integer.valueOf(textNub)-1);
             tittle_num.setText("议题"+textNub);
-
+            Log.d("删除的textNub=",textNub+"");
         }
 
     }
     private void  refreshUi( WuHuEditBean wuHuEditBean){
-
+        Log.d("新增的textNub=",textNub+"");
         wuHuEditBeanList=wuHuEditBean.getEditListBeanList();
         if (wuHuEditBeanList==null||wuHuEditBeanList.size()==0){
             return;
@@ -1237,12 +1239,22 @@ if (Hawk.contains(constant._id)) {
         wuHuFragment.setArguments(bundle);
         return wuHuFragment;
     }
+    //删除操作更新tag值
+    public void updateArguments(String newText) {
 
+        this.textNub = newText;
+
+        Bundle bundle = getArguments();
+
+        if (bundle != null) {
+            bundle .putString("text", newText);
+        }
+    }
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         textNub=getArguments().getString("text");
-
+        Log.d("缓存里面的的textNub=",textNub+"  isDeletOption="+ isDeletOption);
      if (isVisibleToUser) {
          if (Hawk.contains("WuHuFragmentData")) {
            /*  int s=Integer.valueOf(textNub)+1;
@@ -1618,6 +1630,7 @@ if (Hawk.contains(constant._id)) {
     @Override
     public void onResume() {
         super.onResume();
+        Log.d("onResume的的textNub=",textNub+"  isDeletOption="+ isDeletOption);
         int s=Integer.valueOf(textNub);
          s= s+1;
         tittle_num.setText("议题"+s);
