@@ -349,6 +349,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
     private int a,b,c,d,e,f,g,h;
     private StringBuilder strA,strB,strC,strD,strE,strF,strG,strH;
     private int allVoteNumb;//总票数
+    private boolean isJustComeIn=true;
     public WuHUVoteListFragment(FragmentManager fragmentManager) {
         this.fragmentManager = fragmentManager;
     }
@@ -2273,6 +2274,12 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
 
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
     }
 
     /*

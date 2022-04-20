@@ -123,12 +123,12 @@ public class WuHuListAdapter extends BaseAdapter {
         if (viHolder.tittle3.getTag() instanceof TextWatcher) {
             viHolder.tittle3.removeTextChangedListener((TextWatcher) viHolder.tittle3.getTag());
         }
-      /*  if (i==0){
+       if (i==0){
             viHolder.delete.setVisibility(View.GONE);
 
         }else {
             viHolder.delete.setVisibility(View.VISIBLE);
-        }*/
+        }
         TextWatcher tittle2Watcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -190,12 +190,12 @@ public class WuHuListAdapter extends BaseAdapter {
                 wuHuEditBean.setSubTopics(viHolder.tittle2.getText().toString());
                 wuHuEditBean.setAttendeBean(viHolder.tittle3.getText().toString());
                  saveSeparatelyInterface.saveData(i);
-                Intent intent = new Intent();
+             /*   Intent intent = new Intent();
                 Bundle bundle=new Bundle();
                 bundle.putString("refreshType","8");
                 intent.putExtras(bundle);
                 intent.setAction(constant.SAVE_SEPARATELY_BROADCAST);
-                context.sendBroadcast(intent);
+                context.sendBroadcast(intent);*/
 
             }
         });

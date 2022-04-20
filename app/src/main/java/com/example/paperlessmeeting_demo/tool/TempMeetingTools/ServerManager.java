@@ -6,6 +6,7 @@ import android.util.Log;
 import com.example.paperlessmeeting_demo.bean.AttendeBean;
 import com.example.paperlessmeeting_demo.bean.TempWSBean;
 import com.example.paperlessmeeting_demo.bean.VoteListBean;
+import com.example.paperlessmeeting_demo.bean.WuHuDeleteFragmentBean;
 import com.example.paperlessmeeting_demo.bean.WuHuEditBean;
 import com.example.paperlessmeeting_demo.enums.MessageReceiveType;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.EventMessage;
@@ -228,13 +229,13 @@ public class ServerManager {
         // 删除单个芜湖新增fragment
         if(message.contains(constant.DELETE_WUHU_FRAGMENT)){
             try {
-                TempWSBean<WuHuEditBean> wsebean = new Gson().fromJson(message, new TypeToken<TempWSBean<WuHuEditBean>>(){}.getType());
-                WuHuEditBean wuHuEditBean = wsebean.getBody();
+                TempWSBean<WuHuDeleteFragmentBean> wsebean = new Gson().fromJson(message, new TypeToken<TempWSBean<WuHuDeleteFragmentBean>>(){}.getType());
+                WuHuDeleteFragmentBean wuHuDeleteFragmentBean = wsebean.getBody();
                 TempWSBean wsebean1 = new TempWSBean();
                 wsebean1.setReqType(1);
                 wsebean1.setUserMac_id("");
                 wsebean1.setPackType(constant.DELETE_WUHU_FRAGMENT);
-                wsebean1.setBody(wuHuEditBean);
+                wsebean1.setBody(wuHuDeleteFragmentBean);
                 String strJson = new Gson().toJson(wsebean1);
                 SendMessageToAll(strJson);
             }catch (Exception e) {

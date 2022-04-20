@@ -48,7 +48,7 @@
         android:layout_marginTop="18dp"
         android:layout_marginRight="56dp"
         android:background="#EA4318" />
-<RelativeLayout
+   <RelativeLayout
     android:id="@+id/color_rl"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

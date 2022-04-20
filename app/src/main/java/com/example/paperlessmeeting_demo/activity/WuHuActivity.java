@@ -29,10 +29,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.support.v4.view.ViewPager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -44,6 +46,7 @@ import com.example.paperlessmeeting_demo.bean.BasicResponse;
 import com.example.paperlessmeeting_demo.bean.FileListBean;
 import com.example.paperlessmeeting_demo.bean.TempWSBean;
 import com.example.paperlessmeeting_demo.bean.VoteListBean;
+import com.example.paperlessmeeting_demo.bean.WuHuDeleteFragmentBean;
 import com.example.paperlessmeeting_demo.bean.WuHuEditBean;
 import com.example.paperlessmeeting_demo.enums.MessageReceiveType;
 import com.example.paperlessmeeting_demo.fragment.WuHuFragment;
@@ -64,6 +67,7 @@ import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.example.paperlessmeeting_demo.tool.constant;
 import com.example.paperlessmeeting_demo.widgets.MyListView;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.orhanobut.hawk.Hawk;
 
@@ -636,12 +640,18 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
             //更新单个数据
             wsUpdata(wuHuEditBean,constant.REFRASHWuHUSIGLEDATA);
         }
+        Hawk.put("company_name",company_name.getText().toString());
+        Hawk.put("tittle2",tittle2.getText().toString());
     }
     @Override
     public void deletData(int position) {
-      /*  mTestFragments.removeAt(position);
-        mPagerAdapter.notifyDataSetChanged();
-        wuHuEditBeanList.remove(position);*/
+        WuHuDeleteFragmentBean wuHuDeleteFragmentBean=new WuHuDeleteFragmentBean();
+        wuHuDeleteFragmentBean.setListPosition(position+"");
+        wuHuDeleteFragmentBean.setListSize(wuHuEditBeanList.size()+"");
+        //通知其他设备增加fragment
+        wsUpdata(wuHuDeleteFragmentBean,constant.DELETE_WUHU_FRAGMENT);
+        wuHuEditBeanList.remove(position);
+        wuHuListAdapter.notifyDataSetChanged();
 
     }
     @Override
@@ -799,7 +809,19 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                 Log.e("onReceiveMsg2222: " , message.toString());
 
             }else if (message.getMessage().contains(constant.DELETE_WUHU_FRAGMENT)){
-                //删除
+                try {
+                    TempWSBean<WuHuDeleteFragmentBean> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<WuHuDeleteFragmentBean>>() {
+                    }.getType());
+                    if (wsebean != null){
+                        WuHuDeleteFragmentBean wuHuDeleteFragmentBean=wsebean.getBody();
+                        fragmentPos--;
+                         mTestFragments.removeAt(Integer.valueOf(wuHuDeleteFragmentBean.getListPosition()));
+                         mPagerAdapter.notifyDataSetChanged();
+
+                    }
+                } catch (JsonSyntaxException e) {
+                    e.printStackTrace();
+                }
 
             }
 
@@ -810,6 +832,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
         inflate = LayoutInflater.from(WuHuActivity.this).inflate(R.layout.dialog_edit_wuhu, null);
         //自定义dialog显示风格
         dialog = new Dialog(WuHuActivity.this, R.style.DialogRight);
+          dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         //弹窗点击周围空白处弹出层自动消失弹窗消失(false时为点击周围空白处弹出层不自动消失)
         dialog.setCanceledOnTouchOutside(true);
         //将布局设置给Dialog
@@ -826,9 +849,20 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
         sava_all=inflate.findViewById(R.id.sava_all);
 
         Log.d("reyeyrty222",UserUtil.ISCHAIRMAN+"");
+        myListView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
+     //   myListView.setTranscriptMode(ListView.TRANSCRIPT_MODE_NORMAL);
 
         myListView.setAdapter(wuHuListAdapter);
         wuHuListAdapter.notifyDataSetChanged();
+
+        if (Hawk.contains("company_name")){
+           String str= Hawk.get("company_name");
+            company_name.setText(str);
+        }
+        if (Hawk.contains("tittle2")){
+           String str= Hawk.get("tittle2");
+           tittle2.setText(str);
+        }
 
         line_colors.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -941,6 +975,8 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                     wsUpdata(wuHuEditBean,constant.REFRASHWuHUALL);
                 }
 
+                Hawk.put("company_name",company_name.getText().toString());
+                Hawk.put("tittle2",tittle2.getText().toString());
 
 
             }

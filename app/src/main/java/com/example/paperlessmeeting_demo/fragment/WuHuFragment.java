@@ -63,6 +63,7 @@ import com.example.paperlessmeeting_demo.bean.FileListBean;
 import com.example.paperlessmeeting_demo.bean.NewFileBean;
 import com.example.paperlessmeeting_demo.bean.TempWSBean;
 import com.example.paperlessmeeting_demo.bean.UploadBean;
+import com.example.paperlessmeeting_demo.bean.WuHuDeleteFragmentBean;
 import com.example.paperlessmeeting_demo.bean.WuHuEditBean;
 import com.example.paperlessmeeting_demo.bean.WuHuNetFileBean;
 import com.example.paperlessmeeting_demo.enums.MessageReceiveType;
@@ -84,6 +85,7 @@ import com.example.paperlessmeeting_demo.tool.constant;
 import com.example.paperlessmeeting_demo.util.ToastUtil;
 import com.example.paperlessmeeting_demo.widgets.MyListView;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.orhanobut.hawk.Hawk;
 
@@ -1027,6 +1029,20 @@ if (Hawk.contains(constant._id)) {
                 }
 
             }else if (message.getMessage().contains(constant.DELETE_WUHU_FRAGMENT)){
+                try {
+                    TempWSBean<WuHuDeleteFragmentBean> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<WuHuDeleteFragmentBean>>() {
+                    }.getType());
+                    if (wsebean != null){
+                        WuHuDeleteFragmentBean wuHuDeleteFragmentBean=wsebean.getBody();
+                        int size=Integer.valueOf(wuHuDeleteFragmentBean.getListSize());
+                        size=size+1;
+                        if (Integer.valueOf(textNub)>size){
+                            textNub=String.valueOf(Integer.valueOf(textNub)-1);
+                        }
+                    }
+                } catch (JsonSyntaxException e) {
+                    e.printStackTrace();
+                }
 
 
             }
@@ -1871,7 +1887,7 @@ if (Hawk.contains(constant._id)) {
                 getActivity().startActivity(intent);
             }*/
 
-        }else if (in.getAction().equals(constant.SAVE_SEPARATELY_BROADCAST)){
+        }/*else if (in.getAction().equals(constant.SAVE_SEPARATELY_BROADCAST)){
            String type=in.getStringExtra("refreshType");
 
            if (type.equals("1")){
@@ -1912,7 +1928,7 @@ if (Hawk.contains(constant._id)) {
 
            }
 
-       }
+       }*/
         }
     }
 }

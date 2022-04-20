@@ -124,6 +124,11 @@ public class WuHuFileListAdapter extends BaseAdapter {
         viHolder.fielName.setText(gridViewBean.getName());
         viHolder.person.setText(gridViewBean.getAuthor());
         viHolder.time.setText(gridViewBean.getTime());
+        if(UserUtil.ISCHAIRMAN){
+            viHolder.open.setVisibility(View.VISIBLE);
+        }else {
+            viHolder.open.setVisibility(View.GONE);
+        }
         if (UserUtil.isTempMeeting) {
             viHolder.open.setText("推送");
             viHolder.proprietary.setText("分享");
