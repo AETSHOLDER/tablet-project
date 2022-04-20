@@ -113,7 +113,7 @@ private deleteOpitionIntetface  deleteOpition;
             if (position == list.size() - 1) {
                 holder.add_chose.setVisibility(View.VISIBLE);
             } else {
-                holder.add_chose.setVisibility(View.INVISIBLE);
+                holder.add_chose.setVisibility(View.GONE);
             }
         }
 
@@ -135,7 +135,7 @@ private deleteOpitionIntetface  deleteOpition;
         } else {
             holder.editText.setVisibility(View.GONE);
             holder.option_ima.setVisibility(View.VISIBLE);
-            holder.chose_ima_tv.setVisibility(View.GONE);
+            holder.chose_ima_tv.setVisibility(View.VISIBLE);
         //    holder.dete_option_ima.setVisibility(View.VISIBLE);
             holder.option_ima_rl.setVisibility(View.VISIBLE);
            /* if (itemObj.getText()==null||itemObj.getText().equals("")){
@@ -210,7 +210,7 @@ private deleteOpitionIntetface  deleteOpition;
                 }else if ("2".equals(flag)){
                     if (list.size() < 4) {
                         addData(list.size());
-                      choseOptionItemImaListener.choseImaistener(position);
+                     // choseOptionItemImaListener.choseImaistener(position);//跳转选择图片的
                     } else {
                         Toast.makeText(context, "最多只能添加4个选项!", Toast.LENGTH_SHORT).show();
                     }

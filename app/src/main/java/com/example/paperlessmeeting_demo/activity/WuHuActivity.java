@@ -645,13 +645,25 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
     }
     @Override
     public void deletData(int position) {
-        WuHuDeleteFragmentBean wuHuDeleteFragmentBean=new WuHuDeleteFragmentBean();
-        wuHuDeleteFragmentBean.setListPosition(position+"");
-        wuHuDeleteFragmentBean.setListSize(wuHuEditBeanList.size()+"");
-        //通知其他设备增加fragment
-        wsUpdata(wuHuDeleteFragmentBean,constant.DELETE_WUHU_FRAGMENT);
-        wuHuEditBeanList.remove(position);
-        wuHuListAdapter.notifyDataSetChanged();
+
+        CVIPaperDialogUtils.showCustomDialog(WuHuActivity.this, "是否要删除当前议题", "", "确定", true, new CVIPaperDialogUtils.ConfirmDialogListener() {
+            @Override
+            public void onClickButton(boolean clickConfirm, boolean clickCancel) {
+                if (clickConfirm) {
+                    WuHuDeleteFragmentBean wuHuDeleteFragmentBean=new WuHuDeleteFragmentBean();
+                    wuHuDeleteFragmentBean.setListPosition(position+"");
+                    wuHuDeleteFragmentBean.setListSize(wuHuEditBeanList.size()+"");
+                    //通知其他设备增加fragment
+                    wsUpdata(wuHuDeleteFragmentBean,constant.DELETE_WUHU_FRAGMENT);
+                    wuHuEditBeanList.remove(position);
+                    wuHuListAdapter.notifyDataSetChanged();
+
+                }
+            }
+        });
+
+
+
 
     }
     @Override

@@ -37,7 +37,7 @@
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/edit_text"
         android:scaleType="fitCenter"
-        android:src="@mipmap/ic_option"
+        android:src="@mipmap/ic_add_ima"
         android:visibility="visible" />
 
     <ImageView
@@ -94,7 +94,6 @@
          android:layout_marginLeft="20dp"
          android:layout_toRightOf="@id/add_chose"
          android:scaleType="fitXY"
-         android:visibility="gone"
          android:src="@mipmap/ic_chose_ima" />
 
 </RelativeLayout>

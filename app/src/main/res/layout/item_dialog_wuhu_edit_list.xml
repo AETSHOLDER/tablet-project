@@ -124,7 +124,6 @@
         android:layout_marginTop="5dp"
         android:layout_marginRight="35dp"
         android:layout_marginBottom="10dp"
-        android:visibility="gone"
         android:layout_toLeftOf="@id/save"
         android:background="@drawable/bg_wuhu_edit_delet"
         android:gravity="center"
@@ -133,6 +132,7 @@
         android:text="删  除"
         android:textColor="#ffffffff"
         android:textSize="30sp" />
+
     <TextView
         android:id="@+id/add"
         android:layout_width="wrap_content"

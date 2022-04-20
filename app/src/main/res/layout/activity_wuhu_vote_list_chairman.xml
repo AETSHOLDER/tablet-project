@@ -394,4 +394,23 @@
         </LinearLayout>
 
     </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/refresh_rl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="70dp"
+        android:layout_marginBottom="90dp"
+        >
+        <ImageView
+            android:layout_width="135dp"
+            android:layout_height="135dp"
+            android:scaleType="fitXY"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:src="@mipmap/ic_refresh_button"
+            />
+
+    </RelativeLayout>
 </RelativeLayout>
