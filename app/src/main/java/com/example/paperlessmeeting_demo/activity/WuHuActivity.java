@@ -16,11 +16,14 @@ import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.Display;
@@ -29,14 +32,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.Button;
 import android.support.v4.view.ViewPager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -143,7 +149,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
     private List<WuHuEditBean.EditListBean> wuHuEditBeanList=new ArrayList<>();
 
     private RelativeLayout  add_topic_rl;
-    private RelativeLayout  dialg_rl_root;
+    private RelativeLayout dialg_rl_root;
     private RelativeLayout sava_all;
     private Button mBtnDelete;
     private Button mBtnAdd;
@@ -509,7 +515,27 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
         };
 
         handler.postDelayed(runnable, 1000 * 60);// 打开定时器，执行操作
+        edit_name.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                try {
+                    InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         edit_rl.setOnClickListener(this);
         edit_ll.setOnClickListener(this);
         comfirm.setOnClickListener(this);
@@ -923,12 +949,35 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
         //自定义dialog显示布局
         inflate = LayoutInflater.from(WuHuActivity.this).inflate(R.layout.dialog_edit_wuhu, null);
         //自定义dialog显示风格
-        dialog = new Dialog(WuHuActivity.this, R.style.DialogRight);
+        dialog = new Dialog(WuHuActivity.this, R.style.BottomSheetEdit);
           dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         //弹窗点击周围空白处弹出层自动消失弹窗消失(false时为点击周围空白处弹出层不自动消失)
         dialog.setCanceledOnTouchOutside(true);
         //将布局设置给Dialog
         dialog.setContentView(inflate);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        dialog.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+        dialog.getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+            @Override
+            public void onSystemUiVisibilityChange(int visibility) {
+                int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                        //布局位于状态栏下方
+                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                        //全屏
+                        View.SYSTEM_UI_FLAG_FULLSCREEN |
+                        //隐藏导航栏
+                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+                if (Build.VERSION.SDK_INT >= 19) {
+                    uiOptions |= 0x00001000;
+                } else {
+                    uiOptions |= View.SYSTEM_UI_FLAG_LOW_PROFILE;
+                }
+                dialog.getWindow().getDecorView().setSystemUiVisibility(uiOptions);
+            }
+        });
+
+
         View line=inflate.findViewById(R.id.line);
         RadioGroup line_colors=inflate.findViewById(R.id.line_colors);
         RadioGroup theme_colors=inflate.findViewById(R.id.theme_colors);

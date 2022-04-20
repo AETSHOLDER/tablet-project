@@ -129,6 +129,9 @@ public class WuHuListAdapter extends BaseAdapter {
         }else {
             viHolder.delete.setVisibility(View.VISIBLE);
         }
+       if (wuHuEditBeanList.size()==1){
+           viHolder.add.setVisibility(View.VISIBLE);
+       }
         TextWatcher tittle2Watcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

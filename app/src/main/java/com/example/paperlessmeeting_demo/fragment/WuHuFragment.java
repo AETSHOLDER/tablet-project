@@ -1887,15 +1887,15 @@ if (Hawk.contains(constant._id)) {
                 }
             }
 
-            /*else if (fileBean.getFile_type().equals("4")){
+            else if (fileBean.getFile_type().equals("4")){
                 intent=new Intent(getActivity(), PdfActivity.class);
                 Bundle bundle=new Bundle();
                 bundle.putString("pdfPath", fileBean.getPath());
                 intent.putExtras(bundle);
                 getActivity().startActivity(intent);
-            }*/
+            }
 
-        }/*else if (in.getAction().equals(constant.SAVE_SEPARATELY_BROADCAST)){
+        }else if (in.getAction().equals(constant.SAVE_SEPARATELY_BROADCAST)){
            String type=in.getStringExtra("refreshType");
 
            if (type.equals("1")){
@@ -1936,7 +1936,7 @@ if (Hawk.contains(constant._id)) {
 
            }
 
-       }*/
+       }
         }
     }
 }
