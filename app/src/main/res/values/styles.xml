@@ -372,12 +372,13 @@
     </style>
 
     <!--位于右侧dialog的风格-->
-    <style name="DialogRight" parent="@android:style/Theme.Dialog">
+    <style name="DialogRight" parent="Theme.Design.Light.BottomSheetDialog">
         <!-- 背景透明 -->
     <!--    <item name="android:windowBackground">@android:color/transparent</item>-->
         <item name="android:windowContentOverlay">@null</item>
         <!-- 浮于Activity之上 -->
         <item name="android:windowIsFloating">true</item>
+        <item name="android:windowTranslucentStatus">false</item>
         <!-- 边框 -->
         <item name="android:windowFrame">@null</item>
         <!-- Dialog以外的区域模糊效果 -->
@@ -385,6 +386,7 @@
         <!-- 无标题 -->
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
         <!-- 半透明 -->
        <!-- <item name="android:windowIsTranslucent">true</item>-->
         <!--点击dialog以外区域关闭弹窗-->
@@ -392,6 +394,14 @@
 
         <!-- Dialog进入及退出动画 -->
         <item name="android:windowAnimationStyle">@style/ActionSheetDialogRight</item>
+    </style>
+
+    <style name="BottomSheetEdit" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+        <!-- Dialog以外的区域模糊效果 -->
+        <item name="android:backgroundDimEnabled">true</item>
     </style>
 
     <!-- ActionSheet进出动画 -->
