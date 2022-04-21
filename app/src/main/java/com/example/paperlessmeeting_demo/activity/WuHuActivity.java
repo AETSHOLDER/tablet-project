@@ -29,6 +29,7 @@ import android.util.SparseArray;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -521,7 +522,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
         };
 
         handler.postDelayed(runnable, 1000 * 60);// 打开定时器，执行操作
-        edit_name.addTextChangedListener(new TextWatcher() {
+/*        edit_name.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -541,7 +542,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                     e.printStackTrace();
                 }
             }
-        });
+        });*/
         edit_rl.setOnClickListener(this);
         edit_ll.setOnClickListener(this);
         comfirm.setOnClickListener(this);
@@ -1189,6 +1190,62 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                 handler.removeCallbacks(runnable);
             }
         }
+    }
+    @Override
+
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+
+// 获得当前得到焦点的View，一般情况下就是EditText(特殊情况就是轨迹求或者实体案件会移动焦点)
+
+            View v = getCurrentFocus();
+
+            if (isShouldHideInput(v, ev)) {
+
+                hideSoftInput(v.getWindowToken());
+
+            }
+
+        }
+
+        return super.dispatchTouchEvent(ev);
+
+    }
+
+    public  boolean isShouldHideInput(View v, MotionEvent event) {
+        if (v != null&& (v instanceof EditText)) {
+            int[]leftTop = { 0, 0 };
+            //获取输入框当前的location位置
+            v.getLocationInWindow(leftTop);
+            int left = leftTop[0];
+            int top = leftTop[1];
+            int bottom = top + v.getHeight();
+            int right = left + v.getWidth();
+            if(event.getX() > left && event.getX() < right
+                    && event.getY() > top &&event.getY() < bottom) {
+                // 点击的是输入框区域，保留点击EditText的事件
+                return false;
+            } else{
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    private void hideSoftInput(IBinder token) {
+
+        if (token != null) {
+
+            InputMethodManager im = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
+            im.hideSoftInputFromWindow(token,
+
+                    InputMethodManager.HIDE_NOT_ALWAYS);
+
+        }
+
     }
     private class MyBroadcastReceiver extends BroadcastReceiver {
         @Override
