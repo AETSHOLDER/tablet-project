@@ -77,12 +77,13 @@ public class SocketShareFileManager {
             nameStream.close();
             name.close();
 
-
+            Log.e("111","fileName==="+fileName);
             /**
              * 批注文件接收时path是全路径，signFlag区分
              * */
             String path = null;
             if (fileName.contains(signFlag)) {
+                Log.e("111","正在接收文件===");
                 SendMessage(2, "正在接收:" + fileName, 0);
                 path = fileName.replace(signFlag, "");
                 savePath = path;
@@ -90,6 +91,7 @@ public class SocketShareFileManager {
                 try {
                     File directory = file.getParentFile();
                     if (!directory.exists() && !directory.mkdirs()) {
+                        Log.e("cuowuwuwu","创建文件夹失败!!!!");
                         return;
                     }
                     file.createNewFile();
@@ -109,8 +111,6 @@ public class SocketShareFileManager {
                 if (!f.exists()) {
                     f.mkdir();
                 }
-
-
             } else {
                 SendMessage(2, "正在接收:" + fileName, 0);
                 path = Environment.getExternalStorageDirectory().getPath() + constant.SHARE_FILE;
@@ -138,6 +138,10 @@ public class SocketShareFileManager {
             file.close();
             dataStream.close();
             data.close();
+            if (fileName.contains(signFlag)){
+                SendMessage(101, "接收完成:" + fileName, 0);
+            }
+
         } catch (Exception e) {
             SendMessage(4, "接收错误:\n" + e.getMessage(), 0);
         }
@@ -186,7 +190,6 @@ public class SocketShareFileManager {
             outputData.close();
             fileInput.close();
             data.close();
-
             SendMessage(5, "文件发送完成", Integer.parseInt(actionType));
 
         } catch (Exception e) {

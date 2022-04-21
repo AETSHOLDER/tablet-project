@@ -192,7 +192,7 @@ public class MeetingAPP extends Application {
 
     }
 
-    private void initX5() {
+    public void initX5() {
         HashMap map = new HashMap();
         map.put(TbsCoreSettings.TBS_SETTINGS_USE_SPEEDY_CLASSLOADER, true);
         map.put(TbsCoreSettings.TBS_SETTINGS_USE_DEXLOADER_SERVICE, true);
@@ -205,6 +205,7 @@ public class MeetingAPP extends Application {
             public void onViewInitFinished(boolean arg0) {
                 //x5內核初始化完成的回调，为true表示x5内核加载成功，否则表示x5内核加载失败，会自动切换到系统内核。
                 Log.d("MeetingAPP", " x5内核加载" + (arg0 ? "成功!":"失败!"));
+                Hawk.put("TBS",arg0);
             }
 
             @Override

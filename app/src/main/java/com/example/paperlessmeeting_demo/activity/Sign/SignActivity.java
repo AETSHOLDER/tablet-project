@@ -22,11 +22,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.paperlessmeeting_demo.R;
+import com.example.paperlessmeeting_demo.activity.ActivityBrowser;
 import com.example.paperlessmeeting_demo.base.BaseActivity;
 import com.example.paperlessmeeting_demo.bean.UserBehaviorBean;
 import com.example.paperlessmeeting_demo.sharefile.SocketShareFileManager;
 import com.example.paperlessmeeting_demo.tool.CVIPaperDialogUtils;
-import com.example.paperlessmeeting_demo.tool.FileUtils;
 import com.example.paperlessmeeting_demo.tool.StoreUtil;
 import com.example.paperlessmeeting_demo.tool.TimeUtils;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
@@ -51,6 +51,7 @@ import java.io.IOException;
 import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import q.rorbin.verticaltablayout.util.DisplayUtil;
 
 public class SignActivity extends BaseActivity implements View.OnClickListener {
     @BindView(R.id.rl_root)
@@ -129,7 +130,8 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     ImageView mIvWhiteBoardQuit;
     @BindView(R.id.iv_white_board_confirm)
     ImageView mIvWhiteBoardConfirm;
-
+    @BindView(R.id.tbs_notInit)
+    TextView tbs_notInit;
 
     private String url;
     TbsReaderView tbsReaderView;
@@ -204,7 +206,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
         if (!TextUtils.isEmpty(url) && isOpenFile) {
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
             params.addRule(RelativeLayout.BELOW, R.id.tools_bar);
-            params.setMargins(160, 0, 160, 0);
+            params.setMargins(DisplayUtil.dp2px(SignActivity.this,120), 0, DisplayUtil.dp2px(SignActivity.this,120), 0);
             rlRoot.addView(tbsReaderView, params);
             openFile();
         }
@@ -217,6 +219,10 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
         changeColorBack();
         changeEraserBack();
         ToolsOperation(WhiteBoardVariable.Operation.PEN_NORMAL);
+
+        if(Hawk.contains("TBS")){
+            tbs_notInit.setVisibility(Hawk.get("TBS")? View.GONE:View.VISIBLE);
+        }
     }
 
     @Override
@@ -306,11 +312,18 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                 ToolsOperation(WhiteBoardVariable.Operation.OUTSIDE_CLICK);
                 String filePath = saveImage();
                 // 上传  非主席发送给主席
+                 boolean ok = new File(filePath).exists();
+                 Log.e("111","文件是否存在==="+ok);
                 if(!UserUtil.ISCHAIRMAN && filePath!=null && new File(filePath).exists()){
                     String fileName = parseName(filePath);
                     Thread sendThread = new Thread(new Runnable() {
                         @Override
                         public void run() {
+                            try {
+                                Thread.sleep(500);
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
                             //将文件发送到指定IP
                             socketShareFileManager.SendFile(fileName, filePath, UserUtil.serverIP, constant.SHARE_PORT,"2");
                         }
@@ -358,6 +371,13 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
         boolean result = tbsReaderView.preOpen(parseFormat(parseName(url)), false);
         if (result) {
             tbsReaderView.openFile(bundle);
+        }else {
+            tbs_notInit.setVisibility(View.VISIBLE);
+//            Intent intent = new Intent(SignActivity.this, ActivityBrowser.class);
+//            Bundle bundle1 = new Bundle();
+//            bundle1.putString("flag", "1");
+//            intent.putExtras(bundle1);
+//            startActivity(intent);
         }
     }
 
@@ -434,6 +454,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
         handler.removeMessages(1001);
         handler = null;
         tbsReaderView.onStop();
+        mDbView.clearImage();
         super.onDestroy();
     }
 
@@ -1140,7 +1161,6 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
      */
     public String saveImage() {
         String fileName = StoreUtil.getPersonalSignPhotoSavePath();
-        Log.e("saveImage", fileName);
         File file = new File(fileName);
         try {
             File directory = file.getParentFile();
@@ -1184,7 +1204,6 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
         Log.e("xxx","textEdit() {//文字编辑");
     }
 
-    // TODO 撤销 重做 有问题待解决
     @ReceiveEvents(name = Events.WHITE_BOARD_UNDO_REDO)
     private void showUndoRedo() {//是否显示撤销、重装按钮
         if (SignOperationUtils.getInstance().getSavePoints().isEmpty()) {

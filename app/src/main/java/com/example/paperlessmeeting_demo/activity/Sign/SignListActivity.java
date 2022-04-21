@@ -1,5 +1,9 @@
 package com.example.paperlessmeeting_demo.activity.Sign;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
@@ -17,15 +21,18 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.StringUtils;
 import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.activity.Sign.Adapter_holder.SignViewRecyclerViewAdapter;
 import com.example.paperlessmeeting_demo.activity.Sign.Bean.SignThumbBean;
 import com.example.paperlessmeeting_demo.activity.Sign.Bean.SignViewBean;
 import com.example.paperlessmeeting_demo.activity.Sign.CallBack.OnRecyclerItemClickListener;
 import com.example.paperlessmeeting_demo.base.BaseActivity;
+import com.example.paperlessmeeting_demo.fragment.WuHUVoteListFragment;
 import com.example.paperlessmeeting_demo.tool.CVIPaperDialogUtils;
 import com.example.paperlessmeeting_demo.tool.ToastUtils;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
+import com.example.paperlessmeeting_demo.tool.constant;
 import com.example.paperlessmeeting_demo.util.SysUtils;
 
 import java.io.File;
@@ -57,7 +64,7 @@ public class SignListActivity extends BaseActivity {
     @BindView(R.id.no_data)
     TextView noData;
 
-
+    private SignListActivity.MyBroadcastReceiver myBroadcastReceiver;
     private List<SignViewBean> mDatas = new ArrayList<>();
     private List<SignViewRecyclerViewAdapter> adapterList = new ArrayList<>();
     private List<View> recycleViewList = new ArrayList<>();
@@ -70,6 +77,10 @@ public class SignListActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+        myBroadcastReceiver = new SignListActivity.MyBroadcastReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(constant.RUSH_SIGN_LIST_BROADCAST);
+        registerReceiver(myBroadcastReceiver,filter);
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -113,7 +124,9 @@ public class SignListActivity extends BaseActivity {
                             return;
                         }
                         // 记录需要移除的adapter,recycleViewList 的下标
-                        List<Integer> integers = new ArrayList<>();
+                        List<SignViewBean> removeSignBeans = new ArrayList<>();
+                        List<SignViewRecyclerViewAdapter> removeAdapters= new ArrayList<>();
+                        List<View> removerecycles = new ArrayList<>();
 
                         for (int i = 0; i < adapterList.size(); i++) {
                             SignViewRecyclerViewAdapter adapter = adapterList.get(i);
@@ -126,7 +139,7 @@ public class SignListActivity extends BaseActivity {
                             }
 
                             for (SignThumbBean signThumbBean : indexList) {
-                                Log.e("222222","当前选中--"+i+"行,第几条数据---"+signViewBean.getListDatas().indexOf(signThumbBean));
+//                                Log.e("222222","当前选中--"+i+"行,第几条数据---"+signViewBean.getListDatas().indexOf(signThumbBean));
                                 File file = new File(signThumbBean.getPath());
                                 if (file.delete()) {
                                     signViewBean.getListDatas().remove(signThumbBean);
@@ -136,18 +149,31 @@ public class SignListActivity extends BaseActivity {
                             if (signViewBean.getListDatas().size() == 0) {
                                 //移除名字显示，整体layout
                                 mLinear.removeView(recycleViewList.get(i));
-                                integers.add(i);
+                                removeSignBeans.add(signViewBean);
+                                removeAdapters.add(adapter);
+                                removerecycles.add(recycleViewList.get(i));
+
                             }else {
                                 mDatas.remove(i);
                                 mDatas.add(i, signViewBean);
                             }
                         }
-                        // 清除数据
-                        for (int index : integers) {
-                            mDatas.remove(index);
-                            adapterList.remove(index);
-                            recycleViewList.remove(index);
+                        // 清除数据,按下标移除会越界,笨办法
+                        for (SignViewBean signViewBean : removeSignBeans){
+                            mDatas.remove(signViewBean);
                         }
+                        for (SignViewRecyclerViewAdapter adapter : removeAdapters){
+                            adapterList.remove(adapter);
+                        }
+                        for (View view : removerecycles){
+                            recycleViewList.remove(view);
+                        }
+//                        for (int index : integers) {
+//                            // 按下标移除会越界
+//                            mDatas.remove(index);
+//                            adapterList.remove(index);
+//                            recycleViewList.remove(index);
+//                        }
                         // 取消选中状态
                         for(SignViewRecyclerViewAdapter adapter : adapterList){
                             adapter.cancelSelectAll();
@@ -161,6 +187,18 @@ public class SignListActivity extends BaseActivity {
                 });
             }
         });
+
+
+    }
+
+    // 重新加载数据
+    private void refreshData() {
+        mLinear.removeAllViews();
+        data.clear();
+        mDatas.clear();
+        adapterList.clear();
+        recycleViewList.clear();
+        initData();
     }
 
     @Override
@@ -350,6 +388,24 @@ public class SignListActivity extends BaseActivity {
             });
             recyclerView.setAdapter(adapter);
             mLinear.addView(layout, params);
+        }
+    }
+    private class MyBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent in) {
+            if (in.getAction().equals(constant.RUSH_SIGN_LIST_BROADCAST) && UserUtil.ISCHAIRMAN){
+                refreshData();
+            }
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (myBroadcastReceiver!=null){
+            unregisterReceiver(myBroadcastReceiver);
+
         }
     }
 

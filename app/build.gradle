@@ -29,7 +29,7 @@ android {
         versionName "1.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
-            abiFilters 'armeabi', "armeabi-v7a", "x86"
+            abiFilters 'armeabi', "armeabi-v7a", "x86","mips"
         }
 //        buildConfigField "boolean", "DOWNLOAD_NEED_LOG", needLog == "true" ? "true" : "false"
         multiDexEnabled true

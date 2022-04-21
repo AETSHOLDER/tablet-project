@@ -239,6 +239,11 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                     sendBroadcast(intent2);
 
                     break;
+                case 101:
+                    Intent intent3 = new Intent();
+                    intent3.setAction(constant.RUSH_SIGN_LIST_BROADCAST);
+                    sendBroadcast(intent3);
+                    break;
                 case 119:
                     String adressIp = (String) msg.obj;
                     String strIp = "";
@@ -283,9 +288,10 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                 //  客户端默认非主席
                 UserUtil.ISCHAIRMAN = false;
                 String ipUrl = getIntent().getStringExtra("ip");
+                UserUtil.serverIP = ipUrl;
                 if (!StringUtils.isEmpty(ipUrl)) {
                     UrlConstant.TempWSIPString = "ws://" + ipUrl + ":" + UrlConstant.port;
-                    Log.e("临时会议", "临时会议的server IP ======" + UrlConstant.TempWSIPString);
+//                    Log.e("临时会议", "临时会议的server IP ======" + UrlConstant.TempWSIPString);
                 }
 
                 //  连接websocket(server，client均要连)

@@ -93,6 +93,7 @@ public class constant {
     public final static int SHARE_PORT = 9999;////临时会议分享的文件端口
     public final static String SHARE_FILE_BROADCAST = "sharefile";////临时会议分享文件成功后，通知会议更新文件列表
     public final static String RUSH_VOTE_LIST_BROADCAST = "reshvotelistui";////临时会议分享文件成功后，通知会议更新投票列表
+    public final static String RUSH_SIGN_LIST_BROADCAST = "reshsignlistui";////临时会议分享文件成功后，通知会议更新投票列表
     public final static String SEE_IMA_BROADCAST = "seeima";////临时会议查看投票大图
     public final static String ADD_FRAGMENT_BROADCAST = "addfragment";////增加芜湖fragment
     public final static String SAVE_SEPARATELY_BROADCAST = "save_separately";//从议题列表中单独保存某个会议议题

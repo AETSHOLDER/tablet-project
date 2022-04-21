@@ -278,7 +278,7 @@
         <TextView
             android:id="@+id/sign_door"
             android:layout_width="145dp"
-            android:layout_height="46dp"
+            android:layout_height="50dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="57dp"
@@ -291,7 +291,7 @@
         <TextView
             android:id="@+id/sign_commit"
             android:layout_width="145dp"
-            android:layout_height="46dp"
+            android:layout_height="50dp"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/sign_door"
             android:layout_marginRight="20dp"
@@ -346,7 +346,6 @@
             android:layout_marginLeft="160dp"
             android:scaleType="fitXY"
             android:visibility="gone"/>
-
         <ScrollView
             android:id="@+id/sv_content"
             android:layout_width="match_parent"
@@ -359,15 +358,24 @@
                 android:id="@+id/fl_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginRight="160dp"
-                android:layout_marginLeft="160dp"
+                android:layout_marginRight="120dp"
+                android:layout_marginLeft="120dp"
                 android:background="@drawable/bg_white_board">
+                <TextView
+                    android:id="@+id/tbs_notInit"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:gravity="center"
+                    android:text="TBS内核加载失败,请重装!"
+                    android:textColor="#000000"
+                    android:textSize="30sp"
+                    android:visibility="gone" />
 
                 <com.example.paperlessmeeting_demo.widgets.SignDrawPenView
                     android:id="@+id/db_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_login_bt_selet"/>
+                    android:layout_height="wrap_content"/>
 
                 <com.github.guanpy.wblib.widget.SignDrawTextLayout
                     android:id="@+id/dt_view"

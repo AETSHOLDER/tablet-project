@@ -94,7 +94,7 @@ import pub.devrel.easypermissions.EasyPermissions;
  * Created by 梅涛 on 2020/9/18.
  */
 
-public class LoginActivity extends BaseActivity implements EasyPermissions.PermissionCallbacks {
+public class LoginActivity extends BaseActivity  {
 
     @BindView(R.id.tip)
     TextView tip;
@@ -269,6 +269,9 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
      */
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onGetStickyEvent(EventMessage message) {
+        if (!PermissionManager.checkPermission(this, constant.PERMS_WRITE1)){
+            return;
+        }
         if (message.getMessage().equals(constant.start_meeting)) {
             String aa = String.format("收到会议消息，会议id=%s,人员信息=%s", UserUtil.meeting_record_id, UserUtil.user_name);
 //            name.setVisibility(View.VISIBLE);
@@ -619,9 +622,8 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
         super.onCreate(savedInstanceState);
         // TODO: add setContentView(...) invocation
         ButterKnife.bind(this);
-        checkWritePermission1();
         projectionManager = (MediaProjectionManager) getSystemService(MEDIA_PROJECTION_SERVICE);
-        PermissionManager.RequestOverlayPermission(this);
+//        PermissionManager.RequestOverlayPermission(this);
         Log.d("fgdgg222", selfIp);
        // File file = new File("这里是文件夹得路径");
         deleteDirWihtFile(new File(fileShare));
@@ -795,53 +797,6 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
         }
     }
 
-    /**
-     * 检查读写权限权限
-     */
-    @AfterPermissionGranted(constant.WRITE_PERMISSION_CODE1)
-    private void checkWritePermission1() {
-        if (!PermissionManager.checkPermission(this, constant.PERMS_WRITE1)) {
-            PermissionManager.requestPermission(this, constant.WRITE_PERMISSION_TIP, constant.WRITE_PERMISSION_CODE1, constant.PERMS_WRITE);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        //将请求结果传递EasyPermission库处理
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
-    }
-
-    /**
-     * 请求权限成功
-     *
-     * @param requestCode
-     * @param perms
-     */
-    @Override
-    public void onPermissionsGranted(int requestCode, List<String> perms) {
-
-        Toast.makeText(LoginActivity.this, "授权成功", Toast.LENGTH_LONG).show();
-    }
-
-
-    /**
-     * 请求权限失败
-     *
-     * @param requestCode
-     * @param perms
-     */
-    @Override
-    public void onPermissionsDenied(int requestCode, List<String> perms) {
-        Toast.makeText(LoginActivity.this, "用户授权失败", Toast.LENGTH_LONG).show();
-        /**
-         * 若是在权限弹窗中，用户勾选了'NEVER ASK AGAIN.'或者'不在提示'，且拒绝权限。
-         * 这时候，需要跳转到设置界面去，让用户手动开启。
-         */
-        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
-            new AppSettingsDialog.Builder(this).build().show();
-        }
-    }
 
     /**
      * @param view 需要截取图片的view
