@@ -1708,7 +1708,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                         Uri uri = item.getUri();
                         try {
                             File file = new File(getFilePath(getActivity(), uri));
-                            ToastUtil.makeText(getActivity(), "uri.getPath()=====" + uri.getPath());
+                           、、 ToastUtil.makeText(getActivity(), "uri.getPath()=====" + uri.getPath());
                             Log.d("requestCodeUr2222", uri.getScheme() + "===" + uri.getPath() + "==" + file.getName() + "++++++++++" + getFilePath(getActivity(), uri) + "===" + uri.getAuthority());
                             String endStr = file.getName().substring(file.getName().lastIndexOf(".") + 1);
                             if ("jpg".equals(endStr) || "gif".equals(endStr) || "png".equals(endStr) || "jpeg".equals(endStr) || "bmp".equals(endStr)) {
