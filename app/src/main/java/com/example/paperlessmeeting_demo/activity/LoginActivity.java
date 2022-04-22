@@ -181,6 +181,7 @@ public class LoginActivity extends BaseActivity  {
     private String fileShare = Environment.getExternalStorageDirectory() + constant.SHARE_FILE;//其他设备分享得到的文件夹路径
     private String COPY_PATH = Environment.getExternalStorageDirectory() + constant.COPY_PATH;
     private String VOTE_FILE = Environment.getExternalStorageDirectory() + constant.VOTE_FILE;
+    private String netFilePath = Environment.getExternalStorageDirectory() + constant.WUHU_NET_FILE;//网络请求得到的文件夹路径
     private String selfIp = "";
     private Handler handler = new Handler() {
         @Override
@@ -614,7 +615,7 @@ public class LoginActivity extends BaseActivity  {
                 //不知道干啥的
             }
         });
-        tabLayout.getTabAt(1).select(); //默认选中第二个tab
+        tabLayout.getTabAt(0).select(); //默认选中第二个tab
     }
 
     @Override
@@ -626,10 +627,15 @@ public class LoginActivity extends BaseActivity  {
 //        PermissionManager.RequestOverlayPermission(this);
         Log.d("fgdgg222", selfIp);
        // File file = new File("这里是文件夹得路径");
-        deleteDirWihtFile(new File(fileShare));
-        deleteDirWihtFile(new File(COPY_PATH));
-        deleteDirWihtFile(new File(VOTE_FILE));
-
+        //创建临时文件夹
+        File f = new File(COPY_PATH);
+        if (!f.exists()) {
+            f.mkdir();
+        }
+        File netFile= new File(netFilePath);
+        if (!f.exists()) {
+            f.mkdir();
+        }
     }
    /* private void deleteFile(String filePath) {
         File file = new File(filePath);
@@ -665,6 +671,12 @@ public class LoginActivity extends BaseActivity  {
         agendaRl.setVisibility(View.GONE);
         loginLeft.setVisibility(View.VISIBLE);
         name.setVisibility(View.INVISIBLE);
+        //app每次进入会议先删除分享、推送、签批，投票的图
+        deleteDirWihtFile(new File(fileShare));
+        deleteDirWihtFile(new File(COPY_PATH));
+        deleteDirWihtFile(new File(VOTE_FILE));
+        deleteDirWihtFile(new File(netFilePath));
+
         // 重新获取一次会议信息
 
 //        requestRunable = new Runnable() {

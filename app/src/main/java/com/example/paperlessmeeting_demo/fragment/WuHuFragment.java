@@ -176,8 +176,10 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
     private View inflate;
     private String selfIp = "";
     private WuHuFileListAdapter fileListAdapter;
-    private List<FileListBean> fileBeans = new ArrayList<>();
+    private List<FileListBean> fileBeans = new ArrayList<>();//总的文件集合：其他设备分享得到的文件集合、本地上传得到的文件集合、网络服务器得到的文件集合
     private List<FileListBean> shareFileBeans = new ArrayList<>();//其他设备分享得到的文件集合
+    private List<FileListBean> copyFileBeans = new ArrayList<>();//本地上传得到的文件集合
+     private List<FileListBean> netFileBeans = new ArrayList<>();//网络服务器得到的文件集合
     private FileListBean meetingFileListBeanfileBean;
     private String titles;
     private Context context;
@@ -191,8 +193,9 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
     private UploadBean uploadBean;
     private CreateFileBeanRequest createFileBeanRequest;
     private MediaPlayer mediaPlayer = new MediaPlayer();//实例化MediaPlayer类
-    private String fileStrPath = Environment.getExternalStorageDirectory() + constant.COPY_PATH;
+    private String fileStrPath = Environment.getExternalStorageDirectory() + constant.COPY_PATH;//本地上传文件保存路径
     private String fileShare = Environment.getExternalStorageDirectory() + constant.SHARE_FILE;//其他设备分享得到的文件夹路径
+    private String netFilePath = Environment.getExternalStorageDirectory() + constant.WUHU_NET_FILE;//网络请求得到的文件夹路径
     private String path = "/storage/emulated/0/";//展厅临时文件路径
     private String videoPath = "";
     private String endStrAll;
@@ -218,8 +221,8 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                 case 99:
                     FileListBean fileBean=(FileListBean)msg.obj;
                     fileBean.setNet(true);
-                    fileBeans.add(fileBean);
-                    fileListAdapter.setGridViewBeanList(fileBeans);
+                    netFileBeans.add(fileBean);
+                    fileListAdapter.setGridViewBeanList(netFileBeans);
                     fileListAdapter.notifyDataSetChanged();
                     //完成主界面更新,拿到数据
                     //   getDownload(fileListBean.get_id(), fileListBean.getUser_id(), fileListBean.getUnclassified());
@@ -434,6 +437,7 @@ if (Hawk.contains(constant._id)) {
         name.clear();
         fileOtherBeans.clear();
         fileBeans.clear();
+        netFileBeans.clear();
         for (int i = 0; i < fileListBeanList.size(); i++) {
             WuHuNetFileBean.DataBean fileListBean = fileListBeanList.get(i);
 
@@ -450,7 +454,7 @@ if (Hawk.contains(constant._id)) {
 
 
                     //   String fileData = httpDownloader.downloadFiles(fileListBeanList.get(i).getFile_path());
-                    DownloadUtil.get().download(path, fileStrPath, fileListBeanList.get(i).getName(), new DownloadUtil.OnDownloadListener() {
+                    DownloadUtil.get().download(path, netFilePath, fileListBeanList.get(i).getName(), new DownloadUtil.OnDownloadListener() {
                         @Override
                         public void onDownloadSuccess(File file) {
                             Log.v("dfsfff111", "下載成功,文件已存入手机内部存储设备根目录下Download文件夾中");
@@ -458,15 +462,15 @@ if (Hawk.contains(constant._id)) {
                         Looper.loop();//增加部分*/
                             Message msg = new Message();
                             fileListBean.setName(name);
-                            fileListBean.setPath(fileStrPath + name);
+                            fileListBean.setPath(netFilePath + name);
                             fileListBean.set_id(fileId);
                             fileListBean.set_id(fileId);
-
                             fileListBean.setNet(true);
-                            fileBean =new FileListBean(name,fileStrPath + name,"","");
+
+                            fileBean =new FileListBean(name,netFilePath + name,"","");
                             fileBean.setResImage(getIamge(endStr));
                             fileBean.setFile_type(getType(endStr));
-
+                            fileBean.setNet(true);
                             msg.obj = fileBean;//可以是基本类型，可以是对象，可以是List、map等；
                             msg.what = 99;
                             mHandler.sendMessage(msg);
@@ -512,77 +516,6 @@ if (Hawk.contains(constant._id)) {
            // fileListAdapter = new FileListAdapter(getActivity(), fileOtherBeans);
             fileListAdapter.setGridViewBeanList(fileBeans);
             fileListAdapter.notifyDataSetChanged();
-//
-//            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                @Override
-//                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                    NewFileBean.MeetingFileListBean fileBean = (NewFileBean.MeetingFileListBean) adapterView.getAdapter().getItem(i);
-//                    Log.d("requestCodeUr333", fileBean.getPath());
-//                    Intent intent;
-//                    switch (fileBean.getFile_type()) {
-//                        case "1"://音乐
-//                            startPlayer(fileBean.getPath());
-//                            //getActivity().startActivity(FileUtils.openFile(fileBean.getPath(), getActivity()));
-//                            // FileUtils.openFile("file://"+fileBean.getPath(), getActivity());
-//                            break;
-//                        case "2"://视频
-//                            intent = new Intent();
-//                            intent.setClass(getActivity(), ActivityVideoView.class);
-//                            intent.putExtra("url", fileBean.getPath());
-//                            intent.putExtra("isOpenFile", true);
-//                            intent.putExtra("isNetFile", true);
-//                            startActivity(intent);
-//                            //  FileUtils.openFile(fileBean.getPath(), getActivity());
-//                            break;
-//                        case "3"://图片
-//                            intent = new Intent();
-//                            intent.setClass(getActivity(), ActivityImage.class);
-//                            intent.putExtra("url", fileBean.getPath());
-//                            intent.putExtra("isOpenFile", true);
-//                            intent.putExtra("isNetFile", true);
-//                            startActivity(intent);
-//                            break;
-//                        case "4":
-//                            String wpsPackageName;
-//                            if (FLUtil.checkPackage(context, Define.PACKAGENAME_KING_PRO))
-//                            {
-//                                wpsPackageName = Define.PACKAGENAME_KING_PRO;
-//                            }
-//                            else if (FLUtil.checkPackage(context, Define.PACKAGENAME_PRO_DEBUG))
-//                            {
-//                                wpsPackageName = Define.PACKAGENAME_PRO_DEBUG;
-//                            }
-//                            else if (FLUtil.checkPackage(context, Define.PACKAGENAME_ENG))
-//                            {
-//                                wpsPackageName = Define.PACKAGENAME_ENG;
-//                            }
-//                            else if (FLUtil.checkPackage(context, Define.PACKAGENAME_KING_PRO_HW))
-//                            {
-//                                wpsPackageName = Define.PACKAGENAME_KING_PRO_HW;
-//                            }
-//                            else if (FLUtil.checkPackage(context, Define.PACKAGENAME_K_ENG))
-//                            {
-//                                wpsPackageName = Define.PACKAGENAME_K_ENG;
-//                            }
-//                            else {
-//                                ToastUtils.showToast(context,"文件打开失败，请安装WPS Office专业版");
-//                                return;
-//                            }
-//
-//
-//                            getActivity().startActivity(FileUtils.openFile(fileBean.getPath(), getActivity()));
-//                            // FileUtils.openFile(fileBean.getPath(), getActivity());
-//                          /*  intent = new Intent();
-//                            intent.setClass(getActivity(), CommonWebViewActivity.class);
-//                            intent.putExtra("url", fileBean.getPath());
-//                            intent.putExtra("isOpenFile", true);
-//                            startActivity(intent);*/
-//                            break;
-//                    }
-//
-//                }
-//            });
-            fileListAdapter.notifyDataSetChanged();
         }
 
     }
@@ -602,6 +535,7 @@ if (Hawk.contains(constant._id)) {
         for (int i = 0; i < files.length; i++) {
             Log.d("sjshgha", files[i].toString() + "78687");
         }
+
         getFileName(files);
     }
 
@@ -881,9 +815,11 @@ if (Hawk.contains(constant._id)) {
         }
         return contentType;
     }
-
+//获取本地上传的文件
     private void getFileName(File[] files) {
         Log.d(TAG, "路过~~~~~11");
+        copyFileBeans.clear();
+        fileBeans.clear();
         String content = "";
         if (files != null) {// 先判断目录是否为空，否则会报空指针
             for (File file : files) {
@@ -909,10 +845,54 @@ if (Hawk.contains(constant._id)) {
                     //  fileBean.setType(endStr);
                     fileBean.setType(getFileType(endStr));
                     fileBean.setNet(false);
-                    fileBeans.add(fileBean);
+                    copyFileBeans.add(fileBean);
 
                 }
             }
+            fileBeans.addAll(copyFileBeans);
+            fileBeans.addAll(netFileBeans);
+            fileBeans.addAll(shareFileBeans);
+            fileListAdapter.setGridViewBeanList(fileBeans);
+            fileListAdapter.notifyDataSetChanged();
+        }
+    }
+//获取网络下载到的文件
+    private void getNetFileName(File[] files) {
+        Log.d(TAG, "路过~~~~~11");
+        netFileBeans.clear();
+        fileBeans.clear();
+        String content = "";
+        if (files != null) {// 先判断目录是否为空，否则会报空指针
+            for (File file : files) {
+                Log.d(TAG, "路过~~~~~11" + file.getPath());
+
+                if (file.isDirectory()) {
+                    Log.d(TAG, "若是文件目录。继续读1" + file.getName().toString()
+                            + file.getPath().toString());
+
+                    getFileName(file.listFiles());
+                    Log.d(TAG, "若是文件目录。继续读2" + file.getName().toString()
+                            + file.getPath().toString());
+                } else {
+                    String fileName = file.getName();
+                    String endStr = fileName.substring(fileName.lastIndexOf(".") + 1);
+                    Log.d(TAG, "文件类型=" + endStr + "文件名字" + fileName);
+                    fileBean = new FileListBean(file.getName(), file.getPath(), "", "");
+                    Uri uri = Uri.fromFile(file);
+                    Log.d("requestCodeUr555", uri.getScheme() + "===" + uri.getPath() + "==" + file.getName());
+                    fileBean.setResImage(getIamge(endStr));
+                    fileBean.setFile_type(getType(endStr));
+                    fileBean.setSuffix(endStr);//上传文件后缀名和文件类型；setSuffix和setType所赋值内容一样。
+                    //  fileBean.setType(endStr);
+                    fileBean.setType(getFileType(endStr));
+                    fileBean.setNet(true);
+                    netFileBeans.add(fileBean);
+
+                }
+            }
+            fileBeans.addAll(copyFileBeans);
+            fileBeans.addAll(netFileBeans);
+            fileBeans.addAll(shareFileBeans);
             fileListAdapter.setGridViewBeanList(fileBeans);
             fileListAdapter.notifyDataSetChanged();
         }
@@ -1360,28 +1340,26 @@ if (Hawk.contains(constant._id)) {
                     if ("jpg".equals(endStr) || "gif".equals(endStr) || "png".equals(endStr) || "jpeg".equals(endStr) || "bmp".equals(endStr)||endStr.equals("m4a") || endStr.equals("mp3") || endStr.equals("mid") ||
                             endStr.equals("xmf") || endStr.equals("ogg") || endStr.equals("wav")||endStr.equals("3gp") || endStr.equals("mp4")||endStr.equals("ppt") || endStr.equals("pptx")||
                             endStr.equals("xls") || endStr.equals("xlsx")||endStr.equals("doc") || endStr.equals("docx")||endStr.equals("pdf") || endStr.equals("txt")) {
-
                         fileBean = new FileListBean(file.getName(), file.getPath(), "", "");
                         fileBean.setResImage(getIamge(endStr));
                         fileBean.setFile_type(getType(endStr));
                         fileBean.setSuffix(endStr);//上传文件后缀名和文件类型；setSuffix和setType所赋值内容一样。
                         fileBean.setType(getFileType(endStr));
                         fileBean.setNet(false);
-                        fileBeans.add(fileBean);
-
+                      //  fileBeans.add(fileBean);
                     }else {
                         Toast.makeText(getActivity(), "请选择正确的文件格式", Toast.LENGTH_SHORT).show();
                         return;
                     }
                     // fileBean = new FileListBean(file.getName(), "/storage/84BE-981E/声学在图书馆智慧空间建设中的应用.docx", "", "");
 
-                  /*  //复制文件到指定目录
+                   //复制文件到指定目录
                     new Thread() {
                         @Override
                         public void run() {
                             copyFile(file.getPath(), fileStrPath + file.getName());
                         }
-                    }.start();*/
+                    }.start();
 
                 } catch (URISyntaxException e) {
                     e.printStackTrace();
@@ -1397,7 +1375,7 @@ if (Hawk.contains(constant._id)) {
                         Uri uri = item.getUri();
                         try {
                             File file = new File(getFilePath(getActivity(), uri));
-                            ToastUtil.makeText(getActivity(), "uri.getPath()=====" + uri.getPath());
+                            //ToastUtil.makeText(getActivity(), "uri.getPath()=====" + uri.getPath());
                             Log.d("requestCodeUr2222", uri.getScheme() + "===" + uri.getPath() + "==" + file.getName() + "++++++++++" + getFilePath(getActivity(), uri) + "===" + uri.getAuthority());
                             String endStr = file.getName().substring(file.getName().lastIndexOf(".") + 1);
 
@@ -1416,7 +1394,7 @@ if (Hawk.contains(constant._id)) {
                                 fileBean.setResImage(getIamge(endStr));
                                 fileBean.setFile_type(getType(endStr));
                                 fileBean.setNet(false);
-                                fileBeans.add(fileBean);
+                               // fileBeans.add(fileBean);
                             }else {
                                 Toast.makeText(getActivity(), "请选择正确的文件格式", Toast.LENGTH_SHORT).show();
                                 return;
@@ -1586,6 +1564,7 @@ if (Hawk.contains(constant._id)) {
      * */
     private void getShareFile(File[] files) {
         shareFileBeans.clear();
+        fileBeans.clear();
         Log.d(TAG, "路过~~~~~11");
         String content = "";
         if (files != null) {// 先判断目录是否为空，否则会报空指针
@@ -1617,6 +1596,8 @@ if (Hawk.contains(constant._id)) {
                 }
             }
             fileBeans.addAll(shareFileBeans);
+            fileBeans.addAll(copyFileBeans);
+            fileBeans.addAll(netFileBeans);
             fileListAdapter.setGridViewBeanList(fileBeans);
             fileListAdapter.notifyDataSetChanged();
         }
@@ -1845,7 +1826,11 @@ if (Hawk.contains(constant._id)) {
         @Override
         public void onReceive(Context context, Intent in) {
        if (in.getAction().equals(constant.SHARE_FILE_BROADCAST)){
-            initData();
+         // initData();
+          /* if (UserUtil.ISCHAIRMAN){
+
+           }*/
+
             File path = new File(fileShare);
             File[] files = path.listFiles();// 读取
             if (files == null) {
@@ -1854,6 +1839,7 @@ if (Hawk.contains(constant._id)) {
             getShareFile(files);
             String filePath=in.getStringExtra("filePath");
             String flag=in.getStringExtra("flag");
+
             File file=new File(filePath);
             String fileName = file.getName();
             String endStr = fileName.substring(fileName.lastIndexOf(".") + 1);
