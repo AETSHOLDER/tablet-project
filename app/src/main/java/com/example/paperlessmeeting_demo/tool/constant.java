@@ -89,6 +89,7 @@ public class constant {
     public final static String EXTRAORDINARY_MEETING_INETADDRESS = "255.255.255.255";//临时会议分享文件IP。
     public final static int EXTRAORDINARY_MEETING_PORT = 4127;//临时会议分享文件端口。
     public final static String SHARE_FILE = "/shareFile/";//临时会议分享的文件存储文件夹
+    public final static String WUHU_NET_FILE = "/netFile/";//网络文件储存文件夹
     public final static String VOTE_FILE = "/voteFile/";//临时会议投票文件夹
     public final static int SHARE_PORT = 9999;////临时会议分享的文件端口
     public final static String SHARE_FILE_BROADCAST = "sharefile";////临时会议分享文件成功后，通知会议更新文件列表
