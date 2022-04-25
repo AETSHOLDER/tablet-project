@@ -152,7 +152,42 @@ public class WuHuListAdapter extends BaseAdapter {
                 }
             }
         };
-        viHolder.tittle_pos.setText("议题"+(i+1));
+       switch (i){
+           case 0:
+               viHolder.tittle_pos.setText("议题一");
+               break;
+           case 1:
+               viHolder.tittle_pos.setText("议题二");
+               break;
+           case 2:
+               viHolder.tittle_pos.setText("议题三");
+               break;
+           case 3:
+               viHolder.tittle_pos.setText("议题四");
+               break;
+           case 4:
+               viHolder.tittle_pos.setText("议题五");
+               break;
+           case 5:
+               viHolder.tittle_pos.setText("议题六");
+               break;
+           case 6:
+               viHolder.tittle_pos.setText("议题七");
+               break;
+           case 7:
+               viHolder.tittle_pos.setText("议题八");
+               break;
+           case 8:
+               viHolder.tittle_pos.setText("议题九");
+               break;
+           case 9:
+               viHolder.tittle_pos.setText("议题十");
+               break;
+           default:
+               viHolder.tittle_pos.setText("议题"+(i+1));
+               break;
+       }
+
         viHolder.tittle2.addTextChangedListener(tittle2Watcher);
         viHolder.tittle2.setTag(tittle2Watcher);
         TextWatcher tittle3Watcher = new TextWatcher() {

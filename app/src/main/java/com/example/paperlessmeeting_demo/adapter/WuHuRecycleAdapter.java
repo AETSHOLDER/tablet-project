@@ -113,7 +113,7 @@ private deleteOpitionIntetface  deleteOpition;
             if (position == list.size() - 1) {
                 holder.add_chose.setVisibility(View.VISIBLE);
             } else {
-                holder.add_chose.setVisibility(View.GONE);
+                holder.add_chose.setVisibility(View.INVISIBLE);
             }
         }
 

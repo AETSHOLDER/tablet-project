@@ -1019,8 +1019,7 @@ if (Hawk.contains(constant._id)) {
         size=size+1;
         if (Integer.valueOf(textNub)>size){
             textNub=String.valueOf(Integer.valueOf(textNub)-1);
-            tittle_num.setText("议题"+textNub);
-            Log.d("删除的textNub=",textNub+"");
+            setTopicText(textNub);
         }
 
     }
@@ -1033,7 +1032,7 @@ if (Hawk.contains(constant._id)) {
         tittle1.setText(wuHuEditBean.getTopics());
         tittle2.setText(wuHuEditBean.getTopic_type());
         int s=Integer.valueOf(textNub)+1;
-        tittle_num.setText("议题"+s);
+        setTopicText(s+"");
         topic.setText(wuHuEditBeanList.get(Integer.valueOf(textNub)).getSubTopics());
         attend.setText(wuHuEditBeanList.get(Integer.valueOf(textNub)).getAttendeBean());
         switch (wuHuEditBean.getLine_color()){
@@ -1063,6 +1062,46 @@ if (Hawk.contains(constant._id)) {
                 break;
         }
 
+
+    }
+    private void  setTopicText(String numb){
+
+
+        switch (numb){
+            case "1":
+                tittle_num.setText("议题一");
+                break;
+            case "2":
+                tittle_num.setText("议题二");
+                break;
+            case "3":
+                tittle_num.setText("议题三");
+                break;
+            case "4":
+                tittle_num.setText("议题四");
+                break;
+            case "5":
+                tittle_num.setText("议题五");
+                break;
+            case "6":
+                tittle_num.setText("议题六");
+                break;
+            case "7":
+                tittle_num.setText("议题七");
+                break;
+            case "8":
+                tittle_num.setText("议题八");
+                break;
+            case "9":
+                tittle_num.setText("议题九");
+                break;
+            case "10":
+                tittle_num.setText("议题十");
+                break;
+            default:
+                tittle_num.setText("议题"+textNub);
+                break;
+        }
 
     }
     /*
@@ -1598,7 +1637,8 @@ if (Hawk.contains(constant._id)) {
         Log.d("onResume的的textNub=",textNub+"  isDeletOption="+ isDeletOption);
         int s=Integer.valueOf(textNub);
          s= s+1;
-        tittle_num.setText("议题"+s);
+       // tittle_num.setText("议题"+s);
+        setTopicText(s+"");
    /*     Log.d(TAG+toString(), "onResume: "+"text="+text);
         if (Hawk.contains("WuHuFragmentData")) {
             WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
