@@ -3,6 +3,7 @@ package com.example.paperlessmeeting_demo.tool.TempMeetingTools;
 import android.os.Handler;
 import android.util.Log;
 
+import com.example.paperlessmeeting_demo.WuHuLocalFileBean;
 import com.example.paperlessmeeting_demo.bean.AttendeBean;
 import com.example.paperlessmeeting_demo.bean.TempWSBean;
 import com.example.paperlessmeeting_demo.bean.VoteListBean;
@@ -275,6 +276,26 @@ public class ServerManager {
                 e.printStackTrace();
             }
         }
+
+        // 更新芜湖所有fragment添加本地文件列表
+        if(message.contains(constant.REFRESH_WUHU_FILE_FRAGMENT)){
+            try {
+                TempWSBean<WuHuLocalFileBean> wsebean = new Gson().fromJson(message, new TypeToken<TempWSBean<WuHuLocalFileBean>>(){}.getType());
+                WuHuLocalFileBean wuHuLocalFileBean = wsebean.getBody();
+                TempWSBean wsebean1 = new TempWSBean();
+                wsebean1.setReqType(1);
+                wsebean1.setUserMac_id("");
+                wsebean1.setPackType(constant.REFRESH_WUHU_FILE_FRAGMENT);
+                wsebean1.setBody(wuHuLocalFileBean);
+                String strJson = new Gson().toJson(wsebean1);
+                SendMessageToAll(strJson);
+
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
         EventMessage msg = new EventMessage(MessageReceiveType.MessageServer,message);
         EventBus.getDefault().post(msg);
     }

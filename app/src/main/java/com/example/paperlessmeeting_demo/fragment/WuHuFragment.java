@@ -46,7 +46,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.blankj.utilcode.util.StringUtils;
 import com.example.paperlessmeeting_demo.R;
+import com.example.paperlessmeeting_demo.WuHuLocalFileBean;
 import com.example.paperlessmeeting_demo.activity.ActivityImage;
 import com.example.paperlessmeeting_demo.activity.ActivityVideoView;
 import com.example.paperlessmeeting_demo.activity.EditWuHuActivity;
@@ -230,6 +232,15 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                     break;
                 case 1:
                     //    fileBeans.clear();
+                    //所有fragment 都更新本地文件列表
+                    WuHuLocalFileBean wuHuLocalFileBean=new WuHuLocalFileBean();
+                    if (!StringUtils.isEmpty(textNub)){
+                        wuHuLocalFileBean.setFragmentPos(textNub);
+                    }
+                    //1：添加本地
+                    wuHuLocalFileBean.setFlag("1");
+                    wsUpdata(wuHuLocalFileBean,constant.REFRESH_WUHU_FILE_FRAGMENT);
+                    //更新单个数据
                     getCopyFile();
                     break;
                 /*
@@ -342,56 +353,6 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                     getActivity().startActivity(intent);*/
                 }
 
-              /*
-                switch (fileBean.getFile_type()) {
-                    case "1"://音乐
-                        startPlayer("file://" + fileBean.getPath());
-                        //  getActivity().startActivity(FileUtils.openFile(fileBean.getPath(), getActivity()));
-                        // FileUtils.openFile("file://"+fileBean.getPath(), getActivity());
-                        break;
-                    case "2"://视频
-                        intent = new Intent();
-                        intent.setClass(getActivity(), ActivityVideoView.class);
-                        intent.putExtra("url", fileBean.getPath());
-                        intent.putExtra("isOpenFile", true);
-                        intent.putExtra("isNetFile", false);
-                        startActivity(intent);
-                        //  FileUtils.openFile(fileBean.getPath(), getActivity());
-                        break;
-                    case "3"://图片
-                        intent = new Intent();
-                        intent.setClass(getActivity(), ActivityImage.class);
-                        intent.putExtra("url", fileBean.getPath());
-                        intent.putExtra("isOpenFile", true);
-                        intent.putExtra("isNetFile", false);
-                        startActivity(intent);
-                        break;
-                    case "4":
-                        String wpsPackageName;
-                        if (FLUtil.checkPackage(context, Define.PACKAGENAME_KING_PRO)) {
-                            wpsPackageName = Define.PACKAGENAME_KING_PRO;
-                        } else if (FLUtil.checkPackage(context, Define.PACKAGENAME_PRO_DEBUG)) {
-                            wpsPackageName = Define.PACKAGENAME_PRO_DEBUG;
-                        } else if (FLUtil.checkPackage(context, Define.PACKAGENAME_ENG)) {
-                            wpsPackageName = Define.PACKAGENAME_ENG;
-                        } else if (FLUtil.checkPackage(context, Define.PACKAGENAME_KING_PRO_HW)) {
-                            wpsPackageName = Define.PACKAGENAME_KING_PRO_HW;
-                        } else if (FLUtil.checkPackage(context, Define.PACKAGENAME_K_ENG)) {
-                            wpsPackageName = Define.PACKAGENAME_K_ENG;
-                        } else {
-                            ToastUtils.showToast(context, "文件打开失败，请安装WPS Office专业版");
-                            return;
-                        }
-                        startActivity(FileUtils.openFile(fileBean.getPath(), getActivity()));
-//                       intent = new Intent();
-//                        intent.setClass(getActivity(), CommonWebViewActivity.class);
-//                        intent.putExtra("url", fileBean.getPath());
-//                        intent.putExtra("isOpenFile", true);
-//                        intent.putExtra("isNetFile", false);
-//                        intent.putExtra("tempPath", false);
-//                        startActivity(intent);
-                        break;
-                }*/
 
             }
         });
@@ -1024,6 +985,26 @@ if (Hawk.contains(constant._id)) {
                 }
 
 
+            }else if (message.getMessage().contains(constant.REFRESH_WUHU_FILE_FRAGMENT)){
+
+                try {
+                    TempWSBean<WuHuLocalFileBean> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<WuHuLocalFileBean>>() {
+                    }.getType());
+                    if (wsebean != null){
+
+                        WuHuLocalFileBean wuHuLocalFileBean=wsebean.getBody();
+                        if (wuHuLocalFileBean!=null){
+                            getCopyFile();
+                        }
+
+                    }
+                } catch (JsonSyntaxException e) {
+                    e.printStackTrace();
+                }
+
+
+
+
             }
 
         }
@@ -1382,7 +1363,7 @@ if (Hawk.contains(constant._id)) {
                             Log.d("requestCodeUr2222", uri.getScheme() + "===" + uri.getPath() + "==" + file.getName() + "++++++++++" + getFilePath(getActivity(), uri) + "===" + uri.getAuthority());
                             String endStr = file.getName().substring(file.getName().lastIndexOf(".") + 1);
 
-                            if ("jpg".equals(endStr) || "gif".equals(endStr) || "png".equals(endStr) || "jpeg".equals(endStr) || "bmp".equals(endStr)||endStr.equals("m4a") || endStr.equals("mp3") || endStr.equals("mid") ||
+                            if ("jpg".equals(endStr) || "gif".equals(endStr) || "png".equals(endStr) || "jpeg".equals(endStr) || "bmp ".equals(endStr)||endStr.equals("m4a") || endStr.equals("mp3") || endStr.equals("mid") ||
                                     endStr.equals("xmf") || endStr.equals("ogg") || endStr.equals("wav")||endStr.equals("3gp") || endStr.equals("mp4")||endStr.equals("ppt") || endStr.equals("pptx")||
                                     endStr.equals("xls") || endStr.equals("xlsx")||endStr.equals("doc") || endStr.equals("docx")||endStr.equals("pdf") || endStr.equals("txt")) {
                                 Log.d(TAG, "文件类型=" + endStr + "文件名字" + file.getName());

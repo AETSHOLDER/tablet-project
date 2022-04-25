@@ -288,6 +288,19 @@ public class JWebSocketClientService {
 
                     }
                 }
+                //  芜湖更新所有fragment添加本地文件列表
+                if (message.contains("refreshwuhufilefragment") || message.contains(constant.REFRESH_WUHU_FILE_FRAGMENT)) {
+                    if (topActivity != null) {
+                     /*
+                        Intent intent = new Intent();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("fileType", fileType);
+                        intent.putExtras(bundle);
+                        intent.setAction(constant.SHOW_CLOSE_SERVICE_BROADCAST);
+                        this.sendBroadcast(intent);*/
+
+                    }
+                }
                 //  芜湖更新所有fragment
                 if (message.contains("refreshdataALL") || message.contains(constant.REFRASHWuHUALL)) {
                     if (topActivity != null) {
