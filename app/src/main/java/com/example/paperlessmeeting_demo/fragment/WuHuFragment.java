@@ -1235,7 +1235,7 @@ if (Hawk.contains(constant._id)) {
         super.setUserVisibleHint(isVisibleToUser);
         textNub=getArguments().getString("text");
         Log.d("缓存里面的的textNub=",textNub+"  isDeletOption="+ isDeletOption);
-     if (isVisibleToUser) {
+        if (isVisibleToUser) {
          if (Hawk.contains("WuHuFragmentData")) {
            /*  int s=Integer.valueOf(textNub)+1;
              tittle_num.setText("议题"+s);*/
@@ -1247,7 +1247,10 @@ if (Hawk.contains(constant._id)) {
              editListBeanList = wuHuEditBean.getEditListBeanList();
 
              Log.d("fdafafaff",textNub+"editListBeanList=   "+editListBeanList.size());
-             topic.setText(editListBeanList.get(Integer.valueOf(textNub)).getSubTopics());
+             if(topic!=null){
+                 topic.setText(editListBeanList.get(Integer.valueOf(textNub)).getSubTopics());
+             }
+
              if(attend!=null){
                  attend.setText(editListBeanList.get(Integer.valueOf(textNub)).getAttendeBean());
              }
