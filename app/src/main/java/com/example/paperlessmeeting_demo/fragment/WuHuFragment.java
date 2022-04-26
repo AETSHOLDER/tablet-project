@@ -288,6 +288,7 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
     @Override
     protected void initData() {
         fileBeans.clear();
+        copyFileBeans.clear();
         getNetFile();
         for (int i = 0; i < fileBeans.size(); i++) {
             String endStr = fileBeans.get(i).getName().substring(fileBeans.get(i).getName().lastIndexOf(".") + 1);
@@ -496,8 +497,19 @@ if (Hawk.contains(constant._id)) {
         for (int i = 0; i < files.length; i++) {
             Log.d("sjshgha", files[i].toString() + "78687");
         }
+        copyFileBeans.clear();
+        fileBeans.clear();
+        if (Hawk.contains("wuhulocal")){
 
-        getFileName(files);
+            copyFileBeans=  Hawk.get("wuhulocal");
+        }
+        fileBeans.addAll(copyFileBeans);
+        fileBeans.addAll(netFileBeans);
+        fileBeans.addAll(shareFileBeans);
+        fileListAdapter.setGridViewBeanList(fileBeans);
+        fileListAdapter.notifyDataSetChanged();
+  //由copy路径文件改为Hawk储存
+      //  getFileName(files);
     }
 
     private void startPlayer(String url) {
@@ -782,7 +794,8 @@ if (Hawk.contains(constant._id)) {
         copyFileBeans.clear();
         fileBeans.clear();
         String content = "";
-        if (files != null) {// 先判断目录是否为空，否则会报空指针
+       if (files != null) {
+           // 先判断目录是否为空，否则会报空指针
             for (File file : files) {
                 Log.d(TAG, "路过~~~~~11" + file.getPath());
 
@@ -1369,7 +1382,13 @@ if (Hawk.contains(constant._id)) {
                         fileBean.setSuffix(endStr);//上传文件后缀名和文件类型；setSuffix和setType所赋值内容一样。
                         fileBean.setType(getFileType(endStr));
                         fileBean.setNet(false);
+                        copyFileBeans.add(fileBean);
+                        Hawk.put("wuhulocal",copyFileBeans);
                       //  fileBeans.add(fileBean);
+                        Message msg = new Message();
+                        //  msg.obj = fileListBean;//可以是基本类型，可以是对象，可以是List、map等；
+                        msg.what = 1;
+                        mHandler.sendMessage(msg);
                     }else {
                         Toast.makeText(getActivity(), "请选择正确的文件格式", Toast.LENGTH_SHORT).show();
                         return;
@@ -1377,12 +1396,12 @@ if (Hawk.contains(constant._id)) {
                     // fileBean = new FileListBean(file.getName(), "/storage/84BE-981E/声学在图书馆智慧空间建设中的应用.docx", "", "");
 
                    //复制文件到指定目录
-                    new Thread() {
+                 /*   new Thread() {
                         @Override
                         public void run() {
                             copyFile(file.getPath(), fileStrPath + file.getName());
                         }
-                    }.start();
+                    }.start();*/
 
                 } catch (URISyntaxException e) {
                     e.printStackTrace();
@@ -1408,16 +1427,22 @@ if (Hawk.contains(constant._id)) {
                                 Log.d(TAG, "文件类型=" + endStr + "文件名字" + file.getName());
                                 fileBean = new FileListBean(file.getName(), file.getPath(), "", "");
                                 //复制文件到指定目录
-                                new Thread() {
+                             /*   new Thread() {
                                     @Override
                                     public void run() {
                                         copyFile(file.getPath(), fileStrPath + file.getName());
                                     }
-                                }.start();
+                                }.start();*/
                                 fileBean.setResImage(getIamge(endStr));
                                 fileBean.setFile_type(getType(endStr));
                                 fileBean.setNet(false);
+                                copyFileBeans.add(fileBean);
+                                Hawk.put("wuhulocal",copyFileBeans);
                                // fileBeans.add(fileBean);
+                                Message msg = new Message();
+                                //  msg.obj = fileListBean;//可以是基本类型，可以是对象，可以是List、map等；
+                                msg.what = 1;
+                                mHandler.sendMessage(msg);
                             }else {
                                 Toast.makeText(getActivity(), "请选择正确的文件格式", Toast.LENGTH_SHORT).show();
                                 return;

@@ -225,6 +225,11 @@ public class LoginActivity extends BaseActivity  {
         //重新创建芜湖数据
         WuHuEditBean wuHuEditBean=new WuHuEditBean();
         Hawk.put("WuHuFragmentData",wuHuEditBean);
+      //芜湖上传本地文件进行分享时由copy到一个文件夹改为Hawk储存
+        if (Hawk.contains("wuhulocal")){
+
+            Hawk.delete("wuhulocal");
+        }
        agendaRl=(RelativeLayout) findViewById(R.id.agenda_rl);
        loginLeft=(LinearLayout) findViewById(R.id.login_left);
        //创建分享 添加本地，网络文件文件夹

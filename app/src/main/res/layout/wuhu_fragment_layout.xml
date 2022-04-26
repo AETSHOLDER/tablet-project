@@ -195,11 +195,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="70dp"
         android:gravity="center"
         android:text="某某某科技有限公司"
         android:textColor="#ff1d1d1d"
-        android:textSize="60sp" />
+        android:textSize="55sp" />
 
     <TextView
         android:id="@+id/tittle2"
@@ -211,7 +211,7 @@
         android:gravity="center"
         android:text="会议纪要"
         android:textColor="#ff1d1d1d"
-        android:textSize="50sp" />
+        android:textSize="48sp" />
 
     <View
         android:id="@+id/aa"
@@ -247,7 +247,7 @@
                 android:gravity="center"
                 android:text="议题1"
                 android:textColor="#EA1818"
-                android:textSize="45sp" />
+                android:textSize="42sp" />
 
             <RelativeLayout
                 android:layout_width="wrap_content"
@@ -263,7 +263,7 @@
                     android:gravity="center"
                     android:text="会议议题："
                     android:textColor="#848484"
-                    android:textSize="45sp" />
+                    android:textSize="42sp" />
 
                 <TextView
                     android:id="@+id/topic"
@@ -275,7 +275,7 @@
                     android:gravity="center"
                     android:text="请编辑会议议题"
                     android:textColor="#333333"
-                    android:textSize="45sp" />
+                    android:textSize="42sp" />
 
             </RelativeLayout>
 
@@ -292,7 +292,7 @@
                     android:gravity="center"
                     android:text="参会人员："
                     android:textColor="#848484"
-                    android:textSize="45sp" />
+                    android:textSize="42sp" />
 
                 <TextView
                     android:id="@+id/attend"
@@ -304,7 +304,7 @@
                     android:gravity="center"
                     android:text="某某，某某某 ，某某"
                     android:textColor="#333333"
-                    android:textSize="45sp" />
+                    android:textSize="42sp" />
 
             </RelativeLayout>
 
