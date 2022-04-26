@@ -227,6 +227,21 @@ public class LoginActivity extends BaseActivity  {
         Hawk.put("WuHuFragmentData",wuHuEditBean);
        agendaRl=(RelativeLayout) findViewById(R.id.agenda_rl);
        loginLeft=(LinearLayout) findViewById(R.id.login_left);
+       //创建分享 添加本地，网络文件文件夹
+        File share = new File(fileShare);
+        if (!share.exists()) {
+            share.mkdir();
+        }
+
+        File copy = new File(COPY_PATH);
+        if (!copy.exists()) {
+            copy.mkdir();
+        }
+        File net = new File(netFilePath);
+        if (!net.exists()) {
+            net.mkdir();
+        }
+
         //删除临时会议分享文件文件夹
      //   DeleteFileUtil.deleteDirectory(fileShare);
         /*
