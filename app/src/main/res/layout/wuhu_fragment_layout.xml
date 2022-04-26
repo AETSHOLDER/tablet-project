@@ -195,7 +195,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="90dp"
+        android:layout_marginTop="80dp"
         android:gravity="center"
         android:text="某某某科技有限公司"
         android:textColor="#ff1d1d1d"
