@@ -696,7 +696,10 @@ public class LoginActivity extends BaseActivity  {
         deleteDirWihtFile(new File(COPY_PATH));
         deleteDirWihtFile(new File(VOTE_FILE));
         deleteDirWihtFile(new File(netFilePath));
+        if (Hawk.contains("wuhulocal")){
 
+            Hawk.delete("wuhulocal");
+        }
         // 重新获取一次会议信息
 
 //        requestRunable = new Runnable() {
