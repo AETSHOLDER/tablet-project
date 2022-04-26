@@ -1382,7 +1382,22 @@ if (Hawk.contains(constant._id)) {
                         fileBean.setSuffix(endStr);//上传文件后缀名和文件类型；setSuffix和setType所赋值内容一样。
                         fileBean.setType(getFileType(endStr));
                         fileBean.setNet(false);
-                        copyFileBeans.add(fileBean);
+                        if (Hawk.contains("wuhulocal")){
+                            copyFileBeans=Hawk.get("wuhulocal");
+                            for (int k=0;k<copyFileBeans.size();k++){
+                                if (file.getPath().equals(copyFileBeans.get(k).getPath())){
+
+
+                                }else {
+                                    copyFileBeans.add(fileBean);
+                                }
+
+
+                            }
+                        }else {
+                            copyFileBeans.add(fileBean);
+                        }
+
                         Hawk.put("wuhulocal",copyFileBeans);
                       //  fileBeans.add(fileBean);
                         Message msg = new Message();
@@ -1436,7 +1451,20 @@ if (Hawk.contains(constant._id)) {
                                 fileBean.setResImage(getIamge(endStr));
                                 fileBean.setFile_type(getType(endStr));
                                 fileBean.setNet(false);
-                                copyFileBeans.add(fileBean);
+                                if (Hawk.contains("wuhulocal")){
+                                    copyFileBeans=Hawk.get("wuhulocal");
+                                    for (int k=0;k<copyFileBeans.size();k++){
+                                        if (file.getPath().equals(copyFileBeans.get(k).getPath())){
+
+                                        }else {
+                                            copyFileBeans.add(fileBean);
+                                        }
+
+
+                                    }
+                                }else {
+                                    copyFileBeans.add(fileBean);
+                                }
                                 Hawk.put("wuhulocal",copyFileBeans);
                                // fileBeans.add(fileBean);
                                 Message msg = new Message();
