@@ -233,6 +233,19 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                 case 1:
                     //    fileBeans.clear();
                     //所有fragment 都更新本地文件列表
+                 /*   WuHuLocalFileBean wuHuLocalFileBean=new WuHuLocalFileBean();
+                    if (!StringUtils.isEmpty(textNub)){
+                        wuHuLocalFileBean.setFragmentPos(textNub);
+                    }
+                    //1：添加本地
+                    wuHuLocalFileBean.setFlag("1");
+                    wsUpdata(wuHuLocalFileBean,constant.REFRESH_WUHU_FILE_FRAGMENT);*/
+                    //更新单个数据
+                    getCopyFile();
+                    break;
+                case 88:
+                    //    fileBeans.clear();
+                    //所有fragment 都更新本地文件列表
                     WuHuLocalFileBean wuHuLocalFileBean=new WuHuLocalFileBean();
                     if (!StringUtils.isEmpty(textNub)){
                         wuHuLocalFileBean.setFragmentPos(textNub);
@@ -485,7 +498,7 @@ if (Hawk.contains(constant._id)) {
 
 
     private void getCopyFile() {
-        if (fileStrPath.isEmpty()) {
+/*        if (fileStrPath.isEmpty()) {
             return;
         }
         File path = new File(fileStrPath);
@@ -496,13 +509,21 @@ if (Hawk.contains(constant._id)) {
         }
         for (int i = 0; i < files.length; i++) {
             Log.d("sjshgha", files[i].toString() + "78687");
-        }
+        }*/
         copyFileBeans.clear();
         fileBeans.clear();
         if (Hawk.contains("wuhulocal")){
-
             copyFileBeans=  Hawk.get("wuhulocal");
+            for ( int i = 0 ; i < copyFileBeans.size() - 1 ; i ++ ) {
+                for ( int j = copyFileBeans.size() - 1 ; j > i; j -- ) {
+                    if (copyFileBeans.get(j).getPath().equals(copyFileBeans.get(i).getPath())) {
+                        copyFileBeans.remove(j);
+                    }
+                }
+            }
         }
+
+        Log.d("dfsaffafafff",copyFileBeans.size()+"");
         fileBeans.addAll(copyFileBeans);
         fileBeans.addAll(netFileBeans);
         fileBeans.addAll(shareFileBeans);
@@ -1382,27 +1403,28 @@ if (Hawk.contains(constant._id)) {
                         fileBean.setSuffix(endStr);//上传文件后缀名和文件类型；setSuffix和setType所赋值内容一样。
                         fileBean.setType(getFileType(endStr));
                         fileBean.setNet(false);
-                        if (Hawk.contains("wuhulocal")){
+                        copyFileBeans.add(fileBean);
+             /*           if (Hawk.contains("wuhulocal")){
                             copyFileBeans=Hawk.get("wuhulocal");
+                            if (copyFileBeans.size() == 0) {
+                                copyFileBeans.add(fileBean);
+                            }else {
                             for (int k=0;k<copyFileBeans.size();k++){
                                 if (file.getPath().equals(copyFileBeans.get(k).getPath())){
-
+                                    continue;
 
                                 }else {
                                     copyFileBeans.add(fileBean);
                                 }
 
-
                             }
-                        }else {
-                            copyFileBeans.add(fileBean);
-                        }
-
+                            }
+                        }*/
                         Hawk.put("wuhulocal",copyFileBeans);
                       //  fileBeans.add(fileBean);
                         Message msg = new Message();
                         //  msg.obj = fileListBean;//可以是基本类型，可以是对象，可以是List、map等；
-                        msg.what = 1;
+                        msg.what = 88;
                         mHandler.sendMessage(msg);
                     }else {
                         Toast.makeText(getActivity(), "请选择正确的文件格式", Toast.LENGTH_SHORT).show();
@@ -1451,25 +1473,29 @@ if (Hawk.contains(constant._id)) {
                                 fileBean.setResImage(getIamge(endStr));
                                 fileBean.setFile_type(getType(endStr));
                                 fileBean.setNet(false);
-                                if (Hawk.contains("wuhulocal")){
+                                copyFileBeans.add(fileBean);
+                        /*        if (Hawk.contains("wuhulocal")){
                                     copyFileBeans=Hawk.get("wuhulocal");
+                                    if (copyFileBeans.size() == 0) {
+                                        copyFileBeans.add(fileBean);
+                                    }else {
+
                                     for (int k=0;k<copyFileBeans.size();k++){
                                         if (file.getPath().equals(copyFileBeans.get(k).getPath())){
+                                            continue;
 
                                         }else {
-                                            copyFileBeans.add(fileBean);
+
                                         }
 
 
-                                    }
-                                }else {
-                                    copyFileBeans.add(fileBean);
-                                }
+                                    }}
+                                }*/
                                 Hawk.put("wuhulocal",copyFileBeans);
                                // fileBeans.add(fileBean);
                                 Message msg = new Message();
                                 //  msg.obj = fileListBean;//可以是基本类型，可以是对象，可以是List、map等；
-                                msg.what = 1;
+                                msg.what = 88;
                                 mHandler.sendMessage(msg);
                             }else {
                                 Toast.makeText(getActivity(), "请选择正确的文件格式", Toast.LENGTH_SHORT).show();
@@ -1484,8 +1510,8 @@ if (Hawk.contains(constant._id)) {
                 }
             }
 
-            fileListAdapter.setGridViewBeanList(fileBeans);
-            fileListAdapter.notifyDataSetChanged();
+         /*   fileListAdapter.setGridViewBeanList(fileBeans);
+            fileListAdapter.notifyDataSetChanged();*/
         }
 
     }

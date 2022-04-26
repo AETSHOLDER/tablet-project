@@ -37,6 +37,7 @@ import com.example.paperlessmeeting_demo.bean.AttendeBean;
 import com.example.paperlessmeeting_demo.bean.BasicResponse;
 import com.example.paperlessmeeting_demo.bean.CreateFileBeanRequest;
 import com.example.paperlessmeeting_demo.bean.CreateFileBeanResponse;
+import com.example.paperlessmeeting_demo.bean.FileListBean;
 import com.example.paperlessmeeting_demo.bean.InitiaBean.InitiaMeeting;
 import com.example.paperlessmeeting_demo.bean.MeetingInfoBean;
 import com.example.paperlessmeeting_demo.bean.PaperlessBean;
@@ -700,6 +701,8 @@ public class LoginActivity extends BaseActivity  {
 
             Hawk.delete("wuhulocal");
         }
+        List<FileListBean> copyFileBeans = new ArrayList<>();//本地上传得到的文件集合
+        Hawk.put("wuhulocal",copyFileBeans);
         // 重新获取一次会议信息
 
 //        requestRunable = new Runnable() {
