@@ -254,30 +254,31 @@
             android:src="@mipmap/sign_back" />
         <TextView
             android:id="@+id/sign_title"
-            android:layout_width="255dp"
+            android:layout_width="400dp"
             android:layout_height="60dp"
             android:layout_centerInParent="true"
             android:gravity="center"
             android:text="文件名称"
+            android:lines="1"
             android:textColor="#1D1D1D"
             android:textSize="35sp"
             android:fontFamily="sans-serif-medium"/>
 
         <TextView
             android:id="@+id/sign_see"
-            android:layout_width="150dp"
+            android:layout_width="155dp"
             android:layout_height="50dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="370dp"
+            android:layout_marginRight="390dp"
             android:fontFamily="sans-serif-medium"
-            android:gravity="center"
+            android:gravity="center_vertical"
             android:text="查阅批注"
             android:textColor="#1D1D1D"
             android:textSize="30sp" />
         <TextView
             android:id="@+id/sign_door"
-            android:layout_width="145dp"
+            android:layout_width="155dp"
             android:layout_height="50dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
@@ -290,7 +291,7 @@
 
         <TextView
             android:id="@+id/sign_commit"
-            android:layout_width="145dp"
+            android:layout_width="155dp"
             android:layout_height="50dp"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/sign_door"

@@ -128,7 +128,7 @@ public class constant {
      */
     public final static int WRITE_PERMISSION_CODE1 = 0x0244;
     public final static String WRITE_PERMISSION_TIP = "为了正常使用，请允许一下权限!";
-    public final static String[] PERMS_WRITE = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO, Manifest.permission.INTERNET, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE
+    public final static String[] PERMS_WRITE = {Manifest.permission.READ_PHONE_STATE,Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO, Manifest.permission.INTERNET, Manifest.permission.READ_EXTERNAL_STORAGE
     };
     public final static String[] PERMS_WRITE1 = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET
     };

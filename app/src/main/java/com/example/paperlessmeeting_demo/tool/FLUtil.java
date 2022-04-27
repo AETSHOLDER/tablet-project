@@ -3,6 +3,7 @@ package com.example.paperlessmeeting_demo.tool;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
@@ -79,6 +80,39 @@ public class FLUtil {
         }
         return true;
     }
+
+    /**
+     * 自定义裁剪，根据第一个像素点(左上角)X和Y轴坐标和需要的宽高来裁剪
+     * @param srcBitmap
+     * @param firstPixelX
+     * @param firstPixelY
+     * @param needWidth
+     * @param needHeight
+     * @param recycleSrc
+     * @return
+     */
+    public static Bitmap cropBitmapCustom(Bitmap srcBitmap, int firstPixelX, int firstPixelY, int needWidth, int needHeight, boolean recycleSrc) {
+
+        Log.d("danxx", "cropBitmapRight before w : "+srcBitmap.getWidth());
+        Log.d("danxx", "cropBitmapRight before h : "+srcBitmap.getHeight());
+
+        if(firstPixelX + needWidth > srcBitmap.getWidth()){
+            needWidth = srcBitmap.getWidth() - firstPixelX;
+        }
+
+        if(firstPixelY + needHeight > srcBitmap.getHeight()){
+            needHeight = srcBitmap.getHeight() - firstPixelY;
+        }
+
+        /**裁剪关键步骤*/
+        Bitmap cropBitmap = Bitmap.createBitmap(srcBitmap, firstPixelX, firstPixelY, needWidth, needHeight);
+
+        Log.d("danxx", "cropBitmapRight after w : "+cropBitmap.getWidth());
+        Log.d("danxx", "cropBitmapRight after h : "+cropBitmap.getHeight());
+
+        return cropBitmap;
+    }
+
 
     /*
     *  显示

@@ -68,21 +68,18 @@ public class SignDrawPenView extends View {
     }
     public sendSingleFile sendfile;
     private Bitmap mBottomBitmap = null;
+    private Bitmap mBottomBitmapFlag = null;
     private int mBottomBitmapDrawHeight = 0;
     float posX, posY;
     private final float TOUCH_TOLERANCE = 4;
     private Context mContext;
     private Canvas mCanvas = null;
 
-    public void setmBottomBitmap(Bitmap mBottomBitmap) {
-        this.mBottomBitmap = mBottomBitmap.copy(Bitmap.Config.ARGB_8888,true);
-//        this.mBottomBitmap = mBottomBitmap;
+    public void setmBottomBitmap(Bitmap BottomBitmap) {
+        this.mBottomBitmap = BottomBitmap.copy(Bitmap.Config.ARGB_8888,true);
+//        this.mBottomBitmapFlag =  BottomBitmap.copy(Bitmap.Config.ARGB_8888,true);
 //        mCanvas.setBitmap(mBottomBitmap);
 //        postInvalidate();
-    }
-
-    public Bitmap getmBottomBitmap() {
-        return mBottomBitmap;
     }
 
     public SignDrawPenView(Context context, AttributeSet attr, int defStyle) {
@@ -174,6 +171,7 @@ public class SignDrawPenView extends View {
 
     @Override
     public void onDraw(Canvas canvas) {
+        Log.e("xxx","onDraw 调用");
         canvas.drawColor(mContext.getResources().getColor(R.color.transparent));
         int nCanvasHeight = canvas.getHeight();
         int nBitmapHeight = mBottomBitmap.getHeight();

@@ -46,6 +46,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.WuHuLocalFileBean;
@@ -1714,6 +1715,9 @@ if (Hawk.contains(constant._id)) {
     public void onResume() {
         super.onResume();
         Log.d("onResume的的textNub=",textNub+"  isDeletOption="+ isDeletOption);
+        if(textNub==null){
+            return;
+        }
         int s=Integer.valueOf(textNub);
          s= s+1;
        // tittle_num.setText("议题"+s);
@@ -1971,6 +1975,15 @@ if (Hawk.contains(constant._id)) {
                 startActivity(intent);
             }else if (fileBean.getFile_type().equals("4")){
                 if(UserUtil.isNetworkOnline){
+                    Activity topActivity = (Activity) ActivityUtils.getTopActivity();
+                    if (topActivity != null) {
+                        // 如果是在签批内，先关闭，再进入,否则未销毁tbs,会一直显示加载中(看情况添加用户提示)
+                        if(topActivity.getLocalClassName().contains("SignActivity")){
+                            SignActivity signActivity = (SignActivity)topActivity;
+                            signActivity.clearData();
+                            topActivity.finish();
+                        }
+                    }
                     intent = new Intent();
                     intent.setClass(getActivity(), SignActivity.class);
                     intent.putExtra("url", fileBean.getPath());

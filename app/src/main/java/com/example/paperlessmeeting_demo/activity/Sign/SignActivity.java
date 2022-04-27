@@ -1,20 +1,31 @@
 package com.example.paperlessmeeting_demo.activity.Sign;
 
+
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.hardware.display.DisplayManager;
+import android.hardware.display.VirtualDisplay;
+import android.media.Image;
+import android.media.ImageReader;
+import android.media.projection.MediaProjection;
+import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -22,11 +33,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.paperlessmeeting_demo.R;
-import com.example.paperlessmeeting_demo.activity.ActivityBrowser;
 import com.example.paperlessmeeting_demo.base.BaseActivity;
 import com.example.paperlessmeeting_demo.bean.UserBehaviorBean;
 import com.example.paperlessmeeting_demo.sharefile.SocketShareFileManager;
 import com.example.paperlessmeeting_demo.tool.CVIPaperDialogUtils;
+import com.example.paperlessmeeting_demo.tool.FLUtil;
 import com.example.paperlessmeeting_demo.tool.StoreUtil;
 import com.example.paperlessmeeting_demo.tool.TimeUtils;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
@@ -48,10 +59,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import q.rorbin.verticaltablayout.util.DisplayUtil;
+import static com.blankj.utilcode.util.ScreenUtils.getScreenHeight;
+import static com.blankj.utilcode.util.ScreenUtils.getScreenWidth;
 
 public class SignActivity extends BaseActivity implements View.OnClickListener {
     @BindView(R.id.rl_root)
@@ -141,7 +155,10 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     private Drawable drawable_left_exit;
     private File appDir;
     private String fileName;
+    private String TAG = "SignActivity";
 //    private Bitmap mBottomBitmap = null;
+    private int IMAGE_WIDTH = 0;
+    private int IMAGE_HEIGHT = 0;
     private SocketShareFileManager socketShareFileManager;
     private Handler mHandler = new Handler() {
 
@@ -264,15 +281,27 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
             public void onClick(View view) {
                 sign_Door.setSelected(!sign_Door.isSelected());
                 if (sign_Door.isSelected()) {
-                    changeSignUI();
-                    //签批
-                    SignOperationUtils.getInstance().DISABLE = true;
-                    Bitmap bitmap = getBitmap(tbsReaderView);
-                    Bitmap bitmap22 = bitmap.copy(Bitmap.Config.ARGB_8888,true);
-//                    mDbView.setmBottomBitmap(bitmap);
-                    onSaveBitmap(bitmap, "2");
-                    // 如过直接设置bitmap 会提示recycle
-                    mDbView.setBackground(new BitmapDrawable(bitmap22));
+                    if(url.contains("ppt") || url.contains("xls")){
+                        // getBitmap取得的截图很小，只能用这种方法
+                        Log.e("111","url.contains(\"ppt\")");
+                        takeScreenShot();
+                    }else {
+                        Bitmap bitmap  = getBitmap(tbsReaderView);
+                        Bitmap bitmap22 = bitmap.copy(Bitmap.Config.ARGB_8888,true);
+                        changeSignUI();
+                        mDbView.setVisibility(View.VISIBLE);
+                        mDtView.setVisibility(View.VISIBLE);
+                        tbsReaderView.setVisibility(View.GONE);
+                        //签批
+                        SignOperationUtils.getInstance().DISABLE = true;
+
+//                        mDbView.setmBottomBitmap(bitmap22);
+//                        onSaveBitmap(bitmap, "2");
+                        // 如过直接设置bitmap 会提示recycle
+
+//                        Bitmap scaleBitmap = Bitmap.createScaledBitmap(bitmap22,IMAGE_WIDTH,IMAGE_HEIGHT ,true);
+                        mDbView.setBackground(new BitmapDrawable(bitmap22));
+                    }
                 }else {
                     int size = SignOperationUtils.getInstance().getSavePoints().size();
                     if(size>0){
@@ -310,26 +339,28 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
             public void onClick(View view) {
                 // 保存，普通用户将上传文档
                 ToolsOperation(WhiteBoardVariable.Operation.OUTSIDE_CLICK);
-                String filePath = saveImage();
-                // 上传  非主席发送给主席
-                 boolean ok = new File(filePath).exists();
-                 Log.e("111","文件是否存在==="+ok);
-                if(!UserUtil.ISCHAIRMAN && filePath!=null && new File(filePath).exists()){
-                    String fileName = parseName(filePath);
-                    Thread sendThread = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                Thread.sleep(500);
-                            }catch (Exception e){
-                                e.printStackTrace();
-                            }
-                            //将文件发送到指定IP
-                            socketShareFileManager.SendFile(fileName, filePath, UserUtil.serverIP, constant.SHARE_PORT,"2");
-                        }
-                    });
-                    sendThread.start();
-                }
+                takeScreenShotCommit();
+
+//                String filePath = saveImage();
+//                // 上传  非主席发送给主席
+//                 boolean ok = new File(filePath).exists();
+//                 Log.e("111","文件是否存在==="+ok);
+//                if(!UserUtil.ISCHAIRMAN && filePath!=null && new File(filePath).exists()){
+//                    String fileName = parseName(filePath);
+//                    Thread sendThread = new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            try {
+//                                Thread.sleep(500);
+//                            }catch (Exception e){
+//                                e.printStackTrace();
+//                            }
+//                            //将文件发送到指定IP
+//                            socketShareFileManager.SendFile(fileName, filePath, UserUtil.serverIP, constant.SHARE_PORT,"2");
+//                        }
+//                    });
+//                    sendThread.start();
+//                }
             }
         });
         sign_see.setOnClickListener(new View.OnClickListener() {
@@ -370,8 +401,10 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
         Log.d("requestCodeUrnnn", Environment.getExternalStorageDirectory().getPath());
         boolean result = tbsReaderView.preOpen(parseFormat(parseName(url)), false);
         if (result) {
+            Hawk.put("TBS",true);
             tbsReaderView.openFile(bundle);
         }else {
+            Hawk.put("TBS",false);
             tbs_notInit.setVisibility(View.VISIBLE);
 //            Intent intent = new Intent(SignActivity.this, ActivityBrowser.class);
 //            Bundle bundle1 = new Bundle();
@@ -451,11 +484,21 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     protected void onDestroy() {
-        handler.removeMessages(1001);
-        handler = null;
-        tbsReaderView.onStop();
-        mDbView.clearImage();
+        clearData();
         super.onDestroy();
+    }
+    public void clearData(){
+        if(handler!= null){
+            handler.removeMessages(1001);
+            handler = null;
+        }
+        if(tbsReaderView!=null){
+            tbsReaderView.onStop();
+        }
+        if(mDbView!=null){
+            mDbView.clearImage();
+        }
+
     }
 
     @Override
@@ -465,6 +508,174 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     }
 
 
+    public static final int EVENT_SCREENSHOT = 22;//截图事件
+    public static final int EVENT_SCREENSHOTCOMMIT = 33;//截图事件
+    private MediaProjectionManager mediaProjectionManager;
+    private MediaProjection mediaProjection;
+    private Image image;
+    public void takeScreenShot() {
+        mediaProjectionManager = (MediaProjectionManager)
+                getApplication().getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+        startActivityForResult(mediaProjectionManager.createScreenCaptureIntent(), EVENT_SCREENSHOT);
+    }
+    public void takeScreenShotCommit() {
+        mediaProjectionManager = (MediaProjectionManager)
+                getApplication().getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+        startActivityForResult(mediaProjectionManager.createScreenCaptureIntent(), EVENT_SCREENSHOTCOMMIT);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.e(TAG, "onActivityResult...requestCode=" + requestCode + ",resultCode=" + resultCode);
+        if (requestCode == EVENT_SCREENSHOT) {
+            super.onActivityResult(requestCode, resultCode, data);
+            Log.e(TAG, "captureScreen...");
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            WindowManager windowManager = (WindowManager) this.getSystemService(WINDOW_SERVICE);
+            windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+            int width = displayMetrics.widthPixels;
+            int height = displayMetrics.heightPixels;
+            Log.e(TAG, "displayMetrics width=" + width + ", height=" + height);
+            ImageReader mImageReader = ImageReader.newInstance(width, height, PixelFormat.RGBA_8888, 2);
+            mediaProjection = mediaProjectionManager.getMediaProjection(resultCode, data);
+            VirtualDisplay virtualDisplay = mediaProjection.createVirtualDisplay("screen-mirror", width, height,
+                    displayMetrics.densityDpi, DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR, mImageReader.getSurface(), null, null);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        image = mImageReader.acquireLatestImage();
+                        if (image != null) {
+                            final Image.Plane[] planes = image.getPlanes();
+                            final ByteBuffer buffer = planes[0].getBuffer();
+                            int width = image.getWidth();
+                            int height = image.getHeight();
+//                            Log.e("whh0914", "image width=" + width + ", height=" + height);
+                            int pixelStride = planes[0].getPixelStride();
+                            int rowStride = planes[0].getRowStride();
+                            int rowPadding = rowStride - pixelStride * width;
+                            Bitmap bitmap = Bitmap.createBitmap(width + rowPadding / pixelStride, height, Bitmap.Config.ARGB_8888);
+                            bitmap.copyPixelsFromBuffer(buffer);
+                            bitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth(), bitmap.getHeight(), false);
+                            if (bitmap != null) {
+                                // 截取指定的区域
+                                int pix = DisplayUtil.dp2px(SignActivity.this, 120);
+                                int piy = DisplayUtil.dp2px(SignActivity.this, 90);
+                                int piW = getScreenWidth() - DisplayUtil.dp2px(SignActivity.this, 240);
+                                int piH = getScreenHeight() - DisplayUtil.dp2px(SignActivity.this, 90);
+
+                                Bitmap bitmap2 = FLUtil.cropBitmapCustom(bitmap,pix,piy,piW,piH,true);
+                                Bitmap bitmap22 = bitmap2.copy(Bitmap.Config.ARGB_8888,true);
+
+                                changeSignUI();
+                                mDbView.setVisibility(View.VISIBLE);
+                                mDtView.setVisibility(View.VISIBLE);
+                                tbsReaderView.setVisibility(View.GONE);
+                                //签批
+                                SignOperationUtils.getInstance().DISABLE = true;
+                                mDbView.setBackground(new BitmapDrawable(bitmap22));
+                            }
+                            bitmap.recycle();
+                        }
+                    } catch (Exception e) {
+                        Log.e("whh0914", "截图出现异常：" + e.toString());
+                    } finally {
+                        if (image != null) {
+                            image.close();
+                        }
+                        if (mImageReader != null) {
+                            mImageReader.close();
+                        }
+                        if (virtualDisplay != null) {
+                            virtualDisplay.release();
+                        }
+                        //必须代码，否则出现BufferQueueProducer: [ImageReader] dequeueBuffer: BufferQueue has been abandoned
+                        mImageReader.setOnImageAvailableListener(null, null);
+                        mediaProjection.stop();
+                    }
+                }
+            }, 150);
+        }else if(requestCode == EVENT_SCREENSHOTCOMMIT){
+            super.onActivityResult(requestCode, resultCode, data);
+            Log.e(TAG, "captureScreen...");
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            WindowManager windowManager = (WindowManager) this.getSystemService(WINDOW_SERVICE);
+            windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+            int width = displayMetrics.widthPixels;
+            int height = displayMetrics.heightPixels;
+            Log.e(TAG, "displayMetrics width=" + width + ", height=" + height);
+            ImageReader mImageReader = ImageReader.newInstance(width, height, PixelFormat.RGBA_8888, 2);
+            mediaProjection = mediaProjectionManager.getMediaProjection(resultCode, data);
+            VirtualDisplay virtualDisplay = mediaProjection.createVirtualDisplay("screen-mirror", width, height,
+                    displayMetrics.densityDpi, DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR, mImageReader.getSurface(), null, null);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        image = mImageReader.acquireLatestImage();
+                        if (image != null) {
+                            final Image.Plane[] planes = image.getPlanes();
+                            final ByteBuffer buffer = planes[0].getBuffer();
+                            int width = image.getWidth();
+                            int height = image.getHeight();
+//                            Log.e("whh0914", "image width=" + width + ", height=" + height);
+                            int pixelStride = planes[0].getPixelStride();
+                            int rowStride = planes[0].getRowStride();
+                            int rowPadding = rowStride - pixelStride * width;
+                            Bitmap bitmap = Bitmap.createBitmap(width + rowPadding / pixelStride, height, Bitmap.Config.ARGB_8888);
+                            bitmap.copyPixelsFromBuffer(buffer);
+                            bitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth(), bitmap.getHeight(), false);
+                            if (bitmap != null) {
+                                // 截取指定的区域
+                                int pix = DisplayUtil.dp2px(SignActivity.this, 120);
+                                int piy = DisplayUtil.dp2px(SignActivity.this, 90);
+                                int piW = getScreenWidth() - DisplayUtil.dp2px(SignActivity.this, 240);
+                                int piH = getScreenHeight() - DisplayUtil.dp2px(SignActivity.this, 90);
+
+                                Bitmap bitmap2 = FLUtil.cropBitmapCustom(bitmap,pix,piy,piW,piH,true);
+
+                                String filePath = saveImage22(bitmap2);
+                                // 上传  非主席发送给主席
+                                boolean ok = new File(filePath).exists();
+                                Log.e("111","文件是否存在==="+ok);
+                                if(!UserUtil.ISCHAIRMAN && filePath!=null && new File(filePath).exists()){
+                                    String fileName = parseName(filePath);
+                                    Thread sendThread = new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            try {
+                                                Thread.sleep(500);
+                                            }catch (Exception e){
+                                                e.printStackTrace();
+                                            }
+                                            //将文件发送到指定IP
+                                            socketShareFileManager.SendFile(fileName, filePath, UserUtil.serverIP, constant.SHARE_PORT,"2");
+                                        }
+                                    });
+                                    sendThread.start();
+                                }
+                            }
+                            bitmap.recycle();
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "截图出现异常：" + e.toString());
+                    } finally {
+                        if (image != null) {
+                            image.close();
+                        }
+                        if (mImageReader != null) {
+                            mImageReader.close();
+                        }
+                        if (virtualDisplay != null) {
+                            virtualDisplay.release();
+                        }
+                        //必须代码，否则出现BufferQueueProducer: [ImageReader] dequeueBuffer: BufferQueue has been abandoned
+                        mImageReader.setOnImageAvailableListener(null, null);
+                        mediaProjection.stop();
+                    }
+                }
+            }, 150);
+        }
+    }
     /**
      * @param view 需要截取图片的view
      *             传入线性或相对布局就截取里面的所有内容
@@ -1170,13 +1381,49 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
             }
             file.createNewFile();
             FileOutputStream out = new FileOutputStream(file);
-            mFlView.setDrawingCacheEnabled(true);
-            mFlView.buildDrawingCache();
-            Bitmap bitmap = mFlView.getDrawingCache();
+            mDbView.setDrawingCacheEnabled(true);
+            mDbView.buildDrawingCache();
+            Bitmap bitmap = mDbView.getDrawingCache();
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
             out.flush();
             out.close();
-            mFlView.destroyDrawingCache();
+            mDbView.destroyDrawingCache();
+
+            Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            Uri uri = Uri.fromFile(file);
+            intent.setData(uri);
+            sendBroadcast(intent);//这个广播的目的就是更新图库
+            String title = getString(R.string.white_board_export_tip)+ StoreUtil.getPersonalSignPhotoPath();
+            if(title.contains("/storage/emulated/0")){
+                title = title.replace("/storage/emulated/0"," ");
+            }
+            CVIPaperDialogUtils.showConfirmDialog(SignActivity.this, title, "知道了", false, null);
+            return fileName;
+        } catch (Exception e) {
+            showMessage(getString(R.string.white_board_export_fail));
+            e.printStackTrace();
+            return null;
+        }
+    }
+    /**
+     * 保存当前白板为图片
+     */
+    public String saveImage22(Bitmap bitmap) {
+        String fileName = StoreUtil.getPersonalSignPhotoSavePath();
+        File file = new File(fileName);
+        try {
+            File directory = file.getParentFile();
+            if (!directory.exists() && !directory.mkdirs()) {
+                showMessage(getString(R.string.white_board_export_fail));
+                return null;
+            }
+            file.createNewFile();
+            FileOutputStream out = new FileOutputStream(file);
+
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.flush();
+            out.close();
+
 
             Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
             Uri uri = Uri.fromFile(file);

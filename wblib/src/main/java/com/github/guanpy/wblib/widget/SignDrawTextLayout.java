@@ -52,7 +52,6 @@ public class SignDrawTextLayout extends FrameLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        Log.e("www","SignOperationUtils.getInstance().DISABLE=="+SignOperationUtils.getInstance().DISABLE);
         if (SignOperationUtils.getInstance().mCurrentDrawType == SignOperationUtils.DRAW_TEXT&&SignOperationUtils.getInstance().DISABLE) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
