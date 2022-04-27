@@ -45,14 +45,14 @@ public class WuHuVoteActivity extends BaseActivity {
     @Override
     protected void initView() {
 
-        getSupportFragmentManager()    //
+  /*      getSupportFragmentManager()    //
                 .beginTransaction()
                 .add(R.id.fragment_container,  WuHuFragment.newInstance(0+""))   // 此处的R.id.fragment_container是要盛放fragment的父容器
-                .commit();
-       /* getSupportFragmentManager()    //
+                .commit();*/
+        getSupportFragmentManager()    //
                 .beginTransaction()
                 .add(R.id.fragment_container, new WuHUVoteListFragment("投票", WuHuVoteActivity.this))   // 此处的R.id.fragment_container是要盛放fragment的父容器
-                .commit();*/
+                .commit();
     }
 
     @Override
