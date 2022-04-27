@@ -1300,8 +1300,15 @@ if (Hawk.contains(constant._id)) {
                  return;
              }
              editListBeanList = wuHuEditBean.getEditListBeanList();
+               if (tittle1!=null){
+                   tittle1.setText(editListBeanList.get(Integer.valueOf(textNub)).getTopics());
 
-             Log.d("fdafafaff",textNub+"editListBeanList=   "+editListBeanList.size());
+               }
+             if (tittle2!=null){
+
+                 tittle2.setText(editListBeanList.get(Integer.valueOf(textNub)).getTopic_type());
+             }
+             Log.d("fdafafaff=fragment",textNub+"editListBeanList=   "+editListBeanList.size());
              if(topic!=null){
                  topic.setText(editListBeanList.get(Integer.valueOf(textNub)).getSubTopics());
              }
@@ -1314,17 +1321,6 @@ if (Hawk.contains(constant._id)) {
      }
 
 
-      /*      for (int i=0;i<editListBeanList.size();i++){
-                Log.d("dsafaf",editListBeanList.get(i).getSubTopics()+"    "+editListBeanList.get(i).getAttendeBean()  +"text="+text+"  i"+i);
-                if (text.equals(i+"")){
-                    topic.setText(editListBeanList.get(i).getSubTopics());
-                    attend.setText(editListBeanList.get(i).getAttendeBean());
-
-                }
-
-            }
-
-        }*/
     }
 
     @Override

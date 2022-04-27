@@ -239,13 +239,7 @@ public class ServerManager {
                 wsebean1.setBody(wuHuEditBean);
                 editListBeans.clear();
                 editListBeans.addAll(wuHuEditBean.getEditListBeanList());
-              /*  staticwuHuEditBean.setTopics(wuHuEditBean.getTopics());
-                staticwuHuEditBean.setPosition(wuHuEditBean.getPosition());
-                staticwuHuEditBean.setThem_color(wuHuEditBean.getThem_color());
-                staticwuHuEditBean.setLine_color(wuHuEditBean.getLine_color());
-                staticwuHuEditBean.setTopic_type(wuHuEditBean.getTopic_type());
-                staticwuHuEditBean.getEditListBeanList().clear();
-                staticwuHuEditBean.setEditListBeanList(wuHuEditBean.getEditListBeanList());*/
+
 
                 String strJson = new Gson().toJson(wsebean1);
                 SendMessageToAll(strJson);
@@ -257,25 +251,16 @@ public class ServerManager {
         // 删除单个芜湖新增fragment
         if(message.contains(constant.DELETE_WUHU_FRAGMENT)){
             try {
-                TempWSBean<WuHuDeleteFragmentBean> wsebean = new Gson().fromJson(message, new TypeToken<TempWSBean<WuHuDeleteFragmentBean>>(){}.getType());
-                WuHuDeleteFragmentBean wuHuDeleteFragmentBean = wsebean.getBody();
+                TempWSBean<WuHuEditBean> wsebean = new Gson().fromJson(message, new TypeToken<TempWSBean<WuHuEditBean>>(){}.getType());
+                WuHuEditBean wuHuEditBean = wsebean.getBody();
                 TempWSBean wsebean1 = new TempWSBean();
                 wsebean1.setReqType(1);
                 wsebean1.setUserMac_id("");
                 wsebean1.setPackType(constant.DELETE_WUHU_FRAGMENT);
+                editListBeans.clear();
+                editListBeans.addAll(wuHuEditBean.getEditListBeanList());
 
-                try {
-                    editListBeans.remove(Integer.valueOf(wuHuDeleteFragmentBean.getListPosition()));
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                }
-
-               /* List<WuHuEditBean.EditListBean> editListBeanList=new ArrayList<>();
-                editListBeanList=staticwuHuEditBean.getEditListBeanList();
-                editListBeanList.remove(Integer.valueOf(wuHuDeleteFragmentBean.getListPosition()));
-                staticwuHuEditBean.setEditListBeanList(editListBeanList);*/
-
-                wsebean1.setBody(wuHuDeleteFragmentBean);
+                wsebean1.setBody(wuHuEditBean);
                 String strJson = new Gson().toJson(wsebean1);
                 SendMessageToAll(strJson);
             }catch (Exception e) {
@@ -291,19 +276,8 @@ public class ServerManager {
                 wsebean1.setReqType(1);
                 wsebean1.setUserMac_id("");
                 wsebean1.setPackType(constant.REFRASHWuHUSIGLEDATA);
-
-
                 editListBeans.clear();
                 editListBeans.addAll(wuHuEditBean.getEditListBeanList());
-             /*   staticwuHuEditBean.setTopics(wuHuEditBean.getTopics());
-                staticwuHuEditBean.setPosition(wuHuEditBean.getPosition());
-                staticwuHuEditBean.setThem_color(wuHuEditBean.getThem_color());
-                staticwuHuEditBean.setLine_color(wuHuEditBean.getLine_color());
-                staticwuHuEditBean.setTopic_type(wuHuEditBean.getTopic_type());
-                staticwuHuEditBean.getEditListBeanList().clear();
-                staticwuHuEditBean.setEditListBeanList(wuHuEditBean.getEditListBeanList());*/
-
-
                 wsebean1.setBody(wuHuEditBean);
                 String strJson = new Gson().toJson(wsebean1);
                 SendMessageToAll(strJson);
@@ -316,19 +290,13 @@ public class ServerManager {
             try {
                 TempWSBean<WuHuEditBean> wsebean = new Gson().fromJson(message, new TypeToken<TempWSBean<WuHuEditBean>>(){}.getType());
                 WuHuEditBean wuHuEditBean = wsebean.getBody();
+
                 TempWSBean wsebean1 = new TempWSBean();
                 wsebean1.setReqType(1);
                 wsebean1.setUserMac_id("");
                 wsebean1.setPackType(constant.REFRASHWuHUALL);
                 editListBeans.clear();
                 editListBeans.addAll(wuHuEditBean.getEditListBeanList());
-             /*   staticwuHuEditBean.setTopics(wuHuEditBean.getTopics());
-                staticwuHuEditBean.setPosition(wuHuEditBean.getPosition());
-                staticwuHuEditBean.setThem_color(wuHuEditBean.getThem_color());
-                staticwuHuEditBean.setLine_color(wuHuEditBean.getLine_color());
-                staticwuHuEditBean.setTopic_type(wuHuEditBean.getTopic_type());
-                staticwuHuEditBean.getEditListBeanList().clear();
-                staticwuHuEditBean.setEditListBeanList(wuHuEditBean.getEditListBeanList());*/
 
                 wsebean1.setBody(wuHuEditBean);
                 String strJson = new Gson().toJson(wsebean1);

@@ -150,6 +150,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
     private SocketShareFileManager socketShareFileManager;
     private boolean isOptionShow=false;
     private MyBroadcastReceiver  myBroadcastReceiver;
+    private MyBroadcastReceiver  myVoteImagBroadcastReceiver;
     private  ArrayList<String> fileNames = new ArrayList<>();
     private  ArrayList<String> paths = new ArrayList<>();
     private List<String> stringListIp = new ArrayList<>();
@@ -377,6 +378,12 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
         IntentFilter filter = new IntentFilter();
         filter.addAction(constant.SEE_IMA_BROADCAST);
         getActivity().registerReceiver(myBroadcastReceiver, filter);
+
+
+        myVoteImagBroadcastReceiver=new MyBroadcastReceiver();
+        IntentFilter filter2 = new IntentFilter();
+        filter2.addAction(constant.RUSH_VOTE_LIST_BROADCAST);
+        getActivity().registerReceiver(myVoteImagBroadcastReceiver, filter2);
 
         voteAdapter1 = new WuHuVoteAdapter(getActivity());
         voteAdapter2 = new WuHuVoteAdapter(getActivity());
@@ -2415,12 +2422,17 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
             getActivity().unregisterReceiver(myBroadcastReceiver);
 
         }
+        if (myVoteImagBroadcastReceiver!=null){
+
+            getActivity().unregisterReceiver(myVoteImagBroadcastReceiver);
+        }
     }
     private class MyBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent in) {
             if (in.getAction().equals(constant.RUSH_VOTE_LIST_BROADCAST)){
-
+                //投票图片加载完毕后刷新界面
+                loadData();
             }else if (in.getAction().equals(constant.SEE_IMA_BROADCAST)){
                String path= in.getStringExtra("votefilePath");
                if(StringUtils.isEmpty(path)){

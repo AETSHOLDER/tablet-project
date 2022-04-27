@@ -302,7 +302,7 @@ public class JWebSocketClientService {
                     }
                 }
                 //  芜湖更新所有fragment
-                if (message.contains("refreshdataALL") || message.contains(constant.REFRASHWuHUALL)) {
+                if (message.contains("saveALL") || message.contains(constant.REFRASHWuHUALL)) {
                     if (topActivity != null) {
                      /*
                         Intent intent = new Intent();
