@@ -954,6 +954,20 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
               mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos+""));
               fragmentPos++;
           }
+          if (Hawk.contains("WuHuFragmentData")) {
+              WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
+              wuHuEditBean.setTopics(company_name.getText().toString());
+              wuHuEditBean.setTopic_type(tittle2.getText().toString());
+              wuHuEditBean.setLine_color(lineFlag);
+              wuHuEditBean.setThem_color(themFlag);
+              wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
+              Hawk.put("WuHuFragmentData",wuHuEditBean);
+              //更新单个数据
+              wsUpdata(wuHuEditBean,constant.REFRASHWuHUALL);
+          }
+
+          Hawk.put("company_name",company_name.getText().toString());
+          Hawk.put("tittle2",tittle2.getText().toString());
 
       }else {
           if (Hawk.contains("WuHuFragmentData")){
