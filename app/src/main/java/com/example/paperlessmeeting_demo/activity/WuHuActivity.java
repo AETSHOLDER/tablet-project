@@ -179,6 +179,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
     private ServiceConnection serviceConnection;
     private Handler handler ;
     private Runnable runnable;
+    private  ArrayList<WuHuEditBean.EditListBean> editListBeans = new ArrayList<>();
     /**
      * 点击返回时间
      */
@@ -282,6 +283,14 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
         IntentFilter filter3 = new IntentFilter();
         filter3.addAction(constant.REFRESH_BROADCAST);
         registerReceiver(myRefreshBroadcastReceiver, filter2);*/
+        wuHuEditBeanList.clear();
+        wuHuListAdapter=new WuHuListAdapter(WuHuActivity.this,wuHuEditBeanList);
+        wuHuListAdapter.setSaveSeparatelyInterface(this);
+        wuHuListAdapter.setDeletSeparatelyInterface(this);
+        wuHuListAdapter.setAddSeparatelyInterface(this);
+
+        mPagerAdapter = new PagerAdapter(getSupportFragmentManager(), mTestFragments);
+        mViewPager.setAdapter(mPagerAdapter);
 
         // 如果是临时会议,判断是否是主席
         if (UserUtil.isTempMeeting) {
@@ -313,11 +322,11 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
         }
 
         EventBus.getDefault().register(this);
-        wuHuEditBeanList.clear();
+       // loadData();
         if (UserUtil.ISCHAIRMAN) {
-          cc1.setVisibility(View.VISIBLE);
-          cc2.setVisibility(View.GONE);
-            if (Hawk.contains("WuHuFragmentData")){
+            cc1.setVisibility(View.VISIBLE);
+            cc2.setVisibility(View.GONE);
+     /*       if (Hawk.contains("WuHuFragmentData")){
                 wuHuEditBean= Hawk.get("WuHuFragmentData");
                 wuHuEditBean.setTopics("2022年临时会议");
                 wuHuEditBean.setTopic_type("会议记录");
@@ -326,16 +335,11 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                 editListBean.setAttendeBean("某某，某某，某某，某");
                 wuHuEditBeanList.add(editListBean);
                 Hawk.put("WuHuFragmentData",wuHuEditBean);
-            }
+            }*/
         }else {
             cc1.setVisibility(View.GONE);
             cc2.setVisibility(View.VISIBLE);
         }
-
-        wuHuListAdapter=new WuHuListAdapter(WuHuActivity.this,wuHuEditBeanList);
-        wuHuListAdapter.setSaveSeparatelyInterface(this);
-        wuHuListAdapter.setDeletSeparatelyInterface(this);
-        wuHuListAdapter.setAddSeparatelyInterface(this);
         /*
          *
          * 当是临时会议时，开启Servive随时监听各参会人人员分享的文件。正常网络会议时监听同屏关闭操作
@@ -522,27 +526,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
         };
 
         handler.postDelayed(runnable, 1000 * 60);// 打开定时器，执行操作
-/*        edit_name.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                try {
-                    InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                    inputMethodManager.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });*/
         edit_rl.setOnClickListener(this);
         edit_ll.setOnClickListener(this);
         comfirm.setOnClickListener(this);
@@ -558,19 +542,8 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
         mBtnAdd = (Button) findViewById(R.id.btn_add);
         edit_name_rl.setVisibility(View.GONE);
         mTestFragments = new SparseArray<>();
-        mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos+""));
-        fragmentPos++;
         left_rl.setVisibility(View.GONE);
         rigth_rl.setVisibility(View.GONE);
-      /*  mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos+""));
-        fragmentPos++;
-        mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos+""));
-        fragmentPos++;
-        mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos+""));
-        fragmentPos++;*/
-        mPagerAdapter = new PagerAdapter(getSupportFragmentManager(), mTestFragments);
-
-        mViewPager.setAdapter(mPagerAdapter);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -604,14 +577,6 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
 
             }
         });
-
-
-
-
-
-
-
-
 
         mBtnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -948,9 +913,88 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                     e.printStackTrace();
                 }
 
+            }else if (message.getMessage().contains(constant.QUERYVOTE_WUHU_FRAGMENT)){
+
+                Log.e("onReceiveMsg查询: " , message.toString());
+                try {
+                    TempWSBean<ArrayList> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<ArrayList<WuHuEditBean.EditListBean>>>()  {
+                    }.getType());
+                    //  收到vote的websocket的信息
+                    if (wsebean != null) {
+                        editListBeans = wsebean.getBody();
+                        querywuhufragment(editListBeans);
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } if (message.getMessage().contains(constant.SURENAME)) {
+              loadData();
             }
 
         }
+    }
+    //获取投票列表数据状态数据
+    public void loadData() {
+        TempWSBean bean = new TempWSBean();
+        bean.setReqType(0);
+        bean.setUserMac_id(FLUtil.getMacAddress());
+        bean.setPackType(constant.QUERYVOTE_WUHU_FRAGMENT);
+        bean.setBody("");
+        String strJson = new Gson().toJson(bean);
+        JWebSocketClientService.sendMsg(strJson);
+
+    }
+    private  void querywuhufragment(List<WuHuEditBean.EditListBean>editListBeanList){
+        Log.e("onReceiveMsg查询editListBeanList大小: " , editListBeanList.size()+"");
+        wuHuEditBeanList.clear();
+      if (editListBeanList.size()>0){
+          wuHuEditBeanList.addAll(editListBeanList);
+          for (int i=0;i<wuHuEditBeanList.size();i++){
+              mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos+""));
+              fragmentPos++;
+          }
+
+      }else {
+          if (Hawk.contains("WuHuFragmentData")){
+              wuHuEditBean= Hawk.get("WuHuFragmentData");
+              wuHuEditBean.setTopics("2022年临时会议");
+              wuHuEditBean.setTopic_type("会议记录");
+              WuHuEditBean.EditListBean editListBean=new WuHuEditBean.EditListBean();
+              editListBean.setSubTopics("总结2022年");
+              editListBean.setAttendeBean("某某，某某，某某，某");
+              wuHuEditBeanList.add(editListBean);
+              Hawk.put("WuHuFragmentData",wuHuEditBean);
+          }
+          mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos+""));
+          fragmentPos++;
+      }
+
+        wuHuListAdapter.setWuHuEditBeanList(wuHuEditBeanList);
+        wuHuListAdapter.notifyDataSetChanged();
+
+        mPagerAdapter.setmTestFragments(mTestFragments);
+        mPagerAdapter.notifyDataSetChanged();
+
+        int totalcount = mTestFragments.size();
+        int currentItem = mViewPager.getCurrentItem();
+
+        if (totalcount>1){
+            if (currentItem==0){
+                left_rl.setVisibility(View.GONE);
+                rigth_rl.setVisibility(View.VISIBLE);
+            }else if (currentItem>0){
+                left_rl.setVisibility(View.VISIBLE);
+                rigth_rl.setVisibility(View.VISIBLE);
+            }else if (currentItem==(totalcount-1)){
+                left_rl.setVisibility(View.VISIBLE);
+                rigth_rl.setVisibility(View.GONE);
+            }
+
+        }
+
+
+
     }
     public void showRightDialog( ) {
         //自定义dialog显示布局
@@ -1179,6 +1223,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
             edit_ll.setVisibility(View.GONE);
         }*/
         Log.d("reyeyrty333",UserUtil.ISCHAIRMAN+"");
+      //  loadData();
     }
     @Override
     public void onBackPressed() {

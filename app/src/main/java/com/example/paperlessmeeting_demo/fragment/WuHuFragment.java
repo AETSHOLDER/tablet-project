@@ -1773,9 +1773,9 @@ if (Hawk.contains(constant._id)) {
         Intent intent;
         switch (v.getId()){
             case  R.id.edit_ll:
-                intent=new Intent(getActivity(), EditWuHuActivity.class);
+              /*  intent=new Intent(getActivity(), EditWuHuActivity.class);
                 getActivity().startActivity(intent);
-
+*/
                 break;
             case R.id.edit_rl:
                 edit_name_rl.setVisibility(View.VISIBLE);
@@ -1807,7 +1807,7 @@ if (Hawk.contains(constant._id)) {
         dialg_rl_root=inflate.findViewById(R.id.dialg_rl_root);
         sava_all=inflate.findViewById(R.id.sava_all);
         Log.d("reyeyrty",UserUtil.ISCHAIRMAN+"");
-        if (UserUtil.ISCHAIRMAN) {
+     /*   if (UserUtil.ISCHAIRMAN) {
             if (Hawk.contains("WuHuFragmentData")){
                 WuHuEditBean wuHuEditBean= Hawk.get("WuHuFragmentData");
                 wuHuEditBean.setTopics("2022年临时会议");
@@ -1823,7 +1823,7 @@ if (Hawk.contains(constant._id)) {
         wuHuListAdapter=new WuHuListAdapter(getActivity(),wuHuEditBeanList);
         wuHuListAdapter.setSaveSeparatelyInterface(this);
         myListView.setAdapter(wuHuListAdapter);
-        wuHuListAdapter.notifyDataSetChanged();
+        wuHuListAdapter.notifyDataSetChanged();*/
 
         line_colors.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override

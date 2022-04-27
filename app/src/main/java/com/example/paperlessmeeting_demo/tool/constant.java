@@ -59,7 +59,7 @@ public class constant {
     public final static String REFRASHWuHUALL = "refreshdataALL";//更新所有芜湖数据fragment
     public final static String DELETE_WUHU_FRAGMENT = "deletelwuhufragment";//删除芜湖数据fragment
     public final static String REFRESH_WUHU_FILE_FRAGMENT = "refreshwuhufilefragment";//更新芜湖添加本地文件数据fragment
-
+    public final static String QUERYVOTE_WUHU_FRAGMENT = "querywuhufragment";//查询芜湖之前的fragment
 
     public final static String NEWVOTE = "newVote";//新增投票数据
     public final static String UPDATEVOTE = "updateVote";//更新投票数据
