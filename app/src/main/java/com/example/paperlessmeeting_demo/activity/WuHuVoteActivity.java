@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.base.BaseActivity;
 import com.example.paperlessmeeting_demo.fragment.WuHUVoteListFragment;
+import com.example.paperlessmeeting_demo.fragment.WuHuFragment;
 import com.example.paperlessmeeting_demo.tool.constant;
 
 import java.util.ArrayList;
@@ -46,9 +47,12 @@ public class WuHuVoteActivity extends BaseActivity {
 
         getSupportFragmentManager()    //
                 .beginTransaction()
-                .add(R.id.fragment_container, new WuHUVoteListFragment("投票", WuHuVoteActivity.this))   // 此处的R.id.fragment_container是要盛放fragment的父容器
+                .add(R.id.fragment_container,  WuHuFragment.newInstance(0+""))   // 此处的R.id.fragment_container是要盛放fragment的父容器
                 .commit();
-
+       /* getSupportFragmentManager()    //
+                .beginTransaction()
+                .add(R.id.fragment_container, new WuHUVoteListFragment("投票", WuHuVoteActivity.this))   // 此处的R.id.fragment_container是要盛放fragment的父容器
+                .commit();*/
     }
 
     @Override
