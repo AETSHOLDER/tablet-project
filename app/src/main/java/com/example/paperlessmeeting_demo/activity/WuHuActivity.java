@@ -676,6 +676,13 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
             wuHuEditBean.setLine_color(lineFlag);
             wuHuEditBean.setThem_color(themFlag);
             wuHuEditBean.setPosition(position+"");
+            for (int i=0;i<wuHuEditBeanList.size();i++){
+                wuHuEditBeanList.get(i).setTopics(company_name.getText().toString());
+                wuHuEditBeanList.get(i).setTopic_type(tittle2.getText().toString());
+                wuHuEditBeanList.get(i).setLine_color(lineFlag);
+                wuHuEditBeanList.get(i).setThem_color(themFlag);
+            }
+
             wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
             Hawk.put("WuHuFragmentData",wuHuEditBean);
             //更新单个数据
@@ -954,12 +961,12 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
               mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos+""));
               fragmentPos++;
           }
-          if (Hawk.contains("WuHuFragmentData")) {
+         if (Hawk.contains("WuHuFragmentData")) {
               WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
-             /* wuHuEditBean.setTopics(company_name.getText().toString());
-              wuHuEditBean.setTopic_type(tittle2.getText().toString());
-              wuHuEditBean.setLine_color(lineFlag);
-              wuHuEditBean.setThem_color(themFlag);*/
+              wuHuEditBean.setTopics(wuHuEditBeanList.get(0).getTopics());
+              wuHuEditBean.setTopic_type(wuHuEditBeanList.get(0).getTopic_type());
+              wuHuEditBean.setLine_color(wuHuEditBeanList.get(0).getLine_color());
+              wuHuEditBean.setThem_color(wuHuEditBeanList.get(0).getThem_color());
               wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
               Hawk.put("WuHuFragmentData",wuHuEditBean);
               //更新单个数据
@@ -1172,6 +1179,12 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                     wuHuEditBean.setTopic_type(tittle2.getText().toString());
                     wuHuEditBean.setLine_color(lineFlag);
                     wuHuEditBean.setThem_color(themFlag);
+                    for (int i=0;i<wuHuEditBeanList.size();i++){
+                        wuHuEditBeanList.get(i).setTopics(company_name.getText().toString());
+                        wuHuEditBeanList.get(i).setTopic_type(tittle2.getText().toString());
+                        wuHuEditBeanList.get(i).setLine_color(lineFlag);
+                        wuHuEditBeanList.get(i).setThem_color(themFlag);
+                    }
                     wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
                     Hawk.put("WuHuFragmentData",wuHuEditBean);
                     //更新单个数据

@@ -73,6 +73,42 @@ public class WuHuEditBean implements Serializable {
     }
 
     public static class EditListBean {
+        private String topics;
+        private String topic_type;
+        private String line_color;
+        private String them_color;
+
+        public String getTopics() {
+            return topics;
+        }
+
+        public void setTopics(String topics) {
+            this.topics = topics;
+        }
+
+        public String getTopic_type() {
+            return topic_type;
+        }
+
+        public void setTopic_type(String topic_type) {
+            this.topic_type = topic_type;
+        }
+
+        public String getLine_color() {
+            return line_color;
+        }
+
+        public void setLine_color(String line_color) {
+            this.line_color = line_color;
+        }
+
+        public String getThem_color() {
+            return them_color;
+        }
+
+        public void setThem_color(String them_color) {
+            this.them_color = them_color;
+        }
 
         private String subTopics;
         private String attendeBean;
