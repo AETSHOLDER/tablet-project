@@ -860,6 +860,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                         Log.d("onReceiveMsg11111大小=", fragmentPos+ "");
                         mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos+""));
                         fragmentPos++;
+                        mPagerAdapter.setmTestFragments(mTestFragments);
                         mPagerAdapter.notifyDataSetChanged();
 
                         int totalcount = mTestFragments.size();
@@ -878,6 +879,22 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                             }
 
                         }
+                        if (Hawk.contains("WuHuFragmentData")) {
+                            WuHuEditBean wuHuFragmentData = Hawk.get("WuHuFragmentData");
+                            List<WuHuEditBean.EditListBean>listBeans=new ArrayList<>();
+                            listBeans= wuHuEditBean.getEditListBeanList();
+
+                            wuHuEditBean.setTopics(listBeans.get(0).getTopics());
+                            wuHuEditBean.setTopic_type(listBeans.get(0).getTopic_type());
+                            wuHuEditBean.setLine_color(listBeans.get(0).getLine_color());
+                            wuHuEditBean.setThem_color(listBeans.get(0).getThem_color());
+                            wuHuEditBean.setEditListBeanList(listBeans);
+                            Hawk.put("WuHuFragmentData",wuHuEditBean);
+                          /*  //更新单个数据
+                            wsUpdata(wuHuEditBean,constant.REFRASHWuHUALL);*/
+                        }
+
+
 
                     }
                 } catch (Exception e) {
@@ -894,10 +911,27 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                         WuHuDeleteFragmentBean wuHuDeleteFragmentBean=wsebean.getBody();
                         fragmentPos--;
                          mTestFragments.removeAt(Integer.valueOf(wuHuDeleteFragmentBean.getListPosition()));
+                        mPagerAdapter.setmTestFragments(mTestFragments);
                          mPagerAdapter.notifyDataSetChanged();
+
+                        if (Hawk.contains("WuHuFragmentData")) {
+                            WuHuEditBean wuHuFragmentData = Hawk.get("WuHuFragmentData");
+                            List<WuHuEditBean.EditListBean>listBeans=new ArrayList<>();
+                            listBeans= wuHuFragmentData.getEditListBeanList();
+                            if (listBeans.size()==0){
+                                return;
+                            }
+                            listBeans.remove(Integer.valueOf(wuHuDeleteFragmentBean.getListPosition()));
+                            wuHuEditBean.setEditListBeanList(listBeans);
+                            Hawk.put("WuHuFragmentData",wuHuEditBean);
+                          /*  //更新单个数据
+                            wsUpdata(wuHuEditBean,constant.REFRASHWuHUALL);*/
+                        }
+
 
                         int totalcount = mTestFragments.size();
                         int currentItem = mViewPager.getCurrentItem();
+
                          if (totalcount==1){
                              left_rl.setVisibility(View.GONE);
                              rigth_rl.setVisibility(View.GONE);
