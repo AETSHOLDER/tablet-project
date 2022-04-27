@@ -219,11 +219,11 @@ public class LoginActivity extends BaseActivity  {
             Hawk.delete("tittle2");
         }
 
-        //如芜湖数据存在则清除
+  /*      //如芜湖数据存在则清除
         if (Hawk.contains("WuHuFragmentData")){
             Hawk.delete("WuHuFragmentData");
-        }
-        //重新创建芜湖数据
+        }*/
+        //创建芜湖数据
         WuHuEditBean wuHuEditBean=new WuHuEditBean();
         Hawk.put("WuHuFragmentData",wuHuEditBean);
       //芜湖上传本地文件进行分享时由copy到一个文件夹改为Hawk储存
