@@ -1536,8 +1536,50 @@ if (Hawk.contains(constant._id)) {
 
             } else if (isDownloadsDocument(uri)) {
                 final String id = DocumentsContract.getDocumentId(uri);
+
+
+
+
+      //=====================================================================================
+
+                if (id != null && id.startsWith("raw:")) {
+                    return id.substring(4);
+                }
                 uri = ContentUris.withAppendedId(
                         Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+                return  uri.getPath();
+/*
+              String[] contentUriPrefixesToTry = new String[]{
+                        "content://downloads/public_downloads",
+                        "content://downloads/my_downloads"
+                };
+
+                for (String contentUriPrefix : contentUriPrefixesToTry) {
+                    Uri contentUri = ContentUris.withAppendedId(Uri.parse(contentUriPrefix), Long.valueOf(id));
+                    try {
+                        String path = getActivity().getDataColumn(context, contentUri, null, null);
+                        if (path != null) {
+                            return path;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                // path could not be retrieved using ContentResolver, therefore copy file to accessible cache using streams
+                String fileName = getFileName(context, uri);
+                File cacheDir = getDocumentCacheDir(context);
+                File file = generateFileName(fileName, cacheDir);
+                String destinationPath = null;
+                if (file != null) {
+                    destinationPath = file.getAbsolutePath();
+                    saveFileFromUri(context, uri, destinationPath);
+                }
+
+                return destinationPath;*/
+
+
+
             } else if (isMediaDocument(uri)) {
                 final String docId = DocumentsContract.getDocumentId(uri);
                 final String[] split = docId.split(":");
