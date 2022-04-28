@@ -1779,8 +1779,13 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
 
             } else if (isDownloadsDocument(uri)) {
                 final String id = DocumentsContract.getDocumentId(uri);
+                if (id != null && id.startsWith("raw:")) {
+                    return id.substring(4);
+                }
                 uri = ContentUris.withAppendedId(
                         Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+                return  uri.getPath();
+
             } else if (isMediaDocument(uri)) {
                 final String docId = DocumentsContract.getDocumentId(uri);
                 final String[] split = docId.split(":");
