@@ -1819,16 +1819,27 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
             try {
                 cursor = context.getContentResolver()
                         .query(uri, projection, selection, selectionArgs, null);
-                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                //int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
 //============
 
-                if (cursor.moveToFirst()) {
+
+                if(cursor!=null){
+
+                    while(cursor.moveToNext()){
+
+                        int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+
+                        path = cursor.getString(columnIndex);
+
+                    }
+                }
+               /* if (cursor.moveToFirst()) {
 
                     int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
 
                     path = cursor.getString(columnIndex);
 
-                }
+                }*/
                 cursor.close();
                 return path;
 

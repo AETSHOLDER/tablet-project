@@ -1614,12 +1614,23 @@ if (Hawk.contains(constant._id)) {
                         .query(uri, projection, selection, selectionArgs, null);
                 int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
 
+                if(cursor!=null){
 
-                if (cursor.moveToFirst()) {
+                    while(cursor.moveToNext()){
+
+                        int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+
+                        path = cursor.getString(columnIndex);
+
+                    }
+                }
+               /* if (cursor.moveToFirst()) {
+
                     int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+
                     path = cursor.getString(columnIndex);
 
-                }
+                }*/
                 cursor.close();
                 return path;
 
