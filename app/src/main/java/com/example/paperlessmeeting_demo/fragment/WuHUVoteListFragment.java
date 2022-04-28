@@ -496,6 +496,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                             bean.setStatus(bean.getStatus());
                         }
                         Collections.reverse(voteList);
+
                         Log.d("gdgsdgsdgdgf444555",flag+"");
                         if (UserUtil.ISCHAIRMAN){
 
@@ -518,20 +519,24 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
              //   progressBar_ll.setVisibility(View.VISIBLE);
                 Log.e(TAG, "wuhuonReceiveMsg1111122222: " + message.toString());
                 try {
-                    TempWSBean<ArrayList> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<ArrayList<VoteBean>>>() {
+                    TempWSBean<VoteBean> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<VoteBean>>() {
                     }.getType());
                     //  收到vote的websocket的信息
                     if (wsebean != null) {
                         refreshDataFlag= wsebean.getFlag();
-                        voteList = wsebean.getBody();
-                        String flag = wsebean.getFlag();//获取选项是图片还是文字标识
-                        Log.d("gdgsdgsdgdgf444888",flag+"");
-                        for (VoteListBean.VoteBean bean : voteList) {
-                            bean.setStatus(bean.getStatus());
-                        }
-                        Log.d("gdgsdgsdgdgf444888",flag+"");
+                        VoteBean  voteBean=wsebean.getBody();
+                        if (voteBean!=null){
+                            voteList.add(voteBean);
+                            String flag = wsebean.getFlag();//获取选项是图片还是文字标识
+                            for (VoteListBean.VoteBean bean : voteList) {
+                                bean.setStatus(bean.getStatus());
+                            }
+                            Log.d("gdgsdgsdgdgf444888",flag+"");
 
-                        refreshUI(voteList, flag);
+                            refreshUI(voteList, flag);
+
+                        }
+
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
