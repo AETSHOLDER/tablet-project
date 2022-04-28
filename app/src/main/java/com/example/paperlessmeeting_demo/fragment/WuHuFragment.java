@@ -1457,7 +1457,12 @@ if (Hawk.contains(constant._id)) {
                         ClipData.Item item = clipData.getItemAt(i);
                         Uri uri = item.getUri();
                         try {
-                             file = new File(getFilePath(getActivity(), uri));
+                            if (getFilePath(getActivity(), uri)==null){
+                                file = new File( data.getData().getPath());
+
+                            }else {
+                                file = new File(getFilePath(getActivity(), uri));
+                            }
                             //ToastUtil.makeText(getActivity(), "uri.getPath()=====" + uri.getPath());
                             Log.d("requestCodeUr2222", uri.getScheme() + "===" + uri.getPath() + "==" + file.getName() + "++++++++++" + getFilePath(getActivity(), uri) + "===" + uri.getAuthority());
                             String endStr = file.getName().substring(file.getName().lastIndexOf(".") + 1);
@@ -1621,12 +1626,17 @@ if (Hawk.contains(constant._id)) {
                         .query(uri, projection, selection, selectionArgs, null);
                 int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
 
-                if (cursor.moveToFirst()) {
-                    int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                    path = cursor.getString(columnIndex);
+
+                if(cursor!=null){
+
+                    do {
+                        int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                        path = cursor.getString(columnIndex);
+
+                    } while (cursor.moveToNext());
+
 
                 }
-                cursor.close();
                 return path;
 
             } catch (Exception e) {
