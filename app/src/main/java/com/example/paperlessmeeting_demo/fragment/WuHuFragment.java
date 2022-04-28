@@ -1613,9 +1613,16 @@ if (Hawk.contains(constant._id)) {
                 cursor = context.getContentResolver()
                         .query(uri, projection, selection, selectionArgs, null);
                 int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+
+
                 if (cursor.moveToFirst()) {
-                    return cursor.getString(column_index);
+                    int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                    path = cursor.getString(columnIndex);
+
                 }
+                cursor.close();
+                return path;
+
             } catch (Exception e) {
             }
         } else if ("file".equalsIgnoreCase(uri.getScheme())) {

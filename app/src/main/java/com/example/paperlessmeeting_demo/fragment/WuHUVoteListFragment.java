@@ -1760,6 +1760,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
     public String getFilePath(Context context, Uri uri) throws URISyntaxException {
         String selection = null;
         String[] selectionArgs = null;
+        String path = null;
         // Uri is different in versions after KITKAT (Android 4.4), we need to
         if (Build.VERSION.SDK_INT >= 19 && DocumentsContract.isDocumentUri(context.getApplicationContext(), uri)) {
 
@@ -1819,9 +1820,25 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                 cursor = context.getContentResolver()
                         .query(uri, projection, selection, selectionArgs, null);
                 int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+//============
+
                 if (cursor.moveToFirst()) {
+
+                    int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+
+                    path = cursor.getString(columnIndex);
+
+                }
+                cursor.close();
+                return path;
+
+
+
+              /*  if (cursor.moveToFirst()) {
                     return cursor.getString(column_index);
                 }
+                */
+
             } catch (Exception e) {
             }
         } else if ("file".equalsIgnoreCase(uri.getScheme())) {
