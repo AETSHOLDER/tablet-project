@@ -895,7 +895,8 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                 if (flag.equals("2")){
                     Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                     intent.setType("*/*");//无类型限制
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);                  intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
                     startActivityForResult(intent, 1);
                     positionIma = 0;
                 }
@@ -1687,16 +1688,10 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
-            File file;
             if (data.getData() != null) {
                 Uri uri = data.getData();
                 try {
-                    if (getFilePath(getActivity(), uri)==null){
-                        file = new File( data.getData().getPath());
-
-                    }else {
-                        file = new File(getFilePath(getActivity(), uri));
-                    }
+                    File file = new File(getFilePath(getActivity(), uri));
                     Log.d("requestCodeUr00000", Environment.getExternalStorageDirectory().getAbsolutePath() + "===" + Environment.getExternalStorageDirectory().toString() + "====" + Environment.getStorageState(file));
                     Log.d("requestCodeUrl111", uri.getScheme() + "===" + uri.getPath() + "==" + file.getName() + "++++++++++" + getFilePath(getActivity(), uri) + "===" + uri.getAuthority());
                     String endStr = file.getName().substring(file.getName().lastIndexOf(".") + 1);
@@ -1724,12 +1719,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                         ClipData.Item item = clipData.getItemAt(i);
                         Uri uri = item.getUri();
                         try {
-                            if (getFilePath(getActivity(), uri)==null){
-                                file = new File( data.getData().getPath());
-
-                            }else {
-                                file = new File(getFilePath(getActivity(), uri));
-                            }
+                            File file = new File(getFilePath(getActivity(), uri));
                           //  ToastUtil.makeText(getActivity(), "uri.getPath()=====" + uri.getPath());
                             Log.d("requestCodeUr2222", uri.getScheme() + "===" + uri.getPath() + "==" + file.getName() + "++++++++++" + getFilePath(getActivity(), uri) + "===" + uri.getAuthority());
                             String endStr = file.getName().substring(file.getName().lastIndexOf(".") + 1);
@@ -1829,18 +1819,17 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
             try {
                 cursor = context.getContentResolver()
                         .query(uri, projection, selection, selectionArgs, null);
-                //int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
 //============
+                if (column_index<0||column_index>cursor.getColumnCount()){
 
+                    return null;
+                }
+                if (cursor.moveToFirst()) {
 
-                if(cursor!=null){
+                    int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
 
-                    do {
-                        int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                        path = cursor.getString(columnIndex);
-
-                    } while (cursor.moveToNext());
-
+                    path = cursor.getString(columnIndex);
 
                 }
                 cursor.close();

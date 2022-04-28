@@ -1383,17 +1383,10 @@ if (Hawk.contains(constant._id)) {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
-            File file;
             if (data.getData() != null) {
                 Uri uri = data.getData();
                 try {
-                    if (getFilePath(getActivity(), uri)==null){
-                        file = new File( data.getData().getPath());
-
-                    }else {
-                         file = new File(getFilePath(getActivity(), uri));
-                    }
-
+                    File file = new File(getFilePath(getActivity(), uri));
                     Log.d("requestCodeUr00000", Environment.getExternalStorageDirectory().getAbsolutePath() + "===" + Environment.getExternalStorageDirectory().toString() + "====" + Environment.getStorageState(file));
                     Log.d("requestCodeUrl111", uri.getScheme() + "===" + uri.getPath() + "==" + file.getName() + "++++++++++" + getFilePath(getActivity(), uri) + "===" + uri.getAuthority());
                     String endStr = file.getName().substring(file.getName().lastIndexOf(".") + 1);
@@ -1457,12 +1450,7 @@ if (Hawk.contains(constant._id)) {
                         ClipData.Item item = clipData.getItemAt(i);
                         Uri uri = item.getUri();
                         try {
-                            if (getFilePath(getActivity(), uri)==null){
-                                file = new File( data.getData().getPath());
-
-                            }else {
-                                file = new File(getFilePath(getActivity(), uri));
-                            }
+                            File file = new File(getFilePath(getActivity(), uri));
                             //ToastUtil.makeText(getActivity(), "uri.getPath()=====" + uri.getPath());
                             Log.d("requestCodeUr2222", uri.getScheme() + "===" + uri.getPath() + "==" + file.getName() + "++++++++++" + getFilePath(getActivity(), uri) + "===" + uri.getAuthority());
                             String endStr = file.getName().substring(file.getName().lastIndexOf(".") + 1);
@@ -1625,20 +1613,14 @@ if (Hawk.contains(constant._id)) {
                 cursor = context.getContentResolver()
                         .query(uri, projection, selection, selectionArgs, null);
                 int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                if (column_index<0||column_index>cursor.getColumnCount()){
 
 
-                if(cursor!=null){
-
-                    do {
-                        int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                        path = cursor.getString(columnIndex);
-
-                    } while (cursor.moveToNext());
-
-
+                    return null;
                 }
-                return path;
-
+                if (cursor.moveToFirst()) {
+                    return cursor.getString(column_index);
+                }
             } catch (Exception e) {
             }
         } else if ("file".equalsIgnoreCase(uri.getScheme())) {
