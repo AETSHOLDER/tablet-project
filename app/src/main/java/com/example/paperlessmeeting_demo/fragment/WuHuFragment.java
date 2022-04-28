@@ -1616,13 +1616,13 @@ if (Hawk.contains(constant._id)) {
 
                 if(cursor!=null){
 
-                    while(cursor.moveToNext()){
-
+                    do {
                         int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-
                         path = cursor.getString(columnIndex);
 
-                    }
+                    } while (cursor.moveToNext());
+
+
                 }
                /* if (cursor.moveToFirst()) {
 
