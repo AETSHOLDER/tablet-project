@@ -2025,6 +2025,11 @@ if (Hawk.contains(constant._id)) {
                             SignActivity signActivity = (SignActivity)topActivity;
                             signActivity.clearData();
                             topActivity.finish();
+                            try {
+                               Thread.sleep(200);
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
                         }
                     }
                     intent = new Intent();

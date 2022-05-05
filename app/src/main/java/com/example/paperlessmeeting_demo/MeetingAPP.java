@@ -138,7 +138,7 @@ public class MeetingAPP extends Application {
             }
         });
         //  TBS 初始化
-        initX5();
+//        initX5();
         //内存泄漏-start
 //        if (LeakCanary.isInAnalyzerProcess(this)) {
 //            // This process is dedicated to LeakCanary for heap analysis.
