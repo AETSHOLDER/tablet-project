@@ -690,6 +690,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
         }
         Hawk.put("company_name",company_name.getText().toString());
         Hawk.put("tittle2",tittle2.getText().toString());
+        Toast.makeText(WuHuActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
     }
     @Override
     public void deletData(int position) {
@@ -1166,7 +1167,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
         });
 
 
-        View line=inflate.findViewById(R.id.line);
+        View line=inflate.findViewById(R.id.progressBar);
         RadioGroup line_colors=inflate.findViewById(R.id.line_colors);
         RadioGroup theme_colors=inflate.findViewById(R.id.theme_colors);
         myListView=inflate.findViewById(R.id.myList_view);
@@ -1302,6 +1303,8 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
 
                 Hawk.put("company_name",company_name.getText().toString());
                 Hawk.put("tittle2",tittle2.getText().toString());
+                Toast.makeText(WuHuActivity.this, "全部保存成功", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
 
 
             }

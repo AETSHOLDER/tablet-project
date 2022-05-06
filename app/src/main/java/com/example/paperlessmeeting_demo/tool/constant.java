@@ -108,7 +108,7 @@ public class constant {
     public final static String FINISH_SHARE_SCEEN = "finish  share screen";//socket 结束同屏标识
     public final static String START_SHARE_SCEEN = "video";//socket 开始同屏标识
     public final static String INIATE_ENDORSEMENT = "initiate endorsement";//socket 秘书发起签批时，普通会员自动打开签名页面
-
+    public final static String WUHU_IMAGE_FILE_BROADCAST = "WuHuImagefile";////芜湖版本，当用户位于图片页面时  再次检测到推送文件后，只替换文件路径，不需要重启新页面
     public final static String FINISH_WUHUVOTEACTIVITY_BROADCAST = "finishactivity";//自己刷新芜湖界面
 
     public static String temp_code = "temp_code";//临时会议code

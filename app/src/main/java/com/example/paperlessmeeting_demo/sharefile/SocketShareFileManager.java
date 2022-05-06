@@ -199,6 +199,7 @@ public class SocketShareFileManager {
 
     public void SendFile(ArrayList<String> fileName, ArrayList<String> path, String ipAddress, int port, String actionType) {
         try {
+            long total = 0;
             for (int i = 0; i < fileName.size(); i++) {
                 Socket name = new Socket(ipAddress, port);
                 OutputStream outputName = name.getOutputStream();
@@ -219,10 +220,15 @@ public class SocketShareFileManager {
                 Socket data = new Socket(ipAddress, port);
                 OutputStream outputData = data.getOutputStream();
                 FileInputStream fileInput = new FileInputStream(path.get(i));
+                File fileSize = new File(path.get(i));//计算文件大小
                 int size = -1;
                 byte[] buffer = new byte[1024];
                 while ((size = fileInput.read(buffer, 0, 1024)) != -1) {
                     outputData.write(buffer, 0, size);
+                    total += size;
+
+                    Log.d("Upload progress", "" + (int) ((total * 100)/buffer.length)+"fileSize大小="+fileSize.length()+"   传输进度="+ 100 * total/fileSize.length());
+                    SendMessage(10, 100 * total/fileSize.length()+"", Integer.parseInt(actionType));
                 }
                 outputData.close();
                 fileInput.close();

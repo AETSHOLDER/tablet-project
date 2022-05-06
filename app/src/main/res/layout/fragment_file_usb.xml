@@ -8,17 +8,16 @@
         android:id="@+id/main_title_tv"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_marginTop="85dp"
-        android:layout_marginStart="480dp"
         android:layout_centerHorizontal="true"
-        android:fontFamily="Source Han Sans CN"
-        android:text="议题、"
-        android:maxLines="2"
+        android:layout_marginStart="480dp"
+        android:layout_marginTop="85dp"
         android:ellipsize="end"
-        android:textStyle="bold"
+        android:fontFamily="Source Han Sans CN"
+        android:maxLines="2"
+        android:text="议题、"
         android:textColor="#3F3932"
-        android:textSize="80sp">
-    </TextView>
+        android:textSize="80sp"
+        android:textStyle="bold"></TextView>
 
     <TextView
         android:id="@+id/sub_title_tv"

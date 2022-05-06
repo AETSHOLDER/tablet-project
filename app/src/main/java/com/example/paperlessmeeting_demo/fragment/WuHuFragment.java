@@ -4,6 +4,7 @@ import static android.content.Context.WIFI_SERVICE;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
@@ -39,8 +40,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -55,6 +58,7 @@ import com.example.paperlessmeeting_demo.activity.ActivityVideoView;
 import com.example.paperlessmeeting_demo.activity.EditWuHuActivity;
 import com.example.paperlessmeeting_demo.activity.PdfActivity;
 import com.example.paperlessmeeting_demo.activity.Sign.SignActivity;
+import com.example.paperlessmeeting_demo.activity.WuHuActivity;
 import com.example.paperlessmeeting_demo.adapter.FileListAdapter;
 import com.example.paperlessmeeting_demo.adapter.WuHuFileListAdapter;
 import com.example.paperlessmeeting_demo.adapter.WuHuListAdapter;
@@ -215,6 +219,7 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
     private FileListBean fileBean;
     private boolean mReceiverTag = false;   //广播接受者标识
     private boolean isDeletOption=false;//是否做了删除操作
+    private  ProgressBar progressBar;//显示文件传输进度
     private Handler mHandler = new Handler() {
 
         @Override
@@ -261,7 +266,8 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                  * 分享文件发送中，显示加载动画
                  * */
                 case 4:
-                    progressBarLl.setVisibility(View.VISIBLE);
+                   // progressBarLl.setVisibility(View.VISIBLE);
+                    showFileTransferDialog();
                     String fileName = msg.obj.toString();
                     tips.setText(fileName);
                     break;
@@ -269,14 +275,30 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                  * 分享文件发送完毕，隐藏加载动画
                  * */
                 case 5:
-                    progressBarLl.setVisibility(View.GONE);
+                 //   progressBarLl.setVisibility(View.GONE);
+                    if (dialog!=null){
+                        dialog.dismiss();
+                    }
+
                     Toast.makeText(getActivity(), "文件分享成功", Toast.LENGTH_SHORT).show();
+
+                    break;
+                    /*
+                    * 文件传输进度
+                    * */
+                case 10:
+
+                    String proress=(String)msg.obj;
+                    progressBar.setProgress(Integer.parseInt(proress));
                     break;
                 /*
                  * 分享文件发送失败，隐藏加载动画
                  * */
                 case 6:
-                    progressBarLl.setVisibility(View.GONE);
+                  //  progressBarLl.setVisibility(View.GONE);
+                    if (dialog!=null){
+                        dialog.dismiss();
+                    }
                     Toast.makeText(getActivity(), "文件分享失败", Toast.LENGTH_SHORT).show();
                     String df = msg.obj.toString();
                     Log.d("dfsfsdf", df);
@@ -1545,28 +1567,28 @@ if (Hawk.contains(constant._id)) {
                 if (id != null && id.startsWith("raw:")) {
                     return id.substring(4);
                 }
+
                 uri = ContentUris.withAppendedId(
                         Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
-                return  uri.getPath();
+           return  getDataColumn(context, uri, null, null);
+
+
 /*
-              String[] contentUriPrefixesToTry = new String[]{
-                        "content://downloads/public_downloads",
-                        "content://downloads/my_downloads"
+                String[] contentUriPrefixesToTry = new String[]{
+                        "content://downloads/public_downloads",.
+                        "content://downloads/my_downloads",
+                        "content://downloads/all_downloads"
                 };
 
                 for (String contentUriPrefix : contentUriPrefixesToTry) {
                     Uri contentUri = ContentUris.withAppendedId(Uri.parse(contentUriPrefix), Long.valueOf(id));
-                    try {
-                        String path = getActivity().getDataColumn(context, contentUri, null, null);
-                        if (path != null) {
-                            return path;
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    String path=contentUri.getPath();
+                    if (path!=null){
+                        return  path;
                     }
-                }
+                }*/
 
-                // path could not be retrieved using ContentResolver, therefore copy file to accessible cache using streams
+          /*      // path could not be retrieved using ContentResolver, therefore copy file to accessible cache using streams
                 String fileName = getFileName(context, uri);
                 File cacheDir = getDocumentCacheDir(context);
                 File file = generateFileName(fileName, cacheDir);
@@ -1609,6 +1631,7 @@ if (Hawk.contains(constant._id)) {
             String[] projection = {
                     MediaStore.Images.Media.DATA};
             Cursor cursor = null;
+            //cursor.moveToFirst();!cursor.isAfterLast(); cursor.moveToNext()
             try {
                 cursor = context.getContentResolver()
                         .query(uri, projection, selection, selectionArgs, null);
@@ -1634,6 +1657,7 @@ if (Hawk.contains(constant._id)) {
     }
 
     public static boolean isDownloadsDocument(Uri uri) {
+        Log.d("isDownloadsDocument",uri.getAuthority());
         return "com.android.providers.downloads.documents".equals(uri.getAuthority());
     }
 
@@ -1643,6 +1667,26 @@ if (Hawk.contains(constant._id)) {
 
     public static boolean isGooglePhotosUri(Uri uri) {
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
+    }
+
+    private   String getDataColumn(Context context, Uri uri, String selection,
+                                       String[] selectionArgs) {
+        Cursor cursor = null;
+        String column = MediaStore.Images.Media.DATA;
+        String[] projection = {column};
+        try {
+            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                int index = cursor.getColumnIndexOrThrow(column);
+                return cursor.getString(index);
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return null;
+
     }
 
     /**
@@ -1827,134 +1871,56 @@ if (Hawk.contains(constant._id)) {
                 edit_name_rl.setVisibility(View.GONE);
                 break;
             case R.id.vote_ll:
-                showRightDialog();
+              //  showRightDialog();
                 break;
 
         }
 
     }
-    public void showRightDialog( ) {
+    public void showFileTransferDialog( ) {
         //自定义dialog显示布局
-        inflate = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_edit_wuhu, null);
+        inflate = LayoutInflater.from(getActivity()).inflate(R.layout.wuhu_file_progress_dialog, null);
         //自定义dialog显示风格
-        dialog = new Dialog(getActivity(), R.style.DialogRight);
+        dialog = new Dialog(getActivity(), R.style.BottomSheetEdit);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         //弹窗点击周围空白处弹出层自动消失弹窗消失(false时为点击周围空白处弹出层不自动消失)
-        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCanceledOnTouchOutside(false);
         //将布局设置给Dialog
         dialog.setContentView(inflate);
-        View line=inflate.findViewById(R.id.line);
-        RadioGroup line_colors=inflate.findViewById(R.id.line_colors);
-        RadioGroup theme_colors=inflate.findViewById(R.id.theme_colors);
-        myListView=inflate.findViewById(R.id.myList_view);
-        add_topic_rl=inflate.findViewById(R.id.add_topic_rl);
-        dialg_rl_root=inflate.findViewById(R.id.dialg_rl_root);
-        sava_all=inflate.findViewById(R.id.sava_all);
-        Log.d("reyeyrty",UserUtil.ISCHAIRMAN+"");
-     /*   if (UserUtil.ISCHAIRMAN) {
-            if (Hawk.contains("WuHuFragmentData")){
-                WuHuEditBean wuHuEditBean= Hawk.get("WuHuFragmentData");
-                wuHuEditBean.setTopics("2022年临时会议");
-                wuHuEditBean.setTopic_type("会议记录");
-                WuHuEditBean.EditListBean editListBean=new WuHuEditBean.EditListBean();
-                editListBean.setSubTopics("总结2022年");
-                editListBean.setAttendeBean("王二狗，李狐狸，张太郎，刘毛毛");
-                wuHuEditBeanList.add(editListBean);
-                Hawk.put("WuHuFragmentData",wuHuEditBean);
-            }
-        }
-
-        wuHuListAdapter=new WuHuListAdapter(getActivity(),wuHuEditBeanList);
-        wuHuListAdapter.setSaveSeparatelyInterface(this);
-        myListView.setAdapter(wuHuListAdapter);
-        wuHuListAdapter.notifyDataSetChanged();*/
-
-        line_colors.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        dialog.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+        dialog.getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
             @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId){
-                    case R.id.color_rb1:
-                        Log.d("wwwwwww","dsffafaf111");
-                        fragmentLine.setBackgroundColor(Color.parseColor("#EA4318"));
-                        line.setBackgroundColor(Color.parseColor("#EA4318"));
-                        break;
-                    case R.id.color_rb2:
-                        Log.d("wwwwwww","dsffafaf2222");
-                        fragmentLine.setBackgroundColor(Color.parseColor("#1D1D1D"));
-                       line.setBackgroundColor(Color.parseColor("#1D1D1D"));
-                        break;
-
+            public void onSystemUiVisibilityChange(int visibility) {
+                int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                        //布局位于状态栏下方
+                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                        //全屏
+                        View.SYSTEM_UI_FLAG_FULLSCREEN |
+                        //隐藏导航栏
+                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+                if (Build.VERSION.SDK_INT >= 19) {
+                    uiOptions |= 0x00001000;
+                } else {
+                    uiOptions |= View.SYSTEM_UI_FLAG_LOW_PROFILE;
                 }
+                dialog.getWindow().getDecorView().setSystemUiVisibility(uiOptions);
             }
         });
+         progressBar=inflate.findViewById(R.id.progressBar);
 
-        theme_colors.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkId) {
-                switch (checkId){
-                    case R.id.color_rb3:
-                        root_lin.setBackgroundResource(R.mipmap.bg_wuhu_home);
-                      //  dialg_rl_root.setBackgroundResource(R.mipmap.bg_wuhu_home);
-                        break;
-                    case R.id.color_rb4:
-                        root_lin.setBackgroundResource(R.mipmap.bg_wuhu_home2);
-                       // dialg_rl_root.setBackgroundResource(R.mipmap.bg_radiobutton4);
-                        break;
-                    case R.id.color_rb5:
-                        root_lin.setBackgroundColor(Color.parseColor("#EBE9EA"));
-                        //dialg_rl_root.setBackgroundColor(Color.parseColor("#EBE9EA"));
-                        break;
-                    case R.id.color_rb6:
-                        root_lin.setBackgroundColor(Color.parseColor("#EFF4F8"));
-                       // dialg_rl_root.setBackgroundColor(Color.parseColor("#EFF4F8"));
-                        break;
-                    case R.id.color_rb7:
-                        root_lin.setBackgroundColor(Color.parseColor("#F2F8F5"));
-                       // dialg_rl_root.setBackgroundColor(Color.parseColor("#F2F8F5"));
-                        break;
-
-                }
-            }
-        });
-
-
-        add_topic_rl.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                    WuHuEditBean.EditListBean editListBean=new WuHuEditBean.EditListBean();
-                    editListBean.setSubTopics(wuHuEditBeanList.get(wuHuEditBeanList.size()-1).getSubTopics());
-                    editListBean.setAttendeBean(wuHuEditBeanList.get(wuHuEditBeanList.size()-1).getAttendeBean());
-                    wuHuEditBeanList.add(editListBean);
-                    wuHuListAdapter.setWuHuEditBeanList(wuHuEditBeanList);
-                    wuHuListAdapter.notifyDataSetChanged();
-                    if (Hawk.contains("WuHuFragmentData")){
-                        WuHuEditBean wuHuEditBean= Hawk.get("WuHuFragmentData");
-                        wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
-                        Hawk.put("WuHuFragmentData",wuHuEditBean);
-                        wsUpdata(wuHuEditBean,constant.WUHUADDFRAGMENT);
-                    }
-
-                Intent intent = new Intent();
-                Bundle bundle=new Bundle();
-                bundle.putString("aa","filePath");
-                intent.putExtras(bundle);
-                intent.setAction(constant.ADD_FRAGMENT_BROADCAST);
-                getActivity().sendBroadcast(intent);
-
-            }
-        });
         //获取当前Activity所在的窗体
         Window window = dialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
         Display d = window.getWindowManager().getDefaultDisplay(); // 获取屏幕宽，高
-        wlp.gravity= Gravity.RIGHT;
-        wlp.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        wlp.gravity= Gravity.CENTER;
+        wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
         wlp.height = WindowManager.LayoutParams.MATCH_PARENT;
         Point size=new Point();
         d.getSize(size);
         int width = size.x;
         int height = size.y;
-        wlp.width = (int) (width * 0.4);//设置宽
         wlp.height = 1600;//设置宽
         window.setAttributes(wlp);
         dialog.show();
@@ -1971,7 +1937,16 @@ if (Hawk.contains(constant._id)) {
         String strJson = new Gson().toJson(bean);
         JWebSocketClientService.sendMsg(strJson);
     }
-
+    /**
+     *
+     * 判断某activity是否处于栈顶
+     * @return true在栈顶 false不在栈顶
+     */
+    private boolean isActivityTop(Class cls,Context context){
+        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        String name = manager.getRunningTasks(1).get(0).topActivity.getClassName();
+        return name.equals(cls.getName());
+    }
     private class MyBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent in) {
@@ -2010,12 +1985,22 @@ if (Hawk.contains(constant._id)) {
 
             Intent intent;
             if (fileBean.getFile_type().equals("3")){
+                //防止普通参会人员重复打开页面
+                if ( isActivityTop(ActivityImage.class,context)){
+                    intent=new Intent(constant.WUHU_IMAGE_FILE_BROADCAST);
+                    Bundle bundle=new Bundle();
+                    bundle.putString("url",fileBean.getPath());
+                    intent.putExtras(bundle);
+                    getActivity().sendBroadcast(intent);
+
+                }else {
                 intent = new Intent();
                 intent.setClass(getActivity(), ActivityImage.class);
                 intent.putExtra("url", fileBean.getPath());
                 intent.putExtra("isOpenFile", true);
                 intent.putExtra("isNetFile", false);
                 startActivity(intent);
+                }
             }else if (fileBean.getFile_type().equals("4")){
                 if(UserUtil.isNetworkOnline){
                     Activity topActivity = (Activity) ActivityUtils.getTopActivity();
