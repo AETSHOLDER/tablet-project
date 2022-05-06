@@ -278,7 +278,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
         IntentFilter filter = new IntentFilter();
         filter.addAction(constant.ADD_FRAGMENT_BROADCAST);
         registerReceiver(myBroadcastReceiver, filter);
-
+         Log.d("wrewarawrawer","onCreate");
       /*  myRefreshBroadcastReceiver = new MyBroadcastReceiver();
         IntentFilter filter3 = new IntentFilter();
         filter3.addAction(constant.REFRESH_BROADCAST);
@@ -310,10 +310,11 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
             } else if (Hawk.get(constant.TEMPMEETING).equals(MessageReceiveType.MessageServer)) {
                 UserUtil.ISCHAIRMAN = true;
                 String code = getIntent().getStringExtra("code");
+                String isReuse= getIntent().getStringExtra("isreuse");
               //  alertCodeDialog(code);
 
                 //  广播四位数code以及IP地址
-                UDPBroadcastManager.getInstance().sendUDPWithCode(code);
+                UDPBroadcastManager.getInstance().sendUDPWithCode(code+"/"+isReuse);
                 // 开启socket服务器
                 ServerManager.getInstance().startMyWebsocketServer(UrlConstant.port);
                 UrlConstant.TempWSIPString = "ws://" + FLUtil.getIPAddress() + ":" + UrlConstant.port;
@@ -477,6 +478,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
 
     @Override
     protected void initView() {
+        Log.d("wrewarawrawer","initView");
         handler = new Handler();
         if ( Hawk.contains(constant.myNumber)){
             String  n=Hawk.get(constant.myNumber);
@@ -1042,7 +1044,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                 }
 
             }else if (message.getMessage().contains(constant.QUERYVOTE_WUHU_FRAGMENT)){
-
+                Log.d("wrewarawrawer","查询");
                 Log.e("onReceiveMsg查询: " , message.toString());
                 try {
                     TempWSBean<ArrayList> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<ArrayList<WuHuEditBean.EditListBean>>>()  {
@@ -1064,6 +1066,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
     }
     //获取投票列表数据状态数据
     public void loadData() {
+
         TempWSBean bean = new TempWSBean();
         bean.setReqType(0);
         bean.setUserMac_id(FLUtil.getMacAddress());
@@ -1355,6 +1358,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
     }
     @Override
     protected void initData() {
+        Log.d("wrewarawrawer","initData");
       /*  if (!UserUtil.ISCHAIRMAN) {
             edit_ll.setVisibility(View.GONE);
         }*/

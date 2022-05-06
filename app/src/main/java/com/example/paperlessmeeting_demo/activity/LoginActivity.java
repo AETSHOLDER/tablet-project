@@ -223,9 +223,9 @@ public class LoginActivity extends BaseActivity  {
         if (Hawk.contains("WuHuFragmentData")){
             Hawk.delete("WuHuFragmentData");
         }*/
-        //创建芜湖数据
+      /*  //创建芜湖数据
         WuHuEditBean wuHuEditBean=new WuHuEditBean();
-        Hawk.put("WuHuFragmentData",wuHuEditBean);
+        Hawk.put("WuHuFragmentData",wuHuEditBean);*/
       //芜湖上传本地文件进行分享时由copy到一个文件夹改为Hawk储存
         if (Hawk.contains("wuhulocal")){
 
@@ -349,7 +349,10 @@ public class LoginActivity extends BaseActivity  {
             if (topActivity != null && topActivity.getLocalClassName().contains("LoginActivity")) {
                 String[] ip_code = message.getMessage().split(",");
                 String ip = ip_code[0];
-                String code = ip_code[1];
+                String[]allCode=ip_code[1].split("/");//分离出邀请码和是否重复利用会议模板标识
+                String isReuse=allCode[1];
+                Hawk.put("isreuse",isReuse);//储存是否重复利用会议模板标识
+                String code = allCode[0];
                 String title = "您收到邀请码为("+code+")的临时会议!";
                 CVIPaperDialogUtils.showCountDownCustomDialog(LoginActivity.this, title, "确定加入", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
                     @Override

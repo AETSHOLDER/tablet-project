@@ -921,7 +921,7 @@ if (Hawk.contains(constant._id)) {
         edit_rl.setOnClickListener(this);
         comfirm.setOnClickListener(this);
         vote_ll.setOnClickListener(this);
-       edit_name_rl.setVisibility(View.GONE);
+        edit_name_rl.setVisibility(View.GONE);
        // mTextView.setText(text);
         Log.d(TAG+toString(), "onCreateView: ");
 

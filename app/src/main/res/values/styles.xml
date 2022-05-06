@@ -382,7 +382,7 @@
         <!-- 边框 -->
         <item name="android:windowFrame">@null</item>
         <!-- Dialog以外的区域模糊效果 -->
-        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:backgroundDimEnabled">true</item>
         <!-- 无标题 -->
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>
@@ -391,7 +391,6 @@
        <!-- <item name="android:windowIsTranslucent">true</item>-->
         <!--点击dialog以外区域关闭弹窗-->
         <item name="android:windowCloseOnTouchOutside">false</item>
-
         <!-- Dialog进入及退出动画 -->
         <item name="android:windowAnimationStyle">@style/ActionSheetDialogRight</item>
     </style>
@@ -409,5 +408,19 @@
         <item name="android:windowEnterAnimation">@anim/dialog_right_in</item>
         <item name="android:windowExitAnimation">@anim/dialog_right_out</item>
     </style>
+
+
+
+
+        <style name="dialogTransparent" parent="@android:style/Theme.Dialog">
+            <item name="android:windowFrame">@null</item> <!--边框-->
+            <item name="android:windowIsFloating">true</item> <!--是否浮现在activity之上-->
+            <item name="android:windowIsTranslucent">true</item> <!--半透明-->
+            <item name="android:windowNoTitle">true</item> <!--无标题-->
+            <item name="android:background">@android:color/white</item> <!--背景透明-->
+            <item name="android:windowBackground">@android:color/white</item> <!--背景透明-->
+            <item name="android:backgroundDimEnabled">true</item> <!--模糊-->
+            <item name="android:backgroundDimAmount">0.5</item> <!--背景透明度-->
+        </style>
 
 </resources>

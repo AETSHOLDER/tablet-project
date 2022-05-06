@@ -4,24 +4,35 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Point;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.activity.MainActivity;
 import com.example.paperlessmeeting_demo.activity.WuHuActivity;
 import com.example.paperlessmeeting_demo.base.BaseFragment;
 import com.example.paperlessmeeting_demo.bean.UserBehaviorBean;
+import com.example.paperlessmeeting_demo.bean.WuHuEditBean;
 import com.example.paperlessmeeting_demo.enums.MessageReceiveType;
 import com.example.paperlessmeeting_demo.tool.CVIPaperDialogUtils;
 import com.example.paperlessmeeting_demo.tool.FLUtil;
@@ -60,7 +71,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
     private Spinner spinner;
 //    private List<String> ipcodeInfo = new ArrayList<>();
     private List<String> stringList = new ArrayList<>();//暂存临时会议邀请码
-
+    private boolean isReuse=false;//根据有无会议记录来判断芜湖版本应用是否是第一次安装。
     private int currentSelIndex = 0;
 
     public static ExtraordMeetingFragment newInstance(String movie) {
@@ -103,6 +114,12 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                 joinMeetingDialog();
             }
         });
+
+        if (Hawk.contains("WuHuFragmentData")){
+            isReuse=true;
+        }else {
+            isReuse=false;
+        }
     }
 
     @Override
@@ -374,13 +391,21 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                         @Override
                         public void onClickButton(boolean clickConfirm, boolean clickCancel) {
                             if (clickConfirm) {
-                                initMeetingDialog.dismiss();
-                                UserUtil.isTempMeeting = true;
-                                constant.temp_code = content;
-                                Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
-                                Intent intent = new Intent(getActivity(), WuHuActivity.class);
-                                intent.putExtra("code", content);
-                                startActivity(intent);
+                                if (isReuse){
+                                    showRightDialog(content);
+                                }else {
+                                    initMeetingDialog.dismiss();
+                                    UserUtil.isTempMeeting = true;
+                                    constant.temp_code = content;
+                                    Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
+                                    Intent intent = new Intent(getActivity(), WuHuActivity.class);
+                                    Bundle bundle=new Bundle();
+                                    bundle.putString("code", content);
+                                    bundle.putString("isreuse","3");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
+                                    intent.putExtras(bundle);
+                                    startActivity(intent);
+                                     Hawk.put("isreuse","3");
+                                }
 
                             }
                         }
@@ -388,13 +413,23 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
 
                 }
             } else {
-                initMeetingDialog.dismiss();
-                UserUtil.isTempMeeting = true;
-                constant.temp_code = content;
-                Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
-                Intent intent = new Intent(getActivity(), WuHuActivity.class);
-                intent.putExtra("code", content);
-                startActivity(intent);
+                if (isReuse){
+                    showRightDialog(content);
+
+                }else {
+                    initMeetingDialog.dismiss();
+                    UserUtil.isTempMeeting = true;
+                    constant.temp_code = content;
+                    Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
+                    Intent intent = new Intent(getActivity(), WuHuActivity.class);
+                    Bundle bundle=new Bundle();
+                    bundle.putString("code", content);
+                    bundle.putString("isreuse","3");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                    Hawk.put("isreuse","3");
+                }
+
 
             }
         } else if (view == join_invite_codeview) {
@@ -429,7 +464,92 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
 //            }
         }
     }
+    public void showRightDialog( String codeStr) {
+        //自定义dialog显示布局
+      View   inflate = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_reuse_wuhu_meeting, null);
+        //自定义dialog显示风格
+       Dialog     dialog = new Dialog(getActivity(), R.style.dialogTransparent);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        //弹窗点击周围空白处弹出层自动消失弹窗消失(false时为点击周围空白处弹出层不自动消失)
+        dialog.setCanceledOnTouchOutside(true);
+        //将布局设置给Dialog
+        dialog.setContentView(inflate);
 
+        TextView confir_tx=inflate.findViewById(R.id.confir_tx);
+        TextView cancle_tv=inflate.findViewById(R.id.cancle_tv);
+
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        dialog.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+        dialog.getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+            @Override
+            public void onSystemUiVisibilityChange(int visibility) {
+                int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                        //布局位于状态栏下方
+                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                        //全屏
+                        View.SYSTEM_UI_FLAG_FULLSCREEN |
+                        //隐藏导航栏
+                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+                if (Build.VERSION.SDK_INT >= 19) {
+                    uiOptions |= 0x00001000;
+                } else {
+                    uiOptions |= View.SYSTEM_UI_FLAG_LOW_PROFILE;
+                }
+                dialog.getWindow().getDecorView().setSystemUiVisibility(uiOptions);
+            }
+        });
+
+        confir_tx.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initMeetingDialog.dismiss();
+                UserUtil.isTempMeeting = true;
+                constant.temp_code = codeStr;
+                Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
+                Intent intent = new Intent(getActivity(), WuHuActivity.class);
+                Bundle bundle=new Bundle();
+                bundle.putString("code", codeStr);
+                bundle.putString("isreuse","1");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
+                intent.putExtras(bundle);
+                startActivity(intent);
+                Hawk.put("isreuse","1");
+            }
+        });
+        cancle_tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initMeetingDialog.dismiss();
+                UserUtil.isTempMeeting = true;
+                constant.temp_code = codeStr;
+                Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
+                Intent intent = new Intent(getActivity(), WuHuActivity.class);
+                Bundle bundle=new Bundle();
+                bundle.putString("code", codeStr);
+                bundle.putString("isreuse","2");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
+                intent.putExtras(bundle);
+                startActivity(intent);
+                Hawk.put("isreuse","2");
+
+            }
+        });
+        //获取当前Activity所在的窗体
+        Window window = dialog.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        wlp.alpha=1.0f;
+        Display d = window.getWindowManager().getDefaultDisplay(); // 获取屏幕宽，高
+        wlp.gravity= Gravity.CENTER;
+        wlp.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        wlp.height = WindowManager.LayoutParams.MATCH_PARENT;
+        Point size=new Point();
+        d.getSize(size);
+        int width = size.x;
+        int height = size.y;
+        wlp.width = (int) (width * 0.4);//设置宽
+        wlp.height = (int) (height * 0.4);;//设置宽
+        window.setAttributes(wlp);
+        dialog.show();
+    }
 
     @Override
     protected boolean isBindEventBus() {
