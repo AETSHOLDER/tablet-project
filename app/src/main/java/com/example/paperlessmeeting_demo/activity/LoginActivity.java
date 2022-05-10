@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.blankj.utilcode.util.ActivityUtils;
+import com.blankj.utilcode.util.ScreenUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.example.paperlessmeeting_demo.MeetingAPP;
 import com.example.paperlessmeeting_demo.R;
@@ -90,6 +91,7 @@ import okhttp3.RequestBody;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
+import q.rorbin.verticaltablayout.util.DisplayUtil;
 
 /**
  * Created by 梅涛 on 2020/9/18.
@@ -218,7 +220,7 @@ public class LoginActivity extends BaseActivity  {
         if (Hawk.contains("tittle2")){
             Hawk.delete("tittle2");
         }
-
+        int ss = DisplayUtil.px2dp(LoginActivity.this, 93);
   /*      //如芜湖数据存在则清除
         if (Hawk.contains("WuHuFragmentData")){
             Hawk.delete("WuHuFragmentData");
