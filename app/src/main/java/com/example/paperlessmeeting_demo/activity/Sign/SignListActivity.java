@@ -50,7 +50,7 @@ import butterknife.ButterKnife;
  */
 public class SignListActivity extends BaseActivity {
     @BindView(R.id.iv_back)
-    ImageView ivBack;
+    RelativeLayout ivBack;
     @BindView(R.id.sign_bg)
     ImageView signBg;
     @BindView(R.id.root_linear)

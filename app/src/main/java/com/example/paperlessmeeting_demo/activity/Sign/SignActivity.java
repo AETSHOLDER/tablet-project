@@ -71,7 +71,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     @BindView(R.id.rl_root)
     RelativeLayout rlRoot;
     @BindView(R.id.iv_back)
-    ImageView ivBack;
+    RelativeLayout ivBack;
     @BindView(R.id.sign_door)
     TextView sign_Door;
     @BindView(R.id.sign_commit)
