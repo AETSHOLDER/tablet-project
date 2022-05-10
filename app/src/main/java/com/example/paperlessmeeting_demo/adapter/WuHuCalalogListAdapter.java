@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.paperlessmeeting_demo.R;
@@ -71,40 +72,54 @@ public class WuHuCalalogListAdapter extends BaseAdapter {
 
         viHolder.toptic.setText(editListBean.getSubTopics());
         viHolder.name.setText(editListBean.getAttendeBean());
+        if (i==0){
+            viHolder.topic_num.setVisibility(View.GONE);
+            viHolder.toptic.setVisibility(View.GONE);
+            viHolder.name.setVisibility(View.GONE);
+            viHolder.aa.setVisibility(View.GONE);
+            viHolder.first_rl.setVisibility(View.GONE);
 
+        }else {
+            viHolder.topic_num.setVisibility(View.VISIBLE);
+            viHolder.toptic.setVisibility(View.VISIBLE);
+            viHolder.name.setVisibility(View.VISIBLE);
+            viHolder.aa.setVisibility(View.VISIBLE);
+            viHolder.first_rl.setVisibility(View.VISIBLE);
+
+        }
         switch (i){
             case 0:
-                viHolder.topic_num.setText("议题一");
+                viHolder.topic_num.setText("议题");
                 break;
             case 1:
-                viHolder.topic_num.setText("议题二");
+                viHolder.topic_num.setText("议题一");
                 break;
             case 2:
-                viHolder.topic_num.setText("议题三");
+                viHolder.topic_num.setText("议题二");
                 break;
             case 3:
-                viHolder.topic_num.setText("议题四");
+                viHolder.topic_num.setText("议题三");
                 break;
             case 4:
-                viHolder.topic_num.setText("议题五");
+                viHolder.topic_num.setText("议题四");
                 break;
             case 5:
-                viHolder.topic_num.setText("议题六");
+                viHolder.topic_num.setText("议题五");
                 break;
             case 6:
-                viHolder.topic_num.setText("议题七");
+                viHolder.topic_num.setText("议题六");
                 break;
             case 7:
-                viHolder.topic_num.setText("议题八");
+                viHolder.topic_num.setText("议题七");
                 break;
             case 8:
-                viHolder.topic_num.setText("议题九");
+                viHolder.topic_num.setText("议题八");
                 break;
             case 9:
-                viHolder.topic_num.setText("议题十");
+                viHolder.topic_num.setText("议题九");
                 break;
             default:
-                viHolder.topic_num.setText("议题"+(i+1));
+                viHolder.topic_num.setText("议题"+(i));
                 break;
         }
         return view;
@@ -117,6 +132,10 @@ public class WuHuCalalogListAdapter extends BaseAdapter {
         TextView toptic;
         @BindView(R.id.name)
         TextView name;
+        @BindView(R.id.aa)
+        View aa;
+        @BindView(R.id.first_rl)
+        RelativeLayout first_rl;
 
 
         ViewHolder(View view) {

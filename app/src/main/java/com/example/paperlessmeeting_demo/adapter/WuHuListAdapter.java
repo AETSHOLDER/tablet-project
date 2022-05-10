@@ -108,15 +108,6 @@ public class WuHuListAdapter extends BaseAdapter {
             viHolder = (ViewHolder) view.getTag();
         }
 
-        if (wuHuEditBeanList.size() > 1) {
-
-            if (i == wuHuEditBeanList.size() - 1) {
-                viHolder.add.setVisibility(View.VISIBLE);
-            } else {
-                viHolder.add.setVisibility(View.INVISIBLE);
-            }
-        }
-
         if (viHolder.tittle2.getTag() instanceof TextWatcher) {
             viHolder.tittle2.removeTextChangedListener((TextWatcher) viHolder.tittle2.getTag());
         }
@@ -125,13 +116,49 @@ public class WuHuListAdapter extends BaseAdapter {
         }
        if (i==0){
             viHolder.delete.setVisibility(View.GONE);
+           viHolder.tittle_pos.setVisibility(View.GONE);
+           viHolder.tittle2.setVisibility(View.GONE);
+           viHolder.tittle3.setVisibility(View.GONE);
+           viHolder.save.setVisibility(View.GONE);
+           viHolder.add.setVisibility(View.GONE);
+           viHolder.aa.setVisibility(View.GONE);
+           viHolder.bb.setVisibility(View.GONE);
+           viHolder.add.setVisibility(View.GONE);
+           viHolder.edit_rl.setVisibility(View.GONE);
 
-        }else {
+        }else if (i==1){
+           viHolder.edit_rl.setVisibility(View.VISIBLE);
+           viHolder.delete.setVisibility(View.GONE);
+           viHolder.tittle_pos.setVisibility(View.VISIBLE);
+           viHolder.tittle2.setVisibility(View.VISIBLE);
+           viHolder.tittle3.setVisibility(View.VISIBLE);
+           viHolder.save.setVisibility(View.VISIBLE);
+           viHolder.aa.setVisibility(View.VISIBLE);
+           viHolder.bb.setVisibility(View.VISIBLE);
+           if (wuHuEditBeanList.size() ==2) {
+               viHolder.add.setVisibility(View.VISIBLE);
+           }else {
+             viHolder.add.setVisibility(View.GONE);
+           }
+       }else {
             viHolder.delete.setVisibility(View.VISIBLE);
-        }
-       if (wuHuEditBeanList.size()==1){
+           viHolder.tittle_pos.setVisibility(View.VISIBLE);
+           viHolder.tittle2.setVisibility(View.VISIBLE);
+           viHolder.tittle3.setVisibility(View.VISIBLE);
+           viHolder.save.setVisibility(View.VISIBLE);
            viHolder.add.setVisibility(View.VISIBLE);
-       }
+           viHolder.aa.setVisibility(View.VISIBLE);
+           viHolder.bb.setVisibility(View.VISIBLE);
+           viHolder.edit_rl.setVisibility(View.VISIBLE);
+           if (wuHuEditBeanList.size() > 2) {
+               if (i == wuHuEditBeanList.size() - 1) {
+                   viHolder.add.setVisibility(View.VISIBLE);
+               } else {
+                   viHolder.add.setVisibility(View.INVISIBLE);
+               }
+           }
+        }
+
         TextWatcher tittle2Watcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -154,37 +181,37 @@ public class WuHuListAdapter extends BaseAdapter {
         };
        switch (i){
            case 0:
-               viHolder.tittle_pos.setText("议题一");
+               viHolder.tittle_pos.setText("议题");
                break;
            case 1:
-               viHolder.tittle_pos.setText("议题二");
+               viHolder.tittle_pos.setText("议题一");
                break;
            case 2:
-               viHolder.tittle_pos.setText("议题三");
+               viHolder.tittle_pos.setText("议题二");
                break;
            case 3:
-               viHolder.tittle_pos.setText("议题四");
+               viHolder.tittle_pos.setText("议题三");
                break;
            case 4:
-               viHolder.tittle_pos.setText("议题五");
+               viHolder.tittle_pos.setText("议题四");
                break;
            case 5:
-               viHolder.tittle_pos.setText("议题六");
+               viHolder.tittle_pos.setText("议题五");
                break;
            case 6:
-               viHolder.tittle_pos.setText("议题七");
+               viHolder.tittle_pos.setText("议题六");
                break;
            case 7:
-               viHolder.tittle_pos.setText("议题八");
+               viHolder.tittle_pos.setText("议题七");
                break;
            case 8:
-               viHolder.tittle_pos.setText("议题九");
+               viHolder.tittle_pos.setText("议题八");
                break;
            case 9:
-               viHolder.tittle_pos.setText("议题十");
+               viHolder.tittle_pos.setText("议题九");
                break;
            default:
-               viHolder.tittle_pos.setText("议题"+(i+1));
+               viHolder.tittle_pos.setText("议题"+(i));
                break;
        }
 
@@ -271,7 +298,12 @@ public class WuHuListAdapter extends BaseAdapter {
         TextView delete;
         @BindView(R.id.add)
         TextView add;
-
+        @BindView(R.id.aa)
+        TextView aa;
+        @BindView(R.id.bb)
+        TextView bb;
+        @BindView(R.id.edit_rl)
+        LinearLayout edit_rl;
         ViewHolder(View view) {
             ButterKnife.bind(this, view);
         }

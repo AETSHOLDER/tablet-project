@@ -375,8 +375,11 @@ public class LoginActivity extends BaseActivity  {
                                 ToastUtils.showToast(LoginActivity.this,"该会议已结束!!!");
                                 return;
                             }
-                                Intent intent1 = new Intent(LoginActivity.this, WuHuActivity.class);
-                            intent1.putExtra("ip", ip);
+                             Intent intent1 = new Intent(LoginActivity.this, WuHuActivity.class);
+                              Bundle bundle=new Bundle();
+                             bundle.putString("ip", ip);
+                             bundle.putString("isreuse",isReuse);
+                            intent1.putExtras(bundle);
                             startActivity(intent1);
                         }
                     }
@@ -686,6 +689,8 @@ public class LoginActivity extends BaseActivity  {
     protected void onResume() {
         super.onResume();
         UserUtil.isTempMeeting = false;
+        Log.d("dffpxpxpx",String.valueOf(px2dip(1528f))+"  sp="+px2sp(53f));
+        Log.d("dffpxpxpx",String.valueOf(px2dip(500f))+"   "+String.valueOf(px2dip(2560f))+"   "+String.valueOf(px2dip(1600f)));
         // 因为init页面会抢夺回调，所以返回后再次回调
         if(InitSocketManager.socket != null && !InitSocketManager.socket.connected()){
             FLUtil.initSocketIO();
@@ -839,7 +844,19 @@ public class LoginActivity extends BaseActivity  {
             videoEncoder.start();
         }
     }
+    // 根据手机的分辨率从 px(像素) 的单位 转成为 dp
+    public  int px2dip( float pxValue) {
+        // 获取当前手机的像素密度（1个dp对应几个px）
+        float scale = getResources().getDisplayMetrics().density;
+        return (int) (pxValue / scale + 0.5f); // 四舍五入取整
+    }
+    public  int px2sp( float pxValue) {
 
+        float fontScale = getResources().getDisplayMetrics().scaledDensity;
+
+        return (int) (pxValue / fontScale + 0.5f);
+
+    }
 
     /**
      * @param view 需要截取图片的view
