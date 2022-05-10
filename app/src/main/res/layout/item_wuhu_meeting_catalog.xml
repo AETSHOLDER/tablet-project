@@ -49,6 +49,7 @@
         android:text="姓名占位 姓名占位 姓名占位"
         />
   <View
+      android:id="@+id/aa"
     android:layout_width="match_parent"
     android:layout_height="1dp"
       android:layout_marginRight="65dp"
