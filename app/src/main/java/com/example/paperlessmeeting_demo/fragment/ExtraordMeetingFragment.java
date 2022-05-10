@@ -392,6 +392,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                         public void onClickButton(boolean clickConfirm, boolean clickCancel) {
                             if (clickConfirm) {
                                 if (isReuse){
+                                    initMeetingDialog.dismiss();
                                     showRightDialog(content);
                                 }else {
                                     initMeetingDialog.dismiss();
@@ -414,8 +415,8 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                 }
             } else {
                 if (isReuse){
+                    initMeetingDialog.dismiss();
                     showRightDialog(content);
-
                 }else {
                     initMeetingDialog.dismiss();
                     UserUtil.isTempMeeting = true;
@@ -471,7 +472,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
        Dialog     dialog = new Dialog(getActivity(), R.style.dialogTransparent);
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         //弹窗点击周围空白处弹出层自动消失弹窗消失(false时为点击周围空白处弹出层不自动消失)
-        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCanceledOnTouchOutside(false);
         //将布局设置给Dialog
         dialog.setContentView(inflate);
 
@@ -503,7 +504,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
         confir_tx.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                initMeetingDialog.dismiss();
+
                 UserUtil.isTempMeeting = true;
                 constant.temp_code = codeStr;
                 Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
@@ -514,12 +515,13 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                 intent.putExtras(bundle);
                 startActivity(intent);
                 Hawk.put("isreuse","1");
+                dialog.dismiss();
             }
         });
         cancle_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                initMeetingDialog.dismiss();
+
                 UserUtil.isTempMeeting = true;
                 constant.temp_code = codeStr;
                 Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
@@ -530,7 +532,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                 intent.putExtras(bundle);
                 startActivity(intent);
                 Hawk.put("isreuse","2");
-
+                dialog.dismiss();
             }
         });
         //获取当前Activity所在的窗体
@@ -545,8 +547,8 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
         d.getSize(size);
         int width = size.x;
         int height = size.y;
-        wlp.width = (int) (width * 0.4);//设置宽
-        wlp.height = (int) (height * 0.4);;//设置宽
+        wlp.width = (int) (width * 0.45);//设置宽
+        wlp.height = (int) (height * 0.23);;//设置宽
         window.setAttributes(wlp);
         dialog.show();
     }

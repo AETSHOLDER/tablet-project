@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/main_title_tv"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="480dp"
+        android:layout_marginTop="85dp"
+        android:ellipsize="end"
+        android:fontFamily="Source Han Sans CN"
+        android:maxLines="2"
+        android:text="议题、"
+        android:textColor="#3F3932"
+        android:textSize="80sp"
+        android:textStyle="bold"></TextView>
+
+    <TextView
+        android:id="@+id/sub_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:layout_below="@+id/main_title_tv"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:gravity="top"
+        android:text="汇报单位:  江苏中协"
+        android:textColor="#3F3932"
+        android:textSize="60sp"></TextView>
+
+    <ImageView
+        android:id="@+id/image_add"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_below="@+id/sub_title_tv"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="90dp"
+        android:layout_marginRight="180dp"
+        android:src="@mipmap/ic_add_usb" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/image_add"
+        android:layout_marginBottom="2dp"
+        android:layout_marginTop="15dp"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.example.paperlessmeeting_demo.widgets.MyListView
+                android:id="@+id/listView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="60dp"
+                android:layout_marginRight="60dp"
+                android:layout_marginTop="30dp"
+                android:scrollbars="none"></com.example.paperlessmeeting_demo.widgets.MyListView>
+        </LinearLayout>
+    </ScrollView>
+
+    <RelativeLayout
+        android:id="@+id/progressBar_ll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#fff"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/aa"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:indeterminateDrawable="@anim/cycle_anim"
+            android:indeterminateDuration="1000" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/aa"
+            android:layout_centerHorizontal="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="70dp"
+                android:gravity="center"
+                android:textColor="#ff8f9bb3"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:text="文件传输中..."
+                android:textColor="#ff8f9bb3"
+                android:textSize="22sp" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</RelativeLayout>

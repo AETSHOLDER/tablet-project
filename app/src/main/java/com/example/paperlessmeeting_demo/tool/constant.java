@@ -97,6 +97,7 @@ public class constant {
     public final static String RUSH_SIGN_LIST_BROADCAST = "reshsignlistui";////临时会议分享文件成功后，通知会议更新投票列表
     public final static String SEE_IMA_BROADCAST = "seeima";////临时会议查看投票大图
     public final static String ADD_FRAGMENT_BROADCAST = "addfragment";////增加芜湖fragment
+    public final static String CHANGE_CATALOG_BROADCAST = "catalogfragment";////芜湖点击item会议目录切换到对应的碎片
     public final static String SAVE_SEPARATELY_BROADCAST = "save_separately";//从议题列表中单独保存某个会议议题
     public final static String DELETE_FRAGMENT_BROADCAST = "save_separately";//从议题列表中单独保存某个会议议题
     public final static String REFRESH_BROADCAST = "refresh_ui";//自己刷新芜湖界面

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+    <RelativeLayout
+        android:id="@+id/first_rl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        >
+
+        <TextView
+            android:id="@+id/topic_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="120dp"
+            android:gravity="center"
+            android:text="议题1"
+            android:textColor="#EA1818"
+            android:textSize="36sp" />
+
+        <TextView
+            android:id="@+id/toptic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="110dp"
+            android:layout_marginRight="65dp"
+            android:layout_toRightOf="@id/topic_num"
+            android:text="XXX会议议题"
+            android:textColor="#666"
+            android:textSize="36sp" />
+
+    </RelativeLayout>
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textColor="#666"
+        android:layout_marginLeft="343dp"
+        android:layout_marginRight="65dp"
+        android:layout_marginTop="28dp"
+        android:layout_centerVertical="true"
+        android:textSize="36sp"
+        android:text="姓名占位 姓名占位 姓名占位"
+        />
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+      android:layout_marginRight="65dp"
+      android:layout_marginLeft="343dp"
+      android:layout_marginTop="40dp"
+    android:background="#D6D6D6"/>
+    />
+</LinearLayout>

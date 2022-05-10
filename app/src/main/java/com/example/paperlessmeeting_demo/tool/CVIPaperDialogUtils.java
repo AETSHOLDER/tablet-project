@@ -2,13 +2,18 @@ package com.example.paperlessmeeting_demo.tool;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -22,7 +27,7 @@ public class CVIPaperDialogUtils {
     private static String mErrorStr = "错误";
     private static String mConfirmStr = "知道了";
     private static String mCancelStr = "取消";
-    private static AlertDialog confirmDialog;
+    private static Dialog confirmDialog;
     private static CountDownTimer countDownTimer;
     /**
      *  弹出确认倒计时弹框 ，只有一个确定按钮
@@ -62,8 +67,9 @@ public class CVIPaperDialogUtils {
         }
         closeKeyboardHidden(context);
         initDialog();
+         confirmDialog = new Dialog(context, R.style.dialogTransparent);
+       // AlertDialog.Builder builder = new AlertDialog.Builder(context,R.style.dialogTransparent);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
         View view;
         switch (type) {
             case 1:
@@ -82,17 +88,42 @@ public class CVIPaperDialogUtils {
                 view = LayoutInflater.from(context).inflate(R.layout.dialog_custom, null);
                 break;
         }
-        builder.setView(view);
-        builder.setCancelable(canceledOnTouchOutside);
-        Button confirm = view.findViewById(R.id.confir_btn);
+        confirmDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        //弹窗点击周围空白处弹出层自动消失弹窗消失(false时为点击周围空白处弹出层不自动消失)
+        confirmDialog.setCanceledOnTouchOutside(canceledOnTouchOutside);
+        //将布局设置给Dialog
+        confirmDialog.setContentView(view);
+
+        TextView confirm = view.findViewById(R.id.confir_btn);
         TextView contentTxt = (TextView) view.findViewById(R.id.content_tv);
-        confirmDialog = builder.create();
+        confirmDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        confirmDialog.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+        confirmDialog.getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+            @Override
+            public void onSystemUiVisibilityChange(int visibility) {
+                int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                        //布局位于状态栏下方
+                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                        //全屏
+                        View.SYSTEM_UI_FLAG_FULLSCREEN |
+                        //隐藏导航栏
+                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+                if (Build.VERSION.SDK_INT >= 19) {
+                    uiOptions |= 0x00001000;
+                } else {
+                    uiOptions |= View.SYSTEM_UI_FLAG_LOW_PROFILE;
+                }
+                confirmDialog.getWindow().getDecorView().setSystemUiVisibility(uiOptions);
+            }
+        });
         confirmDialog.show();
+
         WindowManager windowManager = context.getWindowManager();
         Display display = windowManager.getDefaultDisplay();
         WindowManager.LayoutParams lp = confirmDialog.getWindow().getAttributes();
-        lp.width = (int) (display.getWidth() * 0.33); //设置宽度
-
+        lp.width = (int) (display.getWidth() * 0.45); //设置宽度
+        lp.height = (int) (display.getHeight() * 0.23); //设置宽度
         confirmDialog.getWindow().setAttributes(lp);
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,7 +143,7 @@ public class CVIPaperDialogUtils {
 
         });
         if(type == 2 || type == 4){
-            Button cancel = view.findViewById(R.id.cancel_btn);
+            TextView cancel = view.findViewById(R.id.cancel_btn);
             cancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

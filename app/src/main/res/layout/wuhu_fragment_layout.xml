@@ -6,190 +6,6 @@
     android:background="@mipmap/bg_wuhu_home"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/tittle"
-        android:layout_width="match_parent"
-        android:layout_height="95dp"
-        android:visibility="gone"
-        android:background="#FDFEFF"
-        >
-        <RelativeLayout
-            android:id="@+id/name_rl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true">
-            <TextView
-                android:id="@+id/name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="20dp"
-                android:gravity="center"
-                android:text="王小二"
-                android:textColor="#ff000000"
-                android:textSize="37sp" />
-            <RelativeLayout
-                android:id="@+id/edit_rl"
-                android:layout_width="wrap_content"
-                android:layout_toRightOf="@id/name"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="50dp">
-
-
-                <TextView
-                    android:id="@+id/vv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="35dp"
-                    android:gravity="center"
-                    android:text="欢迎您!"
-                    android:textColor="#ff000000"
-                    android:textSize="37sp" />
-
-                <ImageView
-                    android:id="@+id/ima_edit"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@id/vv"
-                    android:scaleType="fitCenter"
-                    android:src="@mipmap/ic_edit_name_normal" />
-            </RelativeLayout>
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/edit_ll"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="35dp"
-            android:layout_marginRight="90dp"
-            android:layout_toLeftOf="@id/name_rl">
-
-            <ImageView
-                android:id="@+id/aa3"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerVertical="true"
-                android:scaleType="fitCenter"
-                android:src="@mipmap/ic_wuhu_consult" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:layout_toRightOf="@id/aa3"
-                android:gravity="center"
-                android:text="编辑"
-                android:textColor="#ff1d1d1d"
-                android:textSize="37sp" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/consult_ll"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="35dp"
-            android:layout_toLeftOf="@id/edit_ll">
-
-            <ImageView
-                android:id="@+id/aa2"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerVertical="true"
-                android:scaleType="fitCenter"
-                android:src="@mipmap/ic_wuhu_edit" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:layout_toRightOf="@id/aa2"
-                android:gravity="center"
-                android:text="查阅"
-                android:textColor="#ff1d1d1d"
-                android:textSize="37sp" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/vote_ll"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/consult_ll">
-
-            <ImageView
-                android:id="@+id/aa1"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerVertical="true"
-                android:scaleType="fitCenter"
-                android:src="@mipmap/ic_wuhu_vote" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:layout_toRightOf="@id/aa1"
-                android:gravity="center"
-                android:text="投票"
-                android:textColor="#ff1d1d1d"
-                android:textSize="37sp" />
-
-        </RelativeLayout>
-
-
-    </RelativeLayout>
-
-
-    <RelativeLayout
-        android:id="@+id/edit_name_rl"
-        android:layout_width="489dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tittle"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="12dp"
-        android:visibility="gone"
-        android:layout_marginRight="21dp"
-        android:background="@drawable/bg_wuhu_name">
-
-        <ImageView
-            android:id="@+id/comfirm"
-            android:layout_width="45dp"
-            android:layout_height="31dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:paddingRight="25dp"
-            android:scaleType="fitCenter"
-            android:src="@mipmap/ic_wuhu_confirm" />
-
-        <EditText
-            android:id="@+id/edit_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="15dp"
-            android:layout_toLeftOf="@id/comfirm"
-            android:background="@null"
-            android:gravity="left"
-            android:hint="请输入姓名"
-            android:textColor="#ff1d1d1d"
-            android:textSize="37sp"
-            android:visibility="gone" />
-
-
-    </RelativeLayout>
-
     <TextView
         android:id="@+id/tittle1"
         android:layout_width="wrap_content"
@@ -238,6 +54,22 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <com.example.paperlessmeeting_demo.widgets.MyListView
+                android:id="@+id/listView_catalog"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="70dp"
+                android:divider="@null"
+                android:dividerHeight="0dp"
+                android:scrollbars="none">
+
+            </com.example.paperlessmeeting_demo.widgets.MyListView>
+            <LinearLayout
+                android:id="@+id/file_ly"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
             <TextView
                 android:id="@+id/tittle_num"
                 android:layout_width="wrap_content"
@@ -374,6 +206,7 @@
                 </com.example.paperlessmeeting_demo.widgets.MyListView>
 
 
+            </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 

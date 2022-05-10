@@ -18,7 +18,7 @@
         android:gravity="center"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:text="某某某科技有限公司"
+        android:text="区政府会议纪要"
         android:textColor="#333333"
         android:textSize="37sp" />
 
