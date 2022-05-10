@@ -49,7 +49,7 @@ public class StoreUtil {
      * 获取个人批注保存路径
      */
     public static String getPersonalSignPhotoSavePath() {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日HH:mm:ss");// HH:mm:ss
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日HH-mm-ss");// HH:mm:ss
         // 获取当前时间
         Date date = new Date(System.currentTimeMillis());
         return getPersonalSignPhotoPath() + File.separator + simpleDateFormat.format(date) + PHOTO_FORMAT_PNG;
@@ -62,7 +62,7 @@ public class StoreUtil {
      * 获取保存路径
      */
     public static String getPhotoSavePath() {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日HH:mm:ss");// HH:mm:ss
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日HH-mm-ss");// HH:mm:ss
         // 获取当前时间
         Date date = new Date(System.currentTimeMillis());
         return getPhotoPath() + File.separator + simpleDateFormat.format(date) + PHOTO_FORMAT_PNG;
