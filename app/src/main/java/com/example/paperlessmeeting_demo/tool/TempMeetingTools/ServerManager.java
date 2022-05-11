@@ -135,7 +135,7 @@ public class ServerManager {
                 voteBean.setUser_list(new ArrayList<>());
                 voteMap.put(voteBean.get_id(),new ArrayList<>());
                 voteList.add(voteBean);
-                SendVoteMsgToAll(wsebean.getFlag());
+                //SendVoteMsgToAll(wsebean.getFlag());
 
                 // 新增投票多发送一条
                 TempWSBean wsebean1 = new TempWSBean();

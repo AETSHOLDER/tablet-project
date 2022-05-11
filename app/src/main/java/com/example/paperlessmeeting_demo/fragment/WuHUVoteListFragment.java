@@ -468,6 +468,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                     e.printStackTrace();
                 }*/
               //  voteList.clear();
+                Log.d(TAG, "wuhu查询投票: " + message.toString());
                 Log.e(TAG, "wuhuonReceiveMsg11111: " + message.toString());
                 try {
                     TempWSBean<ArrayList> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<ArrayList<VoteBean>>>() {
@@ -497,10 +498,13 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                         }
                         Collections.reverse(voteList);
 
-                        Log.d("gdgsdgsdgdgf444555",flag+"");
+                        Log.d("gdgsdgsdgdgf4446666",flag+"");
+                        refreshUI(voteList, flag);
                         if (UserUtil.ISCHAIRMAN){
 
                         }else {
+
+
                             File path = new File(votePath);
                             File[] files = path.listFiles();// 读取
                             if (files == null) {
@@ -509,14 +513,13 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                             getVoteFile(files);
                         }
 
-                        refreshUI(voteList, flag);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
-            if (message.getMessage().contains(constant.NEWVOTE)) {
+            } else if (message.getMessage().contains(constant.NEWVOTE)) {
              //   progressBar_ll.setVisibility(View.VISIBLE);
+                Log.d(TAG, "wuhu新增投票投票: " + message.toString());
                 Log.e(TAG, "wuhuonReceiveMsg1111122222: " + message.toString());
                 try {
                     TempWSBean<VoteBean> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<VoteBean>>() {

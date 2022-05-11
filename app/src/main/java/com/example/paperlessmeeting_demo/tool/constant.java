@@ -113,6 +113,7 @@ public class constant {
     public final static String FINISH_WUHUVOTEACTIVITY_BROADCAST = "finishactivity";//自己刷新芜湖界面
     public final static String FRESH_CATalog_BROADCAST = "freshcatalogfragment";//刷新非主席芜湖目录列表
     public static String temp_code = "temp_code";//临时会议code
+    public final static String WUHU_FILE_BROADCAST = "WuHufile";////芜湖版本，当用户位于签批页面时  再次检测到推送文件后，只替换文件路径，不需要重启新页面
     /**
      * 发言单元
      */

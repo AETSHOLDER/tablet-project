@@ -115,11 +115,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
             }
         });
 
-        if (Hawk.contains("WuHuFragmentData")){
-            isReuse=true;
-        }else {
-            isReuse=false;
-        }
+
     }
 
     @Override
@@ -183,6 +179,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
 
         for (String msg : UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr){
             List<String> ipcodeInfo = FLUtil.dealUDPMsg(msg);
+
             stringList.add(ipcodeInfo.get(1));
         }
 //        ipcodeInfo = FLUtil.dealUDPMsg(UDPBroadcastManager.getInstance().MythdReceive.receiveMsg);
@@ -277,10 +274,21 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                 //  判断receiveIPArr是否被清了
                 if(UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr.size() >= currentSelIndex+1){
                     List<String> ipcodeInfo = FLUtil.dealUDPMsg(UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr.get(currentSelIndex));
+                    String[]strAll= ipcodeInfo.get(1).split("/");
+                    String isRu=  strAll[1];
                     Intent intent1 = new Intent(getActivity(), WuHuActivity.class);
-                    intent1.putExtra("ip", ipcodeInfo.get(0));
+                    Bundle bundle=new Bundle();
+                    bundle.putString("ip", ipcodeInfo.get(0));
+                    bundle.putString("isreuse",isRu);
+                    intent1.putExtras(bundle);
+                    Hawk.put("isreuse",isRu);//储存是否重复利用会议模板标识
 //                        intent1.putExtra("code",ipcodeInfo.get(1));
                     startActivity(intent1);
+
+
+
+
+
 
                 }else {
                     ToastUtil.makeText(getActivity(),"请重新进入!");
@@ -339,6 +347,11 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
     @Override
     public void onComplete(View view, String content) {
         if (view == create_invite_codeview) {
+            if (Hawk.contains("WuHuFragmentData")){
+                isReuse=false;
+            }else {
+                isReuse=true;
+            }
             if(!FLUtil.netIsConnect(getActivity())){
                 if (view != null) {
                     InputMethodManager inputmanger = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -376,10 +389,19 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                                     ToastUtils.showShort("加入不了会议!");
                                     return;
                                 }
-                                List<String> ipcodeInfo = FLUtil.dealUDPMsg(UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr.get(index));
-                                intent1.putExtra("ip", ipcodeInfo.get(0));
-                                startActivity(intent1);
 
+                                List<String> ipcodeInfo = FLUtil.dealUDPMsg(UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr.get(index));
+                                String[]strAll= ipcodeInfo.get(1).split("/");
+                                String isRu=  strAll[1];
+
+                                Intent intent2 = new Intent(getActivity(), WuHuActivity.class);
+                                Bundle bundle=new Bundle();
+                                bundle.putString("ip", ipcodeInfo.get(0));
+                                bundle.putString("isreuse",isRu);
+                                intent2.putExtras(bundle);
+                                intent2.putExtras(bundle);
+                                Hawk.put("isreuse",isRu);//储存是否重复利用会议模板标识
+                                startActivity(intent2);
                                 return;
                             }
                         }
@@ -391,7 +413,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                         @Override
                         public void onClickButton(boolean clickConfirm, boolean clickCancel) {
                             if (clickConfirm) {
-                                if (isReuse){
+                                if (!isReuse){
                                     initMeetingDialog.dismiss();
                                     showRightDialog(content);
                                 }else {
@@ -414,7 +436,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
 
                 }
             } else {
-                if (isReuse){
+                if (!isReuse){
                     initMeetingDialog.dismiss();
                     showRightDialog(content);
                 }else {

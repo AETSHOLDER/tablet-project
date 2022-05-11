@@ -387,7 +387,10 @@ public class SignListActivity extends BaseActivity {
                 }
             });
             recyclerView.setAdapter(adapter);
-            mLinear.addView(layout, params);
+            if(mLinear!=null){
+                mLinear.addView(layout, params);
+            }
+
         }
     }
     private class MyBroadcastReceiver extends BroadcastReceiver {

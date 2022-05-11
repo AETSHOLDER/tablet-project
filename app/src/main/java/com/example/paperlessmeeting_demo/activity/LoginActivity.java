@@ -688,6 +688,13 @@ public class LoginActivity extends BaseActivity  {
     @Override
     protected void onResume() {
         super.onResume();
+        //客户端是否第一次安装
+     if (Hawk.contains("WuHuFragmentData")){
+         Hawk.put("isFirst",false);
+        }else {
+         Hawk.put("isFirst",true);
+        }
+
         UserUtil.isTempMeeting = false;
         Log.d("dffpxpxpx",String.valueOf(px2dip(1528f))+"  sp="+px2sp(53f));
         Log.d("dffpxpxpx",String.valueOf(px2dip(500f))+"   "+String.valueOf(px2dip(2560f))+"   "+String.valueOf(px2dip(1600f)));

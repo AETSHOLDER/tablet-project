@@ -190,6 +190,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
     private Handler handler ;
     private Runnable runnable;
     private  ArrayList<WuHuEditBean.EditListBean> editListBeans = new ArrayList<>();
+    private View foodView;
     /**
      * 点击返回时间
      */
@@ -316,7 +317,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                 UserUtil.ISCHAIRMAN = false;
                 String ipUrl = getIntent().getStringExtra("ip");
                 String isReuse = getIntent().getStringExtra("isreuse");
-                Hawk.put("isreuse",isReuse);//储存是否重复利用会议模板标识
+                Hawk.put("isreuse",isReuse);//储存是否重复利用会议模板标识 //1:代表复用模板  2：代表不复用模板 3：代表没有模板
                 UserUtil.serverIP = ipUrl;
                 if (!StringUtils.isEmpty(ipUrl)) {
                     UrlConstant.TempWSIPString = "ws://" + ipUrl + ":" + UrlConstant.port;
@@ -329,6 +330,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                 UserUtil.ISCHAIRMAN = true;
                 String code = getIntent().getStringExtra("code");
                 String isReuse= getIntent().getStringExtra("isreuse");
+                Hawk.put("isreuse",isReuse);//储存是否重复利用会议模板标识 //1:代表复用模板  2：代表不复用模板 3：代表没有模板
               //  alertCodeDialog(code);
 
                 //  广播四位数code以及IP地址
@@ -489,7 +491,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
       /*  mTestFragments.put(10000, WuHuFragment.newInstance(10000+""));
         mPagerAdapter.setmTestFragments(mTestFragments);
         mPagerAdapter.notifyDataSetChanged();*/
-
+/*
         if (Hawk.contains("isreuse")){
             String isreuse=Hawk.get("isreuse");
             Log.d("fgfgfddhhisreuse=",isreuse);
@@ -553,7 +555,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
             }
 
         }
-        }
+        }*/
     }
 
     @Override
@@ -563,6 +565,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
 
     @Override
     protected void initView() {
+        foodView=LayoutInflater.from(WuHuActivity.this).inflate(R.layout.list_food,null);
         Log.d("wrewarawrawer","initView");
         handler = new Handler();
         if ( Hawk.contains(constant.myNumber)){
@@ -941,7 +944,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
             wuHuEditBeanList.clear();
             WuHuEditBean  wuHuEditBean= Hawk.get("WuHuFragmentData");
             wuHuEditBeanList=wuHuEditBean.getEditListBeanList();
-            Log.d("sdsdsaonResume=",wuHuEditBeanList.size()+"");
+
         }
     }
 
@@ -1023,7 +1026,9 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                           /*  //更新单个数据
                             wsUpdata(wuHuEditBean,constant.REFRASHWuHUALL);*/
                         }
-
+                        Intent intent=new Intent();
+                        intent.setAction(constant.FRESH_CATalog_BROADCAST);
+                        sendBroadcast(intent);
 
 
                     }
@@ -1060,7 +1065,9 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                         }
 
 
-
+                        Intent intent=new Intent();
+                        intent.setAction(constant.FRESH_CATalog_BROADCAST);
+                        sendBroadcast(intent);
 
 
                     }
@@ -1131,7 +1138,9 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                             wuHuListAdapter.setWuHuEditBeanList(wuHuEditBeanList);
                             wuHuListAdapter.notifyDataSetChanged();
                         }
-
+                        Intent intent=new Intent();
+                        intent.setAction(constant.FRESH_CATalog_BROADCAST);
+                        sendBroadcast(intent);
 
                         int totalcount = mTestFragments.size();
                         int currentItem = mViewPager.getCurrentItem();
@@ -1161,10 +1170,10 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
             }else if (message.getMessage().contains(constant.QUERYVOTE_WUHU_FRAGMENT)){
                 Log.d("wrewarawrawer","查询");
                 Log.e("onReceiveMsg查询: " , message.toString());
-                if (UserUtil.ISCHAIRMAN) {
+              /*  if (UserUtil.ISCHAIRMAN) {
                     //主席不执行查询代码
                     return;
-                }
+                }*/
 
               /*  if (Hawk.contains("isreuse")){
                     String isreuse=Hawk.get("isreuse");
@@ -1212,100 +1221,103 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
     private  void querywuhufragment(List<WuHuEditBean.EditListBean>editListBeanList){
         Log.e("onReceiveMsg查询editListBeanList大小: " , editListBeanList.size()+"");
         wuHuEditBeanList.clear();
-        WuHuEditBean wuHuEditBean2=new WuHuEditBean();
-        Hawk.put("WuHuFragmentData",wuHuEditBean2);
-      if (editListBeanList.size()>0){
-          wuHuEditBeanList.addAll(editListBeanList);
-          for (int i=0;i<wuHuEditBeanList.size();i++){
-              mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos+""));
-              fragmentPos++;
-          }
-         if (Hawk.contains("WuHuFragmentData")) {
-              WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
-              wuHuEditBean.setTopics(wuHuEditBeanList.get(0).getTopics());
-              wuHuEditBean.setTopic_type(wuHuEditBeanList.get(0).getTopic_type());
-              wuHuEditBean.setLine_color(wuHuEditBeanList.get(0).getLine_color());
-              wuHuEditBean.setThem_color(wuHuEditBeanList.get(0).getThem_color());
-              wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
-              Hawk.put("WuHuFragmentData",wuHuEditBean);
 
-          }
-          Log.d("fdgsgsgsgsg1111",Hawk.contains("WuHuFragmentData")+"");
+       /* WuHuEditBean wuHuEditBean2=new WuHuEditBean();
+        Hawk.put("WuHuFragmentData",wuHuEditBean2);*/
+      /*  boolean isFirst=false;
+        if (Hawk.contains("isFirst")){
+            isFirst=Hawk.get("isFirst");
+        }*/
 
-      }else {
-          if (Hawk.contains("isreuse")){
-              String isreuse=Hawk.get("isreuse");
-              Log.d("fgfgfddhhisreuse=",isreuse);
-              //1:代表复用模板  2：代表不复用模板 3：代表没有模板
-              if (isreuse.equals("3")||isreuse.equals("2")){
-                  WuHuEditBean wuHuEditBean=new WuHuEditBean();
-                  Hawk.put("WuHuFragmentData",wuHuEditBean);
-                  if (Hawk.contains("WuHuFragmentData")){
-                      wuHuEditBean= Hawk.get("WuHuFragmentData");
-                      wuHuEditBean.setTopics("区政府会议纪要");
-                      wuHuEditBean.setTopic_type("会议纪要");
+        if (Hawk.contains("isreuse")){
+            String isreuse=Hawk.get("isreuse");
+            Log.d("fgfgfddhhisreuse=",isreuse);
+            //1:代表复用模板  2：代表不复用模板 3：代表没有模板
+            if (isreuse.equals("3")||isreuse.equals("2")){
+                WuHuEditBean wuHuEditBean=new WuHuEditBean();
+                Hawk.put("WuHuFragmentData",wuHuEditBean);
+                if (Hawk.contains("WuHuFragmentData")){
+                    wuHuEditBean= Hawk.get("WuHuFragmentData");
+                    wuHuEditBean.setTopics("区政府会议纪要");
+                    wuHuEditBean.setTopic_type("会议纪要");
 
-                      WuHuEditBean.EditListBean editListBean=new WuHuEditBean.EditListBean();
-                      editListBean.setSubTopics("总结2022年");
-                      editListBean.setAttendeBean("某某，某某，某某，某");
-                      editListBean.setTopics("区政府会议纪要");
-                      editListBean.setTopic_type("会议纪要");
-                      wuHuEditBeanList.add(editListBean);
+                    WuHuEditBean.EditListBean editListBean=new WuHuEditBean.EditListBean();
+                    editListBean.setSubTopics("总结2022年");
+                    editListBean.setAttendeBean("某某，某某，某某，某");
+                    editListBean.setTopics("区政府会议纪要");
+                    editListBean.setTopic_type("会议纪要");
+                    wuHuEditBeanList.add(editListBean);
 
 
-                      WuHuEditBean.EditListBean editListBean1=new WuHuEditBean.EditListBean();
-                      editListBean1.setSubTopics("总结2022年");
-                      editListBean1.setAttendeBean("某某，某某，某某，某");
-                      editListBean1.setTopics("区政府会议纪要");
-                      editListBean1.setTopic_type("会议纪要");
-                      wuHuEditBeanList.add(editListBean1);
+                    WuHuEditBean.EditListBean editListBean1=new WuHuEditBean.EditListBean();
+                    editListBean1.setSubTopics("总结2022年");
+                    editListBean1.setAttendeBean("某某，某某，某某，某");
+                    editListBean1.setTopics("区政府会议纪要");
+                    editListBean1.setTopic_type("会议纪要");
+                    wuHuEditBeanList.add(editListBean1);
 
-                      wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
-                      Hawk.put("WuHuFragmentData",wuHuEditBean);
-                  }
-                  Log.d("GASDJKASDD宿主=","rfresettt111");
-                  mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos+""));
-                  fragmentPos++;
-                  mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos+""));
-                  fragmentPos++;
+                    wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
+                    Hawk.put("WuHuFragmentData",wuHuEditBean);
+                }
+                Log.d("GASDJKASDD宿主=","rfresettt111");
+                mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos+""));
+                fragmentPos++;
+                mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos+""));
+                fragmentPos++;
 
-                  mPagerAdapter.setmTestFragments(mTestFragments);
-                  mPagerAdapter.notifyDataSetChanged();
-                  Log.d("wrewarawrawer","isreuse");
-                  //1:代表复用模板  2：代表不复用模板 3：代表没有模板
-              }else if (isreuse.equals("1")){
-                  if (Hawk.contains("WuHuFragmentData")){
-                      wuHuEditBean= Hawk.get("WuHuFragmentData");
-                      wuHuEditBeanList=wuHuEditBean.getEditListBeanList();
-                      if (wuHuEditBeanList==null||wuHuEditBeanList.size()==0) {
-                          return;
+                mPagerAdapter.setmTestFragments(mTestFragments);
+                mPagerAdapter.notifyDataSetChanged();
+                Log.d("wrewarawrawer","isreuse");
+
+            }else if(isreuse.equals("1")){
+                if (editListBeanList.size()>0){
+                    wuHuEditBeanList.addAll(editListBeanList);
+                    for (int i=0;i<wuHuEditBeanList.size();i++){
+                        mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos+""));
+                        fragmentPos++;
+                    }
+                    if (Hawk.contains("WuHuFragmentData")) {
+                        WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
+                        wuHuEditBean.setTopics(wuHuEditBeanList.get(0).getTopics());
+                        wuHuEditBean.setTopic_type(wuHuEditBeanList.get(0).getTopic_type());
+                        wuHuEditBean.setLine_color(wuHuEditBeanList.get(0).getLine_color());
+                        wuHuEditBean.setThem_color(wuHuEditBeanList.get(0).getThem_color());
+                        wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
+                        Hawk.put("WuHuFragmentData",wuHuEditBean);
+
+                    }
+
+                    Log.d("fdgsgsgsgsg1111",Hawk.contains("WuHuFragmentData")+"");
+
+                }else {
+                            if (Hawk.contains("WuHuFragmentData")){
+                                WuHuEditBean   wuHuEditBean= Hawk.get("WuHuFragmentData");
+                                wuHuEditBeanList=wuHuEditBean.getEditListBeanList();
+                                Hawk.put("WuHuFragmentData",wuHuEditBean);
+                            }
+                            if (wuHuEditBeanList==null||wuHuEditBeanList.size()==0){
+                                return;
+                            }
+                    for (int i=0;i<wuHuEditBeanList.size();i++){
+                        mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos+""));
+                        fragmentPos++;
                       }
 
-                      for (int i=0;i<wuHuEditBeanList.size();i++){
-                          mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos+""));
-                          fragmentPos++;
-                      }
-                      mPagerAdapter.setmTestFragments(mTestFragments);
-                      mPagerAdapter.notifyDataSetChanged();
-                  }
+
+                    //===
+                }
 
 
-              }
+            }
+        }
 
-          }
-
-          Log.d("fdgsgsgsgsg2222",Hawk.contains("WuHuFragmentData")+"");
-
-
-      //===
-      }
         Intent intent=new Intent();
         intent.setAction(constant.FRESH_CATalog_BROADCAST);
         sendBroadcast(intent);
-
+        Log.d("fgfgfddhhwuHuEditBeanList=",wuHuEditBeanList.size()+"");
         wuHuListAdapter.setWuHuEditBeanList(wuHuEditBeanList);
         wuHuListAdapter.notifyDataSetChanged();
-
+        Log.d("fgfgfddhhmTestFragments=",mTestFragments.size()+"");
         mPagerAdapter.setmTestFragments(mTestFragments);
         mPagerAdapter.notifyDataSetChanged();
 
@@ -1375,6 +1387,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
 
         Log.d("reyeyrty222",wuHuEditBeanList.size()+"");
         myListView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
+        myListView.addFooterView(foodView,null,false);
      //   myListView.setTranscriptMode(ListView.TRANSCRIPT_MODE_NORMAL);
        wuHuListAdapter.setWuHuEditBeanList(wuHuEditBeanList);
         myListView.setAdapter(wuHuListAdapter);
