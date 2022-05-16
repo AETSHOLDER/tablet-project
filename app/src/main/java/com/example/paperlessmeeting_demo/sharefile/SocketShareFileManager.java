@@ -196,8 +196,8 @@ public class SocketShareFileManager {
             SendMessage(6, "发送错误:\n" + e.getMessage(), Integer.parseInt(actionType));
         }
     }
-
-    public void SendFile(ArrayList<String> fileName, ArrayList<String> path, String ipAddress, int port, String actionType) {
+  //芜湖分享  推送
+    public void SendFile(ArrayList<String> fileName, ArrayList<String> path, String ipAddress, int port, String actionType,String flag) {
         try {
             long total = 0;
             for (int i = 0; i < fileName.size(); i++) {
@@ -205,7 +205,8 @@ public class SocketShareFileManager {
                 OutputStream outputName = name.getOutputStream();
                 OutputStreamWriter outputWriter = new OutputStreamWriter(outputName);
                 BufferedWriter bwName = new BufferedWriter(outputWriter);
-                bwName.write(fileName.get(i));
+                bwName.write(flag+"-cvi"+fileName.get(i));
+                Log.d("fileName~=",  flag+"="+fileName.get(i));
                 bwName.close();
                 outputWriter.close();
                 outputName.close();
@@ -237,7 +238,7 @@ public class SocketShareFileManager {
             if (actionType.equals("3")) {
 
             } else {
-                SendMessage(5, "所有文件发送完成", Integer.parseInt(actionType));
+                SendMessage(55, "所有文件发送完成", Integer.parseInt(actionType));
             }
 
 

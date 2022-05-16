@@ -441,7 +441,7 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
                 }
                 //根据Ip将文件发送到不同的设备
                 for (int i = 0; i < stringListIp.size(); i++) {
-                    socketShareFileManager.SendFile(fileNames, paths, stringListIp.get(i), constant.SHARE_PORT,"1");
+                    socketShareFileManager.SendFile(fileNames, paths, stringListIp.get(i), constant.SHARE_PORT,"1","1");
                 }
             }
         });
@@ -469,7 +469,7 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
                 }
                 //根据Ip将文件发送到不同的设备
                 for (int i = 0; i < stringListIp.size(); i++) {
-                    socketShareFileManager.SendFile(fileNames, paths, stringListIp.get(i), constant.SHARE_PORT,"2");
+                    socketShareFileManager.SendFile(fileNames, paths, stringListIp.get(i), constant.SHARE_PORT,"2","1");
                 }
             }
         });

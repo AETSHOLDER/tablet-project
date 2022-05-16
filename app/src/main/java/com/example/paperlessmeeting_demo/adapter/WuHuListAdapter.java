@@ -23,6 +23,7 @@ import com.example.paperlessmeeting_demo.bean.WuHuEditBean;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.example.paperlessmeeting_demo.tool.constant;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.orhanobut.hawk.Hawk;
 
 import java.util.List;
 
@@ -176,6 +177,11 @@ public class WuHuListAdapter extends BaseAdapter {
                 } else {
                     wuHuEditBean.setSubTopics(s.toString());
                     wuHuEditBean.setTemporarySubTopics(s.toString());
+                    if (Hawk.contains("WuHuFragmentData")) {
+                        WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
+                        wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
+                        Hawk.put("WuHuFragmentData",wuHuEditBean);
+                    }
                 }
             }
         };
@@ -234,6 +240,11 @@ public class WuHuListAdapter extends BaseAdapter {
                 } else {
                     wuHuEditBean.setAttendeBean(s.toString());
                     wuHuEditBean.setTemporaryAttendeBean(s.toString());
+                    if (Hawk.contains("WuHuFragmentData")) {
+                        WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
+                        wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
+                        Hawk.put("WuHuFragmentData",wuHuEditBean);
+                    }
                 }
             }
         };

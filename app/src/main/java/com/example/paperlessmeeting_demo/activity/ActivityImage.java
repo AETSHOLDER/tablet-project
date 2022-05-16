@@ -64,7 +64,10 @@ public class ActivityImage extends BaseActivity {
         super.onDestroy();
         if (mReceiverTag) {   //判断广播是否注册
             mReceiverTag = false;   //Tag值 赋值为false 表示该广播已被注销
-          unregisterReceiver(myBroadcastReceiver);  //注销广播
+            if (myBroadcastReceiver!=null){
+                unregisterReceiver(myBroadcastReceiver);  //注销广播
+            }
+
         }
     }
 

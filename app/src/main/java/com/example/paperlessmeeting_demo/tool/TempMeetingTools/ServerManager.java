@@ -52,7 +52,7 @@ public class ServerManager {
    private  static WuHuEditBean  staticwuHuEditBean=new WuHuEditBean();
 
     private static ArrayList<WuHuEditBean.EditListBean> editListBeans = new ArrayList<>();
-
+    private static ArrayList<WuHuLocalFileBean.FileBean> fileBeanArrayList = new ArrayList<>();
     private static ArrayList<VoteListBean.VoteBean> voteList = new ArrayList<>();
 //    private static List<VoteListBean.VoteBean.UserListBean> userListBeans = new ArrayList<>();
     private static HashMap<String,ArrayList> voteMap = new HashMap<>();  //  通过key(meetingVoteId) value(userList)存储不同会议的用户投票数据
@@ -312,6 +312,10 @@ public class ServerManager {
             try {
                 TempWSBean<WuHuLocalFileBean> wsebean = new Gson().fromJson(message, new TypeToken<TempWSBean<WuHuLocalFileBean>>(){}.getType());
                 WuHuLocalFileBean wuHuLocalFileBean = wsebean.getBody();
+                if (wuHuLocalFileBean!=null){
+                    fileBeanArrayList.addAll(wuHuLocalFileBean.getFileBeanList());
+                }
+                wuHuLocalFileBean.setFileBeanList(fileBeanArrayList);
                 TempWSBean wsebean1 = new TempWSBean();
                 wsebean1.setReqType(1);
                 wsebean1.setUserMac_id("");

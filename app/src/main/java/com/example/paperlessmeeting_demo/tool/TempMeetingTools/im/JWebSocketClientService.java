@@ -289,7 +289,7 @@ public class JWebSocketClientService {
                     }
                 }
                 //  芜湖更新所有fragment添加本地文件列表
-                if (message.contains("refreshwuhufilefragment") || message.contains(constant.REFRESH_WUHU_FILE_FRAGMENT)) {
+                if (message.contains("qufenliebiao") || message.contains(constant.REFRESH_WUHU_FILE_FRAGMENT)) {
                     if (topActivity != null) {
                      /*
                         Intent intent = new Intent();

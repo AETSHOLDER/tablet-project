@@ -694,10 +694,15 @@ public class LoginActivity extends BaseActivity  {
         }else {
          Hawk.put("isFirst",true);
         }
+     //文件关联到对应的议题 两个Hawk  wuhulocal  WuHuLocalFileBean
+        if (Hawk.contains("wuhulocal")){
+            Hawk.delete("wuhulocal");
+        }
+        if (Hawk.contains("WuHuLocalFileBean")){
+            Hawk.delete("WuHuLocalFileBean");
+        }
 
         UserUtil.isTempMeeting = false;
-        Log.d("dffpxpxpx",String.valueOf(px2dip(1528f))+"  sp="+px2sp(53f));
-        Log.d("dffpxpxpx",String.valueOf(px2dip(500f))+"   "+String.valueOf(px2dip(2560f))+"   "+String.valueOf(px2dip(1600f)));
         // 因为init页面会抢夺回调，所以返回后再次回调
         if(InitSocketManager.socket != null && !InitSocketManager.socket.connected()){
             FLUtil.initSocketIO();

@@ -648,7 +648,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                                                 e.printStackTrace();
                                             }
                                             //将文件发送到指定IP
-                                            socketShareFileManager.SendFile(fileName, filePath, UserUtil.serverIP, constant.SHARE_PORT,"2");
+                                            socketShareFileManager.SendFile(fileName, filePath, UserUtil.serverIP, constant.SHARE_PORT,"1");
                                         }
                                     });
                                     sendThread.start();

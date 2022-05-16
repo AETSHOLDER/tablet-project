@@ -1,11 +1,14 @@
 package com.example.paperlessmeeting_demo.activity;
 
+import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.example.paperlessmeeting_demo.activity.Sign.SignActivity;
 import com.example.paperlessmeeting_demo.activity.Sign.SignListActivity;
 import com.example.paperlessmeeting_demo.adapter.WuHuListAdapter;
 import com.example.paperlessmeeting_demo.base.BaseActivity;
 
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -66,6 +69,7 @@ import com.example.paperlessmeeting_demo.sharefile.BroadcastUDPFileService;
 import com.example.paperlessmeeting_demo.sharefile.SocketShareFileManager;
 import com.example.paperlessmeeting_demo.tool.CVIPaperDialogUtils;
 import com.example.paperlessmeeting_demo.tool.FLUtil;
+import com.example.paperlessmeeting_demo.tool.FileUtils;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.ServerManager;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.UDPBroadcastManager;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.EventMessage;
@@ -74,6 +78,7 @@ import com.example.paperlessmeeting_demo.tool.TimeUtils;
 import com.example.paperlessmeeting_demo.tool.UrlConstant;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.example.paperlessmeeting_demo.tool.constant;
+import com.example.paperlessmeeting_demo.widgets.MyDialog;
 import com.example.paperlessmeeting_demo.widgets.MyListView;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -132,7 +137,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
     RelativeLayout cc1;
     @BindView(R.id.cc2)
     RelativeLayout cc2;
-    private Dialog dialog;
+    private MyDialog dialog;
     @BindView(R.id.comfirm)
     ImageView comfirm;
     @BindView(R.id.edit_name)
@@ -228,6 +233,9 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                     Toast.makeText(WuHuActivity.this, "文件接收失败", Toast.LENGTH_SHORT).show();
                     break;
                 case 8:
+                    if (UserUtil.ISCHAIRMAN){
+                        return;
+                    }
                     Toast.makeText(WuHuActivity.this, "推送文件已成功接收，请在文件管理页面查看", Toast.LENGTH_SHORT).show();
                     Log.e("hahahahahahaa","case 8");
                     String filePath=(String) msg.obj;
@@ -238,6 +246,121 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                     intent.putExtras(bundle);
                     intent.setAction(constant.SHARE_FILE_BROADCAST);
                     sendBroadcast(intent);
+                    FileListBean fileBean;
+                    File file=new File(filePath);
+                    String fileName = file.getName();
+                    String endStr = fileName.substring(fileName.lastIndexOf(".") + 1);
+
+                    if (fileName.contains("-cvi")){
+                        String[]fileNameAll=fileName.split("-cvi");
+                        fileName=fileNameAll[1];
+                     String  pos=fileNameAll[0];
+                        fileBean = new FileListBean(fileName, file.getPath(), "", "");
+                    }else {
+                        fileBean = new FileListBean(file.getName(), file.getPath(), "", "");
+                    }
+
+                    Uri uri = Uri.fromFile(file);
+                    Log.d("wuhuactivityrequestCodeUr555", uri.getScheme() + "===" + uri.getPath() + "==" + file.getName());
+                    fileBean.setFile_type(getType(endStr));
+                    fileBean.setNet(false);
+                    fileBean.setSuffix(endStr);//上传文件后缀名和文件类型；setSuffix和setType所赋值内容一样。
+                    //  fileBean.setType(endStr);
+                  /*  if (flag .equals("1")) {
+                        return;
+                    }
+                    if (StringUtils.isEmpty(pos)){
+                        return;
+                    }
+                    if (!textNub.equals(pos)){
+                        return;
+                    }*/
+
+
+                    if (fileBean.getFile_type().equals("3")){
+                        //防止普通参会人员重复打开页面
+                    /*    if ( isActivityTop(ActivityImage.class,WuHuActivity.this)){
+                            Intent  intent8=new Intent(constant.WUHU_IMAGE_FILE_BROADCAST);
+                            Bundle bundle2=new Bundle();
+                            bundle2.putString("url",fileBean.getPath());
+                            intent8.putExtras(bundle2);
+                           sendBroadcast(intent8);
+
+                        }*/
+                        Activity topActivity = (Activity) ActivityUtils.getTopActivity();
+                        if (topActivity != null) {
+                            // 如果是在签批内，先关闭，再进入,否则未销毁tbs,会一直显示加载中(看情况添加用户提示)
+                            if(topActivity.getLocalClassName().contains("ActivityImage")){
+                                {
+                                    ActivityImage activityImage = (ActivityImage)topActivity;
+                                    topActivity.finish();
+                                    try {
+                                        Thread.sleep(200);
+                                    }catch (Exception e){
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }else if(topActivity.getLocalClassName().contains("SignActivity")){
+                                    SignActivity signActivity = (SignActivity)topActivity;
+                                    signActivity.clearData();
+                                    topActivity.finish();
+                                    try {
+                                        Thread.sleep(200);
+                                    }catch (Exception e){
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                            }
+                            Intent  intent9 = new Intent();
+                            intent9.setClass(WuHuActivity.this, ActivityImage.class);
+                            intent9.putExtra("url", fileBean.getPath());
+                            intent9.putExtra("isOpenFile", true);
+                            intent9.putExtra("isNetFile", false);
+                            startActivity(intent9);
+                    }else if (fileBean.getFile_type().equals("4")){
+
+                        if(UserUtil.isNetworkOnline){
+                            Activity topActivity = (Activity) ActivityUtils.getTopActivity();
+                            if (topActivity != null) {
+                                // 如果是在签批内，先关闭，再进入,否则未销毁tbs,会一直显示加载中(看情况添加用户提示)
+                                if(topActivity.getLocalClassName().contains("SignActivity")){
+                                    SignActivity signActivity = (SignActivity)topActivity;
+                                    signActivity.clearData();
+                                    topActivity.finish();
+                                    try {
+                                        Thread.sleep(200);
+                                    }catch (Exception e){
+                                        e.printStackTrace();
+                                    }
+                                }else if(topActivity.getLocalClassName().contains("ActivityImage")){
+                                    ActivityImage activityImage = (ActivityImage)topActivity;
+                                    topActivity.finish();
+                                    try {
+                                        Thread.sleep(200);
+                                    }catch (Exception e){
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                            intent = new Intent();
+                            intent.setClass(WuHuActivity.this, SignActivity.class);
+                            intent.putExtra("url", fileBean.getPath());
+                            intent.putExtra("isOpenFile", true);
+                            intent.putExtra("isNetFile", false);
+                            intent.putExtra("tempPath", false);
+                            intent.putExtra("fileName",fileBean.getName());
+                            startActivity(intent);
+
+                        }else {
+                            CVIPaperDialogUtils.showConfirmDialog(WuHuActivity.this, "当前无外网，会使用wps打开文件", "知道了", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                                @Override
+                                public void onClickButton(boolean clickConfirm, boolean clickCancel) {
+                                    startActivity(FileUtils.openFile(fileBean.getPath(), WuHuActivity.this));
+                                }
+                            });
+                        }
+                    }
 
                     break;
                 case 32:
@@ -274,6 +397,9 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                         }
                     }
                     Hawk.put("stringsIp", stringsIp);
+                    break;
+                case 5:
+                    Toast.makeText(WuHuActivity.this, "文件发送成功哈哈哈哈！", Toast.LENGTH_SHORT).show();
                     break;
 
             }
@@ -841,9 +967,6 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
             editListBean.setTopic_type(tittle2.getText().toString());
         }
         wuHuEditBeanList.add(editListBean);
-        wuHuListAdapter.setWuHuEditBeanList(wuHuEditBeanList);
-        wuHuListAdapter.notifyDataSetChanged();
-
         if (Hawk.contains("WuHuFragmentData")){
             WuHuEditBean wuHuEditBean= Hawk.get("WuHuFragmentData");
             wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
@@ -1026,6 +1149,11 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                           /*  //更新单个数据
                             wsUpdata(wuHuEditBean,constant.REFRASHWuHUALL);*/
                         }
+                        if (wuHuListAdapter!=null){
+                            wuHuListAdapter.setWuHuEditBeanList(wuHuEditBeanList);
+                            wuHuListAdapter.notifyDataSetChanged();
+                        }
+
                         Intent intent=new Intent();
                         intent.setAction(constant.FRESH_CATalog_BROADCAST);
                         sendBroadcast(intent);
@@ -1233,7 +1361,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
             String isreuse=Hawk.get("isreuse");
             Log.d("fgfgfddhhisreuse=",isreuse);
             //1:代表复用模板  2：代表不复用模板 3：代表没有模板
-            if (isreuse.equals("3")||isreuse.equals("2")){
+            if (isreuse.equals("2")){
                 WuHuEditBean wuHuEditBean=new WuHuEditBean();
                 Hawk.put("WuHuFragmentData",wuHuEditBean);
                 if (Hawk.contains("WuHuFragmentData")){
@@ -1269,8 +1397,74 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                 mPagerAdapter.notifyDataSetChanged();
                 Log.d("wrewarawrawer","isreuse");
 
-            }else if(isreuse.equals("1")){
-                if (editListBeanList.size()>0){
+            }else if (isreuse.equals("3")){
+
+                if (editListBeanList.size()>2){
+                    wuHuEditBeanList.addAll(editListBeanList);
+                    for (int i=0;i<wuHuEditBeanList.size();i++){
+                        mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos+""));
+                        fragmentPos++;
+                    }
+                    if (Hawk.contains("WuHuFragmentData")) {
+                        WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
+                        wuHuEditBean.setTopics(wuHuEditBeanList.get(0).getTopics());
+                        wuHuEditBean.setTopic_type(wuHuEditBeanList.get(0).getTopic_type());
+                        wuHuEditBean.setLine_color(wuHuEditBeanList.get(0).getLine_color());
+                        wuHuEditBean.setThem_color(wuHuEditBeanList.get(0).getThem_color());
+                        wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
+                        Hawk.put("WuHuFragmentData",wuHuEditBean);
+
+                    }else {
+                        WuHuEditBean wuHuEditBean=new WuHuEditBean();
+                        wuHuEditBean.setEditListBeanList(editListBeanList);
+                        Hawk.put("WuHuFragmentData",wuHuEditBean);
+
+                    }
+
+
+
+                }else {
+                    WuHuEditBean wuHuEditBean=new WuHuEditBean();
+                    Hawk.put("WuHuFragmentData",wuHuEditBean);
+                    if (Hawk.contains("WuHuFragmentData")){
+                        wuHuEditBean= Hawk.get("WuHuFragmentData");
+                        wuHuEditBean.setTopics("区政府会议纪要");
+                        wuHuEditBean.setTopic_type("会议纪要");
+
+                        WuHuEditBean.EditListBean editListBean=new WuHuEditBean.EditListBean();
+                        editListBean.setSubTopics("总结2022年");
+                        editListBean.setAttendeBean("某某，某某，某某，某");
+                        editListBean.setTopics("区政府会议纪要");
+                        editListBean.setTopic_type("会议纪要");
+                        wuHuEditBeanList.add(editListBean);
+
+
+                        WuHuEditBean.EditListBean editListBean1=new WuHuEditBean.EditListBean();
+                        editListBean1.setSubTopics("总结2022年");
+                        editListBean1.setAttendeBean("某某，某某，某某，某");
+                        editListBean1.setTopics("区政府会议纪要");
+                        editListBean1.setTopic_type("会议纪要");
+                        wuHuEditBeanList.add(editListBean1);
+
+                        wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
+                        Hawk.put("WuHuFragmentData",wuHuEditBean);
+                    }
+                    Log.d("GASDJKASDD宿主=","rfresettt111");
+                    mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos+""));
+                    fragmentPos++;
+                    mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos+""));
+                    fragmentPos++;
+
+                    mPagerAdapter.setmTestFragments(mTestFragments);
+                    mPagerAdapter.notifyDataSetChanged();
+                    Log.d("wrewarawrawer","isreuse");
+
+                }
+
+            }
+
+            else if(isreuse.equals("1")){
+                if (editListBeanList.size()>2){
                     wuHuEditBeanList.addAll(editListBeanList);
                     for (int i=0;i<wuHuEditBeanList.size();i++){
                         mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos+""));
@@ -1345,7 +1539,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
         //自定义dialog显示布局
         inflate = LayoutInflater.from(WuHuActivity.this).inflate(R.layout.dialog_edit_wuhu, null);
         //自定义dialog显示风格
-        dialog = new Dialog(WuHuActivity.this, R.style.BottomSheetEdit);
+        dialog = new MyDialog(WuHuActivity.this, R.style.BottomSheetEdit);
           dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         //弹窗点击周围空白处弹出层自动消失弹窗消失(false时为点击周围空白处弹出层不自动消失)
         dialog.setCanceledOnTouchOutside(true);
@@ -1487,9 +1681,10 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
 
             }
         });
-        sava_all.setOnClickListener(new View.OnClickListener() {
+        dialog.setOnTouchOutside(new MyDialog.onTouchOutsideInterFace() {
             @Override
-            public void onClick(View v) {
+            public void outSide() {
+
                 if (Hawk.contains("WuHuFragmentData")) {
                     WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
                     wuHuEditBean.setTopics(company_name.getText().toString());
@@ -1503,6 +1698,39 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                         wuHuEditBeanList.get(i).setLine_color(lineFlag);
                         wuHuEditBeanList.get(i).setThem_color(themFlag);
                     }
+
+                    wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
+                    Hawk.put("WuHuFragmentData",wuHuEditBean);
+                    //更新单个数据
+                    wsUpdata(wuHuEditBean,constant.REFRASHWuHUALL);
+                }
+
+                Hawk.put("company_name",company_name.getText().toString());
+                Hawk.put("tittle2",tittle2.getText().toString());
+                Toast.makeText(WuHuActivity.this, "全部保存成功", Toast.LENGTH_SHORT).show();
+
+
+            }
+        });
+        sava_all.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                if (Hawk.contains("WuHuFragmentData")) {
+                    WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
+                    wuHuEditBean.setTopics(company_name.getText().toString());
+                    wuHuEditBean.setTopic_type(tittle2.getText().toString());
+                    wuHuEditBean.setLine_color(lineFlag);
+                    wuHuEditBean.setThem_color(themFlag);
+
+                    for (int i=0;i<wuHuEditBeanList.size();i++){
+                        wuHuEditBeanList.get(i).setTopics(company_name.getText().toString());
+                        wuHuEditBeanList.get(i).setTopic_type(tittle2.getText().toString());
+                        wuHuEditBeanList.get(i).setLine_color(lineFlag);
+                        wuHuEditBeanList.get(i).setThem_color(themFlag);
+                    }
+
                     wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
                     Hawk.put("WuHuFragmentData",wuHuEditBean);
                     //更新单个数据
@@ -1625,8 +1853,38 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
         }
         return false;
     }
+    private String getType(String end) {
+        if (end.equals("m4a") || end.equals("mp3") || end.equals("mid") ||
+                end.equals("xmf") || end.equals("ogg") || end.equals("wav")) {
+            return "1";
+        } else if (end.equals("3gp") || end.equals("mp4")) {
+            return "2";
+        } else if (end.equals("jpg") || end.equals("gif") || end.equals("png") ||
+                end.equals("jpeg") || end.equals("bmp")) {
+            return "3";
+        } else if ((end.equals("ppt") || end.equals("pptx"))) {
+            return "4";
+        } else if (end.equals("xls") || end.equals("xlsx")) {
+            return "4";
+        } else if (end.equals("doc") || end.equals("docx")) {
+            return "4";
+        } else if (end.equals("pdf") || end.equals("txt")) {
+            return "4";
+        } else {
+            return "0";
+        }
 
-
+    }
+    /**
+     *
+     * 判断某activity是否处于栈顶
+     * @return true在栈顶 false不在栈顶
+     */
+    private boolean isActivityTop(Class cls,Context context){
+        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        String name = manager.getRunningTasks(1).get(0).topActivity.getClassName();
+        return name.equals(cls.getName());
+    }
     private void hideSoftInput(IBinder token) {
 
         if (token != null) {

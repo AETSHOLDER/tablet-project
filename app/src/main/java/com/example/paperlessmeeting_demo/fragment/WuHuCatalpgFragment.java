@@ -240,13 +240,13 @@ public class WuHuCatalpgFragment extends BaseFragment  implements MediaReceiver.
                 case 88:
                     //    fileBeans.clear();
                     //所有fragment 都更新本地文件列表
-                    WuHuLocalFileBean wuHuLocalFileBean=new WuHuLocalFileBean();
+                /*    WuHuLocalFileBean wuHuLocalFileBean=new WuHuLocalFileBean();
                     if (!StringUtils.isEmpty(textNub)){
                         wuHuLocalFileBean.setFragmentPos(textNub);
                     }
                     //1：添加本地
                     wuHuLocalFileBean.setFlag("1");
-                    wsUpdata(wuHuLocalFileBean,constant.REFRESH_WUHU_FILE_FRAGMENT);
+                    wsUpdata(wuHuLocalFileBean,constant.REFRESH_WUHU_FILE_FRAGMENT);*/
                     //更新单个数据
                     getCopyFile();
                     break;
@@ -664,7 +664,7 @@ public class WuHuCatalpgFragment extends BaseFragment  implements MediaReceiver.
                 }
                 //根据Ip将文件发送到不同的设备
                 for (int i = 0; i < stringListIp.size(); i++) {
-                    socketShareFileManager.SendFile(fileNames, paths, stringListIp.get(i), constant.SHARE_PORT,"1");
+                  //  socketShareFileManager.SendFile(fileNames, paths, stringListIp.get(i), constant.SHARE_PORT,"1");
                 }
             }
 
@@ -693,7 +693,7 @@ public class WuHuCatalpgFragment extends BaseFragment  implements MediaReceiver.
                 }
                 //根据Ip将文件发送到不同的设备
                 for (int i = 0; i < stringListIp.size(); i++) {
-                    socketShareFileManager.SendFile(fileNames, paths, stringListIp.get(i), constant.SHARE_PORT,"2");
+                   // socketShareFileManager.SendFile(fileNames, paths, stringListIp.get(i), constant.SHARE_PORT,"2");
                 }
 
 
