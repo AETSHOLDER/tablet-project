@@ -1,28 +1,19 @@
 package com.example.paperlessmeeting_demo.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.paperlessmeeting_demo.R;
-import com.example.paperlessmeeting_demo.bean.AttendeBean;
 import com.example.paperlessmeeting_demo.bean.WuHuEditBean;
-import com.example.paperlessmeeting_demo.tool.UserUtil;
-import com.example.paperlessmeeting_demo.tool.constant;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.orhanobut.hawk.Hawk;
 
 import java.util.List;
@@ -231,9 +222,9 @@ public class WuHuListAdapter extends BaseAdapter {
             public void afterTextChanged(Editable s) {
                 if (TextUtils.isEmpty(s)) {
                     wuHuEditBean.setTemporaryAttendeBean("");
-                    wuHuEditBean.setAttendeBean("");
+                    wuHuEditBean.setReportingUnit("");
                 } else {
-                    wuHuEditBean.setAttendeBean(s.toString());//汇报单位
+                    wuHuEditBean.setReportingUnit(s.toString());//汇报单位
                     wuHuEditBean.setTemporaryAttendeBean(s.toString());
 
                 }
@@ -252,9 +243,9 @@ public class WuHuListAdapter extends BaseAdapter {
             public void afterTextChanged(Editable s) {
                 if (TextUtils.isEmpty(s)) {
                     wuHuEditBean.setTemporaryAttendeBean("");
-                    wuHuEditBean.setAttendeBean2("");
+                    wuHuEditBean.setParticipantUnits("");
                 } else {
-                    wuHuEditBean.setAttendeBean2(s.toString());//列席单位
+                    wuHuEditBean.setParticipantUnits(s.toString());//列席单位
                     wuHuEditBean.setTemporaryAttendeBean2(s.toString());
                 }
             }
@@ -267,8 +258,8 @@ public class WuHuListAdapter extends BaseAdapter {
         viHolder.tittle4.setTag(tittle4Watcher);
 
         viHolder.tittle2.setText(wuHuEditBean.getSubTopics());
-        viHolder.tittle3.setText(wuHuEditBean.getAttendeBean());
-        viHolder.tittle4.setText(wuHuEditBean.getAttendeBean2());
+        viHolder.tittle3.setText(wuHuEditBean.getReportingUnit());
+        viHolder.tittle4.setText(wuHuEditBean.getParticipantUnits());
         viHolder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -280,7 +271,7 @@ public class WuHuListAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 wuHuEditBean.setSubTopics(viHolder.tittle2.getText().toString());
-                wuHuEditBean.setAttendeBean(viHolder.tittle3.getText().toString());
+                wuHuEditBean.setReportingUnit(viHolder.tittle3.getText().toString());
                  saveSeparatelyInterface.saveData(i);
              /*   Intent intent = new Intent();
                 Bundle bundle=new Bundle();

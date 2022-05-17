@@ -31,6 +31,15 @@ public class WuHuEditBean implements Serializable {
     private String line_color;
     private String them_color;
     private List<EditListBean> editListBeanList;
+   private VoteListBean voteListBean;
+
+    public VoteListBean getVoteListBean() {
+        return voteListBean;
+    }
+
+    public void setVoteListBean(VoteListBean voteListBean) {
+        this.voteListBean = voteListBean;
+    }
 
     public String getTopics() {
         return topics;
@@ -77,6 +86,15 @@ public class WuHuEditBean implements Serializable {
         private String topic_type;
         private String line_color;
         private String them_color;
+        private List<FileListBean> fileListBeanList;
+
+        public List<FileListBean> getFileListBeanList() {
+            return fileListBeanList;
+        }
+
+        public void setFileListBeanList(List<FileListBean> fileListBeanList) {
+            this.fileListBeanList = fileListBeanList;
+        }
 
         public String getTopics() {
             return topics;
@@ -111,15 +129,15 @@ public class WuHuEditBean implements Serializable {
         }
 
         private String subTopics;
-        private String attendeBean;//汇报单位
-        private String attendeBean2;//列席单位
+        private String reportingUnit;//汇报单位
+        private String participantUnits;//列席单位
 
-        public String getAttendeBean2() {
-            return attendeBean2;
+        public String getParticipantUnits() {
+            return participantUnits;
         }
 
-        public void setAttendeBean2(String attendeBean2) {
-            this.attendeBean2 = attendeBean2;
+        public void setParticipantUnits(String participantUnits) {
+            this.participantUnits = participantUnits;
         }
 
         private String temporarySubTopics;
@@ -134,6 +152,7 @@ public class WuHuEditBean implements Serializable {
 
         private String temporaryAttendeBean;
         private String temporaryAttendeBean2;
+
         public String getTemporarySubTopics() {
             return temporarySubTopics;
         }
@@ -158,12 +177,96 @@ public class WuHuEditBean implements Serializable {
             this.subTopics = subTopics;
         }
 
-        public String getAttendeBean() {
-            return attendeBean;
+        public String getReportingUnit() {
+            return reportingUnit;
         }
 
-        public void setAttendeBean(String attendeBean) {
-            this.attendeBean = attendeBean;
+        public void setReportingUnit(String reportingUnit) {
+            this.reportingUnit = reportingUnit;
+        }
+        public static class FileListBean {
+            public String getPath() {
+                return path;
+            }
+
+            public void setPath(String path) {
+                this.path = path;
+            }
+
+            public int getResImage() {
+                return resImage;
+            }
+
+            public void setResImage(int resImage) {
+                this.resImage = resImage;
+            }
+
+            public String getAuthor() {
+                return author;
+            }
+
+            public void setAuthor(String author) {
+                this.author = author;
+            }
+
+            public String getTime() {
+                return time;
+            }
+
+            public void setTime(String time) {
+                this.time = time;
+            }
+
+            public String getFile_type() {
+                return file_type;
+            }
+
+            public void setFile_type(String file_type) {
+                this.file_type = file_type;
+            }
+
+            public String getPos() {
+                return pos;
+            }
+
+            public void setPos(String pos) {
+                this.pos = pos;
+            }
+
+            public String getSuffix() {
+                return suffix;
+            }
+
+            public void setSuffix(String suffix) {
+                this.suffix = suffix;
+            }
+
+            private String name;
+            private String path;
+            private int resImage;
+            private String author;
+            private String time;
+            private String file_type;
+            private String pos;//芜湖-标识是哪一个fragment
+            private String suffix;
+            private boolean isNet;
+
+            public String getName() {
+                return name;
+            }
+
+            public void setName(String name) {
+                this.name = name;
+            }
+
+            public boolean isNet() {
+                return isNet;
+            }
+
+            public void setNet(boolean net) {
+                isNet = net;
+            }
         }
     }
+
 }

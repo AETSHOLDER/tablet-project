@@ -1,19 +1,15 @@
 package com.example.paperlessmeeting_demo.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.paperlessmeeting_demo.R;
-import com.example.paperlessmeeting_demo.bean.FileListBean;
 import com.example.paperlessmeeting_demo.bean.WuHuEditBean;
-import com.example.paperlessmeeting_demo.tool.UserUtil;
 
 import java.util.List;
 
@@ -71,8 +67,8 @@ public class WuHuCalalogListAdapter extends BaseAdapter {
         }
 
         viHolder.toptic.setText(editListBean.getSubTopics());
-        viHolder.name.setText("汇报单位：" + editListBean.getAttendeBean());
-        viHolder.attend.setText("列席单位：" + editListBean.getAttendeBean2());
+        viHolder.name.setText("汇报单位：" + editListBean.getReportingUnit());
+        viHolder.attend.setText("列席单位：" + editListBean.getParticipantUnits());
         if (i == 0) {
             viHolder.topic_num.setVisibility(View.GONE);
             viHolder.toptic.setVisibility(View.GONE);
