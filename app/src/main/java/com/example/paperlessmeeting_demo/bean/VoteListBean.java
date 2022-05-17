@@ -12,6 +12,7 @@ public class VoteListBean implements Serializable {
 
     private ArrayList<VoteBean> data;
 
+
     public ArrayList<VoteListBean.VoteBean> getData() {
         return data;
     }
@@ -51,6 +52,15 @@ public class VoteListBean implements Serializable {
         private List<UserListBean> user_list;
         private String flag;
         private   List<TemporBean> temporBeanList;
+        private List<WuHuVoteResultBean>wuHuVoteResultBeanArrayList;
+
+        public List<WuHuVoteResultBean> getWuHuVoteResultBeanArrayList() {
+            return wuHuVoteResultBeanArrayList;
+        }
+
+        public void setWuHuVoteResultBeanArrayList(List<WuHuVoteResultBean> wuHuVoteResultBeanArrayList) {
+            this.wuHuVoteResultBeanArrayList = wuHuVoteResultBeanArrayList;
+        }
 
         public List<TemporBean> getTemporBeanList() {
             return temporBeanList;

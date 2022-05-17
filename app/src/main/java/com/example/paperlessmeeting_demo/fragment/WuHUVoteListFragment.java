@@ -50,6 +50,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
 import com.blankj.utilcode.util.StringUtils;
 import com.codbking.widget.DatePickDialog;
 import com.codbking.widget.OnSureLisener;
@@ -76,6 +77,8 @@ import com.example.paperlessmeeting_demo.bean.TempWSBean;
 import com.example.paperlessmeeting_demo.bean.UserBehaviorBean;
 import com.example.paperlessmeeting_demo.bean.VoteListBean;
 import com.example.paperlessmeeting_demo.bean.VoteListBean.VoteBean;
+import com.example.paperlessmeeting_demo.bean.WuHuDeleteFragmentBean;
+import com.example.paperlessmeeting_demo.bean.WuHuEditBean;
 import com.example.paperlessmeeting_demo.bean.WuHuNetFileBean;
 import com.example.paperlessmeeting_demo.bean.WuHuVoteResultBean;
 import com.example.paperlessmeeting_demo.dialog.CheckBoxDialog;
@@ -1455,6 +1458,16 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
             p.width = (int) (width * 0.8);//设置宽
             p.height = (int) (height * 0.8);//设置高
             window.setAttributes(p);
+        VoteBean  voteBean1=voteList.get(0);
+        voteBean1.setWuHuVoteResultBeanArrayList(wuHuVoteResultBeanList);
+      VoteListBean voteListBean=new VoteListBean();
+        voteListBean.setData(voteList);
+
+        if (Hawk.contains("WuHuFragment")){
+            WuHuEditBean   wuHuEditBean=Hawk.get("WuHuFragment");
+            wuHuEditBean.setVoteListBean(voteListBean);
+            Log.d("toJSONString222", JSON.toJSONString(wuHuEditBean)) ;
+        }
 
     }
     //  单选按钮选择

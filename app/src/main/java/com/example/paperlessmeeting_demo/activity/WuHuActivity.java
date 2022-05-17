@@ -9,11 +9,9 @@ import com.example.paperlessmeeting_demo.base.BaseActivity;
 
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -26,8 +24,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.Display;
@@ -43,24 +39,17 @@ import android.widget.Button;
 import android.support.v4.view.ViewPager;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.paperlessmeeting_demo.adapter.PagerAdapter;
-import com.example.paperlessmeeting_demo.bean.AttendeBean;
 import com.example.paperlessmeeting_demo.bean.BasicResponse;
 import com.example.paperlessmeeting_demo.bean.FileListBean;
 import com.example.paperlessmeeting_demo.bean.TempWSBean;
-import com.example.paperlessmeeting_demo.bean.VoteListBean;
-import com.example.paperlessmeeting_demo.bean.WuHuDeleteFragmentBean;
 import com.example.paperlessmeeting_demo.bean.WuHuEditBean;
 import com.example.paperlessmeeting_demo.enums.MessageReceiveType;
-import com.example.paperlessmeeting_demo.fragment.WuHuCatalpgFragment;
 import com.example.paperlessmeeting_demo.fragment.WuHuFragment;
 import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.network.DefaultObserver;
@@ -98,7 +87,6 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -959,7 +947,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
 
         WuHuEditBean.EditListBean editListBean=new WuHuEditBean.EditListBean();
         editListBean.setSubTopics(wuHuEditBeanList.get(wuHuEditBeanList.size()-1).getSubTopics());
-        editListBean.setAttendeBean(wuHuEditBeanList.get(wuHuEditBeanList.size()-1).getAttendeBean());
+        editListBean.setReportingUnit(wuHuEditBeanList.get(wuHuEditBeanList.size()-1).getReportingUnit());
         if (company_name!=null){
             editListBean.setTopics(company_name.getText().toString());
         }
@@ -1371,8 +1359,8 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
 
                     WuHuEditBean.EditListBean editListBean=new WuHuEditBean.EditListBean();
                     editListBean.setSubTopics("总结2022年");
-                    editListBean.setAttendeBean("某某，某某，某某，某");
-                    editListBean.setAttendeBean2("某某2，某某2，某某2，某2");
+                    editListBean.setReportingUnit("某某，某某，某某，某");
+                    editListBean.setParticipantUnits("某某2，某某2，某某2，某2");
                     editListBean.setTopics("区政府会议纪要");
                     editListBean.setTopic_type("会议纪要");
                     wuHuEditBeanList.add(editListBean);
@@ -1380,8 +1368,8 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
 
                     WuHuEditBean.EditListBean editListBean1=new WuHuEditBean.EditListBean();
                     editListBean1.setSubTopics("总结2022年");
-                    editListBean1.setAttendeBean("某某，某某，某某，某");
-                    editListBean.setAttendeBean2("某某2，某某2，某某2，某2");
+                    editListBean1.setReportingUnit("某某，某某，某某，某");
+                    editListBean.setParticipantUnits("某某2，某某2，某某2，某2");
                     editListBean1.setTopics("区政府会议纪要");
                     editListBean1.setTopic_type("会议纪要");
                     wuHuEditBeanList.add(editListBean1);
@@ -1435,8 +1423,8 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
 
                         WuHuEditBean.EditListBean editListBean=new WuHuEditBean.EditListBean();
                         editListBean.setSubTopics("总结2022年");
-                        editListBean.setAttendeBean("某某，某某，某某，某");
-                        editListBean.setAttendeBean2("某某2，某某2，某某2，某2");
+                        editListBean.setReportingUnit("某某，某某，某某，某");
+                        editListBean.setParticipantUnits("某某2，某某2，某某2，某2");
                         editListBean.setTopics("区政府会议纪要");
                         editListBean.setTopic_type("会议纪要");
                         wuHuEditBeanList.add(editListBean);
@@ -1444,8 +1432,8 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
 
                         WuHuEditBean.EditListBean editListBean1=new WuHuEditBean.EditListBean();
                         editListBean1.setSubTopics("总结2022年");
-                        editListBean1.setAttendeBean("某某，某某，某某，某");
-                        editListBean.setAttendeBean2("某某2，某某2，某某2，某2");
+                        editListBean1.setReportingUnit("某某，某某，某某，某");
+                        editListBean.setParticipantUnits("某某2，某某2，某某2，某2");
                         editListBean1.setTopics("区政府会议纪要");
                         editListBean1.setTopic_type("会议纪要");
                         wuHuEditBeanList.add(editListBean1);
@@ -1670,7 +1658,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
 
                 WuHuEditBean.EditListBean editListBean=new WuHuEditBean.EditListBean();
                 editListBean.setSubTopics(wuHuEditBeanList.get(wuHuEditBeanList.size()-1).getSubTopics());
-                editListBean.setAttendeBean(wuHuEditBeanList.get(wuHuEditBeanList.size()-1).getAttendeBean());
+                editListBean.setReportingUnit(wuHuEditBeanList.get(wuHuEditBeanList.size()-1).getReportingUnit());
                 wuHuEditBeanList.add(editListBean);
                 wuHuListAdapter.setWuHuEditBeanList(wuHuEditBeanList);
                 wuHuListAdapter.notifyDataSetChanged();

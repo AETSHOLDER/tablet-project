@@ -17,13 +17,13 @@
         android:textColor="#333333"
         android:textSize="32sp"
         android:textStyle="bold" />
- <!--  <ScrollView
+  <ScrollView
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:scrollbars="none"
        android:layout_below="@id/tittle_pos"
-    >-->
+    >
     <LinearLayout
         android:id="@+id/edit_rl"
         android:layout_width="match_parent"
@@ -76,7 +76,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="参会人员："
+                android:text="汇报单位："
                 android:textColor="#333333"
                 android:textSize="30sp" />
 
@@ -96,14 +96,46 @@
                 android:textSize="30sp" />
 
         </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="44dp"
+            android:layout_marginTop="13dp"
+            android:layout_marginBottom="15dp">
+
+            <TextView
+                android:id="@+id/cc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="列席单位："
+                android:textColor="#333333"
+                android:textSize="30sp" />
+
+            <EditText
+                android:id="@+id/tittle4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cc"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="20dp"
+                android:padding="5dp"
+                android:background="@drawable/bg_wuhu_edit"
+                android:gravity="left|center_vertical"
+                android:hint="请输入…"
+                android:paddingLeft="23dp"
+                android:textColor="#777777"
+                android:textSize="30sp" />
+
+        </RelativeLayout>
     </LinearLayout>
-<!--   </ScrollView>-->
+ </ScrollView>
 
     <TextView
         android:id="@+id/save"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:layout_below="@id/edit_rl"
+        android:layout_below="@id/scrollView"
         android:layout_alignParentRight="true"
         android:layout_marginTop="5dp"
         android:layout_marginRight="28dp"
@@ -120,7 +152,7 @@
         android:id="@+id/delete"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:layout_below="@id/edit_rl"
+        android:layout_below="@id/scrollView"
         android:layout_marginTop="5dp"
         android:layout_marginRight="35dp"
         android:layout_marginBottom="10dp"
@@ -137,7 +169,7 @@
         android:id="@+id/add"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:layout_below="@id/edit_rl"
+        android:layout_below="@id/scrollView"
         android:layout_marginTop="5dp"
         android:layout_marginRight="35dp"
         android:layout_marginBottom="10dp"

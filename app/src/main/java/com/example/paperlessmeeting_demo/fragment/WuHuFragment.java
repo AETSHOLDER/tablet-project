@@ -5,7 +5,6 @@ import static android.content.Context.WIFI_SERVICE;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ContentUris;
@@ -28,7 +27,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.storage.StorageManager;
 import android.provider.DocumentsContract;
-import android.provider.FontRequest;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
@@ -40,12 +38,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -56,12 +52,7 @@ import com.blankj.utilcode.util.StringUtils;
 import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.WuHuLocalFileBean;
 import com.example.paperlessmeeting_demo.activity.ActivityImage;
-import com.example.paperlessmeeting_demo.activity.ActivityVideoView;
-import com.example.paperlessmeeting_demo.activity.EditWuHuActivity;
-import com.example.paperlessmeeting_demo.activity.PdfActivity;
 import com.example.paperlessmeeting_demo.activity.Sign.SignActivity;
-import com.example.paperlessmeeting_demo.activity.WuHuActivity;
-import com.example.paperlessmeeting_demo.adapter.FileListAdapter;
 import com.example.paperlessmeeting_demo.adapter.WuHuCalalogListAdapter;
 import com.example.paperlessmeeting_demo.adapter.WuHuFileListAdapter;
 import com.example.paperlessmeeting_demo.adapter.WuHuListAdapter;
@@ -70,7 +61,6 @@ import com.example.paperlessmeeting_demo.bean.BasicResponse;
 import com.example.paperlessmeeting_demo.bean.CreateFileBeanRequest;
 import com.example.paperlessmeeting_demo.bean.CreateFileBeanResponse;
 import com.example.paperlessmeeting_demo.bean.FileListBean;
-import com.example.paperlessmeeting_demo.bean.NewFileBean;
 import com.example.paperlessmeeting_demo.bean.TempWSBean;
 import com.example.paperlessmeeting_demo.bean.UploadBean;
 import com.example.paperlessmeeting_demo.bean.WuHuDeleteFragmentBean;
@@ -81,18 +71,15 @@ import com.example.paperlessmeeting_demo.network.DefaultObserver;
 import com.example.paperlessmeeting_demo.network.NetWorkManager;
 import com.example.paperlessmeeting_demo.sharefile.SocketShareFileManager;
 import com.example.paperlessmeeting_demo.tool.CVIPaperDialogUtils;
-import com.example.paperlessmeeting_demo.tool.Define;
 import com.example.paperlessmeeting_demo.tool.DownloadUtil;
 import com.example.paperlessmeeting_demo.tool.FLUtil;
 import com.example.paperlessmeeting_demo.tool.FileUtils;
 import com.example.paperlessmeeting_demo.tool.MediaReceiver;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.EventMessage;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.JWebSocketClientService;
-import com.example.paperlessmeeting_demo.tool.ToastUtils;
 import com.example.paperlessmeeting_demo.tool.UrlConstant;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.example.paperlessmeeting_demo.tool.constant;
-import com.example.paperlessmeeting_demo.util.ToastUtil;
 import com.example.paperlessmeeting_demo.widgets.CompletedView;
 import com.example.paperlessmeeting_demo.widgets.MyDialog;
 import com.example.paperlessmeeting_demo.widgets.MyListView;
@@ -717,7 +704,7 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
     public void saveData(int position) {
       if (textNub.equals(position+"")){
           topic.setText("会议议题："+wuHuEditBeanList.get(Integer.valueOf(textNub)).getSubTopics());
-          attend.setText("参会人员："+wuHuEditBeanList.get(Integer.valueOf(textNub)).getAttendeBean());
+          attend.setText("参会人员："+wuHuEditBeanList.get(Integer.valueOf(textNub)).getReportingUnit());
 
       }
 
@@ -1304,8 +1291,8 @@ private void sendFragmenFlag(){
         int s=Integer.valueOf(textNub);
         setTopicText(s+"");
         topic.setText(wuHuEditBeanList.get(Integer.valueOf(textNub)).getSubTopics());
-        attend.setText(wuHuEditBeanList.get(Integer.valueOf(textNub)).getAttendeBean());
-        attend2.setText(wuHuEditBeanList.get(Integer.valueOf(textNub)).getAttendeBean2());
+        attend.setText(wuHuEditBeanList.get(Integer.valueOf(textNub)).getReportingUnit());
+        attend2.setText(wuHuEditBeanList.get(Integer.valueOf(textNub)).getParticipantUnits());
         wuHuCalalogListAdapter.setWuHuEditBeanList(wuHuEditBeanList);
         wuHuCalalogListAdapter.notifyDataSetChanged();
         switch (wuHuEditBean.getLine_color()){
@@ -2194,11 +2181,11 @@ private void sendFragmenFlag(){
             }
 
             if(attend!=null){
-                attend.setText(editListBeanList.get(Integer.valueOf(textNub)).getAttendeBean());
+                attend.setText(editListBeanList.get(Integer.valueOf(textNub)).getReportingUnit());
             }
 
             if(attend2!=null){
-                attend2.setText(editListBeanList.get(Integer.valueOf(textNub)).getAttendeBean2());
+                attend2.setText(editListBeanList.get(Integer.valueOf(textNub)).getParticipantUnits());
             }
      /*    if (fileListAdapter!=null){
              fileListAdapter.notifyDataSetChanged();
@@ -2495,8 +2482,8 @@ private void sendFragmenFlag(){
                    }
                    editListBeanList = wuHuEditBean.getEditListBeanList();
                    topic.setText(editListBeanList.get(Integer.valueOf(textNub)).getSubTopics());
-                   attend.setText(editListBeanList.get(Integer.valueOf(textNub)).getAttendeBean());
-                   attend2.setText(editListBeanList.get(Integer.valueOf(textNub)).getAttendeBean2());
+                   attend.setText(editListBeanList.get(Integer.valueOf(textNub)).getReportingUnit());
+                   attend2.setText(editListBeanList.get(Integer.valueOf(textNub)).getParticipantUnits());
                    tittle1.setText(wuHuEditBean.getTopics());
                    tittle2.setText(wuHuEditBean.getTopic_type());
                }
