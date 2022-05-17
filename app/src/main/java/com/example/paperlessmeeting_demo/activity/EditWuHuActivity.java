@@ -1,14 +1,11 @@
+/*
 package com.example.paperlessmeeting_demo.activity;
 
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -52,10 +49,10 @@ public class EditWuHuActivity extends BaseActivity {
         wuHuEditBean.setTopic_type("会议记录");
         WuHuEditBean.EditListBean editListBean=new WuHuEditBean.EditListBean();
         editListBean.setSubTopics("总结2022年");
-        editListBean.setAttendeBean("王二狗，李狐狸，张太郎，刘毛毛");
+        editListBean.setReportingUnit("王二狗，李狐狸，张太郎，刘毛毛");
         WuHuEditBean.EditListBean editListBean1=new WuHuEditBean.EditListBean();
         editListBean1.setSubTopics("总结2022年");
-        editListBean1.setAttendeBean("王二狗，李狐狸，张太郎，刘毛毛");
+        editListBean1.setReportingUnit("王二狗，李狐狸，张太郎，刘毛毛");
         wuHuEditBeanList.add(editListBean1);
         wuHuEditBeanList.add(editListBean);
         wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
@@ -124,13 +121,15 @@ public class EditWuHuActivity extends BaseActivity {
     protected void initData() {
 
     }
-   /* //重写此方法用来设置当点击activity外部时候，关闭此弹出框
+   */
+/* //重写此方法用来设置当点击activity外部时候，关闭此弹出框
     @Override9
     public boolean onTouchEvent(MotionEvent event) {
         finish();
         return true;
     }
-*/
+*//*
+
 
     //此方法在布局文件中定义，用来保证点击弹出框内部的时候不会被关闭，如果不设置此方法则单击弹出框内部时候会导致弹出框关闭
     public void tip(View view){
@@ -139,3 +138,4 @@ public class EditWuHuActivity extends BaseActivity {
     }
 
 }
+*/

@@ -54,7 +54,6 @@
     <permission
         android:name="android.permission.HIDE_NON_SYSTEM_OVERLAY_WINDOWS"
         android:protectionLevel="signature|installer" />
-
     <application
         android:name=".MeetingAPP"
         android:allowBackup="true"
@@ -180,7 +179,6 @@
             android:screenOrientation="landscape" />
         <activity
             android:name=".activity.ActivityImage"
-            android:launchMode="singleTask"
             android:screenOrientation="landscape" />
         <activity
             android:name=".activity.ActivityVideoView"
@@ -227,9 +225,9 @@
      <activity
             android:name=".activity.WuHuActivity"
             android:screenOrientation="landscape" />
-        <activity
+     <!--   <activity
             android:name=".activity.EditWuHuActivity"
-             />
+             />-->
         <!--android:theme="@style/MyDialogActivityRight"-->
         <activity
             android:name=".activity.WuHuVoteActivity"

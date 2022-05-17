@@ -42,6 +42,7 @@ import com.example.paperlessmeeting_demo.tool.ToastUtils;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.example.paperlessmeeting_demo.tool.constant;
 import com.example.paperlessmeeting_demo.util.ToastUtil;
+import com.example.paperlessmeeting_demo.widgets.MyDialog;
 import com.jyn.vcview.VerificationCodeView;
 import com.orhanobut.hawk.Hawk;
 import com.snow.common.tool.utils.FastClickUtils;
@@ -73,7 +74,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
     private List<String> stringList = new ArrayList<>();//暂存临时会议邀请码
     private boolean isReuse=false;//根据有无会议记录来判断芜湖版本应用是否是第一次安装。
     private int currentSelIndex = 0;
-
+    private MyDialog  historyConferenceDialog;//历史会议
     public static ExtraordMeetingFragment newInstance(String movie) {
         ExtraordMeetingFragment extraordMeetingFragment = new ExtraordMeetingFragment();
         return extraordMeetingFragment;
@@ -487,6 +488,65 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
 //            }
         }
     }
+
+    //展示历史会议
+    public void showFileTransferDialog( ) {
+        //自定义dialog显示布局
+        View    inflate = LayoutInflater.from(getActivity()).inflate(R.layout.wuhu_file_progress_dialog, null);
+        //自定义dialog显示风格
+        historyConferenceDialog = new MyDialog(getActivity(), R.style.dialogTransparent);
+        historyConferenceDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        //弹窗点击周围空白处弹出层自动消失弹窗消失(false时为点击周围空白处弹出层不自动消失)
+        historyConferenceDialog.setCanceledOnTouchOutside(false);
+        //将布局设置给Dialog
+        historyConferenceDialog.setContentView(inflate);
+        historyConferenceDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        historyConferenceDialog.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+        historyConferenceDialog.getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+            @Override
+            public void onSystemUiVisibilityChange(int visibility) {
+                int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                        //布局位于状态栏下方
+                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                        //全屏
+                        View.SYSTEM_UI_FLAG_FULLSCREEN |
+                        //隐藏导航栏
+                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+                if (Build.VERSION.SDK_INT >= 19) {
+                    uiOptions |= 0x00001000;
+                } else {
+                    uiOptions |= View.SYSTEM_UI_FLAG_LOW_PROFILE;
+                }
+                historyConferenceDialog.getWindow().getDecorView().setSystemUiVisibility(uiOptions);
+            }
+        });
+
+        //获取当前Activity所在的窗体
+        Window window = historyConferenceDialog.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        wlp.alpha=1.0f;
+        Display d = window.getWindowManager().getDefaultDisplay(); // 获取屏幕宽，高
+        wlp.gravity= Gravity.CENTER;
+        wlp.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        wlp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        Point size=new Point();
+        d.getSize(size);
+        int width = size.x;
+        int height = size.y;
+        wlp.width = (int) (width * 0.45);//设置宽
+        wlp.height = (int) (width * 0.3);//设置宽
+        window.setAttributes(wlp);
+        historyConferenceDialog.setOnTouchOutside(new MyDialog.onTouchOutsideInterFace() {
+            @Override
+            public void outSide() {
+                Log.d("sdfsdfdsff","路过~~~~~");
+                //  Toast.makeText(getActivity(),"弹框",Toast.LENGTH_SHORT).show();
+            }
+        });
+        historyConferenceDialog.show();
+    }
+
     public void showRightDialog( String codeStr) {
         //自定义dialog显示布局
       View   inflate = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_reuse_wuhu_meeting, null);
