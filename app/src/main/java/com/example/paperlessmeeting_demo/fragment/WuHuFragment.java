@@ -47,6 +47,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -156,19 +157,32 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
     RelativeLayout progressBarLl;
     @BindView(R.id.aa)
     View fragmentLine;
+    @BindView(R.id.nn)
+    View nn;
     @BindView(R.id.topic)
     TextView topic;
     @BindView(R.id.tittle1)
     TextView tittle1;
     @BindView(R.id.tittle2)
     TextView tittle2;
-
     @BindView(R.id.attend)
     TextView attend;
+    @BindView(R.id.attend2)
+    TextView attend2;
     @BindView(R.id.tittle_num)
     TextView tittle_num;
     @BindView(R.id.file_ly)
     LinearLayout file_ly;
+    @BindView(R.id.topic_ll)
+    LinearLayout topic_ll;
+    @BindView(R.id.fragment_ttile_rl)
+    RelativeLayout  fragment_ttile_rl;
+    @BindView(R.id.listView_catalog_ll)
+    LinearLayout listView_catalog_ll;
+    @BindView(R.id.scrollView_file)
+    ScrollView scrollView_file;
+    @BindView(R.id.scrollView_cata)
+    ScrollView  scrollView_cata;
 
 
 
@@ -1291,6 +1305,7 @@ private void sendFragmenFlag(){
         setTopicText(s+"");
         topic.setText(wuHuEditBeanList.get(Integer.valueOf(textNub)).getSubTopics());
         attend.setText(wuHuEditBeanList.get(Integer.valueOf(textNub)).getAttendeBean());
+        attend2.setText(wuHuEditBeanList.get(Integer.valueOf(textNub)).getAttendeBean2());
         wuHuCalalogListAdapter.setWuHuEditBeanList(wuHuEditBeanList);
         wuHuCalalogListAdapter.notifyDataSetChanged();
         switch (wuHuEditBean.getLine_color()){
@@ -1517,7 +1532,7 @@ private void sendFragmenFlag(){
          if (Hawk.contains("WuHuFragmentData")) {
            /*  int s=Integer.valueOf(textNub)+1;
              tittle_num.setText("议题"+s);*/
-             WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
+     /*        WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
              List<WuHuEditBean.EditListBean> editListBeanList = new ArrayList<>();
              if (wuHuEditBean.getEditListBeanList() == null || wuHuEditBean.getEditListBeanList().size() == 0) {
                  return;
@@ -1561,7 +1576,7 @@ private void sendFragmenFlag(){
              if(attend!=null){
                  attend.setText(editListBeanList.get(Integer.valueOf(textNub)).getAttendeBean());
              }
-     /*    if (fileListAdapter!=null){
+     *//*    if (fileListAdapter!=null){
              fileListAdapter.notifyDataSetChanged();
          }*/
          }
@@ -2114,21 +2129,85 @@ private void sendFragmenFlag(){
         }
         int s=Integer.valueOf(textNub);
         // s= s+1;
-       // tittle_num.setText("议题"+s);
+        // tittle_num.setText("议题"+s);
         setTopicText(s+"");
-   /*     Log.d(TAG+toString(), "onResume: "+"text="+text);
+        String  strFilePath=fileShare;
+        File path = new File(strFilePath);
+        File[] files = path.listFiles();// 读取
+
         if (Hawk.contains("WuHuFragmentData")) {
+           /*  int s=Integer.valueOf(textNub)+1;
+             tittle_num.setText("议题"+s);*/
             WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
             List<WuHuEditBean.EditListBean> editListBeanList = new ArrayList<>();
             if (wuHuEditBean.getEditListBeanList() == null || wuHuEditBean.getEditListBeanList().size() == 0) {
                 return;
             }
             editListBeanList = wuHuEditBean.getEditListBeanList();
-            topic.setText(editListBeanList.get(Integer.valueOf(text)).getSubTopics());
-            attend.setText(editListBeanList.get(Integer.valueOf(text)).getAttendeBean());
-        }
-        Log.d(TAG+toString(), "onResume: ");*/
 
+
+            if (Integer.valueOf(textNub)==0){
+                if (listView_catalog!=null&&file_ly!=null&&fragment_ttile_rl!=null&&topic_ll!=null&&fragmentLine!=null&&nn!=null&&listView_catalog_ll!=null&&scrollView_file!=null&&scrollView_cata!=null){
+                    listView_catalog.setVisibility(View.VISIBLE);
+                    listView_catalog_ll.setVisibility(View.VISIBLE);
+                    file_ly.setVisibility(View.GONE);
+                    fragment_ttile_rl.setVisibility(View.VISIBLE);
+                    topic_ll.setVisibility(View.GONE);
+                    fragmentLine.setVisibility(View.VISIBLE);
+                    nn.setVisibility(View.GONE);
+                    scrollView_file.setVisibility(View.GONE);
+                    scrollView_cata.setVisibility(View.VISIBLE);
+                }
+
+            }else {
+                if (listView_catalog!=null&&file_ly!=null&&fragment_ttile_rl!=null&&topic_ll!=null&&fragmentLine!=null&&nn!=null&&listView_catalog_ll!=null&&scrollView_file!=null&&scrollView_cata!=null){
+                    listView_catalog.setVisibility(View.GONE);
+                    file_ly.setVisibility(View.VISIBLE);
+                    listView_catalog_ll.setVisibility(View.GONE);
+                    fragment_ttile_rl.setVisibility(View.GONE);
+                    topic_ll.setVisibility(View.VISIBLE);
+                    fragmentLine.setVisibility(View.GONE);
+                    nn.setVisibility(View.VISIBLE);
+                    scrollView_file.setVisibility(View.VISIBLE);
+                    scrollView_cata.setVisibility(View.GONE);
+                }
+
+            }
+            if (tittle1!=null){
+                tittle1.setText(editListBeanList.get(Integer.valueOf(textNub)).getTopics());
+                if (Hawk.contains("company_name")){
+                    String str= Hawk.get("company_name");
+                    tittle1.setText(str);
+                }
+            }
+            if (tittle2!=null){
+
+                tittle2.setText(editListBeanList.get(Integer.valueOf(textNub)).getTopic_type());
+                if (Hawk.contains("tittle2")){
+                    String str= Hawk.get("tittle2");
+                    tittle2.setText(str);
+                }
+            }
+            Log.d("fdafafaff=fragment",textNub+"editListBeanList=   "+editListBeanList.get(Integer.valueOf(textNub)).getTopics()+"   "+editListBeanList.get(Integer.valueOf(textNub)).getTopic_type());
+            if(topic!=null){
+                topic.setText(editListBeanList.get(Integer.valueOf(textNub)).getSubTopics());
+            }
+
+            if(attend!=null){
+                attend.setText(editListBeanList.get(Integer.valueOf(textNub)).getAttendeBean());
+            }
+
+            if(attend2!=null){
+                attend2.setText(editListBeanList.get(Integer.valueOf(textNub)).getAttendeBean2());
+            }
+     /*    if (fileListAdapter!=null){
+             fileListAdapter.notifyDataSetChanged();
+         }*/
+        }
+        if (files == null) {
+            return;
+        }
+        getShareFile(files);
     }
 
     @Override
@@ -2417,7 +2496,7 @@ private void sendFragmenFlag(){
                    editListBeanList = wuHuEditBean.getEditListBeanList();
                    topic.setText(editListBeanList.get(Integer.valueOf(textNub)).getSubTopics());
                    attend.setText(editListBeanList.get(Integer.valueOf(textNub)).getAttendeBean());
-
+                   attend2.setText(editListBeanList.get(Integer.valueOf(textNub)).getAttendeBean2());
                    tittle1.setText(wuHuEditBean.getTopics());
                    tittle2.setText(wuHuEditBean.getTopic_type());
                }
@@ -2446,7 +2525,6 @@ private void sendFragmenFlag(){
                wuHuCalalogListAdapter.setWuHuEditBeanList(wuHuEditBeanList);
                wuHuCalalogListAdapter.notifyDataSetChanged();
            }
-
 
         }
     }

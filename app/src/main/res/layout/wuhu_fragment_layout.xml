@@ -6,141 +6,189 @@
     android:background="@mipmap/bg_wuhu_home"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tittle1"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/fragment_ttile_rl"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="70dp"
-        android:gravity="center"
-        android:text="区政府会议纪要"
-        android:textColor="#ff1d1d1d"
-        android:textSize="55sp" />
+        android:layout_marginLeft="190dp"
+        android:layout_marginRight="190dp">
 
-    <TextView
-        android:id="@+id/tittle2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tittle1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:gravity="center"
-        android:text="会议纪要"
-        android:textColor="#ff1d1d1d"
-        android:textSize="48sp" />
+        <TextView
+            android:id="@+id/tittle1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="70dp"
+            android:gravity="center"
+            android:text="第8次政府常务会议"
+            android:textColor="#ff1d1d1d"
+            android:textSize="55sp" />
+
+        <TextView
+            android:id="@+id/tittle2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tittle1"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:gravity="left"
+            android:text="一、时间：2022年5月15日（星期日）下午2：30\n
+二、地点：区政府301会议室"
+            android:textColor="#ff1d1d1d"
+            android:textSize="48sp" />
+
+    </RelativeLayout>
 
     <View
         android:id="@+id/aa"
         android:layout_width="match_parent"
         android:layout_height="6dp"
-        android:layout_below="@id/tittle2"
+        android:layout_below="@id/fragment_ttile_rl"
         android:layout_marginLeft="190dp"
         android:layout_marginTop="25dp"
         android:layout_marginRight="190dp"
         android:background="#EA4318" />
 
-    <ScrollView
+    <LinearLayout
+        android:id="@+id/topic_ll"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/aa"
-        android:layout_marginLeft="190dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginRight="190dp"
-        android:background="@drawable/bg_wuhu"
-        android:scrollbars="none">
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="176dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginRight="176dp"
+        android:orientation="vertical"
+        android:visibility="gone">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tittle_num"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:text="议题1"
+            android:textColor="#EA1818"
+            android:textSize="42sp" />
 
-            <com.example.paperlessmeeting_demo.widgets.MyListView
-                android:id="@+id/listView_catalog"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="70dp"
-                android:visibility="gone"
-                android:divider="@null"
-                android:dividerHeight="0dp"
-                android:scrollbars="none">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-            </com.example.paperlessmeeting_demo.widgets.MyListView>
-            <LinearLayout
-                android:id="@+id/file_ly"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                >
             <TextView
-                android:id="@+id/tittle_num"
+                android:id="@+id/tc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="15dp"
-                android:gravity="center"
-                android:text="议题1"
-                android:textColor="#EA1818"
-                android:textSize="42sp" />
+                android:layout_marginLeft="190dp"
+                android:layout_marginTop="20dp"
+                android:gravity="top"
+                android:text="会议议题："
+                android:textColor="#848484"
+                android:textSize="38sp" />
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/tc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="190dp"
-                    android:layout_marginTop="30dp"
-                    android:gravity="center"
-                    android:text="会议议题："
-                    android:textColor="#848484"
-                    android:textSize="42sp" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_toRightOf="@id/tc">
 
                 <TextView
                     android:id="@+id/topic"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginLeft="15dp"
-                    android:layout_toRightOf="@id/tc"
-                    android:gravity="center"
+                    android:gravity="top"
                     android:text="请编辑会议议题"
                     android:textColor="#333333"
-                    android:textSize="42sp" />
+                    android:textSize="38sp" />
+            </LinearLayout>
 
-            </RelativeLayout>
+        </RelativeLayout>
 
-            <RelativeLayout
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/ad"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="190dp"
+                android:gravity="center"
+                android:text="汇报单位："
+                android:textColor="#848484"
+                android:textSize="38sp" />
 
-                <TextView
-                    android:id="@+id/ad"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="190dp"
-                    android:gravity="center"
-                    android:text="参会人员："
-                    android:textColor="#848484"
-                    android:textSize="42sp" />
+            <TextView
+                android:id="@+id/attend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_toRightOf="@id/ad"
+                android:gravity="left"
+                android:text="某某，某某某 ，某某"
+                android:textColor="#333333"
+                android:textSize="38sp" />
 
-                <TextView
-                    android:id="@+id/attend"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="15dp"
-                    android:layout_toRightOf="@id/ad"
-                    android:gravity="center"
-                    android:text="某某，某某某 ，某某"
-                    android:textColor="#333333"
-                    android:textSize="42sp" />
+        </RelativeLayout>
 
-            </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
+            <TextView
+                android:id="@+id/ss"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="190dp"
+                android:gravity="center"
+                android:text="列席单位："
+                android:textColor="#848484"
+                android:textSize="38sp" />
+
+            <TextView
+                android:id="@+id/attend2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_toRightOf="@id/ss"
+                android:gravity="left"
+                android:text="某某，某某某 ，某某"
+                android:textColor="#333333"
+                android:textSize="38sp" />
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/nn"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:layout_below="@id/topic_ll"
+        android:layout_marginLeft="190dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginRight="190dp"
+        android:background="#EA4318"
+        android:visibility="gone" />
+
+    <ScrollView
+        android:id="@+id/scrollView_file"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/nn"
+        android:layout_marginLeft="190dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginRight="190dp"
+        android:background="@drawable/bg_wuhu"
+        android:scrollbars="none"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/file_ly"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -208,9 +256,40 @@
 
 
             </LinearLayout>
-            </LinearLayout>
         </LinearLayout>
 
+    </ScrollView>
+
+    <ScrollView
+        android:id="@+id/scrollView_cata"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/aa"
+        android:layout_marginLeft="190dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginRight="190dp"
+        android:background="@drawable/bg_wuhu"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:id="@+id/listView_catalog_ll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            >
+
+            <com.example.paperlessmeeting_demo.widgets.MyListView
+                android:id="@+id/listView_catalog"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="70dp"
+                android:divider="@null"
+                android:dividerHeight="0dp"
+                android:scrollbars="none"
+                android:visibility="gone">
+
+            </com.example.paperlessmeeting_demo.widgets.MyListView>
+        </LinearLayout>
 
     </ScrollView>
 
@@ -226,8 +305,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-          />
+            android:layout_centerVertical="true" />
 
         <LinearLayout
             android:layout_width="wrap_content"

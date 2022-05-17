@@ -61,7 +61,7 @@ public class WuHuCalalogListAdapter extends BaseAdapter {
     public View getView(int i, View view, ViewGroup viewGroup) {
 
         ViewHolder viHolder = null;
-        WuHuEditBean.EditListBean  editListBean = wuHuEditBeanList.get(i);
+        WuHuEditBean.EditListBean editListBean = wuHuEditBeanList.get(i);
         if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.item_wuhu_meeting_catalog, null);
             viHolder = new ViewHolder(view);
@@ -71,23 +71,26 @@ public class WuHuCalalogListAdapter extends BaseAdapter {
         }
 
         viHolder.toptic.setText(editListBean.getSubTopics());
-        viHolder.name.setText(editListBean.getAttendeBean());
-        if (i==0){
+        viHolder.name.setText("汇报单位：" + editListBean.getAttendeBean());
+        viHolder.attend.setText("列席单位：" + editListBean.getAttendeBean2());
+        if (i == 0) {
             viHolder.topic_num.setVisibility(View.GONE);
             viHolder.toptic.setVisibility(View.GONE);
             viHolder.name.setVisibility(View.GONE);
             viHolder.aa.setVisibility(View.GONE);
             viHolder.first_rl.setVisibility(View.GONE);
+            viHolder.attend.setVisibility(View.GONE);
 
-        }else {
+        } else {
             viHolder.topic_num.setVisibility(View.VISIBLE);
             viHolder.toptic.setVisibility(View.VISIBLE);
             viHolder.name.setVisibility(View.VISIBLE);
             viHolder.aa.setVisibility(View.VISIBLE);
             viHolder.first_rl.setVisibility(View.VISIBLE);
+            viHolder.attend.setVisibility(View.VISIBLE);
 
         }
-        switch (i){
+        switch (i) {
             case 0:
                 viHolder.topic_num.setText("议题");
                 break;
@@ -119,7 +122,7 @@ public class WuHuCalalogListAdapter extends BaseAdapter {
                 viHolder.topic_num.setText("议题九");
                 break;
             default:
-                viHolder.topic_num.setText("议题"+(i));
+                viHolder.topic_num.setText("议题" + (i));
                 break;
         }
         return view;
@@ -132,6 +135,8 @@ public class WuHuCalalogListAdapter extends BaseAdapter {
         TextView toptic;
         @BindView(R.id.name)
         TextView name;
+        @BindView(R.id.attend)
+        TextView attend;
         @BindView(R.id.aa)
         View aa;
         @BindView(R.id.first_rl)

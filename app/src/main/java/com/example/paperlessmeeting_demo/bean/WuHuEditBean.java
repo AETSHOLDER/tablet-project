@@ -16,7 +16,7 @@ public class WuHuEditBean implements Serializable {
      * user_id :
      * file_list : [{"path":"","size":"","name":"","suffix":"","type":""}]
      */
-      private String position;
+    private String position;
 
     public String getPosition() {
         return position;
@@ -111,10 +111,29 @@ public class WuHuEditBean implements Serializable {
         }
 
         private String subTopics;
-        private String attendeBean;
-        private String temporarySubTopics;
-        private String temporaryAttendeBean;
+        private String attendeBean;//汇报单位
+        private String attendeBean2;//列席单位
 
+        public String getAttendeBean2() {
+            return attendeBean2;
+        }
+
+        public void setAttendeBean2(String attendeBean2) {
+            this.attendeBean2 = attendeBean2;
+        }
+
+        private String temporarySubTopics;
+
+        public String getTemporaryAttendeBean2() {
+            return temporaryAttendeBean2;
+        }
+
+        public void setTemporaryAttendeBean2(String temporaryAttendeBean2) {
+            this.temporaryAttendeBean2 = temporaryAttendeBean2;
+        }
+
+        private String temporaryAttendeBean;
+        private String temporaryAttendeBean2;
         public String getTemporarySubTopics() {
             return temporarySubTopics;
         }

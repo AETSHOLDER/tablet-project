@@ -1372,6 +1372,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                     WuHuEditBean.EditListBean editListBean=new WuHuEditBean.EditListBean();
                     editListBean.setSubTopics("总结2022年");
                     editListBean.setAttendeBean("某某，某某，某某，某");
+                    editListBean.setAttendeBean2("某某2，某某2，某某2，某2");
                     editListBean.setTopics("区政府会议纪要");
                     editListBean.setTopic_type("会议纪要");
                     wuHuEditBeanList.add(editListBean);
@@ -1380,6 +1381,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                     WuHuEditBean.EditListBean editListBean1=new WuHuEditBean.EditListBean();
                     editListBean1.setSubTopics("总结2022年");
                     editListBean1.setAttendeBean("某某，某某，某某，某");
+                    editListBean.setAttendeBean2("某某2，某某2，某某2，某2");
                     editListBean1.setTopics("区政府会议纪要");
                     editListBean1.setTopic_type("会议纪要");
                     wuHuEditBeanList.add(editListBean1);
@@ -1434,6 +1436,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                         WuHuEditBean.EditListBean editListBean=new WuHuEditBean.EditListBean();
                         editListBean.setSubTopics("总结2022年");
                         editListBean.setAttendeBean("某某，某某，某某，某");
+                        editListBean.setAttendeBean2("某某2，某某2，某某2，某2");
                         editListBean.setTopics("区政府会议纪要");
                         editListBean.setTopic_type("会议纪要");
                         wuHuEditBeanList.add(editListBean);
@@ -1442,6 +1445,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                         WuHuEditBean.EditListBean editListBean1=new WuHuEditBean.EditListBean();
                         editListBean1.setSubTopics("总结2022年");
                         editListBean1.setAttendeBean("某某，某某，某某，某");
+                        editListBean.setAttendeBean2("某某2，某某2，某某2，某2");
                         editListBean1.setTopics("区政府会议纪要");
                         editListBean1.setTopic_type("会议纪要");
                         wuHuEditBeanList.add(editListBean1);

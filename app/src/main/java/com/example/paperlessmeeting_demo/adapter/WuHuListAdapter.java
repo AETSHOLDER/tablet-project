@@ -177,11 +177,6 @@ public class WuHuListAdapter extends BaseAdapter {
                 } else {
                     wuHuEditBean.setSubTopics(s.toString());
                     wuHuEditBean.setTemporarySubTopics(s.toString());
-                    if (Hawk.contains("WuHuFragmentData")) {
-                        WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
-                        wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
-                        Hawk.put("WuHuFragmentData",wuHuEditBean);
-                    }
                 }
             }
         };
@@ -238,21 +233,42 @@ public class WuHuListAdapter extends BaseAdapter {
                     wuHuEditBean.setTemporaryAttendeBean("");
                     wuHuEditBean.setAttendeBean("");
                 } else {
-                    wuHuEditBean.setAttendeBean(s.toString());
+                    wuHuEditBean.setAttendeBean(s.toString());//汇报单位
                     wuHuEditBean.setTemporaryAttendeBean(s.toString());
-                    if (Hawk.contains("WuHuFragmentData")) {
-                        WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
-                        wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
-                        Hawk.put("WuHuFragmentData",wuHuEditBean);
-                    }
+
                 }
             }
         };
+        TextWatcher tittle4Watcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (TextUtils.isEmpty(s)) {
+                    wuHuEditBean.setTemporaryAttendeBean("");
+                    wuHuEditBean.setAttendeBean2("");
+                } else {
+                    wuHuEditBean.setAttendeBean2(s.toString());//列席单位
+                    wuHuEditBean.setTemporaryAttendeBean2(s.toString());
+                }
+            }
+        };
+
         viHolder.tittle3.addTextChangedListener(tittle3Watcher);
         viHolder.tittle3.setTag(tittle3Watcher);
 
+        viHolder.tittle4.addTextChangedListener(tittle4Watcher);
+        viHolder.tittle4.setTag(tittle4Watcher);
+
         viHolder.tittle2.setText(wuHuEditBean.getSubTopics());
         viHolder.tittle3.setText(wuHuEditBean.getAttendeBean());
+        viHolder.tittle4.setText(wuHuEditBean.getAttendeBean2());
         viHolder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -303,6 +319,8 @@ public class WuHuListAdapter extends BaseAdapter {
         EditText tittle2;
         @BindView(R.id.tittle3)
         EditText tittle3;
+        @BindView(R.id.tittle4)
+        EditText tittle4;
         @BindView(R.id.save)
         TextView save;
         @BindView(R.id.delete)
