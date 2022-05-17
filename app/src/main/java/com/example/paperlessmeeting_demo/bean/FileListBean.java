@@ -46,7 +46,15 @@ public class FileListBean implements Serializable {
     private String author;
     private String time;
     private String file_type;
+     private String pos;//芜湖-标识是哪一个fragment
 
+    public String getPos() {
+        return pos;
+    }
+
+    public void setPos(String pos) {
+        this.pos = pos;
+    }
 
     public String getName() {
         return name;
