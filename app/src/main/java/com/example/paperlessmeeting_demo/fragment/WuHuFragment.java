@@ -256,6 +256,7 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                     //更新单个数据
                     getCopyFile();
                     break;
+                    //遍历分享文件
                 case 100:
                     List<FileListBean>shareFiles=(List<FileListBean>)msg.obj;
                     if (shareFiles==null||shareFiles.size()==0){
@@ -268,6 +269,22 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                     fileBeans.addAll(netFileBeans);
                     fileListAdapter.setGridViewBeanList(fileBeans);
                     fileListAdapter.notifyDataSetChanged();
+                    break;
+                    //跟新议题对应的文件
+                case 200:
+                    List<FileListBean>copyFiles=(List<FileListBean>)msg.obj;
+                    if (copyFiles==null||copyFiles.size()==0){
+                        return;
+                    }
+
+                    copyFileBeans.clear();
+                    copyFileBeans.addAll(copyFiles);
+                    fileBeans.addAll(copyFileBeans);
+                    fileBeans.addAll(netFileBeans);
+                    fileBeans.addAll(shareFileBeans);
+                    fileListAdapter.setGridViewBeanList(fileBeans);
+                    fileListAdapter.notifyDataSetChanged();
+
                     break;
                 case 88:
                     //    fileBeans.clear();
@@ -634,61 +651,67 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
 
 
     private void getCopyFile() {
-
-        Log.d("rfrfeewtwtt ","     textNub="+textNub);
-        WuHuLocalFileBean  wuHuLocalFileBean;
-        List<WuHuLocalFileBean.FileBean>  fbList=new ArrayList<>();
-               if (Hawk.contains("WuHuLocalFileBean")) {
-                   wuHuLocalFileBean=Hawk.get("WuHuLocalFileBean");
-                   fbList=wuHuLocalFileBean.getFileBeanList();
-               }
-        copyFileBeans.clear();
-        fileBeans.clear();
-
-        for ( int i = 0 ; i < fbList.size() - 1 ; i ++ ) {
-            for ( int j = fbList.size() - 1 ; j > i; j -- ) {
-                if (fbList.get(j).getFileName().equals(fbList.get(i).getFileName())&&fbList.get(j).getPos().equals(fbList.get(i).getPos())) {
-                    fbList.remove(j);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("rfrfeewtwtt ","     textNub="+textNub);
+                WuHuLocalFileBean  wuHuLocalFileBean;
+                List<WuHuLocalFileBean.FileBean>  fbList=new ArrayList<>();
+                if (Hawk.contains("WuHuLocalFileBean")) {
+                    wuHuLocalFileBean=Hawk.get("WuHuLocalFileBean");
+                    fbList=wuHuLocalFileBean.getFileBeanList();
                 }
-            }
-        }
+                copyFileBeans.clear();
+                fileBeans.clear();
 
-        if (Hawk.contains("wuhulocal")){
-            copyFileBeans=  Hawk.get("wuhulocal");
-            for ( int i = 0 ; i < copyFileBeans.size() - 1 ; i ++ ) {
-                for ( int j = copyFileBeans.size() - 1 ; j > i; j -- ) {
-                    if (copyFileBeans.get(j).getPath().equals(copyFileBeans.get(i).getPath())) {
-                        copyFileBeans.remove(j);
+                for ( int i = 0 ; i < fbList.size() - 1 ; i ++ ) {
+                    for ( int j = fbList.size() - 1 ; j > i; j -- ) {
+                        if (fbList.get(j).getFileName().equals(fbList.get(i).getFileName())&&fbList.get(j).getPos().equals(fbList.get(i).getPos())) {
+                            fbList.remove(j);
+                        }
                     }
                 }
-            }
-        }
 
-        Log.d("rfrfeewtwtt1111  ",copyFileBeans.size()+"     copyFileBeans大小"+"   "+fbList.size()+"   fileBeans大小");
-        List<FileListBean> tempFileBeans = new ArrayList<>();
-        tempFileBeans.clear();
-        for (int i=0;i<fbList.size();i++){
-            Log.d("rfrfeewtwtt0000  ","     textNub="+textNub+"   "+fbList.get(i).getPos()+"");
-            if (fbList.get(i).getPos().equals(textNub)){
-                for ( int n = 0 ; n < copyFileBeans.size() ; n ++ ) {
-                  if (fbList.get(i).getFileName().equals(copyFileBeans.get(n).getName())){
-                      tempFileBeans.add(copyFileBeans.get(n));
-                  }
-
+                if (Hawk.contains("wuhulocal")){
+                    copyFileBeans=  Hawk.get("wuhulocal");
+                    for ( int i = 0 ; i < copyFileBeans.size() - 1 ; i ++ ) {
+                        for ( int j = copyFileBeans.size() - 1 ; j > i; j -- ) {
+                            if (copyFileBeans.get(j).getPath().equals(copyFileBeans.get(i).getPath())) {
+                                copyFileBeans.remove(j);
+                            }
+                        }
+                    }
                 }
+
+                Log.d("rfrfeewtwtt1111  ",copyFileBeans.size()+"     copyFileBeans大小"+"   "+fbList.size()+"   fileBeans大小");
+                List<FileListBean> tempFileBeans = new ArrayList<>();
+                tempFileBeans.clear();
+                for (int i=0;i<fbList.size();i++){
+                    Log.d("rfrfeewtwtt0000  ","     textNub="+textNub+"   "+fbList.get(i).getPos()+"");
+                    if (fbList.get(i).getPos().equals(textNub)){
+                        for ( int n = 0 ; n < copyFileBeans.size() ; n ++ ) {
+                            if (fbList.get(i).getFileName().equals(copyFileBeans.get(n).getName())){
+                                tempFileBeans.add(copyFileBeans.get(n));
+                            }
+
+                        }
+                    }
+                }
+                //发送消息跟新文件列表
+                Message  shareMsg=new Message();
+                shareMsg.what=200;
+                shareMsg.obj=tempFileBeans;
+                mHandler.sendMessage(shareMsg);
+
+
+                //由copy路径文件改为Hawk储存
+                //  getFileName(files);share
+
+
             }
-        }
-        Log.d("rfrfeewtwtt22222   ",tempFileBeans.size()+"     tempFileBeans大小");
-        copyFileBeans.clear();
-        copyFileBeans.addAll(tempFileBeans);
-        Log.d("rfrfeewtwtt33333 ",tempFileBeans.size()+"     tempFileBeans大小"+"     copyFileBeans大小= "+copyFileBeans.size());
-        fileBeans.addAll(copyFileBeans);
-        fileBeans.addAll(netFileBeans);
-        fileBeans.addAll(shareFileBeans);
-        fileListAdapter.setGridViewBeanList(fileBeans);
-        fileListAdapter.notifyDataSetChanged();
-     //由copy路径文件改为Hawk储存
-      //  getFileName(files);
+        }).start();
+
+
     }
 
     private void startPlayer(String url) {
@@ -894,7 +917,7 @@ private void sendFragmenFlag(){
     wuHuLocalFileBean.setFileBeanList(fileBeanList);
     //1：添加本地
     wuHuLocalFileBean.setFlag("1");
-    //wsUpdata(wuHuLocalFileBean,constant.REFRESH_WUHU_FILE_FRAGMENT);
+  wsUpdata(wuHuLocalFileBean,constant.REFRESH_WUHU_FILE_FRAGMENT);
 
 }
     @Override
@@ -1229,7 +1252,7 @@ private void sendFragmenFlag(){
 
             }else if (message.getMessage().contains(constant.REFRESH_WUHU_FILE_FRAGMENT)){
 
-          /*      try {
+            try {
                     TempWSBean<WuHuLocalFileBean> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<WuHuLocalFileBean>>() {
                     }.getType());
                     if (wsebean != null){
@@ -1238,14 +1261,14 @@ private void sendFragmenFlag(){
                          Hawk.put("WuHuLocalFileBean",wuHuLocalFileBean);
                      }
                         if (wuHuLocalFileBean!=null){
-                           // getCopyFile();
+                          getCopyFile();
                         }
 
                     }
                 } catch (JsonSyntaxException e) {
                     e.printStackTrace();
                 }
-*/
+
 
 
 
