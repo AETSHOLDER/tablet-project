@@ -17,6 +17,7 @@ import com.example.paperlessmeeting_demo.tool.SerialPortUtils.HexadecimalConvers
 import com.example.paperlessmeeting_demo.tool.SerialPortUtils.SerialPortClient;
 import com.example.paperlessmeeting_demo.tool.StoreUtil;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
+import com.example.paperlessmeeting_demo.tool.WuHuCrashHandler;
 import com.github.guanpy.wblib.utils.AppContextUtil;
 import com.github.guanpy.wblib.utils.OperationUtils;
 import com.liulishuo.filedownloader.FileDownloader;
@@ -150,6 +151,7 @@ public class MeetingAPP extends Application {
         CrashHandler crashHandler = CrashHandler.getInstance();
         // 注册crashHandler
         crashHandler.init(getApplicationContext());
+        WuHuCrashHandler.getInstance().init(this);
 //         mRefWatcher = LeakCanary.install(this);
         //内存泄漏-end
         //下载文件
