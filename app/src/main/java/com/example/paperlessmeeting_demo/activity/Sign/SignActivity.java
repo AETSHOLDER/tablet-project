@@ -402,7 +402,17 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
         boolean result = tbsReaderView.preOpen(parseFormat(parseName(url)), false);
         if (result) {
             Hawk.put("TBS",true);
-            tbsReaderView.openFile(bundle);
+            if (Hawk.contains(constant.isFirstInit)){
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        tbsReaderView.openFile(bundle);
+                    }
+                },1000);
+                Hawk.put(constant.isFirstInit,false);
+            }else {
+                tbsReaderView.openFile(bundle);
+            }
         }else {
             Hawk.put("TBS",false);
             tbs_notInit.setVisibility(View.VISIBLE);

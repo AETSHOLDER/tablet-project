@@ -1812,7 +1812,9 @@ private void sendFragmenFlag(){
                 Log.d("requestCodeUr55555", Environment.getExternalStorageDirectory() + "/" + split[1]);
                 if ("primary".equalsIgnoreCase(type)) {
                     return Environment.getExternalStorageDirectory() + "/" + split[1];
-                } else {
+                }else if("home".equalsIgnoreCase(type)){
+                    return Environment.getExternalStorageDirectory() + "/documents/" + split[1];
+                }else {
                     return "/storage/" + split[0] + "/" + split[1];
                 }
 

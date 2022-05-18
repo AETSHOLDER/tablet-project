@@ -211,6 +211,9 @@ public class SignListActivity extends BaseActivity {
         }
 
         fileCount = getFilsSize(appDir);
+        if(fileCount==0){
+            noData.setVisibility(View.VISIBLE);
+        }
 //        Log.e("xxx","count1111 ====="+fileCount);
         SignViewBean signViewBean = new SignViewBean();
         GetFilePath(signViewBean, appDir, 0);

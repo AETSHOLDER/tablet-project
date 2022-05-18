@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,6 +28,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bigkoo.pickerview.TimePickerView;
 import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.activity.MainActivity;
 import com.example.paperlessmeeting_demo.activity.WuHuActivity;
@@ -48,6 +50,8 @@ import com.orhanobut.hawk.Hawk;
 import com.snow.common.tool.utils.FastClickUtils;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -94,6 +98,33 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                 /*
 * 统计用户行为日志
 * */
+
+        TimePickerView  pickerView= new TimePickerView.Builder(getActivity(), new TimePickerView.OnTimeSelectListener() {
+            @Override
+            public void onTimeSelect(Date date, View v) {
+                //textView.setText(new SimpleDateFormat("yyyy'年'MM'月'dd'日'").format(date));
+                }
+            })
+            .setSubmitText("确定")
+            .setCancelText("取消")
+//                .setSubmitColor(Color.BLACK)
+//                .setCancelColor(Color.BLACK)
+            .setType(new boolean[]{true, true, true, false, false, false})    //显示"年月日时分秒"的哪几项，默认全部显示
+            .isCenterLabel(false)          //是否只显示选中项的label文字，false则每项item全部都带有label。
+            //.isDialog(true)          //是否是对话框样式（页面居中显示）
+            .isCyclic(true)            //是否循环滚动
+//                .setTextColorOut(Color.GRAY)         //未选中项的文本颜色(默认色GRAY)
+//                .setTextColorCenter(Color.BLACK)       //选中项的文本颜色(默认色BLACK)
+            .build();
+        //设置默认的日期时间（默认显示当前日期时间）
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new SimpleDateFormat("yyyyMMdd").parse("20201104"));
+//      或者这样写更简单
+//      calendar.set(2020,10,4);       //但这里注意：月份是从0开始的，要显示11月，参数应该为10
+        pickerView.setDate(calendar);
+        pickerView.show();
+
+
         if (Hawk.contains("UserBehaviorBean")) {
             UserBehaviorBean userBehaviorBean = Hawk.get("UserBehaviorBean");
             UserBehaviorBean.DataBean dataBean = new UserBehaviorBean.DataBean();
