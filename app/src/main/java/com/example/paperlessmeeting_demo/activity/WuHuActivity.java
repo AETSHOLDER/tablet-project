@@ -67,6 +67,7 @@ import com.example.paperlessmeeting_demo.tool.TimeUtils;
 import com.example.paperlessmeeting_demo.tool.UrlConstant;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.example.paperlessmeeting_demo.tool.constant;
+import com.example.paperlessmeeting_demo.widgets.CompletedView;
 import com.example.paperlessmeeting_demo.widgets.MyDialog;
 import com.example.paperlessmeeting_demo.widgets.MyListView;
 import com.google.gson.Gson;
@@ -184,6 +185,9 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
     private Runnable runnable;
     private  ArrayList<WuHuEditBean.EditListBean> editListBeans = new ArrayList<>();
     private View foodView;
+    private CompletedView completedView;
+    private ImageView result_ima;
+    private TextView tips;
     /**
      * 点击返回时间
      */
@@ -671,7 +675,67 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
         }
         }*/
     }
+    public void showUpLoadFileDialog( ) {
+        //自定义dialog显示布局
+        inflate = LayoutInflater.from(WuHuActivity.this).inflate(R.layout.history_meeting_dialog, null);
+        //自定义dialog显示风格
+        dialog = new MyDialog(WuHuActivity.this, R.style.dialogTransparent);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        //弹窗点击周围空白处弹出层自动消失弹窗消失(false时为点击周围空白处弹出层不自动消失)
+        dialog.setCanceledOnTouchOutside(false);
+        //将布局设置给Dialog
+        dialog.setContentView(inflate);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        dialog.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+        dialog.getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+            @Override
+            public void onSystemUiVisibilityChange(int visibility) {
+                int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                        //布局位于状态栏下方
+                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                        //全屏
+                        View.SYSTEM_UI_FLAG_FULLSCREEN |
+                        //隐藏导航栏
+                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+                if (Build.VERSION.SDK_INT >= 19) {
+                    uiOptions |= 0x00001000;
+                } else {
+                    uiOptions |= View.SYSTEM_UI_FLAG_LOW_PROFILE;
+                }
+                dialog.getWindow().getDecorView().setSystemUiVisibility(uiOptions);
+            }
+        });
 
+        completedView=inflate.findViewById(R.id.tasks_view);
+        result_ima=inflate.findViewById(R.id.result_ima);
+        completedView.setVisibility(View.VISIBLE);
+        tips=inflate.findViewById(R.id.tips);
+        result_ima.setVisibility(View.GONE);
+        //获取当前Activity所在的窗体
+        Window window = dialog.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        wlp.alpha=1.0f;
+        Display d = window.getWindowManager().getDefaultDisplay(); // 获取屏幕宽，高
+        wlp.gravity= Gravity.CENTER;
+        wlp.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        wlp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        Point size=new Point();
+        d.getSize(size);
+        int width = size.x;
+        int height = size.y;
+        wlp.width = (int) (width * 0.45);//设置宽
+        wlp.height = (int) (width * 0.3);//设置宽
+        window.setAttributes(wlp);
+        dialog.setOnTouchOutside(new MyDialog.onTouchOutsideInterFace() {
+            @Override
+            public void outSide() {
+                Log.d("sdfsdfdsff","路过~~~~~");
+                //  Toast.makeText(getActivity(),"弹框",Toast.LENGTH_SHORT).show();
+            }
+        });
+        dialog.show();
+    }
     @Override
     protected int getLayoutId() {
         return R.layout.wuhu_main;

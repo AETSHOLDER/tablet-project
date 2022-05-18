@@ -24,6 +24,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,6 +46,7 @@ import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.example.paperlessmeeting_demo.tool.constant;
 import com.example.paperlessmeeting_demo.util.ToastUtil;
 import com.example.paperlessmeeting_demo.widgets.MyDialog;
+import com.example.paperlessmeeting_demo.widgets.MyListView;
 import com.jyn.vcview.VerificationCodeView;
 import com.orhanobut.hawk.Hawk;
 import com.snow.common.tool.utils.FastClickUtils;
@@ -99,7 +101,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
 * 统计用户行为日志
 * */
 
-        TimePickerView  pickerView= new TimePickerView.Builder(getActivity(), new TimePickerView.OnTimeSelectListener() {
+    /*    TimePickerView  pickerView= new TimePickerView.Builder(getActivity(), new TimePickerView.OnTimeSelectListener() {
             @Override
             public void onTimeSelect(Date date, View v) {
                 //textView.setText(new SimpleDateFormat("yyyy'年'MM'月'dd'日'").format(date));
@@ -122,7 +124,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
 //      或者这样写更简单
 //      calendar.set(2020,10,4);       //但这里注意：月份是从0开始的，要显示11月，参数应该为10
         pickerView.setDate(calendar);
-        pickerView.show();
+        pickerView.show();*/
 
 
         if (Hawk.contains("UserBehaviorBean")) {
@@ -519,7 +521,67 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
 //            }
         }
     }
+    //展示历史会议historyConferenceDialog
+    public void showHistoryDialog() {
+        //自定义dialog显示布局
+        View inflate = LayoutInflater.from(getActivity()).inflate(R.layout.history_meeting_dialog, null);
+        //自定义dialog显示风格
+        historyConferenceDialog = new MyDialog(getActivity(), R.style.dialogTransparent);
+        historyConferenceDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        //弹窗点击周围空白处弹出层自动消失弹窗消失(false时为点击周围空白处弹出层不自动消失)
+        historyConferenceDialog.setCanceledOnTouchOutside(false);
+        //将布局设置给Dialog
+        historyConferenceDialog.setContentView(inflate);
+        historyConferenceDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        historyConferenceDialog.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+        historyConferenceDialog.getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+            @Override
+            public void onSystemUiVisibilityChange(int visibility) {
+                int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                        //布局位于状态栏下方
+                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                        //全屏
+                        View.SYSTEM_UI_FLAG_FULLSCREEN |
+                        //隐藏导航栏
+                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+                if (Build.VERSION.SDK_INT >= 19) {
+                    uiOptions |= 0x00001000;
+                } else {
+                    uiOptions |= View.SYSTEM_UI_FLAG_LOW_PROFILE;
+                }
+                historyConferenceDialog.getWindow().getDecorView().setSystemUiVisibility(uiOptions);
+            }
+        });
+        RelativeLayout calender_rl = inflate.findViewById(R.id.calender_rl);
+        TextView calender_tv = inflate.findViewById(R.id.calender_tv);
+        MyListView myList_view = inflate.findViewById(R.id.myList_view);
 
+        //获取当前Activity所在的窗体
+        Window window = historyConferenceDialog.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        wlp.alpha = 1.0f;
+        Display d = window.getWindowManager().getDefaultDisplay(); // 获取屏幕宽，高
+        wlp.gravity = Gravity.CENTER;
+        wlp.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        wlp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        Point size = new Point();
+        d.getSize(size);
+        int width = size.x;
+        int height = size.y;
+        wlp.width = (int) (width * 0.45);//设置宽
+        wlp.height = (int) (width * 0.3);//设置宽
+        window.setAttributes(wlp);
+        historyConferenceDialog.setOnTouchOutside(new MyDialog.onTouchOutsideInterFace() {
+            @Override
+            public void outSide() {
+                Log.d("sdfsdfdsff", "路过~~~~~");
+                //  Toast.makeText(getActivity(),"弹框",Toast.LENGTH_SHORT).show();
+            }
+        });
+        historyConferenceDialog.show();
+
+    }
     //展示历史会议
     public void showFileTransferDialog( ) {
         //自定义dialog显示布局

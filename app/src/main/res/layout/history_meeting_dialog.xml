@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tc="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_dialog_wuhu">
+
+    <TextView
+        android:id="@+id/aa"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="35dp"
+        android:text="会议列表"
+        android:textColor="#5078FA"
+        android:textSize="50sp" />
+
+    <RelativeLayout
+        android:id="@+id/calender_rl"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_below="@id/aa"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="290dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="290dp"
+        android:background="@drawable/bg_wuhu_calender">
+
+        <ImageView
+            android:id="@+id/cc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:scaleType="fitCenter"
+            android:src="@mipmap/ic_calendar" />
+
+        <TextView
+            android:id="@+id/calender_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="30dp"
+            android:layout_toRightOf="@id/cc"
+            android:text="2022-2-22"
+            android:textColor="#636363"
+            android:textSize="15sp" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/calender_rl"
+        android:layout_marginLeft="60dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="60dp"
+        android:scrollbars="none"
+        android:background="@drawable/bg_dialog_wuhu_history_meeting">
+
+        <com.example.paperlessmeeting_demo.widgets.MyListView
+            android:id="@+id/myList_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:dividerHeight="0dp"
+            android:divider="@null"
+            android:scrollbars="none"
+            >
+
+
+        </com.example.paperlessmeeting_demo.widgets.MyListView>
+
+    </ScrollView>
+
+</RelativeLayout>
