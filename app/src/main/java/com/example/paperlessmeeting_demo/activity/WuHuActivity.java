@@ -191,7 +191,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
     /**
      * 点击返回时间
      */
-    private long time = 2000  ;
+    private long time = 2000;
     private long first_time = 0;
     private String meetingTime ;//会议-月日时分
     private  String week = "";
