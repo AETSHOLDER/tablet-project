@@ -61,7 +61,6 @@ public class WuHuCrashHandler implements Thread.UncaughtExceptionHandler {
      */
 
     private Map<Object,Object> paramsMap = new HashMap<>();
-
     /**
 
      * 格式化时间
