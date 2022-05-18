@@ -18,6 +18,7 @@ import com.example.paperlessmeeting_demo.tool.SerialPortUtils.SerialPortClient;
 import com.example.paperlessmeeting_demo.tool.StoreUtil;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.example.paperlessmeeting_demo.tool.WuHuCrashHandler;
+import com.example.paperlessmeeting_demo.tool.constant;
 import com.github.guanpy.wblib.utils.AppContextUtil;
 import com.github.guanpy.wblib.utils.OperationUtils;
 import com.liulishuo.filedownloader.FileDownloader;
@@ -130,6 +131,7 @@ public class MeetingAPP extends Application {
         SdCardStatus.init(StoreUtil.CACHE_DIR);
         OperationUtils.getInstance().init();
         Hawk.init(this).build();
+        Hawk.put(constant.isLaunch,true);
         ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
 
         new Handler().post(new Runnable() {

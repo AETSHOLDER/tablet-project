@@ -40,7 +40,9 @@ import com.example.paperlessmeeting_demo.tool.CVIPaperDialogUtils;
 import com.example.paperlessmeeting_demo.tool.FLUtil;
 import com.example.paperlessmeeting_demo.tool.StoreUtil;
 import com.example.paperlessmeeting_demo.tool.TimeUtils;
+import com.example.paperlessmeeting_demo.tool.ToastUtils;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
+import com.example.paperlessmeeting_demo.tool.VideoEncoderUtil;
 import com.example.paperlessmeeting_demo.tool.constant;
 import com.example.paperlessmeeting_demo.widgets.FloatingActionsMenu;
 import com.example.paperlessmeeting_demo.widgets.FloatingImageButton;
@@ -59,6 +61,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.List;
 import butterknife.BindView;
@@ -80,6 +87,8 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     RelativeLayout toolsBar;
     @BindView(R.id.sign_title)
     TextView signTitle;
+    @BindView(R.id.sign_screen)
+    TextView sign_screen;
     @BindView(R.id.sign_bg)
     ImageView signBg;
     @BindView(R.id.sign_rl)
@@ -147,6 +156,12 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     @BindView(R.id.tbs_notInit)
     TextView tbs_notInit;
 
+    // 同屏相关
+    private boolean isScreen = false;
+    private static final int ACTIVITY_RESULT_CODE_SCREEN = 110;
+    private VideoEncoderUtil videoEncoder;
+
+
     private String url;
     TbsReaderView tbsReaderView;
     //是否打开文件
@@ -156,9 +171,6 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     private File appDir;
     private String fileName;
     private String TAG = "SignActivity";
-//    private Bitmap mBottomBitmap = null;
-    private int IMAGE_WIDTH = 0;
-    private int IMAGE_HEIGHT = 0;
     private SocketShareFileManager socketShareFileManager;
     private Handler mHandler = new Handler() {
 
@@ -202,19 +214,29 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     protected void initView() {
         String title = getIntent().getStringExtra("fileName");
         signTitle.setText(title);
-        Rect bonds = new Rect(0, 0, 38, 36);
+        int width = DisplayUtil.dp2px(SignActivity.this, 38);
+        int height = DisplayUtil.dp2px(SignActivity.this, 36);
+        Rect bonds = new Rect(0, 0, width, height);
         drawable_left_enter = SignActivity.this.getResources().getDrawable(R.mipmap.sign_enter);
         drawable_left_enter.setBounds(bonds);
         drawable_left_exit = SignActivity.this.getResources().getDrawable(R.mipmap.sign_exit);
         drawable_left_exit.setBounds(bonds);
 
+        int width2 = DisplayUtil.dp2px(SignActivity.this, 53);
+
         Drawable drawable_commit = SignActivity.this.getResources().getDrawable(R.mipmap.sign_commit);
         drawable_commit.setBounds(bonds);
+        Rect bonds_screen = new Rect(0, 0, width2, width2);
+        Drawable drawable_screen = SignActivity.this.getResources().getDrawable(R.mipmap.sign_screen);
+        drawable_screen.setBounds(bonds_screen);
 
         sign_Door.setCompoundDrawables(drawable_left_enter, null, null, null);
         sign_Door.setGravity(Gravity.CENTER);
         sign_commit.setCompoundDrawables(drawable_commit, null, null, null);
         sign_commit.setGravity(Gravity.CENTER);
+        sign_screen.setCompoundDrawables(drawable_screen, null, null, null);
+        sign_screen.setGravity(Gravity.CENTER);
+
         url = getIntent().getStringExtra("url");
         Log.d("SignActivity", url);
         isOpenFile = getIntent().getBooleanExtra("isOpenFile", false);
@@ -259,6 +281,11 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(isScreen){
+                    ToastUtils.showShort("当前正在同屏!");
+                    return;
+                }
+
                 int size = SignOperationUtils.getInstance().getSavePoints().size();
                 if(size>0) {
                     CVIPaperDialogUtils.showCustomDialog(SignActivity.this, "当前存在签批内容,是否退出?", null, "退出", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
@@ -330,7 +357,6 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                         tbsReaderView.setVisibility(View.VISIBLE);
                     }
                 }
-
             }
         });
         // 提交签批
@@ -340,27 +366,6 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                 // 保存，普通用户将上传文档
                 ToolsOperation(WhiteBoardVariable.Operation.OUTSIDE_CLICK);
                 takeScreenShotCommit();
-
-//                String filePath = saveImage();
-//                // 上传  非主席发送给主席
-//                 boolean ok = new File(filePath).exists();
-//                 Log.e("111","文件是否存在==="+ok);
-//                if(!UserUtil.ISCHAIRMAN && filePath!=null && new File(filePath).exists()){
-//                    String fileName = parseName(filePath);
-//                    Thread sendThread = new Thread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            try {
-//                                Thread.sleep(500);
-//                            }catch (Exception e){
-//                                e.printStackTrace();
-//                            }
-//                            //将文件发送到指定IP
-//                            socketShareFileManager.SendFile(fileName, filePath, UserUtil.serverIP, constant.SHARE_PORT,"2");
-//                        }
-//                    });
-//                    sendThread.start();
-//                }
             }
         });
         sign_see.setOnClickListener(new View.OnClickListener() {
@@ -368,6 +373,50 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
             public void onClick(View view) {
                 Intent intent = new Intent(SignActivity.this, SignListActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        // 同屏
+        sign_screen.setSelected(false);
+        sign_screen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sign_screen.setSelected(!sign_screen.isSelected());
+                isScreen = sign_screen.isSelected();
+                String text = sign_screen.isSelected() ? "退出同屏" : "同屏";
+                sign_screen.setText(text);
+
+                Thread sendThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            DatagramSocket socket = new DatagramSocket();
+                            String str = constant.START_SHARE_SCEEN;
+                            ;
+                            byte[] sendStr = str.getBytes();
+                            InetAddress address = InetAddress.getByName(constant.EXTRAORDINARY_MEETING_INETADDRESS);
+                            DatagramPacket packet = new DatagramPacket(sendStr, sendStr.length, address, constant.EXTRAORDINARY_MEETING_PORT);
+                            socket.send(packet);
+                            socket.close();
+                        } catch (SocketException e) {
+                            e.printStackTrace();
+                        } catch (UnknownHostException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                sendThread.start();
+                try {
+                    Thread.sleep(2000);//休眠2秒，保证其他设备有足够的时间打开同屏界面
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                mediaProjectionManager = (MediaProjectionManager)
+                        getApplication().getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+                Intent captureIntent = mediaProjectionManager.createScreenCaptureIntent();
+                startActivityForResult(captureIntent, ACTIVITY_RESULT_CODE_SCREEN);
             }
         });
 
@@ -402,14 +451,15 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
         boolean result = tbsReaderView.preOpen(parseFormat(parseName(url)), false);
         if (result) {
             Hawk.put("TBS",true);
-            if (Hawk.contains(constant.isFirstInit)){
+            if (Hawk.contains(constant.isLaunch) && (Boolean)Hawk.get(constant.isLaunch)){
+
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         tbsReaderView.openFile(bundle);
                     }
                 },1000);
-                Hawk.put(constant.isFirstInit,false);
+                Hawk.put(constant.isLaunch,false);
             }else {
                 tbsReaderView.openFile(bundle);
             }
@@ -535,16 +585,13 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.e(TAG, "onActivityResult...requestCode=" + requestCode + ",resultCode=" + resultCode);
         if (requestCode == EVENT_SCREENSHOT) {
             super.onActivityResult(requestCode, resultCode, data);
-            Log.e(TAG, "captureScreen...");
             DisplayMetrics displayMetrics = new DisplayMetrics();
             WindowManager windowManager = (WindowManager) this.getSystemService(WINDOW_SERVICE);
             windowManager.getDefaultDisplay().getMetrics(displayMetrics);
             int width = displayMetrics.widthPixels;
             int height = displayMetrics.heightPixels;
-            Log.e(TAG, "displayMetrics width=" + width + ", height=" + height);
             ImageReader mImageReader = ImageReader.newInstance(width, height, PixelFormat.RGBA_8888, 2);
             mediaProjection = mediaProjectionManager.getMediaProjection(resultCode, data);
             VirtualDisplay virtualDisplay = mediaProjection.createVirtualDisplay("screen-mirror", width, height,
@@ -683,7 +730,13 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                         mediaProjection.stop();
                     }
                 }
-            }, 150);
+            }, 250);
+        }
+        //  同屏
+        else if(requestCode == ACTIVITY_RESULT_CODE_SCREEN) {
+            MediaProjection mediaProjection = mediaProjectionManager.getMediaProjection(resultCode, data);
+            videoEncoder = new VideoEncoderUtil(mediaProjection, "");
+            videoEncoder.start();
         }
     }
     /**
@@ -1112,16 +1165,6 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
         sign_text_changeUI(true);
         mIvWhiteBoardQuit.setVisibility(View.GONE);
         mIvWhiteBoardConfirm.setVisibility(View.GONE);
-//        if(mBottomBitmap.isRecycled()){
-//            File file = new File(appDir, fileName);
-//            FileInputStream fis = null;
-//            try {
-//                fis = new FileInputStream(file.getPath());
-//                mBottomBitmap = BitmapFactory.decodeStream(fis);
-//            } catch (FileNotFoundException e) {
-//                e.printStackTrace();
-//            }
-//        }
         mDbView.showPoints();
         mDtView.afterEdit(isSave);
     }

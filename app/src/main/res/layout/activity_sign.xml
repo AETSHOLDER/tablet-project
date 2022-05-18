@@ -259,6 +259,19 @@
                 android:layout_centerVertical="true"
                 android:src="@mipmap/ic_wuhu_back" />
         </RelativeLayout>
+        <TextView
+            android:id="@+id/sign_screen"
+            android:layout_width="113dp"
+            android:layout_height="60dp"
+            android:layout_toRightOf="@id/iv_back"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="57dp"
+            android:drawableLeft="@mipmap/sign_screen"
+            android:gravity="center_vertical"
+            android:text="同屏"
+            android:textColor="#4379F0"
+            android:textSize="28sp"/>
+
 
         <TextView
             android:id="@+id/sign_title"
@@ -282,7 +295,7 @@
             android:fontFamily="sans-serif-medium"
             android:gravity="center_vertical"
             android:text="查阅批注"
-            android:textColor="#1D1D1D"
+            android:textColor="#4379F0"
             android:textSize="30sp" />
         <TextView
             android:id="@+id/sign_door"
@@ -294,7 +307,7 @@
             android:drawableLeft="@mipmap/sign_commit"
             android:gravity="center_vertical"
             android:text="开始批注"
-            android:textColor="#1D1D1D"
+            android:textColor="#4379F0"
             android:textSize="28sp" />
 
         <TextView
@@ -307,7 +320,7 @@
             android:drawableLeft="@mipmap/sign_commit"
             android:gravity="center_vertical"
             android:text="提交批注"
-            android:textColor="#1D1D1D"
+            android:textColor="#4379F0"
             android:textSize="28sp"
             android:visibility="gone"/>
         <ImageView

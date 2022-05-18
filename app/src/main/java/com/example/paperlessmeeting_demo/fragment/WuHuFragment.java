@@ -256,19 +256,6 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                     //更新单个数据
                     getCopyFile();
                     break;
-                case 100:
-                  List<FileListBean>shareFiles=(List<FileListBean>)msg.obj;
-                  if (shareFiles==null||shareFiles.size()==0){
-                      return;
-                  }
-                    shareFileBeans.clear();
-                    shareFileBeans.addAll(shareFiles);
-                    fileBeans.addAll(shareFileBeans);
-                    fileBeans.addAll(copyFileBeans);
-                    fileBeans.addAll(netFileBeans);
-                    fileListAdapter.setGridViewBeanList(fileBeans);
-                    fileListAdapter.notifyDataSetChanged();
-                    break;
                 case 88:
                     //    fileBeans.clear();
                     //更新单个数据
@@ -2031,93 +2018,81 @@ private void sendFragmenFlag(){
         shareFileBeans.clear();
         fileBeans.clear();
         Log.d(TAG, "路过~~~~~11");
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                //子线程开始
-                String content = "";
-                if (files != null) {
-                    // 先判断目录是否为空，否则会报空指针
-                    for (File file : files) {
-                        Log.d(TAG, "路过~~~~~11" + file.getPath());
+        String content = "";
+        if (files != null) {// 先判断目录是否为空，否则会报空指针
+            for (File file : files) {
+                Log.d(TAG, "路过~~~~~11" + file.getPath());
 
-                        if (file.isDirectory()) {
-                            Log.d(TAG, "若是文件目录。继续读1" + file.getName().toString()
-                                    + file.getPath().toString());
+                if (file.isDirectory()) {
+                    Log.d(TAG, "若是文件目录。继续读1" + file.getName().toString()
+                            + file.getPath().toString());
 
-                            getFileName(file.listFiles());
-                            Log.d(TAG, "若是文件目录。继续读2" + file.getName().toString()
-                                    + file.getPath().toString());
-                        } else {
-                            String fileName = file.getName();
-                            String[]fileNameAll=fileName.split("-cvi");
-                            fileName=fileNameAll[1];
-                            String pos=fileNameAll[0];
-                            String endStr = fileName.substring(fileName.lastIndexOf(".") + 1);
-                            Log.d(TAG, "文件类型=" + endStr + "文件名字" + fileName);
-                            fileBean = new FileListBean(fileName, file.getPath(), "", "");
-                            Uri uri = Uri.fromFile(file);
-                            Log.d("requestCodeUr555", uri.getScheme() + "===" + uri.getPath() + "==" + fileName);
-                            fileBean.setResImage(getIamge(endStr));
-                            fileBean.setFile_type(getType(endStr));
-                            fileBean.setPos(pos);
-                            fileBean.setNet(false);
-                            fileBean.setSuffix(endStr);//上传文件后缀名和文件类型；setSuffix和setType所赋值内容一样。
-                            //  fileBean.setType(endStr);
-                            fileBean.setType(getFileType(endStr));
-                            shareFileBeans.add(fileBean);
-
-                        }
-                    }
-
-
-                    WuHuLocalFileBean  wuHuLocalFileBean;
-                    List<WuHuLocalFileBean.FileBean>  fbList=new ArrayList<>();
-                    if (Hawk.contains("WuHuLocalFileBean")) {
-                        wuHuLocalFileBean=Hawk.get("WuHuLocalFileBean");
-                        fbList=wuHuLocalFileBean.getFileBeanList();
-                    }
-
-                    for ( int i = 0 ; i < fbList.size() - 1 ; i ++ ) {
-                        for ( int j = fbList.size() - 1 ; j > i; j -- ) {
-                            if (fbList.get(j).getFileName().equals(fbList.get(i).getFileName())&&fbList.get(j).getPos().equals(fbList.get(i).getPos())) {
-                                fbList.remove(j);
-                            }
-                        }
-                    }
-
-
-                    Log.d("rfrfeewtwtt1111  ",shareFileBeans.size()+"     shareFileBeans大小"+"   "+fbList.size()+"   fileBeans大小");
-                    List<FileListBean> tempFileBeans = new ArrayList<>();
-                    tempFileBeans.clear();
-                    for (int i=0;i<fbList.size();i++){
-                        Log.d("rfrfeewtwtt0000  ","     textNub="+textNub+"   "+fbList.get(i).getPos()+"");
-                        if (fbList.get(i).getPos().equals(textNub)){
-                            for ( int n = 0 ; n < shareFileBeans.size() ; n ++ ) {
-                                if (fbList.get(i).getFileName().equals(shareFileBeans.get(n).getName())&&shareFileBeans.get(n).getPos().equals(textNub)){
-                                    tempFileBeans.add(shareFileBeans.get(n));
-                                }
-
-                            }
-                        }
-                    }
-                //发送消息跟新文件列表
-                Message  shareMsg=new Message();
-                    shareMsg.what=100;
-                    shareMsg.obj=tempFileBeans;
-                    mHandler.sendMessage(shareMsg);
+                    getFileName(file.listFiles());
+                    Log.d(TAG, "若是文件目录。继续读2" + file.getName().toString()
+                            + file.getPath().toString());
+                } else {
+                    String fileName = file.getName();
+                    String[]fileNameAll=fileName.split("-cvi");
+                    fileName=fileNameAll[1];
+                    String pos=fileNameAll[0];
+                    String endStr = fileName.substring(fileName.lastIndexOf(".") + 1);
+                    Log.d(TAG, "文件类型=" + endStr + "文件名字" + fileName);
+                    fileBean = new FileListBean(fileName, file.getPath(), "", "");
+                    Uri uri = Uri.fromFile(file);
+                    Log.d("requestCodeUr555", uri.getScheme() + "===" + uri.getPath() + "==" + fileName);
+                    fileBean.setResImage(getIamge(endStr));
+                    fileBean.setFile_type(getType(endStr));
+                    fileBean.setPos(pos);
+                    fileBean.setNet(false);
+                    fileBean.setSuffix(endStr);//上传文件后缀名和文件类型；setSuffix和setType所赋值内容一样。
+                    //  fileBean.setType(endStr);
+                    fileBean.setType(getFileType(endStr));
+                    shareFileBeans.add(fileBean);
 
                 }
-
-
-
-
-
-
-             //子线程执行结束
             }
-        }).start();
 
+
+            WuHuLocalFileBean  wuHuLocalFileBean;
+            List<WuHuLocalFileBean.FileBean>  fbList=new ArrayList<>();
+            if (Hawk.contains("WuHuLocalFileBean")) {
+                wuHuLocalFileBean=Hawk.get("WuHuLocalFileBean");
+                fbList=wuHuLocalFileBean.getFileBeanList();
+            }
+
+            for ( int i = 0 ; i < fbList.size() - 1 ; i ++ ) {
+                for ( int j = fbList.size() - 1 ; j > i; j -- ) {
+                    if (fbList.get(j).getFileName().equals(fbList.get(i).getFileName())&&fbList.get(j).getPos().equals(fbList.get(i).getPos())) {
+                        fbList.remove(j);
+                    }
+                }
+            }
+
+
+            Log.d("rfrfeewtwtt1111  ",shareFileBeans.size()+"     shareFileBeans大小"+"   "+fbList.size()+"   fileBeans大小");
+            List<FileListBean> tempFileBeans = new ArrayList<>();
+            tempFileBeans.clear();
+            for (int i=0;i<fbList.size();i++){
+                Log.d("rfrfeewtwtt0000  ","     textNub="+textNub+"   "+fbList.get(i).getPos()+"");
+                if (fbList.get(i).getPos().equals(textNub)){
+                    for ( int n = 0 ; n < shareFileBeans.size() ; n ++ ) {
+                        if (fbList.get(i).getFileName().equals(shareFileBeans.get(n).getName())&&shareFileBeans.get(n).getPos().equals(textNub)){
+                            tempFileBeans.add(shareFileBeans.get(n));
+                        }
+
+                    }
+                }
+            }
+
+
+            shareFileBeans.clear();
+            shareFileBeans.addAll(tempFileBeans);
+            fileBeans.addAll(shareFileBeans);
+            fileBeans.addAll(copyFileBeans);
+            fileBeans.addAll(netFileBeans);
+            fileListAdapter.setGridViewBeanList(fileBeans);
+            fileListAdapter.notifyDataSetChanged();
+        }
     }
     @Override
     public void onStart() {

@@ -18,6 +18,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -220,7 +221,6 @@ public class LoginActivity extends BaseActivity  {
         if (Hawk.contains("tittle2")){
             Hawk.delete("tittle2");
         }
-        int ss = DisplayUtil.px2dp(LoginActivity.this, 93);
   /*      //如芜湖数据存在则清除
         if (Hawk.contains("WuHuFragmentData")){
             Hawk.delete("WuHuFragmentData");
@@ -271,10 +271,14 @@ public class LoginActivity extends BaseActivity  {
         name.setVisibility(View.INVISIBLE);
         Log.d("22", "mac===" + FLUtil.getMacAddress());
 
+//        int ss1 = DisplayUtil.px2dp(LoginActivity.this, 2560);
+//        int ss2 = DisplayUtil.px2dp(LoginActivity.this, 1600);
+//        Log.e("111","ss1==="+ss1+"ss2==="+ss2);
+//
 //        DisplayMetrics dm = getResources().getDisplayMetrics();
 //        int screenWidth = dm.widthPixels;
 //        int screenHeight = dm.heightPixels;
-//        Toast.makeText(this, "宽=="+screenWidth+" 高=="+screenHeight, Toast.LENGTH_LONG).show();
+//        Log.e("111","宽=="+screenWidth+" 高=="+screenHeight);
 
 //  模拟收到会议信息推送
 //      new Handler().postDelayed(new Runnable() {

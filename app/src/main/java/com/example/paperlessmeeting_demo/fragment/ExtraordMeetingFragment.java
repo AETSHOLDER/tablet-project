@@ -76,12 +76,11 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
     private TextView tipsTxt;
     private TextView entry_meeting;
     private Spinner spinner;
-    //    private List<String> ipcodeInfo = new ArrayList<>();
+//    private List<String> ipcodeInfo = new ArrayList<>();
     private List<String> stringList = new ArrayList<>();//暂存临时会议邀请码
-    private boolean isReuse = false;//根据有无会议记录来判断芜湖版本应用是否是第一次安装。
+    private boolean isReuse=false;//根据有无会议记录来判断芜湖版本应用是否是第一次安装。
     private int currentSelIndex = 0;
-    private MyDialog historyConferenceDialog;//历史会议
-
+    private MyDialog  historyConferenceDialog;//历史会议
     public static ExtraordMeetingFragment newInstance(String movie) {
         ExtraordMeetingFragment extraordMeetingFragment = new ExtraordMeetingFragment();
         return extraordMeetingFragment;
@@ -98,36 +97,34 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
 
     @Override
     protected void initData() {
-        /*
-         * 统计用户行为日志
-         * */
-/*
+                /*
+* 统计用户行为日志
+* */
 
-        TimePickerView pickerView = new TimePickerView.Builder(getActivity(), new TimePickerView.OnTimeSelectListener() {
+    /*    TimePickerView  pickerView= new TimePickerView.Builder(getActivity(), new TimePickerView.OnTimeSelectListener() {
             @Override
             public void onTimeSelect(Date date, View v) {
                 //textView.setText(new SimpleDateFormat("yyyy'年'MM'月'dd'日'").format(date));
-            }
-        })
-                .setSubmitText("确定")
-                .setCancelText("取消")
+                }
+            })
+            .setSubmitText("确定")
+            .setCancelText("取消")
 //                .setSubmitColor(Color.BLACK)
 //                .setCancelColor(Color.BLACK)
-                .setType(new boolean[]{true, true, true, false, false, false})    //显示"年月日时分秒"的哪几项，默认全部显示
-                .isCenterLabel(false)          //是否只显示选中项的label文字，false则每项item全部都带有label。
-                //.isDialog(true)          //是否是对话框样式（页面居中显示）
-                .isCyclic(true)            //是否循环滚动
+            .setType(new boolean[]{true, true, true, false, false, false})    //显示"年月日时分秒"的哪几项，默认全部显示
+            .isCenterLabel(false)          //是否只显示选中项的label文字，false则每项item全部都带有label。
+            //.isDialog(true)          //是否是对话框样式（页面居中显示）
+            .isCyclic(true)            //是否循环滚动
 //                .setTextColorOut(Color.GRAY)         //未选中项的文本颜色(默认色GRAY)
 //                .setTextColorCenter(Color.BLACK)       //选中项的文本颜色(默认色BLACK)
-                .build();
+            .build();
         //设置默认的日期时间（默认显示当前日期时间）
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new SimpleDateFormat("yyyyMMdd").parse("20201104"));
 //      或者这样写更简单
 //      calendar.set(2020,10,4);       //但这里注意：月份是从0开始的，要显示11月，参数应该为10
         pickerView.setDate(calendar);
-        pickerView.show();
-*/
+        pickerView.show();*/
 
 
         if (Hawk.contains("UserBehaviorBean")) {
@@ -163,7 +160,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
         return rootView;
     }
 
-    /*  *//**
+  /*  *//**
      * 加入临时会议
      *//*
     private void joinMeetingDialog() {
@@ -214,17 +211,17 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
         joinMeetingDialog.setCancelable(false);// 不可以用“返回键”取消
         joinMeetingDialog.show();
 
-        for (String msg : UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr) {
+        for (String msg : UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr){
             List<String> ipcodeInfo = FLUtil.dealUDPMsg(msg);
 
             stringList.add(ipcodeInfo.get(1));
         }
 //        ipcodeInfo = FLUtil.dealUDPMsg(UDPBroadcastManager.getInstance().MythdReceive.receiveMsg);
 //        stringList.addAll(ipcodeInfo);
-        if (stringList.size() == 0) {
+        if(stringList.size() == 0){
             stringList.add("暂无邀请码");
-        } else {
-            if (stringList.contains("暂无邀请码")) {
+        }else {
+            if(stringList.contains("暂无邀请码")){
                 stringList.remove("暂无邀请码");
             }
         }
@@ -248,14 +245,14 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
 //                    Toast.makeText(LoginActivity.this,"暂无该会议,请检查!",Toast.LENGTH_LONG);
                     return;
                 }
-                if (stringList.contains(parent.getAdapter().getItem(position).toString())) {
+                if(stringList.contains(parent.getAdapter().getItem(position).toString())){
                     UserUtil.isTempMeeting = true;
                     Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageClient);
                     entry_meeting.setVisibility(View.VISIBLE);
                     tipsTxt.setVisibility(View.GONE);
 
                     currentSelIndex = position;
-                } else {
+                }else {
                     tipsTxt.setText("未查询到此邀请码!");
                     tipsTxt.setVisibility(View.VISIBLE);
                 }
@@ -294,7 +291,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
         entry_meeting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (FastClickUtils.init().isClickFast()) {
+                if(FastClickUtils.init().isClickFast()){
                     return;
                 }
                 entry_meeting.setText("正在进入...");
@@ -309,21 +306,26 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                 Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageClient);
 
                 //  判断receiveIPArr是否被清了
-                if (UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr.size() >= currentSelIndex + 1) {
+                if(UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr.size() >= currentSelIndex+1){
                     List<String> ipcodeInfo = FLUtil.dealUDPMsg(UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr.get(currentSelIndex));
-                    String[] strAll = ipcodeInfo.get(1).split("/");
-                    String isRu = strAll[1];
+                    String[]strAll= ipcodeInfo.get(1).split("/");
+                    String isRu=  strAll[1];
                     Intent intent1 = new Intent(getActivity(), WuHuActivity.class);
-                    Bundle bundle = new Bundle();
+                    Bundle bundle=new Bundle();
                     bundle.putString("ip", ipcodeInfo.get(0));
-                    bundle.putString("isreuse", isRu);
+                    bundle.putString("isreuse",isRu);
                     intent1.putExtras(bundle);
-                    Hawk.put("isreuse", isRu);//储存是否重复利用会议模板标识
+                    Hawk.put("isreuse",isRu);//储存是否重复利用会议模板标识
 //                        intent1.putExtra("code",ipcodeInfo.get(1));
                     startActivity(intent1);
 
-                } else {
-                    ToastUtil.makeText(getActivity(), "请重新进入!");
+
+
+
+
+
+                }else {
+                    ToastUtil.makeText(getActivity(),"请重新进入!");
 
                 }
 
@@ -379,25 +381,25 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
     @Override
     public void onComplete(View view, String content) {
         if (view == create_invite_codeview) {
-            if (Hawk.contains("WuHuFragmentData")) {
-                isReuse = false;
-            } else {
-                isReuse = true;
+            if (Hawk.contains("WuHuFragmentData")){
+                isReuse=false;
+            }else {
+                isReuse=true;
             }
-            if (!FLUtil.netIsConnect(getActivity())) {
+            if(!FLUtil.netIsConnect(getActivity())){
                 if (view != null) {
                     InputMethodManager inputmanger = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                     inputmanger.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 }
 
-                ToastUtils.showToast(getActivity(), "网络不可用，请检查网络!");
+                ToastUtils.showToast(getActivity(),"网络不可用，请检查网络!");
                 return;
             }
 
             // 有在接收到广播消息
             if (UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr.size() > 0 && !UDPBroadcastManager.getInstance().MythdReceive.pause) {
 
-                for (String msg : UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr) {
+                for (String msg : UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr){
                     List<String> ipcodeInfo = FLUtil.dealUDPMsg(msg);
 
                     stringList.add(ipcodeInfo.get(1));
@@ -417,22 +419,22 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                                 Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageClient);
 
                                 Intent intent1 = new Intent(getActivity(), WuHuActivity.class);
-                                if (index >= UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr.size()) {
+                                if(index>=UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr.size()){
                                     ToastUtils.showShort("加入不了会议!");
                                     return;
                                 }
 
                                 List<String> ipcodeInfo = FLUtil.dealUDPMsg(UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr.get(index));
-                                String[] strAll = ipcodeInfo.get(1).split("/");
-                                String isRu = strAll[1];
+                                String[]strAll= ipcodeInfo.get(1).split("/");
+                                String isRu=  strAll[1];
 
                                 Intent intent2 = new Intent(getActivity(), WuHuActivity.class);
-                                Bundle bundle = new Bundle();
+                                Bundle bundle=new Bundle();
                                 bundle.putString("ip", ipcodeInfo.get(0));
-                                bundle.putString("isreuse", isRu);
+                                bundle.putString("isreuse",isRu);
                                 intent2.putExtras(bundle);
                                 intent2.putExtras(bundle);
-                                Hawk.put("isreuse", isRu);//储存是否重复利用会议模板标识
+                                Hawk.put("isreuse",isRu);//储存是否重复利用会议模板标识
                                 startActivity(intent2);
                                 return;
                             }
@@ -445,21 +447,21 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                         @Override
                         public void onClickButton(boolean clickConfirm, boolean clickCancel) {
                             if (clickConfirm) {
-                                if (!isReuse) {
+                                if (!isReuse){
                                     initMeetingDialog.dismiss();
                                     showRightDialog(content);
-                                } else {
+                                }else {
                                     initMeetingDialog.dismiss();
                                     UserUtil.isTempMeeting = true;
                                     constant.temp_code = content;
                                     Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
                                     Intent intent = new Intent(getActivity(), WuHuActivity.class);
-                                    Bundle bundle = new Bundle();
+                                    Bundle bundle=new Bundle();
                                     bundle.putString("code", content);
-                                    bundle.putString("isreuse", "3");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
+                                    bundle.putString("isreuse","3");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
                                     intent.putExtras(bundle);
                                     startActivity(intent);
-                                    Hawk.put("isreuse", "3");
+                                     Hawk.put("isreuse","3");
                                 }
 
                             }
@@ -468,21 +470,21 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
 
                 }
             } else {
-                if (!isReuse) {
+                if (!isReuse){
                     initMeetingDialog.dismiss();
                     showRightDialog(content);
-                } else {
+                }else {
                     initMeetingDialog.dismiss();
                     UserUtil.isTempMeeting = true;
                     constant.temp_code = content;
                     Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
                     Intent intent = new Intent(getActivity(), WuHuActivity.class);
-                    Bundle bundle = new Bundle();
+                    Bundle bundle=new Bundle();
                     bundle.putString("code", content);
-                    bundle.putString("isreuse", "3");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
+                    bundle.putString("isreuse","3");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
                     intent.putExtras(bundle);
                     startActivity(intent);
-                    Hawk.put("isreuse", "3");
+                    Hawk.put("isreuse","3");
                 }
 
 
@@ -519,7 +521,6 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
 //            }
         }
     }
-
     //展示历史会议historyConferenceDialog
     public void showHistoryDialog() {
         //自定义dialog显示布局
@@ -581,11 +582,10 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
         historyConferenceDialog.show();
 
     }
-
-    //展示文件进度
-    public void showFileTransferDialog() {
+    //展示历史会议
+    public void showFileTransferDialog( ) {
         //自定义dialog显示布局
-        View inflate = LayoutInflater.from(getActivity()).inflate(R.layout.wuhu_file_progress_dialog, null);
+        View    inflate = LayoutInflater.from(getActivity()).inflate(R.layout.wuhu_file_progress_dialog, null);
         //自定义dialog显示风格
         historyConferenceDialog = new MyDialog(getActivity(), R.style.dialogTransparent);
         historyConferenceDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
@@ -618,12 +618,12 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
         //获取当前Activity所在的窗体
         Window window = historyConferenceDialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
-        wlp.alpha = 1.0f;
+        wlp.alpha=1.0f;
         Display d = window.getWindowManager().getDefaultDisplay(); // 获取屏幕宽，高
-        wlp.gravity = Gravity.CENTER;
+        wlp.gravity= Gravity.CENTER;
         wlp.width = WindowManager.LayoutParams.WRAP_CONTENT;
         wlp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        Point size = new Point();
+        Point size=new Point();
         d.getSize(size);
         int width = size.x;
         int height = size.y;
@@ -633,26 +633,26 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
         historyConferenceDialog.setOnTouchOutside(new MyDialog.onTouchOutsideInterFace() {
             @Override
             public void outSide() {
-                Log.d("sdfsdfdsff", "路过~~~~~");
+                Log.d("sdfsdfdsff","路过~~~~~");
                 //  Toast.makeText(getActivity(),"弹框",Toast.LENGTH_SHORT).show();
             }
         });
         historyConferenceDialog.show();
     }
 
-    public void showRightDialog(String codeStr) {
+    public void showRightDialog( String codeStr) {
         //自定义dialog显示布局
-        View inflate = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_reuse_wuhu_meeting, null);
+      View   inflate = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_reuse_wuhu_meeting, null);
         //自定义dialog显示风格
-        Dialog dialog = new Dialog(getActivity(), R.style.dialogTransparent);
+       Dialog     dialog = new Dialog(getActivity(), R.style.dialogTransparent);
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         //弹窗点击周围空白处弹出层自动消失弹窗消失(false时为点击周围空白处弹出层不自动消失)
         dialog.setCanceledOnTouchOutside(false);
         //将布局设置给Dialog
         dialog.setContentView(inflate);
 
-        TextView confir_tx = inflate.findViewById(R.id.confir_tx);
-        TextView cancle_tv = inflate.findViewById(R.id.cancle_tv);
+        TextView confir_tx=inflate.findViewById(R.id.confir_tx);
+        TextView cancle_tv=inflate.findViewById(R.id.cancle_tv);
 
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         dialog.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
@@ -684,12 +684,12 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                 constant.temp_code = codeStr;
                 Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
                 Intent intent = new Intent(getActivity(), WuHuActivity.class);
-                Bundle bundle = new Bundle();
+                Bundle bundle=new Bundle();
                 bundle.putString("code", codeStr);
-                bundle.putString("isreuse", "1");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
+                bundle.putString("isreuse","1");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
                 intent.putExtras(bundle);
                 startActivity(intent);
-                Hawk.put("isreuse", "1");
+                Hawk.put("isreuse","1");
                 dialog.dismiss();
             }
         });
@@ -701,30 +701,29 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                 constant.temp_code = codeStr;
                 Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
                 Intent intent = new Intent(getActivity(), WuHuActivity.class);
-                Bundle bundle = new Bundle();
+                Bundle bundle=new Bundle();
                 bundle.putString("code", codeStr);
-                bundle.putString("isreuse", "2");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
+                bundle.putString("isreuse","2");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
                 intent.putExtras(bundle);
                 startActivity(intent);
-                Hawk.put("isreuse", "2");
+                Hawk.put("isreuse","2");
                 dialog.dismiss();
             }
         });
         //获取当前Activity所在的窗体
         Window window = dialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
-        wlp.alpha = 1.0f;
+        wlp.alpha=1.0f;
         Display d = window.getWindowManager().getDefaultDisplay(); // 获取屏幕宽，高
-        wlp.gravity = Gravity.CENTER;
+        wlp.gravity= Gravity.CENTER;
         wlp.width = WindowManager.LayoutParams.WRAP_CONTENT;
         wlp.height = WindowManager.LayoutParams.MATCH_PARENT;
-        Point size = new Point();
+        Point size=new Point();
         d.getSize(size);
         int width = size.x;
         int height = size.y;
         wlp.width = (int) (width * 0.45);//设置宽
-        wlp.height = (int) (height * 0.23);
-        ;//设置宽
+        wlp.height = (int) (height * 0.23);;//设置宽
         window.setAttributes(wlp);
         dialog.show();
     }

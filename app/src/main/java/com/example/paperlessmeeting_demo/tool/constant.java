@@ -40,6 +40,7 @@ public class constant {
     public final static String get_server_ip = "get center server address";    // 获取服务器ip
     public final static String continusClick = "start continusClick";    // 连续点击事件
     public final static String isFirstInit = "isFirstInit";
+    public final static String isLaunch = "isLaunch";    // APP每次启动,用于APP启动第一次打开签批文件, TODO 注意与上一个的区别
     public final static String DOCUMENT = "Document";//文件请求参数常量-文档
     public final static String IMAGE = "Image";//文件请求参数常量-图片
     public final static String VIDEO = "Video";//文件请求参数常量-视频
