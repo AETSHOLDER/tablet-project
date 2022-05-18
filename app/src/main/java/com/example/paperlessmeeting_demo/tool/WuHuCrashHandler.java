@@ -322,6 +322,7 @@ public class WuHuCrashHandler implements Thread.UncaughtExceptionHandler {
 
         try {
 
+
             long timestamp = System.currentTimeMillis();
 
             String time = format.format(new Date());

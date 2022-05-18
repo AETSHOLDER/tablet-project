@@ -151,6 +151,7 @@ public class MeetingAPP extends Application {
         CrashHandler crashHandler = CrashHandler.getInstance();
         // 注册crashHandler
         crashHandler.init(getApplicationContext());
+        //芜湖版本
         WuHuCrashHandler.getInstance().init(this);
 //         mRefWatcher = LeakCanary.install(this);
         //内存泄漏-end
