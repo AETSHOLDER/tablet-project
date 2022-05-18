@@ -123,6 +123,7 @@ import okhttp3.RequestBody;
  * Description：
  * Author：LiuYM
  * Date： 2017-05-10 10:37
+ *
  */
 
 public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfilePthInterface, WuHuFileListAdapter.upLoadFileInterface, WuHuFileListAdapter.PlayerClickInterface, WuHuFileListAdapter.ShareFileInterface, WuHuFileListAdapter.PushFileInterface , View.OnClickListener,WuHuListAdapter.saveSeparatelyInterface {
@@ -654,60 +655,61 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Log.d("rfrfeewtwtt ","     textNub="+textNub);
-                WuHuLocalFileBean  wuHuLocalFileBean;
-                List<WuHuLocalFileBean.FileBean>  fbList=new ArrayList<>();
-                if (Hawk.contains("WuHuLocalFileBean")) {
-                    wuHuLocalFileBean=Hawk.get("WuHuLocalFileBean");
-                    fbList=wuHuLocalFileBean.getFileBeanList();
-                }
-                copyFileBeans.clear();
-                fileBeans.clear();
-
-                for ( int i = 0 ; i < fbList.size() - 1 ; i ++ ) {
-                    for ( int j = fbList.size() - 1 ; j > i; j -- ) {
-                        if (fbList.get(j).getFileName().equals(fbList.get(i).getFileName())&&fbList.get(j).getPos().equals(fbList.get(i).getPos())) {
-                            fbList.remove(j);
-                        }
+                synchronized (getActivity()) {
+                    Log.d("rfrfeewtwtt ", "     textNub=" + textNub);
+                    WuHuLocalFileBean wuHuLocalFileBean;
+                    List<WuHuLocalFileBean.FileBean> fbList = new ArrayList<>();
+                    if (Hawk.contains("WuHuLocalFileBean")) {
+                        wuHuLocalFileBean = Hawk.get("WuHuLocalFileBean");
+                        fbList = wuHuLocalFileBean.getFileBeanList();
                     }
-                }
+                    copyFileBeans.clear();
+                    fileBeans.clear();
 
-                if (Hawk.contains("wuhulocal")){
-                    copyFileBeans=  Hawk.get("wuhulocal");
-                    for ( int i = 0 ; i < copyFileBeans.size() - 1 ; i ++ ) {
-                        for ( int j = copyFileBeans.size() - 1 ; j > i; j -- ) {
-                            if (copyFileBeans.get(j).getPath().equals(copyFileBeans.get(i).getPath())) {
-                                copyFileBeans.remove(j);
+                    for (int i = 0; i < fbList.size() - 1; i++) {
+                        for (int j = fbList.size() - 1; j > i; j--) {
+                            if (fbList.get(j).getFileName().equals(fbList.get(i).getFileName()) && fbList.get(j).getPos().equals(fbList.get(i).getPos())) {
+                                fbList.remove(j);
                             }
                         }
                     }
-                }
 
-                Log.d("rfrfeewtwtt1111  ",copyFileBeans.size()+"     copyFileBeans大小"+"   "+fbList.size()+"   fileBeans大小");
-                List<FileListBean> tempFileBeans = new ArrayList<>();
-                tempFileBeans.clear();
-                for (int i=0;i<fbList.size();i++){
-                    Log.d("rfrfeewtwtt0000  ","     textNub="+textNub+"   "+fbList.get(i).getPos()+"");
-                    if (fbList.get(i).getPos().equals(textNub)){
-                        for ( int n = 0 ; n < copyFileBeans.size() ; n ++ ) {
-                            if (fbList.get(i).getFileName().equals(copyFileBeans.get(n).getName())){
-                                tempFileBeans.add(copyFileBeans.get(n));
+                    if (Hawk.contains("wuhulocal")) {
+                        copyFileBeans = Hawk.get("wuhulocal");
+                        for (int i = 0; i < copyFileBeans.size() - 1; i++) {
+                            for (int j = copyFileBeans.size() - 1; j > i; j--) {
+                                if (copyFileBeans.get(j).getPath().equals(copyFileBeans.get(i).getPath())) {
+                                    copyFileBeans.remove(j);
+                                }
                             }
-
                         }
                     }
+
+                    Log.d("rfrfeewtwtt1111  ", copyFileBeans.size() + "     copyFileBeans大小" + "   " + fbList.size() + "   fileBeans大小");
+                    List<FileListBean> tempFileBeans = new ArrayList<>();
+                    tempFileBeans.clear();
+                    for (int i = 0; i < fbList.size(); i++) {
+                        Log.d("rfrfeewtwtt0000  ", "     textNub=" + textNub + "   " + fbList.get(i).getPos() + "");
+                        if (fbList.get(i).getPos().equals(textNub)) {
+                            for (int n = 0; n < copyFileBeans.size(); n++) {
+                                if (fbList.get(i).getFileName().equals(copyFileBeans.get(n).getName())) {
+                                    tempFileBeans.add(copyFileBeans.get(n));
+                                }
+
+                            }
+                        }
+                    }
+                    //发送消息跟新文件列表
+                    Message shareMsg = new Message();
+                    shareMsg.what = 200;
+                    shareMsg.obj = tempFileBeans;
+                    mHandler.sendMessage(shareMsg);
+
+
+                    //由copy路径文件改为Hawk储存
+                    //  getFileName(files);share
+
                 }
-                //发送消息跟新文件列表
-                Message  shareMsg=new Message();
-                shareMsg.what=200;
-                shareMsg.obj=tempFileBeans;
-                mHandler.sendMessage(shareMsg);
-
-
-                //由copy路径文件改为Hawk储存
-                //  getFileName(files);share
-
-
             }
         }).start();
 
@@ -2113,6 +2115,10 @@ private void sendFragmenFlag(){
                     Log.d("rfrfeewtwtt1111  ",shareFileBeans.size()+"     shareFileBeans大小"+"   "+fbList.size()+"   fileBeans大小");
                     List<FileListBean> tempFileBeans = new ArrayList<>();
                     tempFileBeans.clear();
+                    //加锁第一次可能无文件
+                    if (fbList==null||fbList.size()==0||shareFileBeans==null||shareFileBeans.size()==0){
+                       return;
+                    }
                     for (int i=0;i<fbList.size();i++){
                         Log.d("rfrfeewtwtt0000  ","     textNub="+textNub+"   "+fbList.get(i).getPos()+"");
                         if (fbList.get(i).getPos().equals(textNub)){
