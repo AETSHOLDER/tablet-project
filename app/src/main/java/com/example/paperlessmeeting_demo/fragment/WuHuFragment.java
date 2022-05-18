@@ -894,7 +894,7 @@ private void sendFragmenFlag(){
     wuHuLocalFileBean.setFileBeanList(fileBeanList);
     //1：添加本地
     wuHuLocalFileBean.setFlag("1");
-    wsUpdata(wuHuLocalFileBean,constant.REFRESH_WUHU_FILE_FRAGMENT);
+    //wsUpdata(wuHuLocalFileBean,constant.REFRESH_WUHU_FILE_FRAGMENT);
 
 }
     @Override
@@ -1229,7 +1229,7 @@ private void sendFragmenFlag(){
 
             }else if (message.getMessage().contains(constant.REFRESH_WUHU_FILE_FRAGMENT)){
 
-                try {
+          /*      try {
                     TempWSBean<WuHuLocalFileBean> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<WuHuLocalFileBean>>() {
                     }.getType());
                     if (wsebean != null){
@@ -1238,14 +1238,14 @@ private void sendFragmenFlag(){
                          Hawk.put("WuHuLocalFileBean",wuHuLocalFileBean);
                      }
                         if (wuHuLocalFileBean!=null){
-                            getCopyFile();
+                           // getCopyFile();
                         }
 
                     }
                 } catch (JsonSyntaxException e) {
                     e.printStackTrace();
                 }
-
+*/
 
 
 

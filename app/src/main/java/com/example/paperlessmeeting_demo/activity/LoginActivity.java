@@ -302,6 +302,7 @@ public class LoginActivity extends BaseActivity  {
         }
         if (message.getMessage().equals(constant.start_meeting)) {
             String aa = String.format("收到会议消息，会议id=%s,人员信息=%s", UserUtil.meeting_record_id, UserUtil.user_name);
+
 //            name.setVisibility(View.VISIBLE);
 //            loginToFragmentListener.onUserInfoReceive();
 

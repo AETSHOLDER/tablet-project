@@ -191,6 +191,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
     /**
      * 点击返回时间
      */
+
     private long time = 2000;
     private long first_time = 0;
     private String meetingTime ;//会议-月日时分
@@ -1520,7 +1521,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
             }
 
             else if(isreuse.equals("1")){
-                if (editListBeanList.size()>2){
+                if (editListBeanList.size()>=2){
                     wuHuEditBeanList.addAll(editListBeanList);
                     for (int i=0;i<wuHuEditBeanList.size();i++){
                         mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos+""));
@@ -1535,6 +1536,19 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                         wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
                         Hawk.put("WuHuFragmentData",wuHuEditBean);
 
+                    }else {
+
+                        WuHuEditBean wuHuEditBean=new WuHuEditBean();
+                        Hawk.put("WuHuFragmentData",wuHuEditBean);
+                        if (Hawk.contains("WuHuFragmentData")){
+
+                            wuHuEditBean.setTopics("区政府会议纪要");
+                            wuHuEditBean.setTopic_type("会议纪要");
+                            wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
+                            Hawk.put("WuHuFragmentData",wuHuEditBean);
+
+                        }
+
                     }
 
                     Log.d("fdgsgsgsgsg1111",Hawk.contains("WuHuFragmentData")+"");
@@ -1544,6 +1558,38 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                                 WuHuEditBean   wuHuEditBean= Hawk.get("WuHuFragmentData");
                                 wuHuEditBeanList=wuHuEditBean.getEditListBeanList();
                                 Hawk.put("WuHuFragmentData",wuHuEditBean);
+                            }
+                            else {
+
+                                WuHuEditBean wuHuEditBean=new WuHuEditBean();
+                                Hawk.put("WuHuFragmentData",wuHuEditBean);
+                                if (Hawk.contains("WuHuFragmentData")){
+                                    wuHuEditBean= Hawk.get("WuHuFragmentData");
+                                    wuHuEditBean.setTopics("区政府会议纪要");
+                                    wuHuEditBean.setTopic_type("会议纪要");
+
+                                    WuHuEditBean.EditListBean editListBean=new WuHuEditBean.EditListBean();
+                                    editListBean.setSubTopics("总结2022年");
+                                    editListBean.setReportingUnit("某某，某某，某某，某");
+                                    editListBean.setParticipantUnits("某某2，某某2，某某2，某2");
+                                    editListBean.setTopics("区政府会议纪要");
+                                    editListBean.setTopic_type("会议纪要");
+                                    wuHuEditBeanList.add(editListBean);
+
+
+                                    WuHuEditBean.EditListBean editListBean1=new WuHuEditBean.EditListBean();
+                                    editListBean1.setSubTopics("总结2022年");
+                                    editListBean1.setReportingUnit("某某，某某，某某，某");
+                                    editListBean.setParticipantUnits("某某2，某某2，某某2，某2");
+                                    editListBean1.setTopics("区政府会议纪要");
+                                    editListBean1.setTopic_type("会议纪要");
+                                    wuHuEditBeanList.add(editListBean1);
+
+                                    wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
+                                    Hawk.put("WuHuFragmentData",wuHuEditBean);
+                                }
+
+
                             }
                             if (wuHuEditBeanList==null||wuHuEditBeanList.size()==0){
                                 return;
