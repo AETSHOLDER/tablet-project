@@ -34,7 +34,8 @@ public class SocketShareFileManager {
     private String savePath = null;
     private String signFlag = "signPath=";
     private String voteFlag = "voteType=";
-   private  String pushFlag="-cvi";
+   private  String pushFlag="-push";
+    private  String shareFlag="-share";
     public SocketShareFileManager(Handler handler) {
         this.handler = handler;
         int port = 9999;
@@ -143,7 +144,7 @@ public class SocketShareFileManager {
                 SendMessage(101, "接收完成:" + fileName, 0);
             }else if (fileName.contains(pushFlag)){
                 SendMessage(88, savePath, 0);
-            }else {
+            }else if (fileName.contains(shareFlag)){
                 SendMessage(33, savePath, 0);
             }
 
@@ -203,7 +204,7 @@ public class SocketShareFileManager {
             SendMessage(6, "发送错误:\n" + e.getMessage(), Integer.parseInt(actionType));
         }
     }
-  //芜湖分享  推送
+  //芜湖分享  推送       //flag  1:分享  2：  推送
     public void SendFile(ArrayList<String> fileName, ArrayList<String> path, String ipAddress, int port, String actionType,String flag) {
         try {
             long total = 0;
@@ -212,7 +213,14 @@ public class SocketShareFileManager {
                 OutputStream outputName = name.getOutputStream();
                 OutputStreamWriter outputWriter = new OutputStreamWriter(outputName);
                 BufferedWriter bwName = new BufferedWriter(outputWriter);
-                bwName.write(flag+"-cvi"+fileName.get(i));
+                if (actionType.equals("1")){
+                    bwName.write(flag+"-share"+fileName.get(i));
+                }else if (actionType.equals("2")){
+
+                    bwName.write(flag+"-push"+fileName.get(i));
+                }
+
+
                 Log.d("fileName~=",  flag+"="+fileName.get(i));
                 bwName.close();
                 outputWriter.close();

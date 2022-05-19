@@ -245,8 +245,8 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                     String fileName = file.getName();
                     String endStr = fileName.substring(fileName.lastIndexOf(".") + 1);
 
-                    if (fileName.contains("-cvi")){
-                        String[]fileNameAll=fileName.split("-cvi");
+                    if (fileName.contains("-push")){
+                        String[]fileNameAll=fileName.split("-push");
                         fileName=fileNameAll[1];
                      String  pos=fileNameAll[0];
                         fileBean = new FileListBean(fileName, file.getPath(), "", "");

@@ -239,6 +239,9 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                     FileListBean fileBean=(FileListBean)msg.obj;
                     fileBean.setNet(true);
                     netFileBeans.add(fileBean);
+                    if (netFileBeans==null||netFileBeans.size()==0){
+                        return;
+                    }
                     fileListAdapter.setGridViewBeanList(netFileBeans);
                     fileListAdapter.notifyDataSetChanged();
                     //完成主界面更新,拿到数据
@@ -650,6 +653,9 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                 Log.d("requestCodeUr666", fileOtherBeans.size() + "  ");
             }
            // fileListAdapter = new FileListAdapter(getActivity(), fileOtherBeans);
+            if (fileBeans==null||fileBeans.size()==0){
+                return;
+            }
             fileListAdapter.setGridViewBeanList(fileBeans);
             fileListAdapter.notifyDataSetChanged();
         }
@@ -1080,6 +1086,9 @@ private void sendFragmenFlag(){
             fileBeans.addAll(copyFileBeans);
             fileBeans.addAll(netFileBeans);
             fileBeans.addAll(shareFileBeans);
+           if (fileBeans==null||fileBeans.size()==0){
+               return;
+           }
             fileListAdapter.setGridViewBeanList(fileBeans);
             fileListAdapter.notifyDataSetChanged();
         }
@@ -2153,7 +2162,7 @@ private void sendFragmenFlag(){
                             Log.d(TAG, "路过~~~~~11" + file.getPath());
 
                             if (file.isDirectory()) {
-                                Log.d(TAG, "若是文件目录。继续读1" + file.getName().toString()
+                                Log.d("WhU", "若是文件目录是目录" + file.getName().toString()
                                         + file.getPath().toString());
 
                                 getFileName(file.listFiles());
@@ -2161,7 +2170,13 @@ private void sendFragmenFlag(){
                                         + file.getPath().toString());
                             } else {
                                 String fileName = file.getName();
-                                String[] fileNameAll = fileName.split("-cvi");
+                                 String[] fileNameAll=null;
+
+                                if (fileName.contains("-push")){
+                                    fileNameAll = fileName.split("-push");
+                                }else if(fileName.contains("-share")){
+                                    fileNameAll = fileName.split("-share");
+                                }
                                 Log.d("wuhuwuwhuwuhuwwhu   cvi", fileNameAll.length+"   "+fileNameAll[1]+"    "+fileNameAll[0]);
                                 fileName = fileNameAll[1];
                                 String pos = fileNameAll[0];
