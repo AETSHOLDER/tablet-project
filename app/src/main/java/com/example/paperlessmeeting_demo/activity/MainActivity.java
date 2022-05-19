@@ -1498,7 +1498,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
                                          * 接收推送文件
                                          * */
                                         Log.e("5555555","接收推送文件");
-                                        socketShareFileManager.SendFlag("2");
+                                      //  socketShareFileManager.SendFlag("2");
                                     }
 
                                     else if (strMsg.contains(constant.FINISH_SHARE_SCEEN)) {

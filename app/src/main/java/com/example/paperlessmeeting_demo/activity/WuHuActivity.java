@@ -208,7 +208,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                 case 2:
                     Toast.makeText(WuHuActivity.this, "正在接受文件", Toast.LENGTH_SHORT).show();
                     break;
-                case 3:
+                case 33:
                     Toast.makeText(WuHuActivity.this, "文件已成功接收，请在文件管理页面查看", Toast.LENGTH_SHORT).show();
                     Log.e("hahahahahahaa","case 3");
                     int flag= msg.arg1;
@@ -217,6 +217,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                     Intent intent1 = new Intent();
                     Bundle bundle1=new Bundle();
                     bundle1.putString("flag","1");
+
                     bundle1.putString("filePath",filePath1);
                     intent1.putExtras(bundle1);
                     intent1.setAction(constant.SHARE_FILE_BROADCAST);
@@ -225,7 +226,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                 case 4:
                     Toast.makeText(WuHuActivity.this, "文件接收失败", Toast.LENGTH_SHORT).show();
                     break;
-                case 8:
+                case 88:
                     if (UserUtil.ISCHAIRMAN){
                         return;
                     }
@@ -326,6 +327,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                                     }catch (Exception e){
                                         e.printStackTrace();
                                     }
+
                                 }else if(topActivity.getLocalClassName().contains("ActivityImage")){
                                     ActivityImage activityImage = (ActivityImage)topActivity;
                                     topActivity.finish();
@@ -369,6 +371,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
 
                     break;
                 case 101:
+                    Log.e("hahahahahahaa","case 100");
                     Intent intent3 = new Intent();
                     intent3.setAction(constant.RUSH_SIGN_LIST_BROADCAST);
                     sendBroadcast(intent3);
@@ -531,7 +534,7 @@ public class WuHuActivity  extends BaseActivity implements View.OnClickListener,
                                         /*
                                          * 接收推送文件
                                          * */
-                                        Log.e("5555555","接收推送文件");
+                                        Log.d("SendFlag5555555","接收推送文件");
                                         socketShareFileManager.SendFlag("2");
                                     }else if (strMsg.contains(constant.TEMP_VOTE_IMAGE_FILE)){
                                         /*

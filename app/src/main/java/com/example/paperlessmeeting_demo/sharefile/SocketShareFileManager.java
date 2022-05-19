@@ -34,7 +34,7 @@ public class SocketShareFileManager {
     private String savePath = null;
     private String signFlag = "signPath=";
     private String voteFlag = "voteType=";
-
+   private  String pushFlag="-cvi";
     public SocketShareFileManager(Handler handler) {
         this.handler = handler;
         int port = 9999;
@@ -138,8 +138,13 @@ public class SocketShareFileManager {
             file.close();
             dataStream.close();
             data.close();
+            Log.d("fenxiasng", "savePath==" + savePath+"fileName="+fileName);
             if (fileName.contains(signFlag)){
                 SendMessage(101, "接收完成:" + fileName, 0);
+            }else if (fileName.contains(pushFlag)){
+                SendMessage(88, savePath, 0);
+            }else {
+                SendMessage(33, savePath, 0);
             }
 
         } catch (Exception e) {
@@ -152,10 +157,12 @@ public class SocketShareFileManager {
             Log.e("SendFlag", "savePath===null");
             return;
         }
+        //flag  1:分享  2：  推送 3投票
         if (flag.equals("1")) {
             SendMessage(3, savePath, 1);
         }
         if (flag.equals("2")) {
+            Log.d("SendFlag222接收", "22222222");
             SendMessage(8, savePath, 2);
         }
         if (flag.equals("3")) {
@@ -250,6 +257,7 @@ public class SocketShareFileManager {
                 } else if (actionType.equals("3")) {
                     str = constant.TEMP_VOTE_IMAGE_FILE;
                 } else if (actionType.equals("2")) {
+                    Log.d("SendFlag3333通知", "savePath===null");
                     str = constant.TEMP_MEETINGPUSH_FILE;
                 }
 
@@ -257,6 +265,7 @@ public class SocketShareFileManager {
                 InetAddress address = InetAddress.getByName(constant.EXTRAORDINARY_MEETING_INETADDRESS);
                 DatagramPacket packet = new DatagramPacket(sendStr, sendStr.length, address, constant.EXTRAORDINARY_MEETING_PORT);
                 socket.send(packet);
+                Log.d("SendFlag444通知", "savePath===null");
                 socket.close();
             } catch (SocketException e) {
                 e.printStackTrace();
@@ -344,7 +353,7 @@ public class SocketShareFileManager {
 
         }
     }
-    public void SendVoteFile(ArrayList<String> fileName, ArrayList<String> path, String ipAddress, int port, String actionType) {
+  /*  public void SendVoteFile(ArrayList<String> fileName, ArrayList<String> path, String ipAddress, int port, String actionType) {
 
             for (int i = 0; i < path.size(); i++) {
                 try {
@@ -403,5 +412,5 @@ public class SocketShareFileManager {
                 }
             }
 
-    }
+    }*/
 }

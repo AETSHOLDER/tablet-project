@@ -105,7 +105,7 @@ public class constant {
     public final static String FINISH_SHARE_SCREEN_BROADCAST = "finishscreen";////结束同屏广播
     public final static String SHARE_FILE_IP = "share  file ip";//socket 临时会议分享文件收集设备IP全局标识
     public final static String TEMP_MEETINGSHARE_FILE = "TEMP_MEETINGSHARE_FILE";//socket 临时会议分享文件到其他设备标识
-    public final static String TEMP_MEETINGPUSH_FILE = "TEMP_MEETINGPUSH_FILE";//socket 临时会议推送文件到其他设备标识
+    public final static String TEMP_MEETINGPUSH_FILE = "AAAAAAAAAAAAAAAAA";//socket 临时会议推送文件到其他设备标识
     public final static String TEMP_VOTE_IMAGE_FILE = "TEMP_VOTEIMAGE_FILE";//socket 临时会议投票的图片文件到其他设备标识
     public final static String FINISH_SHARE_SCEEN = "finish  share screen";//socket 结束同屏标识
     public final static String START_SHARE_SCEEN = "video";//socket 开始同屏标识
