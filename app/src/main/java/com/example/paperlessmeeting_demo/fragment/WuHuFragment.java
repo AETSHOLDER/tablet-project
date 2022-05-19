@@ -228,6 +228,7 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
     private String pushName;
     private boolean isPush=false;
     private  String pos="-1";
+    private static Object object = new Object();
     private Handler mHandler = new Handler() {
 
         @Override
@@ -268,6 +269,9 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                     fileBeans.addAll(shareFileBeans);
                     fileBeans.addAll(copyFileBeans);
                     fileBeans.addAll(netFileBeans);
+                    if (fileBeans==null||fileBeans.size()==0){
+                        return;
+                    }
                     fileListAdapter.setGridViewBeanList(fileBeans);
                     fileListAdapter.notifyDataSetChanged();
                     break;
@@ -283,6 +287,9 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                     fileBeans.addAll(copyFileBeans);
                     fileBeans.addAll(netFileBeans);
                     fileBeans.addAll(shareFileBeans);
+                    if (fileBeans==null||fileBeans.size()==0){
+                        return;
+                    }
                     fileListAdapter.setGridViewBeanList(fileBeans);
                     fileListAdapter.notifyDataSetChanged();
 
@@ -655,7 +662,7 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
         new Thread(new Runnable() {
             @Override
             public void run() {
-                synchronized (getActivity()) {
+                synchronized (object) {
                     Log.d("rfrfeewtwtt ", "     textNub=" + textNub);
                     WuHuLocalFileBean wuHuLocalFileBean;
                     List<WuHuLocalFileBean.FileBean> fbList = new ArrayList<>();
@@ -1552,9 +1559,79 @@ private void sendFragmenFlag(){
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         textNub=getArguments().getString("text");
+        String  strFilePath=fileShare;
+        File path = new File(strFilePath);
+        File[] files = path.listFiles();// 读取
         Log.d("缓存里面的的textNub=",textNub+"  isDeletOption="+ isDeletOption);
         if (isVisibleToUser) {
          if (Hawk.contains("WuHuFragmentData")) {
+                       /*  int s=Integer.valueOf(textNub)+1;
+             tittle_num.setText("议题"+s);*/
+             WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
+             List<WuHuEditBean.EditListBean> editListBeanList = new ArrayList<>();
+             if (wuHuEditBean.getEditListBeanList() == null || wuHuEditBean.getEditListBeanList().size() == 0) {
+                 return;
+             }
+             editListBeanList = wuHuEditBean.getEditListBeanList();
+
+
+             if (Integer.valueOf(textNub)==0){
+                 if (listView_catalog!=null&&file_ly!=null&&fragment_ttile_rl!=null&&topic_ll!=null&&fragmentLine!=null&&nn!=null&&listView_catalog_ll!=null&&scrollView_file!=null&&scrollView_cata!=null){
+                     listView_catalog.setVisibility(View.VISIBLE);
+                     listView_catalog_ll.setVisibility(View.VISIBLE);
+                     file_ly.setVisibility(View.GONE);
+                     fragment_ttile_rl.setVisibility(View.VISIBLE);
+                     topic_ll.setVisibility(View.GONE);
+                     fragmentLine.setVisibility(View.VISIBLE);
+                     nn.setVisibility(View.GONE);
+                     scrollView_file.setVisibility(View.GONE);
+                     scrollView_cata.setVisibility(View.VISIBLE);
+                 }
+
+             }else {
+                 if (listView_catalog!=null&&file_ly!=null&&fragment_ttile_rl!=null&&topic_ll!=null&&fragmentLine!=null&&nn!=null&&listView_catalog_ll!=null&&scrollView_file!=null&&scrollView_cata!=null){
+                     listView_catalog.setVisibility(View.GONE);
+                     file_ly.setVisibility(View.VISIBLE);
+                     listView_catalog_ll.setVisibility(View.GONE);
+                     fragment_ttile_rl.setVisibility(View.GONE);
+                     topic_ll.setVisibility(View.VISIBLE);
+                     fragmentLine.setVisibility(View.GONE);
+                     nn.setVisibility(View.VISIBLE);
+                     scrollView_file.setVisibility(View.VISIBLE);
+                     scrollView_cata.setVisibility(View.GONE);
+                 }
+
+             }
+             if (tittle1!=null){
+                 tittle1.setText(editListBeanList.get(Integer.valueOf(textNub)).getTopics());
+                 if (Hawk.contains("company_name")){
+                     String str= Hawk.get("company_name");
+                     tittle1.setText(str);
+                 }
+             }
+             if (tittle2!=null){
+
+                 tittle2.setText(editListBeanList.get(Integer.valueOf(textNub)).getTopic_type());
+                 if (Hawk.contains("tittle2")){
+                     String str= Hawk.get("tittle2");
+                     tittle2.setText(str);
+                 }
+             }
+             Log.d("fdafafaff=fragment",textNub+"editListBeanList=   "+editListBeanList.get(Integer.valueOf(textNub)).getTopics()+"   "+editListBeanList.get(Integer.valueOf(textNub)).getTopic_type());
+             if(topic!=null){
+                 topic.setText(editListBeanList.get(Integer.valueOf(textNub)).getSubTopics());
+             }
+
+             if(attend!=null){
+                 attend.setText(editListBeanList.get(Integer.valueOf(textNub)).getReportingUnit());
+             }
+
+             if(attend2!=null){
+                 attend2.setText(editListBeanList.get(Integer.valueOf(textNub)).getParticipantUnits());
+             }
+     /*    if (fileListAdapter!=null){
+             fileListAdapter.notifyDataSetChanged();
+         }*/
            /*  int s=Integer.valueOf(textNub)+1;
              tittle_num.setText("议题"+s);*/
      /*        WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
@@ -1605,6 +1682,10 @@ private void sendFragmenFlag(){
              fileListAdapter.notifyDataSetChanged();
          }*/
          }
+            if (files == null) {
+                return;
+            }
+            getShareFile(files);
      }
 
 
@@ -2059,89 +2140,93 @@ private void sendFragmenFlag(){
         new Thread(new Runnable() {
             @Override
             public void run() {
-                //子线程开始
-                String content = "";
-                if (files != null) {
-                    // 先判断目录是否为空，否则会报空指针
-                    for (File file : files) {
-                        Log.d(TAG, "路过~~~~~11" + file.getPath());
 
-                        if (file.isDirectory()) {
-                            Log.d(TAG, "若是文件目录。继续读1" + file.getName().toString()
-                                    + file.getPath().toString());
+                synchronized (object) {
 
-                            getFileName(file.listFiles());
-                            Log.d(TAG, "若是文件目录。继续读2" + file.getName().toString()
-                                    + file.getPath().toString());
-                        } else {
-                            String fileName = file.getName();
-                            String[]fileNameAll=fileName.split("-cvi");
-                            fileName=fileNameAll[1];
-                            String pos=fileNameAll[0];
-                            String endStr = fileName.substring(fileName.lastIndexOf(".") + 1);
-                            Log.d(TAG, "文件类型=" + endStr + "文件名字" + fileName);
-                            fileBean = new FileListBean(fileName, file.getPath(), "", "");
-                            Uri uri = Uri.fromFile(file);
-                            Log.d("requestCodeUr555", uri.getScheme() + "===" + uri.getPath() + "==" + fileName);
-                            fileBean.setResImage(getIamge(endStr));
-                            fileBean.setFile_type(getType(endStr));
-                            fileBean.setPos(pos);
-                            fileBean.setNet(false);
-                            fileBean.setSuffix(endStr);//上传文件后缀名和文件类型；setSuffix和setType所赋值内容一样。
-                            //  fileBean.setType(endStr);
-                            fileBean.setType(getFileType(endStr));
-                            shareFileBeans.add(fileBean);
-
-                        }
-                    }
+                    //子线程开始
+                    String content = "";
+                    if (files != null) {
+                        // 先判断目录是否为空，否则会报空指针
+                        for (File file : files) {
 
 
-                    WuHuLocalFileBean  wuHuLocalFileBean;
-                    List<WuHuLocalFileBean.FileBean>  fbList=new ArrayList<>();
-                    if (Hawk.contains("WuHuLocalFileBean")) {
-                        wuHuLocalFileBean=Hawk.get("WuHuLocalFileBean");
-                        fbList=wuHuLocalFileBean.getFileBeanList();
-                    }
+                            Log.d(TAG, "路过~~~~~11" + file.getPath());
 
-                    for ( int i = 0 ; i < fbList.size() - 1 ; i ++ ) {
-                        for ( int j = fbList.size() - 1 ; j > i; j -- ) {
-                            if (fbList.get(j).getFileName().equals(fbList.get(i).getFileName())&&fbList.get(j).getPos().equals(fbList.get(i).getPos())) {
-                                fbList.remove(j);
+                            if (file.isDirectory()) {
+                                Log.d(TAG, "若是文件目录。继续读1" + file.getName().toString()
+                                        + file.getPath().toString());
+
+                                getFileName(file.listFiles());
+                                Log.d(TAG, "若是文件目录。继续读2" + file.getName().toString()
+                                        + file.getPath().toString());
+                            } else {
+                                String fileName = file.getName();
+                                String[] fileNameAll = fileName.split("-cvi");
+                                Log.d("wuhuwuwhuwuhuwwhu   cvi", fileNameAll.length+"   "+fileNameAll[1]+"    "+fileNameAll[0]);
+                                fileName = fileNameAll[1];
+                                String pos = fileNameAll[0];
+                                String endStr = fileName.substring(fileName.lastIndexOf(".") + 1);
+                                Log.d(TAG, "文件类型=" + endStr + "文件名字" + fileName);
+                                fileBean = new FileListBean(fileName, file.getPath(), "", "");
+                                Uri uri = Uri.fromFile(file);
+                                Log.d("requestCodeUr555", uri.getScheme() + "===" + uri.getPath() + "==" + fileName);
+                                fileBean.setResImage(getIamge(endStr));
+                                fileBean.setFile_type(getType(endStr));
+                                fileBean.setPos(pos);
+                                fileBean.setNet(false);
+                                fileBean.setSuffix(endStr);//上传文件后缀名和文件类型；setSuffix和setType所赋值内容一样。
+                                //  fileBean.setType(endStr);
+                                fileBean.setType(getFileType(endStr));
+                                shareFileBeans.add(fileBean);
+
                             }
                         }
-                    }
 
 
-                    Log.d("rfrfeewtwtt1111  ",shareFileBeans.size()+"     shareFileBeans大小"+"   "+fbList.size()+"   fileBeans大小");
-                    List<FileListBean> tempFileBeans = new ArrayList<>();
-                    tempFileBeans.clear();
-                    //加锁第一次可能无文件
-                    if (fbList==null||fbList.size()==0||shareFileBeans==null||shareFileBeans.size()==0){
-                       return;
-                    }
-                    for (int i=0;i<fbList.size();i++){
-                        Log.d("rfrfeewtwtt0000  ","     textNub="+textNub+"   "+fbList.get(i).getPos()+"");
-                        if (fbList.get(i).getPos().equals(textNub)){
-                            for ( int n = 0 ; n < shareFileBeans.size() ; n ++ ) {
-                                if (fbList.get(i).getFileName().equals(shareFileBeans.get(n).getName())&&shareFileBeans.get(n).getPos().equals(textNub)){
-                                    tempFileBeans.add(shareFileBeans.get(n));
+                        WuHuLocalFileBean wuHuLocalFileBean;
+                        List<WuHuLocalFileBean.FileBean> fbList = new ArrayList<>();
+                        if (Hawk.contains("WuHuLocalFileBean")) {
+                            wuHuLocalFileBean = Hawk.get("WuHuLocalFileBean");
+                            fbList = wuHuLocalFileBean.getFileBeanList();
+                        }
+
+                        for (int i = 0; i < fbList.size() - 1; i++) {
+                            for (int j = fbList.size() - 1; j > i; j--) {
+                                if (fbList.get(j).getFileName().equals(fbList.get(i).getFileName()) && fbList.get(j).getPos().equals(fbList.get(i).getPos())) {
+                                    fbList.remove(j);
                                 }
-
                             }
                         }
+
+
+                        Log.d("rfrfeewtwtt1111  ", shareFileBeans.size() + "     shareFileBeans大小" + "   " + fbList.size() + "   fileBeans大小");
+                        List<FileListBean> tempFileBeans = new ArrayList<>();
+                        tempFileBeans.clear();
+                        //加锁第一次可能无文件
+                        if (fbList == null || fbList.size() == 0 || shareFileBeans == null || shareFileBeans.size() == 0) {
+                            return;
+                        }
+                        for (int i = 0; i < fbList.size(); i++) {
+                            Log.d("rfrfeewtwtt0000  ", "     textNub=" + textNub + "   " + fbList.get(i).getPos() + "");
+                            if (fbList.get(i).getPos().equals(textNub)) {
+                                for (int n = 0; n < shareFileBeans.size(); n++) {
+                                    if (fbList.get(i).getFileName().equals(shareFileBeans.get(n).getName()) && shareFileBeans.get(n).getPos().equals(textNub)) {
+                                        tempFileBeans.add(shareFileBeans.get(n));
+                                    }
+
+                                }
+                            }
+                        }
+                        //发送消息跟新文件列表
+                        Message shareMsg = new Message();
+                        shareMsg.what = 100;
+                        shareMsg.obj = tempFileBeans;
+                        mHandler.sendMessage(shareMsg);
+
                     }
-                    //发送消息跟新文件列表
-                    Message  shareMsg=new Message();
-                    shareMsg.what=100;
-                    shareMsg.obj=tempFileBeans;
-                    mHandler.sendMessage(shareMsg);
+
 
                 }
-
-
-
-
-
 
                 //子线程执行结束
             }
@@ -2176,10 +2261,10 @@ private void sendFragmenFlag(){
         String  strFilePath=fileShare;
         File path = new File(strFilePath);
         File[] files = path.listFiles();// 读取
-
+/*
         if (Hawk.contains("WuHuFragmentData")) {
-           /*  int s=Integer.valueOf(textNub)+1;
-             tittle_num.setText("议题"+s);*/
+           *//*  int s=Integer.valueOf(textNub)+1;
+             tittle_num.setText("议题"+s);*//*
             WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
             List<WuHuEditBean.EditListBean> editListBeanList = new ArrayList<>();
             if (wuHuEditBean.getEditListBeanList() == null || wuHuEditBean.getEditListBeanList().size() == 0) {
@@ -2242,14 +2327,14 @@ private void sendFragmenFlag(){
             if(attend2!=null){
                 attend2.setText(editListBeanList.get(Integer.valueOf(textNub)).getParticipantUnits());
             }
-     /*    if (fileListAdapter!=null){
+     *//*    if (fileListAdapter!=null){
              fileListAdapter.notifyDataSetChanged();
-         }*/
+         }*//*
         }
         if (files == null) {
             return;
         }
-        getShareFile(files);
+        getShareFile(files);*/
     }
 
     @Override
