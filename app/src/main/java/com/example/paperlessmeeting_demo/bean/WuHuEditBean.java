@@ -185,6 +185,12 @@ public class WuHuEditBean implements Serializable {
             this.reportingUnit = reportingUnit;
         }
         public static class FileListBean {
+            public FileListBean(String name, String path, String author, String time) {
+                this.name = name;
+                this.path = path;
+                this.author = author;
+                this.time = time;
+            }
             public String getPath() {
                 return path;
             }
@@ -250,6 +256,33 @@ public class WuHuEditBean implements Serializable {
             private String pos;//芜湖-标识是哪一个fragment
             private String suffix;
             private boolean isNet;
+            private String flag;//1  分享  2  推送
+            private String fileMd5;
+            private String type;
+
+            public String getType() {
+                return type;
+            }
+
+            public void setType(String type) {
+                this.type = type;
+            }
+
+            public String getFlag() {
+                return flag;
+            }
+
+            public void setFlag(String flag) {
+                this.flag = flag;
+            }
+
+            public String getFileMd5() {
+                return fileMd5;
+            }
+
+            public void setFileMd5(String fileMd5) {
+                this.fileMd5 = fileMd5;
+            }
 
             public String getName() {
                 return name;

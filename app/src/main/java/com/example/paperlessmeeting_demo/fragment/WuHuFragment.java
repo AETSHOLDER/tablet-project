@@ -181,10 +181,10 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
     private String selfIp = "";
     private WuHuFileListAdapter fileListAdapter;
     private WuHuCalalogListAdapter wuHuCalalogListAdapter;
-    private List<FileListBean> fileBeans = new ArrayList<>();//总的文件集合：其他设备分享得到的文件集合、本地上传得到的文件集合、网络服务器得到的文件集合
-    private List<FileListBean> shareFileBeans = new ArrayList<>();//其他设备分享得到的文件集合
-    private List<FileListBean> copyFileBeans = new ArrayList<>();//本地上传得到的文件集合
-    private List<FileListBean> netFileBeans = new ArrayList<>();//网络服务器得到的文件集合
+    private List<WuHuEditBean.EditListBean.FileListBean> fileBeans = new ArrayList<>();//总的文件集合：其他设备分享得到的文件集合、本地上传得到的文件集合、网络服务器得到的文件集合
+    private List<WuHuEditBean.EditListBean.FileListBean> shareFileBeans = new ArrayList<>();//其他设备分享得到的文件集合
+    private List<WuHuEditBean.EditListBean.FileListBean> copyFileBeans = new ArrayList<>();//本地上传得到的文件集合
+    private List<WuHuEditBean.EditListBean.FileListBean> netFileBeans = new ArrayList<>();//网络服务器得到的文件集合
     private FileListBean meetingFileListBeanfileBean;
     private String titles;
     private Context context;
@@ -214,8 +214,8 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
     private int k = 0;
     private List<WuHuEditBean.EditListBean> wuHuEditBeanList = new ArrayList<>();
     private List<WuHuNetFileBean.DataBean> fileListBeanList = new ArrayList<>();
-    private List<FileListBean> fileOtherBeans = new ArrayList<>();//音视频文件
-    private FileListBean fileBean;
+    private List<WuHuEditBean.EditListBean.FileListBean> fileOtherBeans = new ArrayList<>();//音视频文件
+    private WuHuEditBean.EditListBean.FileListBean fileBean;
     private boolean mReceiverTag = false;   //广播接受者标识
     private boolean isDeletOption = false;//是否做了删除操作
     private ProgressBar progressBar;//显示文件传输进度
@@ -227,7 +227,6 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
     private String pushName;
     private boolean isPush = false;
     private String pos = "-1";
-    private static Object object = new Object();
     private Handler mHandler = new Handler() {
 
         @Override
@@ -235,7 +234,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
             super.handleMessage(msg);
             switch (msg.what) {
                 case 99:
-                    FileListBean fileBean = (FileListBean) msg.obj;
+                    WuHuEditBean.EditListBean.FileListBean fileBean = (WuHuEditBean.EditListBean.FileListBean) msg.obj;
                     fileBean.setNet(true);
                     netFileBeans.add(fileBean);
                     if (netFileBeans == null || netFileBeans.size() == 0) {
@@ -262,7 +261,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
                     break;
                 //遍历分享文件
                 case 100:
-                    List<FileListBean> shareFiles = (List<FileListBean>) msg.obj;
+                    List<WuHuEditBean.EditListBean.FileListBean> shareFiles = (List<WuHuEditBean.EditListBean.FileListBean>) msg.obj;
                     if (shareFiles == null || shareFiles.size() == 0) {
                         return;
                     }
@@ -279,7 +278,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
                     break;
                 //跟新议题对应的文件
                 case 200:
-                    List<FileListBean> copyFiles = (List<FileListBean>) msg.obj;
+                    List<WuHuEditBean.EditListBean.FileListBean> copyFiles = (List<WuHuEditBean.EditListBean.FileListBean>) msg.obj;
                     if (copyFiles == null || copyFiles.size() == 0) {
                         return;
                     }
@@ -446,7 +445,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
 
         fileBeans.clear();
         copyFileBeans.clear();
-        getNetFile();
+      //  getNetFile();
         for (int i = 0; i < fileBeans.size(); i++) {
             String endStr = fileBeans.get(i).getName().substring(fileBeans.get(i).getName().lastIndexOf(".") + 1);
             fileBeans.get(i).setResImage(getIamge(endStr));
@@ -496,7 +495,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                FileListBean fileBean = (FileListBean) adapterView.getAdapter().getItem(i);
+                WuHuEditBean.EditListBean.FileListBean fileBean = (WuHuEditBean.EditListBean.FileListBean) adapterView.getAdapter().getItem(i);
 
                 Log.d("requestCodeUr333", fileBean.getPath());
                 Intent intent;
@@ -536,7 +535,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
 
     }
 
-    private void getNetFile() {
+  /*  private void getNetFile() {
 
 
         if (Hawk.contains(constant._id)) {
@@ -568,9 +567,9 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
                     });
 
         }
-    }
+    }*/
 
-
+/*
     private void netFileName(List<WuHuNetFileBean.DataBean> fileListBeanList) {
         name.clear();
         fileOtherBeans.clear();
@@ -596,8 +595,8 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
                     @Override
                     public void onDownloadSuccess(File file) {
                         Log.v("dfsfff111", "下載成功,文件已存入手机内部存储设备根目录下Download文件夾中");
-                      /*  Looper.prepare();//增加部分
-                        Looper.loop();//增加部分*/
+                      *//*  Looper.prepare();//增加部分
+                        Looper.loop();//增加部分*//*
                         Message msg = new Message();
                         fileListBean.setName(name);
                         fileListBean.setPath(netFilePath + name);
@@ -605,7 +604,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
                         fileListBean.set_id(fileId);
                         fileListBean.setNet(true);
 
-                        fileBean = new FileListBean(name, netFilePath + name, "", "");
+                        fileBean = new WuHuEditBean.EditListBean.FileListBean(name, netFilePath + name, "", "");
                         fileBean.setResImage(getIamge(endStr));
                         fileBean.setFile_type(getType(endStr));
                         fileBean.setNet(true);
@@ -633,13 +632,13 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
 
             } else {
                 //除了文件外（doc,excle,pdf,ppt）,其他格式文件执行正常网络数据
-                fileBean = new FileListBean(fileListBeanList.get(i).getName(), fileListBeanList.get(i).getFile_path() + fileListBeanList.get(i).getName(), "", "");
+                fileBean = new WuHuEditBean.EditListBean.FileListBean(fileListBeanList.get(i).getName(), fileListBeanList.get(i).getFile_path() + fileListBeanList.get(i).getName(), "", "");
                 // fileBean = new NewFileBean.MeetingFileListBean(fileListBeanList.get(i).getFile_name(), fileListBeanList.get(i).getFile_path(), fileListBeanList.get(i).getUser_id().getName(), fileListBeanList.get(i).getUpload_time());
                 fileBean.setResImage(getIamge(endStr));
                 fileBean.setFile_type(getType(endStr));
                 fileListBean.setNet(true);
-                  /*  fileListBean.setC_id(c_id);
-                    fileListBean.setC_id(c_id);*/
+                  *//*  fileListBean.setC_id(c_id);
+                    fileListBean.setC_id(c_id);*//*
                 //  fileListBean.setUser_id(userIdBean);
                 fileBean.setC_id(c_id);
                 fileBean.set_id(fileListBeanList.get(i).get_id());
@@ -658,7 +657,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
             fileListAdapter.notifyDataSetChanged();
         }
 
-    }
+    }*/
 
 
     //从分享文件夹中剥离每个议题对应的文件
@@ -666,7 +665,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
         new Thread(new Runnable() {
             @Override
             public void run() {
-                synchronized (object) {
+                synchronized (UserUtil.object) {
                     Log.d("rfrfeewtwtt ", "     textNub=" + textNub);
                     WuHuLocalFileBean wuHuLocalFileBean;
                     List<WuHuLocalFileBean.FileBean> fbList = new ArrayList<>();
@@ -697,7 +696,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
                     }
 
                     Log.d("rfrfeewtwtt1111  ", copyFileBeans.size() + "     copyFileBeans大小" + "   " + fbList.size() + "   fileBeans大小");
-                    List<FileListBean> tempFileBeans = new ArrayList<>();
+                    List<WuHuEditBean.EditListBean.FileListBean> tempFileBeans = new ArrayList<>();
                     tempFileBeans.clear();
                     for (int i = 0; i < fbList.size(); i++) {
                         Log.d("rfrfeewtwtt0000 从分享文件夹中剥离每个议题对应的文件 ", "     textNub=" + textNub + "   " + fbList.get(i).getPos() + "");
@@ -711,7 +710,10 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
                         }
                     }
 
+                    for(int i=0;i<tempFileBeans.size();i++){
 
+                        Log.d("当前议题对应的文件 ", "     当前议题：" + textNub + "    文件所属议题：" + fbList.get(i).getPos() + "    文件名："+tempFileBeans.get(i).getName());
+                    }
                     //发送消息跟新文件列表
                     Message shareMsg = new Message();
                     shareMsg.what = 200;
@@ -859,6 +861,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
         Message.obtain(mHandler, 4, name).sendToTarget();
         /*
          * 通知其他设备Service，这是分享文件
+         *
          * */
         Thread sendThread = new Thread(new Runnable() {
             @Override
@@ -889,7 +892,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
         List<WuHuLocalFileBean.FileBean> fileBeanList = new ArrayList<>();
 
         if (Hawk.contains("wuhulocal")) {
-            List<FileListBean> flagFileList = Hawk.get("wuhulocal");
+            List<WuHuEditBean.EditListBean.FileListBean> flagFileList = Hawk.get("wuhulocal");
             if (flagFileList == null || flagFileList.size() == 0) {
                 return;
             }
@@ -1047,7 +1050,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
                     String fileName = file.getName();
                     String endStr = fileName.substring(fileName.lastIndexOf(".") + 1);
                     Log.d(TAG, "文件类型=" + endStr + "文件名字" + fileName);
-                    fileBean = new FileListBean(file.getName(), file.getPath(), "", "");
+                    fileBean = new WuHuEditBean.EditListBean.FileListBean(file.getName(), file.getPath(), "", "");
                     Uri uri = Uri.fromFile(file);
                     Log.d("requestCodeUr555", uri.getScheme() + "===" + uri.getPath() + "==" + file.getName());
                     fileBean.setResImage(getIamge(endStr));
@@ -1071,7 +1074,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
         }
     }
 
-    //获取网络下载到的文件
+/*    //获取网络下载到的文件
     private void getNetFileName(File[] files) {
         Log.d(TAG, "路过~~~~~11");
         netFileBeans.clear();
@@ -1092,7 +1095,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
                     String fileName = file.getName();
                     String endStr = fileName.substring(fileName.lastIndexOf(".") + 1);
                     Log.d(TAG, "文件类型=" + endStr + "文件名字" + fileName);
-                    fileBean = new FileListBean(file.getName(), file.getPath(), "", "");
+                    fileBean = new WuHuEditBean.EditListBean.FileListBean(file.getName(), file.getPath(), "", "");
                     Uri uri = Uri.fromFile(file);
                     Log.d("requestCodeUr555", uri.getScheme() + "===" + uri.getPath() + "==" + file.getName());
                     fileBean.setResImage(getIamge(endStr));
@@ -1111,7 +1114,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
             fileListAdapter.setGridViewBeanList(fileBeans);
             fileListAdapter.notifyDataSetChanged();
         }
-    }
+    }*/
 
     @Override
     protected void initView() {
@@ -1762,7 +1765,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
                     if ("jpg".equals(endStr) || "gif".equals(endStr) || "png".equals(endStr) || "jpeg".equals(endStr) || "bmp".equals(endStr) || endStr.equals("m4a") || endStr.equals("mp3") || endStr.equals("mid") ||
                             endStr.equals("xmf") || endStr.equals("ogg") || endStr.equals("wav") || endStr.equals("3gp") || endStr.equals("mp4") || endStr.equals("ppt") || endStr.equals("pptx") ||
                             endStr.equals("xls") || endStr.equals("xlsx") || endStr.equals("doc") || endStr.equals("docx") || endStr.equals("pdf") || endStr.equals("txt")) {
-                        fileBean = new FileListBean(file.getName(), file.getPath(), "", "");
+                        fileBean = new WuHuEditBean.EditListBean.FileListBean(file.getName(), file.getPath(), "", "");
                         fileBean.setResImage(getIamge(endStr));
                         fileBean.setFile_type(getType(endStr));
                         fileBean.setSuffix(endStr);//上传文件后缀名和文件类型；setSuffix和setType所赋值内容一样。
@@ -1789,7 +1792,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
                             }
                         }*/
                         if (Hawk.contains("wuhulocal")) {
-                            List<FileListBean> fileListBeans = Hawk.get("wuhulocal");
+                            List<WuHuEditBean.EditListBean.FileListBean> fileListBeans = Hawk.get("wuhulocal");
                             fileListBeans.add(fileBean);
                             Hawk.put("wuhulocal", fileListBeans);
                         } else {
@@ -1840,7 +1843,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
                                     endStr.equals("xmf") || endStr.equals("ogg") || endStr.equals("wav") || endStr.equals("3gp") || endStr.equals("mp4") || endStr.equals("ppt") || endStr.equals("pptx") ||
                                     endStr.equals("xls") || endStr.equals("xlsx") || endStr.equals("doc") || endStr.equals("docx") || endStr.equals("pdf") || endStr.equals("txt")) {
                                 Log.d(TAG, "文件类型=" + endStr + "文件名字" + file.getName());
-                                fileBean = new FileListBean(file.getName(), file.getPath(), "", "");
+                                fileBean = new WuHuEditBean.EditListBean.FileListBean(file.getName(), file.getPath(), "", "");
                                 //复制文件到指定目录
                              /*   new Thread() {
                                     @Override
@@ -1873,7 +1876,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
                                     }}
                                 }*/
                                 if (Hawk.contains("wuhulocal")) {
-                                    List<FileListBean> fileListBeans = Hawk.get("wuhulocal");
+                                    List<WuHuEditBean.EditListBean.FileListBean> fileListBeans = Hawk.get("wuhulocal");
                                     fileListBeans.add(fileBean);
                                     Hawk.put("wuhulocal", fileListBeans);
 
@@ -2131,7 +2134,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
             @Override
             public void run() {
 
-                synchronized (object) {
+                synchronized (UserUtil.object) {
 
                     //子线程开始
                     String content = "";
@@ -2163,7 +2166,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
                                 String pos = fileNameAll[0];
                                 String endStr = fileName.substring(fileName.lastIndexOf(".") + 1);
                                 Log.d(TAG, "文件类型=" + endStr + "文件名字" + fileName);
-                                fileBean = new FileListBean(fileName, file.getPath(), "", "");
+                                fileBean = new WuHuEditBean.EditListBean.FileListBean(fileName, file.getPath(), "", "");
                                 Uri uri = Uri.fromFile(file);
                                 Log.d("requestCodeUr555", uri.getScheme() + "===" + uri.getPath() + "==" + fileName);
                                 fileBean.setResImage(getIamge(endStr));
@@ -2197,7 +2200,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
 
 
                         Log.d("rfrfeewtwtt1111  ", shareFileBeans.size() + "     shareFileBeans大小" + "   " + fbList.size() + "   fileBeans大小");
-                        List<FileListBean> tempFileBeans = new ArrayList<>();
+                        List<WuHuEditBean.EditListBean.FileListBean> tempFileBeans = new ArrayList<>();
                         tempFileBeans.clear();
                         //加锁第一次可能无文件
                         if (fbList == null || fbList.size() == 0 || shareFileBeans == null || shareFileBeans.size() == 0) {

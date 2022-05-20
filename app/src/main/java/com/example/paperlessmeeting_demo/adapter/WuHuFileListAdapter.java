@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.bean.FileListBean;
+import com.example.paperlessmeeting_demo.bean.WuHuEditBean;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
 
 import java.util.List;
@@ -24,7 +25,7 @@ import butterknife.ButterKnife;
 
 public class WuHuFileListAdapter extends BaseAdapter {
     private Context context;
-    private List<FileListBean> gridViewBeanList;
+    private List<WuHuEditBean.EditListBean.FileListBean> gridViewBeanList;
     private upLoadFileInterface upLoadFileInterface;
     private ImageView preBtn;
     private FileListBean preBean;
@@ -73,15 +74,15 @@ public class WuHuFileListAdapter extends BaseAdapter {
         this.upLoadFileInterface = upLoadFileInterface;
     }
 
-    public List<FileListBean> getGridViewBeanList() {
+    public List<WuHuEditBean.EditListBean.FileListBean> getGridViewBeanList() {
         return gridViewBeanList;
     }
 
-    public void setGridViewBeanList(List<FileListBean> gridViewBeanList) {
+    public void setGridViewBeanList(List<WuHuEditBean.EditListBean.FileListBean> gridViewBeanList) {
         this.gridViewBeanList = gridViewBeanList;
     }
 
-    public WuHuFileListAdapter(Context context, List<FileListBean> gridViewBeanList) {
+    public WuHuFileListAdapter(Context context, List<WuHuEditBean.EditListBean.FileListBean> gridViewBeanList) {
         this.context = context;
         this.gridViewBeanList = gridViewBeanList;
     }
@@ -106,7 +107,8 @@ public class WuHuFileListAdapter extends BaseAdapter {
     public View getView(int i, View view, ViewGroup viewGroup) {
 
         ViewHolder viHolder = null;
-        FileListBean gridViewBean = gridViewBeanList.get(i);
+        WuHuEditBean.EditListBean.FileListBean
+                gridViewBean = gridViewBeanList.get(i);
         if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.item_wuhu_file_list, null);
             viHolder = new ViewHolder(view);

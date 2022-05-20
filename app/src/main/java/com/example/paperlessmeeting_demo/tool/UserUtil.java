@@ -6,7 +6,7 @@ public class UserUtil {
     public static String user_name = "" ;                          //  江小鱼  普通用户
     public static String user_id = "" ;         //  江小鱼  普通用户
     public static String meeting_record_id = ""; //  当前会议id
-
+    public static Object object = new Object();//芜湖线程锁
 //    public static String user_id = "611b50ded42ca32c38df7c7a";        //  令狐聪  定为主席台
 //    public static String user_name = "陈伟";                         //  令狐聪  定为主席台
 
