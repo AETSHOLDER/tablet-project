@@ -74,6 +74,7 @@ import com.example.paperlessmeeting_demo.tool.CVIPaperDialogUtils;
 import com.example.paperlessmeeting_demo.tool.DownloadUtil;
 import com.example.paperlessmeeting_demo.tool.FLUtil;
 import com.example.paperlessmeeting_demo.tool.FileUtils;
+import com.example.paperlessmeeting_demo.tool.Md5Util;
 import com.example.paperlessmeeting_demo.tool.MediaReceiver;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.EventMessage;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.JWebSocketClientService;
@@ -123,10 +124,9 @@ import okhttp3.RequestBody;
  * Description：
  * Author：LiuYM
  * Date： 2017-05-10 10:37
- *
  */
 
-public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfilePthInterface, WuHuFileListAdapter.upLoadFileInterface, WuHuFileListAdapter.PlayerClickInterface, WuHuFileListAdapter.ShareFileInterface, WuHuFileListAdapter.PushFileInterface , View.OnClickListener,WuHuListAdapter.saveSeparatelyInterface {
+public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfilePthInterface, WuHuFileListAdapter.upLoadFileInterface, WuHuFileListAdapter.PlayerClickInterface, WuHuFileListAdapter.ShareFileInterface, WuHuFileListAdapter.PushFileInterface, View.OnClickListener, WuHuListAdapter.saveSeparatelyInterface {
     Unbinder unbinder;
     private static final String TAG = "TestFragment";
     private String textNub;
@@ -164,18 +164,17 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
     @BindView(R.id.topic_ll)
     LinearLayout topic_ll;
     @BindView(R.id.fragment_ttile_rl)
-    RelativeLayout  fragment_ttile_rl;
+    RelativeLayout fragment_ttile_rl;
     @BindView(R.id.listView_catalog_ll)
     LinearLayout listView_catalog_ll;
     @BindView(R.id.scrollView_file)
     ScrollView scrollView_file;
     @BindView(R.id.scrollView_cata)
-    ScrollView  scrollView_cata;
+    ScrollView scrollView_cata;
 
 
-
-    private RelativeLayout  add_topic_rl;
-    private RelativeLayout  dialg_rl_root;
+    private RelativeLayout add_topic_rl;
+    private RelativeLayout dialg_rl_root;
     private RelativeLayout sava_all;
     private MyDialog dialog;
     private View inflate;
@@ -185,7 +184,7 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
     private List<FileListBean> fileBeans = new ArrayList<>();//总的文件集合：其他设备分享得到的文件集合、本地上传得到的文件集合、网络服务器得到的文件集合
     private List<FileListBean> shareFileBeans = new ArrayList<>();//其他设备分享得到的文件集合
     private List<FileListBean> copyFileBeans = new ArrayList<>();//本地上传得到的文件集合
-     private List<FileListBean> netFileBeans = new ArrayList<>();//网络服务器得到的文件集合
+    private List<FileListBean> netFileBeans = new ArrayList<>();//网络服务器得到的文件集合
     private FileListBean meetingFileListBeanfileBean;
     private String titles;
     private Context context;
@@ -212,22 +211,22 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
     private List<String> stringListIp = new ArrayList<>();
     private MyListView myListView;
     private WuHuListAdapter wuHuListAdapter;
-    private  int  k=0;
-    private List<WuHuEditBean.EditListBean> wuHuEditBeanList=new ArrayList<>();
-    private   List<WuHuNetFileBean.DataBean> fileListBeanList = new ArrayList<>();
+    private int k = 0;
+    private List<WuHuEditBean.EditListBean> wuHuEditBeanList = new ArrayList<>();
+    private List<WuHuNetFileBean.DataBean> fileListBeanList = new ArrayList<>();
     private List<FileListBean> fileOtherBeans = new ArrayList<>();//音视频文件
     private FileListBean fileBean;
     private boolean mReceiverTag = false;   //广播接受者标识
-    private boolean isDeletOption=false;//是否做了删除操作
-    private  ProgressBar progressBar;//显示文件传输进度
-    private CompletedView  completedView;
+    private boolean isDeletOption = false;//是否做了删除操作
+    private ProgressBar progressBar;//显示文件传输进度
+    private CompletedView completedView;
     private ImageView result_ima;
     private TextView tips;
-    private String  pushPath;
-    private String  pushType;
+    private String pushPath;
+    private String pushType;
     private String pushName;
-    private boolean isPush=false;
-    private  String pos="-1";
+    private boolean isPush = false;
+    private String pos = "-1";
     private static Object object = new Object();
     private Handler mHandler = new Handler() {
 
@@ -236,10 +235,10 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
             super.handleMessage(msg);
             switch (msg.what) {
                 case 99:
-                    FileListBean fileBean=(FileListBean)msg.obj;
+                    FileListBean fileBean = (FileListBean) msg.obj;
                     fileBean.setNet(true);
                     netFileBeans.add(fileBean);
-                    if (netFileBeans==null||netFileBeans.size()==0){
+                    if (netFileBeans == null || netFileBeans.size() == 0) {
                         return;
                     }
                     fileListAdapter.setGridViewBeanList(netFileBeans);
@@ -261,10 +260,10 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                     //更新单个数据
                     getCopyFile();
                     break;
-                    //遍历分享文件
+                //遍历分享文件
                 case 100:
-                    List<FileListBean>shareFiles=(List<FileListBean>)msg.obj;
-                    if (shareFiles==null||shareFiles.size()==0){
+                    List<FileListBean> shareFiles = (List<FileListBean>) msg.obj;
+                    if (shareFiles == null || shareFiles.size() == 0) {
                         return;
                     }
                     shareFileBeans.clear();
@@ -272,16 +271,16 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                     fileBeans.addAll(shareFileBeans);
                     fileBeans.addAll(copyFileBeans);
                     fileBeans.addAll(netFileBeans);
-                    if (fileBeans==null||fileBeans.size()==0){
+                    if (fileBeans == null || fileBeans.size() == 0) {
                         return;
                     }
                     fileListAdapter.setGridViewBeanList(fileBeans);
                     fileListAdapter.notifyDataSetChanged();
                     break;
-                    //跟新议题对应的文件
+                //跟新议题对应的文件
                 case 200:
-                    List<FileListBean>copyFiles=(List<FileListBean>)msg.obj;
-                    if (copyFiles==null||copyFiles.size()==0){
+                    List<FileListBean> copyFiles = (List<FileListBean>) msg.obj;
+                    if (copyFiles == null || copyFiles.size() == 0) {
                         return;
                     }
 
@@ -290,7 +289,7 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                     fileBeans.addAll(copyFileBeans);
                     fileBeans.addAll(netFileBeans);
                     fileBeans.addAll(shareFileBeans);
-                    if (fileBeans==null||fileBeans.size()==0){
+                    if (fileBeans == null || fileBeans.size() == 0) {
                         return;
                     }
                     fileListAdapter.setGridViewBeanList(fileBeans);
@@ -300,13 +299,13 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                 case 88:
                     //    fileBeans.clear();
                     //更新单个数据
-               //     getCopyFile();
+                    //     getCopyFile();
                     break;
                 /*
                  * 分享文件发送中，显示加载动画
                  * */
                 case 4:
-                   // progressBarLl.setVisibility(View.VISIBLE);
+                    // progressBarLl.setVisibility(View.VISIBLE);
                     showFileTransferDialog();
                     String fileName = msg.obj.toString();
                     tips.setText("正在发送");
@@ -315,8 +314,8 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                  * 分享文件发送完毕，隐藏加载动画
                  * */
                 case 55:
-                 //   progressBarLl.setVisibility(View.GONE);
-                    if (dialog!=null){
+                    //   progressBarLl.setVisibility(View.GONE);
+                    if (dialog != null) {
                         dialog.dismiss();
                     }
 
@@ -326,21 +325,21 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                     tips.setText("发送成功");
                     Toast.makeText(getActivity(), "文件发送成功", Toast.LENGTH_SHORT).show();
 
-                          if (isPush){
-                              if (StringUtils.isEmpty(pushType)||StringUtils.isEmpty(pushPath)||StringUtils.isEmpty(pushName)){
-                                  return;
-                              }
-                              Log.d("sADdDdD222","pushType="+pushType+"    pushPath="+pushPath+"    pushName="+pushName);
-                              Intent intent;
-                              if (pushType.equals("3")){
+                    if (isPush) {
+                        if (StringUtils.isEmpty(pushType) || StringUtils.isEmpty(pushPath) || StringUtils.isEmpty(pushName)) {
+                            return;
+                        }
+                        Log.d("sADdDdD222", "pushType=" + pushType + "    pushPath=" + pushPath + "    pushName=" + pushName);
+                        Intent intent;
+                        if (pushType.equals("3")) {
 
-                                  //防止普通参会人员重复打开页面
-                                  intent = new Intent();
-                                  intent.setClass(getActivity(), ActivityImage.class);
-                                  intent.putExtra("url", pushPath);
-                                  intent.putExtra("isOpenFile", true);
-                                  intent.putExtra("isNetFile", false);
-                                  startActivity(intent);
+                            //防止普通参会人员重复打开页面
+                            intent = new Intent();
+                            intent.setClass(getActivity(), ActivityImage.class);
+                            intent.putExtra("url", pushPath);
+                            intent.putExtra("isOpenFile", true);
+                            intent.putExtra("isNetFile", false);
+                            startActivity(intent);
                              /*     if ( isActivityTop(ActivityImage.class,context)){
                                       intent=new Intent(constant.WUHU_IMAGE_FILE_BROADCAST);
                                       Bundle bundle=new Bundle();
@@ -358,8 +357,8 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                                   }*/
 
 
-                              }else if (pushType.equals("4")){
-                                  if(UserUtil.isNetworkOnline){
+                        } else if (pushType.equals("4")) {
+                            if (UserUtil.isNetworkOnline) {
                                  /*     Activity topActivity = (Activity) ActivityUtils.getTopActivity();
                                       if (topActivity != null) {
                                           // 如果是在签批内，先关闭，再进入,否则未销毁tbs,会一直显示加载中(看情况添加用户提示)
@@ -375,43 +374,43 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                                           }
                                       }*/
 
-                                      intent = new Intent();
-                                      intent.setClass(getActivity(), SignActivity.class);
-                                      intent.putExtra("url", pushPath);
-                                      intent.putExtra("isOpenFile", true);
-                                      intent.putExtra("isNetFile", false);
-                                      intent.putExtra("tempPath", false);
-                                      intent.putExtra("fileName",pushName);
-                                      startActivity(intent);
-                                  }else {
-                                      CVIPaperDialogUtils.showConfirmDialog(getActivity(), "当前无外网，会使用wps打开文件", "知道了", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
-                                          @Override
-                                          public void onClickButton(boolean clickConfirm, boolean clickCancel) {
-                                              startActivity(FileUtils.openFile(path ,getActivity()));
-                                          }
-                                      });
-                                  }
-                              }
-                              isPush=false;
-                          }
+                                intent = new Intent();
+                                intent.setClass(getActivity(), SignActivity.class);
+                                intent.putExtra("url", pushPath);
+                                intent.putExtra("isOpenFile", true);
+                                intent.putExtra("isNetFile", false);
+                                intent.putExtra("tempPath", false);
+                                intent.putExtra("fileName", pushName);
+                                startActivity(intent);
+                            } else {
+                                CVIPaperDialogUtils.showConfirmDialog(getActivity(), "当前无外网，会使用wps打开文件", "知道了", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                                    @Override
+                                    public void onClickButton(boolean clickConfirm, boolean clickCancel) {
+                                        startActivity(FileUtils.openFile(path, getActivity()));
+                                    }
+                                });
+                            }
+                        }
+                        isPush = false;
+                    }
                     break;
-                    /*
-                    * 文件传输进度
-                    * */
+                /*
+                 * 文件传输进度
+                 * */
                 case 10:
 
-                    String proress=(String)msg.obj;
+                    String proress = (String) msg.obj;
                     completedView.setProgress(Integer.parseInt(proress));
                     break;
                 /*
                  * 分享文件发送失败，隐藏加载动画
                  * */
                 case 6:
-                  //  progressBarLl.setVisibility(View.GONE);
+                    //  progressBarLl.setVisibility(View.GONE);
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            if (dialog!=null){
+                            if (dialog != null) {
                                 dialog.dismiss();
                             }
                         }
@@ -430,7 +429,6 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
             }
         }
     };
-
 
 
     @Override
@@ -464,18 +462,18 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                 startActivityForResult(intent, 1);
             }
         });
-       //第一个fragment只显示会议目录
-        if (Hawk.contains("WuHuFragmentData")){
+        //第一个fragment只显示会议目录
+        if (Hawk.contains("WuHuFragmentData")) {
             wuHuEditBeanList.clear();
-           WuHuEditBean  wuHuEditBean= Hawk.get("WuHuFragmentData");
-            wuHuEditBeanList=wuHuEditBean.getEditListBeanList();
+            WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
+            wuHuEditBeanList = wuHuEditBean.getEditListBeanList();
         }
-        Log.d("GASDJKASDD碎片=","rfresettt222");
-        wuHuCalalogListAdapter=new WuHuCalalogListAdapter(getActivity(),wuHuEditBeanList);
+        Log.d("GASDJKASDD碎片=", "rfresettt222");
+        wuHuCalalogListAdapter = new WuHuCalalogListAdapter(getActivity(), wuHuEditBeanList);
         listView_catalog.setAdapter(wuHuCalalogListAdapter);
         wuHuCalalogListAdapter.notifyDataSetChanged();
 
-      //除第一个fragment只显示会议目录外，其他碎片都显示文件列表界面
+        //除第一个fragment只显示会议目录外，其他碎片都显示文件列表界面
         fileListAdapter = new WuHuFileListAdapter(getActivity(), fileBeans);
         listView.setAdapter(fileListAdapter);
         fileListAdapter.setUpLoadFileInterface(this);
@@ -486,8 +484,8 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent3 = new Intent();
-                Bundle bundle=new Bundle();
-                bundle.putString("catalog",position+"");
+                Bundle bundle = new Bundle();
+                bundle.putString("catalog", position + "");
                 intent3.putExtras(bundle);
                 intent3.setAction(constant.CHANGE_CATALOG_BROADCAST);
                 getActivity().sendBroadcast(intent3);
@@ -502,25 +500,25 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
 
                 Log.d("requestCodeUr333", fileBean.getPath());
                 Intent intent;
-                if (fileBean.getFile_type().equals("3")){
+                if (fileBean.getFile_type().equals("3")) {
                     intent = new Intent();
                     intent.setClass(getActivity(), ActivityImage.class);
                     intent.putExtra("url", fileBean.getPath());
                     intent.putExtra("isOpenFile", true);
                     intent.putExtra("isNetFile", false);
                     startActivity(intent);
-                }else if (fileBean.getFile_type().equals("4")){
+                } else if (fileBean.getFile_type().equals("4")) {
 
-                    if(UserUtil.isNetworkOnline){
+                    if (UserUtil.isNetworkOnline) {
                         intent = new Intent();
                         intent.setClass(getActivity(), SignActivity.class);
                         intent.putExtra("url", fileBean.getPath());
                         intent.putExtra("isOpenFile", true);
                         intent.putExtra("isNetFile", false);
                         intent.putExtra("tempPath", false);
-                        intent.putExtra("fileName",fileBean.getName());
+                        intent.putExtra("fileName", fileBean.getName());
                         startActivity(intent);
-                    }else {
+                    } else {
                         CVIPaperDialogUtils.showConfirmDialog(getActivity(), "当前无外网，会使用wps打开文件", "知道了", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
                             @Override
                             public void onClickButton(boolean clickConfirm, boolean clickCancel) {
@@ -537,38 +535,39 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
 
 
     }
-    private  void getNetFile(){
+
+    private void getNetFile() {
 
 
-  if (Hawk.contains(constant._id)) {
-    UserUtil.meeting_record_id = Hawk.get(constant._id);
-    String _id = UserUtil.meeting_record_id;
-    int publice = 0;
-    //绑定生命周期
-    NetWorkManager.getInstance().getNetWorkApiService().getWuHuFileList(_id).compose(this.<BasicResponse<List<WuHuNetFileBean.DataBean>>>bindToLifecycle())
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new DefaultObserver<BasicResponse<List<WuHuNetFileBean.DataBean>>>() {
-                @Override
-                protected void onSuccess(BasicResponse<List<WuHuNetFileBean.DataBean>> response) {
-                    if (response != null) {
-                        if(response.getData()==null){
-                            return;
+        if (Hawk.contains(constant._id)) {
+            UserUtil.meeting_record_id = Hawk.get(constant._id);
+            String _id = UserUtil.meeting_record_id;
+            int publice = 0;
+            //绑定生命周期
+            NetWorkManager.getInstance().getNetWorkApiService().getWuHuFileList(_id).compose(this.<BasicResponse<List<WuHuNetFileBean.DataBean>>>bindToLifecycle())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new DefaultObserver<BasicResponse<List<WuHuNetFileBean.DataBean>>>() {
+                        @Override
+                        protected void onSuccess(BasicResponse<List<WuHuNetFileBean.DataBean>> response) {
+                            if (response != null) {
+                                if (response.getData() == null) {
+                                    return;
+                                }
+                                fileListBeanList = (List<WuHuNetFileBean.DataBean>) response.getData();
+
+                                if (fileListBeanList == null | fileListBeanList.size() < 1) {
+
+                                    return;
+                                }
+
+                                netFileName(fileListBeanList);
+
+                            }
                         }
-                        fileListBeanList = (List<WuHuNetFileBean.DataBean>) response.getData();
+                    });
 
-                        if (fileListBeanList==null|fileListBeanList.size()<1){
-
-                            return;
-                        }
-
-                        netFileName(fileListBeanList);
-
-                    }
-                }
-            });
-
-}
+        }
     }
 
 
@@ -584,76 +583,75 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
             String endStr = fileListBeanList.get(i).getFile_path().substring(fileListBeanList.get(i).getFile_path().lastIndexOf(".") + 1);
             Log.d("vrdvafd", "文件类型=" + fileListBeanList.get(i).getName() + "文件名字" + fileListBeanList.get(i).getFile_path() + "p====" + fileListBeanList.get(i).getName());
             //下载文件--子线程
-                if ("4".equals(getType(endStr))) {
+            if ("4".equals(getType(endStr))) {
 
-                    String path = UrlConstant.baseUrl+"/" + fileListBeanList.get(i).getFile_path();
-                    String name = fileListBeanList.get(i).getName();
-                    String fileId = fileListBeanList.get(i).get_id();
-                    Log.d("网络文件地址","path====="+path);
+                String path = UrlConstant.baseUrl + "/" + fileListBeanList.get(i).getFile_path();
+                String name = fileListBeanList.get(i).getName();
+                String fileId = fileListBeanList.get(i).get_id();
+                Log.d("网络文件地址", "path=====" + path);
 
 
-                    //   String fileData = httpDownloader.downloadFiles(fileListBeanList.get(i).getFile_path());
-                    DownloadUtil.get().download(path, netFilePath, fileListBeanList.get(i).getName(), new DownloadUtil.OnDownloadListener() {
-                        @Override
-                        public void onDownloadSuccess(File file) {
-                            Log.v("dfsfff111", "下載成功,文件已存入手机内部存储设备根目录下Download文件夾中");
+                //   String fileData = httpDownloader.downloadFiles(fileListBeanList.get(i).getFile_path());
+                DownloadUtil.get().download(path, netFilePath, fileListBeanList.get(i).getName(), new DownloadUtil.OnDownloadListener() {
+                    @Override
+                    public void onDownloadSuccess(File file) {
+                        Log.v("dfsfff111", "下載成功,文件已存入手机内部存储设备根目录下Download文件夾中");
                       /*  Looper.prepare();//增加部分
                         Looper.loop();//增加部分*/
-                            Message msg = new Message();
-                            fileListBean.setName(name);
-                            fileListBean.setPath(netFilePath + name);
-                            fileListBean.set_id(fileId);
-                            fileListBean.set_id(fileId);
-                            fileListBean.setNet(true);
+                        Message msg = new Message();
+                        fileListBean.setName(name);
+                        fileListBean.setPath(netFilePath + name);
+                        fileListBean.set_id(fileId);
+                        fileListBean.set_id(fileId);
+                        fileListBean.setNet(true);
 
-                            fileBean =new FileListBean(name,netFilePath + name,"","");
-                            fileBean.setResImage(getIamge(endStr));
-                            fileBean.setFile_type(getType(endStr));
-                            fileBean.setNet(true);
-                            msg.obj = fileBean;//可以是基本类型，可以是对象，可以是List、map等；
-                            msg.what = 99;
-                            mHandler.sendMessage(msg);
-                            Log.v("dfsfff222", "下載成功,文件已存入手机内部存储设备根目录下Download文件夾中");
-                        }
+                        fileBean = new FileListBean(name, netFilePath + name, "", "");
+                        fileBean.setResImage(getIamge(endStr));
+                        fileBean.setFile_type(getType(endStr));
+                        fileBean.setNet(true);
+                        msg.obj = fileBean;//可以是基本类型，可以是对象，可以是List、map等；
+                        msg.what = 99;
+                        mHandler.sendMessage(msg);
+                        Log.v("dfsfff222", "下載成功,文件已存入手机内部存储设备根目录下Download文件夾中");
+                    }
 
-                        @Override
-                        public void onDownloading(int progress) {
+                    @Override
+                    public void onDownloading(int progress) {
 //                            Log.v(TAG, "下載進度" + progress);
 //                progressDialog.setProgress(progress);
-                        }
+                    }
 
-                        @Override
-                        public void onDownloadFailed(Exception e) {
+                    @Override
+                    public void onDownloadFailed(Exception e) {
 //                if (progressDialog != null && progressDialog.isShowing()) {
 //                    progressDialog.dismiss();
 //                }
 
-                        }
-                    });
+                    }
+                });
 
 
-
-                } else {
-                    //除了文件外（doc,excle,pdf,ppt）,其他格式文件执行正常网络数据
-                    fileBean =new FileListBean(fileListBeanList.get(i).getName(),fileListBeanList.get(i).getFile_path() + fileListBeanList.get(i).getName(),"","");
-                   // fileBean = new NewFileBean.MeetingFileListBean(fileListBeanList.get(i).getFile_name(), fileListBeanList.get(i).getFile_path(), fileListBeanList.get(i).getUser_id().getName(), fileListBeanList.get(i).getUpload_time());
-                    fileBean.setResImage(getIamge(endStr));
-                    fileBean.setFile_type(getType(endStr));
-                    fileListBean.setNet(true);
+            } else {
+                //除了文件外（doc,excle,pdf,ppt）,其他格式文件执行正常网络数据
+                fileBean = new FileListBean(fileListBeanList.get(i).getName(), fileListBeanList.get(i).getFile_path() + fileListBeanList.get(i).getName(), "", "");
+                // fileBean = new NewFileBean.MeetingFileListBean(fileListBeanList.get(i).getFile_name(), fileListBeanList.get(i).getFile_path(), fileListBeanList.get(i).getUser_id().getName(), fileListBeanList.get(i).getUpload_time());
+                fileBean.setResImage(getIamge(endStr));
+                fileBean.setFile_type(getType(endStr));
+                fileListBean.setNet(true);
                   /*  fileListBean.setC_id(c_id);
                     fileListBean.setC_id(c_id);*/
-                    //  fileListBean.setUser_id(userIdBean);
-                    fileBean.setC_id(c_id);
-                    fileBean.set_id(fileListBeanList.get(i).get_id());
-                    //fileListBean.setUser_id(fileListBeanList.get(i).getUser_id());
-                    fileBeans.add(fileBean);
-                }
+                //  fileListBean.setUser_id(userIdBean);
+                fileBean.setC_id(c_id);
+                fileBean.set_id(fileListBeanList.get(i).get_id());
+                //fileListBean.setUser_id(fileListBeanList.get(i).getUser_id());
+                fileBeans.add(fileBean);
+            }
 
             if (fileBeans != null) {
                 Log.d("requestCodeUr666", fileOtherBeans.size() + "  ");
             }
-           // fileListAdapter = new FileListAdapter(getActivity(), fileOtherBeans);
-            if (fileBeans==null||fileBeans.size()==0){
+            // fileListAdapter = new FileListAdapter(getActivity(), fileOtherBeans);
+            if (fileBeans == null || fileBeans.size() == 0) {
                 return;
             }
             fileListAdapter.setGridViewBeanList(fileBeans);
@@ -663,7 +661,7 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
     }
 
 
-
+    //从分享文件夹中剥离每个议题对应的文件
     private void getCopyFile() {
         new Thread(new Runnable() {
             @Override
@@ -702,7 +700,7 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                     List<FileListBean> tempFileBeans = new ArrayList<>();
                     tempFileBeans.clear();
                     for (int i = 0; i < fbList.size(); i++) {
-                        Log.d("rfrfeewtwtt0000  ", "     textNub=" + textNub + "   " + fbList.get(i).getPos() + "");
+                        Log.d("rfrfeewtwtt0000 从分享文件夹中剥离每个议题对应的文件 ", "     textNub=" + textNub + "   " + fbList.get(i).getPos() + "");
                         if (fbList.get(i).getPos().equals(textNub)) {
                             for (int n = 0; n < copyFileBeans.size(); n++) {
                                 if (fbList.get(i).getFileName().equals(copyFileBeans.get(n).getName())) {
@@ -712,6 +710,8 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                             }
                         }
                     }
+
+
                     //发送消息跟新文件列表
                     Message shareMsg = new Message();
                     shareMsg.what = 200;
@@ -750,16 +750,18 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
             }
         });
     }
+
     //保存单个数据
     @Override
     public void saveData(int position) {
-      if (textNub.equals(position+"")){
-          topic.setText("会议议题："+wuHuEditBeanList.get(Integer.valueOf(textNub)).getSubTopics());
-          attend.setText("参会人员："+wuHuEditBeanList.get(Integer.valueOf(textNub)).getReportingUnit());
+        if (textNub.equals(position + "")) {
+            topic.setText("会议议题：" + wuHuEditBeanList.get(Integer.valueOf(textNub)).getSubTopics());
+            attend.setText("参会人员：" + wuHuEditBeanList.get(Integer.valueOf(textNub)).getReportingUnit());
 
-      }
+        }
 
     }
+
     @Override
     public void onPlayerClick(String url) {
         Log.d("dfafaf333", "222223333" + url);
@@ -780,7 +782,7 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-       // Log.d("ffdgsdgsg",text+" 重新路过~~~~");
+        // Log.d("ffdgsdgsg",text+" 重新路过~~~~");
     }
 
     @Override
@@ -805,6 +807,7 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
         }
 
     }
+
     //String actionType:标识事件是分享还是推送  1：分享  2：推送
     @Override
     public void shareFileInfo(String path, String type, String flag, String name, String author, String time) {
@@ -812,7 +815,7 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
         //通知所有fragment 都更新对应的议题文件列表
         sendFragmenFlag();
 
-        isPush=false;
+        isPush = false;
         final ArrayList<String> fileNames = new ArrayList<>();
         final ArrayList<String> paths = new ArrayList<>();
         paths.add(path);
@@ -830,7 +833,7 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                 }
                 //根据Ip将文件发送到不同的设备
                 for (int i = 0; i < stringListIp.size(); i++) {
-                    socketShareFileManager.SendFile(fileNames, paths, stringListIp.get(i), constant.SHARE_PORT,"1",textNub);
+                    socketShareFileManager.SendFile(fileNames, paths, stringListIp.get(i), constant.SHARE_PORT, "1", textNub);
                 }
             }
 
@@ -839,12 +842,13 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
 
         // Message.obtain(handler, 0, response).sendToTarget();
     }
+
     @Override
     public void pushFileInfo(String path, String type, String flag, String name, String author, String time) {
         Log.d("FileFragment--推送", path + "===name==" + name);
         //通知所有fragment 都更新对应的议题文件列表
         sendFragmenFlag();
-        isPush=true;
+        isPush = true;
         final ArrayList<String> fileNames = new ArrayList<>();
         final ArrayList<String> paths = new ArrayList<>();
         fileNames.clear();
@@ -865,76 +869,48 @@ public class WuHuFragment extends BaseFragment  implements MediaReceiver.sendfil
                 }
                 //根据Ip将文件发送到不同的设备
                 for (int i = 0; i < stringListIp.size(); i++) {
-                    socketShareFileManager.SendFile(fileNames, paths, stringListIp.get(i), constant.SHARE_PORT,"2",textNub);
+                    socketShareFileManager.SendFile(fileNames, paths, stringListIp.get(i), constant.SHARE_PORT, "2", textNub);
                 }
 
 
             }
         });
         sendThread.start();
-          pushName=name;
-           pushPath=path;
-           pushType=type;
+        pushName = name;
+        pushPath = path;
+        pushType = type;
 
-
-
-
-/*        Intent intent;
-        if (fileBean.getFile_type().equals("3")){
-            intent = new Intent();
-            intent.setClass(getActivity(), ActivityImage.class);
-            intent.putExtra("url", path);
-            intent.putExtra("isOpenFile", true);
-            intent.putExtra("isNetFile", false);
-            startActivity(intent);
-        }else if (fileBean.getFile_type().equals("4")){
-            if(UserUtil.isNetworkOnline){
-                intent = new Intent();
-                intent.setClass(getActivity(), SignActivity.class);
-                intent.putExtra("url", path);
-                intent.putExtra("isOpenFile", true);
-                intent.putExtra("isNetFile", false);
-                intent.putExtra("tempPath", false);
-                intent.putExtra("fileName",name);
-                startActivity(intent);
-            }else {
-                CVIPaperDialogUtils.showConfirmDialog(getActivity(), "当前无外网，会使用wps打开文件", "知道了", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
-                    @Override
-                    public void onClickButton(boolean clickConfirm, boolean clickCancel) {
-                        startActivity(FileUtils.openFile(path ,getActivity()));
-                    }
-                });
-            }
-        }*/
     }
+
     //发送每个fragment标识及文件数据名称
-private void sendFragmenFlag(){
-    //通知所有fragment 都更新对应的议题文件列表
-    WuHuLocalFileBean wuHuLocalFileBean=new WuHuLocalFileBean();
-    List<WuHuLocalFileBean.FileBean>fileBeanList=new ArrayList<>();
+    private void sendFragmenFlag() {
+        //通知所有fragment 都更新对应的议题文件列表
+        WuHuLocalFileBean wuHuLocalFileBean = new WuHuLocalFileBean();
+        List<WuHuLocalFileBean.FileBean> fileBeanList = new ArrayList<>();
 
-    if (Hawk.contains("wuhulocal")){
-        List<FileListBean>   flagFileList=  Hawk.get("wuhulocal");
-        if (flagFileList==null||flagFileList.size()==0){
-            return;
-        }
-        for ( int i = 0 ; i < flagFileList.size() ; i ++ ) {
-            WuHuLocalFileBean.FileBean fb=new WuHuLocalFileBean.FileBean();
-            if (!StringUtils.isEmpty(textNub)){
-                fb.setPos(flagFileList.get(i).getPos());
+        if (Hawk.contains("wuhulocal")) {
+            List<FileListBean> flagFileList = Hawk.get("wuhulocal");
+            if (flagFileList == null || flagFileList.size() == 0) {
+                return;
             }
-            fb.setFileName(flagFileList.get(i).getName());
-            fileBeanList.add(fb);
+            for (int i = 0; i < flagFileList.size(); i++) {
+                WuHuLocalFileBean.FileBean fb = new WuHuLocalFileBean.FileBean();
+                if (!StringUtils.isEmpty(textNub)) {
+                    fb.setPos(flagFileList.get(i).getPos());
+                }
+                fb.setFileName(flagFileList.get(i).getName());
+                fileBeanList.add(fb);
+            }
+
         }
+
+        wuHuLocalFileBean.setFileBeanList(fileBeanList);
+        //1：添加本地
+        wuHuLocalFileBean.setFlag("1");
+        wsUpdata(wuHuLocalFileBean, constant.REFRESH_WUHU_FILE_FRAGMENT);
 
     }
 
-    wuHuLocalFileBean.setFileBeanList(fileBeanList);
-    //1：添加本地
-    wuHuLocalFileBean.setFlag("1");
-  wsUpdata(wuHuLocalFileBean,constant.REFRESH_WUHU_FILE_FRAGMENT);
-
-}
     @Override
     public void sendFileInfo(String path, String type, String flag) {
         //把文件封装在RequestBody里
@@ -1048,14 +1024,15 @@ private void sendFragmenFlag(){
         }
         return contentType;
     }
-//获取本地上传的文件
+
+    //获取本地上传的文件
     private void getFileName(File[] files) {
         Log.d(TAG, "路过~~~~~11");
         copyFileBeans.clear();
         fileBeans.clear();
         String content = "";
-       if (files != null) {
-           // 先判断目录是否为空，否则会报空指针
+        if (files != null) {
+            // 先判断目录是否为空，否则会报空指针
             for (File file : files) {
                 Log.d(TAG, "路过~~~~~11" + file.getPath());
 
@@ -1086,14 +1063,15 @@ private void sendFragmenFlag(){
             fileBeans.addAll(copyFileBeans);
             fileBeans.addAll(netFileBeans);
             fileBeans.addAll(shareFileBeans);
-           if (fileBeans==null||fileBeans.size()==0){
-               return;
-           }
+            if (fileBeans == null || fileBeans.size() == 0) {
+                return;
+            }
             fileListAdapter.setGridViewBeanList(fileBeans);
             fileListAdapter.notifyDataSetChanged();
         }
     }
-//获取网络下载到的文件
+
+    //获取网络下载到的文件
     private void getNetFileName(File[] files) {
         Log.d(TAG, "路过~~~~~11");
         netFileBeans.clear();
@@ -1134,45 +1112,45 @@ private void sendFragmenFlag(){
             fileListAdapter.notifyDataSetChanged();
         }
     }
+
     @Override
     protected void initView() {
 
-       // mTextView.setText(text);
-        Log.d(TAG+toString(), "onCreateView: ");
+        // mTextView.setText(text);
+        Log.d(TAG + toString(), "onCreateView: ");
 
         /*
          * 临时会议时，全局发送本设备Ip地址到其他设备
          * */
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    while (true) {
-                        try {
-                            Thread.sleep(5000);//休眠3
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            DatagramSocket socket = new DatagramSocket();
-                            String str = constant.SHARE_FILE_IP + getIpAddressString();
-                            Hawk.put("SelfIpAddress", selfIp);//自身Ip
-                            byte[] sendStr = str.getBytes();
-                            InetAddress address = InetAddress.getByName(constant.EXTRAORDINARY_MEETING_INETADDRESS);
-                            DatagramPacket packet = new DatagramPacket(sendStr, sendStr.length, address, constant.EXTRAORDINARY_MEETING_PORT);
-                            socket.send(packet);
-                            socket.close();
-                        } catch (SocketException e) {
-                            e.printStackTrace();
-                        } catch (UnknownHostException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        Thread.sleep(5000);//休眠3
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        DatagramSocket socket = new DatagramSocket();
+                        String str = constant.SHARE_FILE_IP + getIpAddressString();
+                        Hawk.put("SelfIpAddress", selfIp);//自身Ip
+                        byte[] sendStr = str.getBytes();
+                        InetAddress address = InetAddress.getByName(constant.EXTRAORDINARY_MEETING_INETADDRESS);
+                        DatagramPacket packet = new DatagramPacket(sendStr, sendStr.length, address, constant.EXTRAORDINARY_MEETING_PORT);
+                        socket.send(packet);
+                        socket.close();
+                    } catch (SocketException e) {
+                        e.printStackTrace();
+                    } catch (UnknownHostException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 }
-            }).start();
-
+            }
+        }).start();
 
 
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -1187,37 +1165,38 @@ private void sendFragmenFlag(){
 
 
     }
+
     /**
      * 收到websocket 信息
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReceiveMsg(EventMessage message) {
-        Log.e("onReceiveMsg000011: " , message.toString());
+        Log.e("onReceiveMsg000011: ", message.toString());
         //  client端接收到信息
         if (message.getType().equals(MessageReceiveType.MessageClient)) {
             // 查询投票信息
             if (message.getMessage().contains(constant.WUHUADDFRAGMENT)) {
-                Log.e("onReceiveMsg11111: " , message.toString());
+                Log.e("onReceiveMsg11111: ", message.toString());
                 try {
                     TempWSBean<WuHuEditBean> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<WuHuEditBean>>() {
                     }.getType());
                     //  收到vote的websocket的信息
                     if (wsebean != null) {
-                        WuHuEditBean     wuHuEditBean = wsebean.getBody();
-                        Log.d("gdgsdgetEditListB大小=", wuHuEditBean.getEditListBeanList().size()+ "");
+                        WuHuEditBean wuHuEditBean = wsebean.getBody();
+                        Log.d("gdgsdgetEditListB大小=", wuHuEditBean.getEditListBeanList().size() + "");
                         refreshUi(wuHuEditBean);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }else if(message.getMessage().contains(constant.REFRASHWuHUSIGLEDATA)){
-                Log.d("onReceiveMsg",  "REFRASHWuHUSIGLEDATA");
+            } else if (message.getMessage().contains(constant.REFRASHWuHUSIGLEDATA)) {
+                Log.d("onReceiveMsg", "REFRASHWuHUSIGLEDATA");
                 try {
                     TempWSBean<WuHuEditBean> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<WuHuEditBean>>() {
                     }.getType());
                     //  收到vote的websocket的信息
                     if (wsebean != null) {
-                        WuHuEditBean     wuHuEditBean = wsebean.getBody();
+                        WuHuEditBean wuHuEditBean = wsebean.getBody();
                         refreshUi(wuHuEditBean);
 
                     }
@@ -1225,38 +1204,38 @@ private void sendFragmenFlag(){
                     e.printStackTrace();
                 }
 
-            }else if(message.getMessage().contains(constant.REFRASHWuHUALL)){
+            } else if (message.getMessage().contains(constant.REFRASHWuHUALL)) {
 
                 try {
                     TempWSBean<WuHuEditBean> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<WuHuEditBean>>() {
                     }.getType());
                     //  收到vote的websocket的信息
                     if (wsebean != null) {
-                        WuHuEditBean     wuHuEditBean = wsebean.getBody();
+                        WuHuEditBean wuHuEditBean = wsebean.getBody();
                         refreshUi(wuHuEditBean);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-            }else if (message.getMessage().contains(constant.DELETE_WUHU_FRAGMENT)){
+            } else if (message.getMessage().contains(constant.DELETE_WUHU_FRAGMENT)) {
                 try {
                     TempWSBean<WuHuEditBean> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<WuHuEditBean>>() {
                     }.getType());
-                    if (wsebean != null){
+                    if (wsebean != null) {
                         wuHuEditBeanList.clear();
-                        WuHuEditBean deletWuHuEditBean=wsebean.getBody();
+                        WuHuEditBean deletWuHuEditBean = wsebean.getBody();
 
                         if (Hawk.contains("WuHuFragmentData")) {
                             WuHuEditBean wuHuFragmentData = Hawk.get("WuHuFragmentData");
-                            List<WuHuEditBean.EditListBean>listBeans=new ArrayList<>();
-                            listBeans= deletWuHuEditBean.getEditListBeanList();
-                            if (listBeans.size()==0){
+                            List<WuHuEditBean.EditListBean> listBeans = new ArrayList<>();
+                            listBeans = deletWuHuEditBean.getEditListBeanList();
+                            if (listBeans.size() == 0) {
                                 return;
                             }
 
                             wuHuFragmentData.setEditListBeanList(listBeans);
-                            Hawk.put("WuHuFragmentData",wuHuFragmentData);
+                            Hawk.put("WuHuFragmentData", wuHuFragmentData);
 
                             wuHuEditBeanList.addAll(listBeans);
                             wuHuCalalogListAdapter.setWuHuEditBeanList(wuHuEditBeanList);
@@ -1268,18 +1247,18 @@ private void sendFragmenFlag(){
                 }
 
 
-            }else if (message.getMessage().contains(constant.REFRESH_WUHU_FILE_FRAGMENT)){
+            } else if (message.getMessage().contains(constant.REFRESH_WUHU_FILE_FRAGMENT)) {
 
-            try {
+                try {
                     TempWSBean<WuHuLocalFileBean> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<WuHuLocalFileBean>>() {
                     }.getType());
-                    if (wsebean != null){
-                        WuHuLocalFileBean wuHuLocalFileBean=wsebean.getBody();
-                     if (wuHuLocalFileBean!=null){
-                         Hawk.put("WuHuLocalFileBean",wuHuLocalFileBean);
-                     }
-                        if (wuHuLocalFileBean!=null){
-                          getCopyFile();
+                    if (wsebean != null) {
+                        WuHuLocalFileBean wuHuLocalFileBean = wsebean.getBody();
+                        if (wuHuLocalFileBean != null) {
+                            Hawk.put("WuHuLocalFileBean", wuHuLocalFileBean);
+                        }
+                        if (wuHuLocalFileBean != null) {
+                            getCopyFile();
                         }
 
                     }
@@ -1288,68 +1267,69 @@ private void sendFragmenFlag(){
                 }
 
 
-
-
             }
 
         }
     }
+
     @Override
     public void sendfilePth(String filePth) {
 
     }
-    private void deletRefreUi(WuHuDeleteFragmentBean wuHuDeleteFragmentBean){
 
-        int size=Integer.valueOf(wuHuDeleteFragmentBean.getListSize());
-        size=size+1;
-        if (Integer.valueOf(textNub)==0){
+    private void deletRefreUi(WuHuDeleteFragmentBean wuHuDeleteFragmentBean) {
+
+        int size = Integer.valueOf(wuHuDeleteFragmentBean.getListSize());
+        size = size + 1;
+        if (Integer.valueOf(textNub) == 0) {
             listView_catalog.setVisibility(View.VISIBLE);
             file_ly.setVisibility(View.GONE);
 
-        }else {
+        } else {
             listView_catalog.setVisibility(View.GONE);
             file_ly.setVisibility(View.VISIBLE);
-            if (Integer.valueOf(textNub)>size){
-                textNub=String.valueOf(Integer.valueOf(textNub)-1);
+            if (Integer.valueOf(textNub) > size) {
+                textNub = String.valueOf(Integer.valueOf(textNub) - 1);
                 setTopicText(textNub);
             }
         }
 
 
     }
-    private void  refreshUi( WuHuEditBean wuHuEditBean){
-        Log.d("新增的textNub=",textNub+"");
+
+    private void refreshUi(WuHuEditBean wuHuEditBean) {
+        Log.d("新增的textNub=", textNub + "");
         wuHuEditBeanList.clear();
-        if (Integer.valueOf(textNub)==0){
+        if (Integer.valueOf(textNub) == 0) {
             listView_catalog.setVisibility(View.VISIBLE);
             file_ly.setVisibility(View.GONE);
 
-        }else {
+        } else {
             listView_catalog.setVisibility(View.GONE);
             file_ly.setVisibility(View.VISIBLE);
 
         }
-        List<WuHuEditBean.EditListBean>allList=wuHuEditBean.getEditListBeanList();
+        List<WuHuEditBean.EditListBean> allList = wuHuEditBean.getEditListBeanList();
 
-        if (allList==null||allList.size()==0){
+        if (allList == null || allList.size() == 0) {
             return;
         }
         wuHuEditBeanList.addAll(allList);
         if (Hawk.contains("WuHuFragmentData")) {
             WuHuEditBean wuHuFragmentData = Hawk.get("WuHuFragmentData");
             wuHuFragmentData.setEditListBeanList(wuHuEditBeanList);
-            Hawk.put("WuHuFragmentData",wuHuFragmentData);
-            }
+            Hawk.put("WuHuFragmentData", wuHuFragmentData);
+        }
         tittle1.setText(wuHuEditBean.getTopics());
         tittle2.setText(wuHuEditBean.getTopic_type());
-        int s=Integer.valueOf(textNub);
-        setTopicText(s+"");
+        int s = Integer.valueOf(textNub);
+        setTopicText(s + "");
         topic.setText(wuHuEditBeanList.get(Integer.valueOf(textNub)).getSubTopics());
         attend.setText(wuHuEditBeanList.get(Integer.valueOf(textNub)).getReportingUnit());
         attend2.setText(wuHuEditBeanList.get(Integer.valueOf(textNub)).getParticipantUnits());
         wuHuCalalogListAdapter.setWuHuEditBeanList(wuHuEditBeanList);
         wuHuCalalogListAdapter.notifyDataSetChanged();
-        switch (wuHuEditBean.getLine_color()){
+        switch (wuHuEditBean.getLine_color()) {
 
             case "1":
                 fragmentLine.setBackgroundColor(Color.parseColor("#EA4318"));
@@ -1358,7 +1338,7 @@ private void sendFragmenFlag(){
                 fragmentLine.setBackgroundColor(Color.parseColor("#1D1D1D"));
                 break;
         }
-        switch (wuHuEditBean.getThem_color()){
+        switch (wuHuEditBean.getThem_color()) {
             case "3":
                 root_lin.setBackgroundResource(R.mipmap.bg_wuhu_home);
                 break;
@@ -1378,10 +1358,11 @@ private void sendFragmenFlag(){
 
 
     }
-    private void  setTopicText(String numb){
+
+    private void setTopicText(String numb) {
 
 
-        switch (numb){
+        switch (numb) {
             case "1":
                 tittle_num.setText("议题一");
                 break;
@@ -1413,11 +1394,12 @@ private void sendFragmenFlag(){
                 tittle_num.setText("议题十");
                 break;
             default:
-                tittle_num.setText("议题"+textNub);
+                tittle_num.setText("议题" + textNub);
                 break;
         }
 
     }
+
     /*
      * 临时会议时获取设备有线网IP地址
      * */
@@ -1452,6 +1434,7 @@ private void sendFragmenFlag(){
                 ((i >> 16) & 0xFF) + "." +
                 ((i >> 24) & 0xFF);
     }
+
     private int getIamge(String end) {
         if (end.equals("m4a") || end.equals("mp3") || end.equals("mid") ||
                 end.equals("xmf") || end.equals("ogg") || end.equals("wav")) {
@@ -1546,13 +1529,14 @@ private void sendFragmenFlag(){
 
     }
 
-    public static WuHuFragment newInstance(String text){
+    public static WuHuFragment newInstance(String text) {
         WuHuFragment wuHuFragment = new WuHuFragment();
         Bundle bundle = new Bundle();
         bundle.putString("text", text);
         wuHuFragment.setArguments(bundle);
         return wuHuFragment;
     }
+
     //删除操作更新tag值
     public void updateArguments(String newText) {
 
@@ -1561,83 +1545,84 @@ private void sendFragmenFlag(){
         Bundle bundle = getArguments();
 
         if (bundle != null) {
-            bundle .putString("text", newText);
+            bundle.putString("text", newText);
         }
     }
+
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        textNub=getArguments().getString("text");
-        String  strFilePath=fileShare;
+        textNub = getArguments().getString("text");
+        String strFilePath = fileShare;
         File path = new File(strFilePath);
         File[] files = path.listFiles();// 读取
-        Log.d("缓存里面的的textNub=",textNub+"  isDeletOption="+ isDeletOption);
+        Log.d("缓存里面的的textNub=", textNub + "  isDeletOption=" + isDeletOption);
         if (isVisibleToUser) {
-         if (Hawk.contains("WuHuFragmentData")) {
+            if (Hawk.contains("WuHuFragmentData")) {
                        /*  int s=Integer.valueOf(textNub)+1;
              tittle_num.setText("议题"+s);*/
-             WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
-             List<WuHuEditBean.EditListBean> editListBeanList = new ArrayList<>();
-             if (wuHuEditBean.getEditListBeanList() == null || wuHuEditBean.getEditListBeanList().size() == 0) {
-                 return;
-             }
-             editListBeanList = wuHuEditBean.getEditListBeanList();
+                WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
+                List<WuHuEditBean.EditListBean> editListBeanList = new ArrayList<>();
+                if (wuHuEditBean.getEditListBeanList() == null || wuHuEditBean.getEditListBeanList().size() == 0) {
+                    return;
+                }
+                editListBeanList = wuHuEditBean.getEditListBeanList();
 
 
-             if (Integer.valueOf(textNub)==0){
-                 if (listView_catalog!=null&&file_ly!=null&&fragment_ttile_rl!=null&&topic_ll!=null&&fragmentLine!=null&&nn!=null&&listView_catalog_ll!=null&&scrollView_file!=null&&scrollView_cata!=null){
-                     listView_catalog.setVisibility(View.VISIBLE);
-                     listView_catalog_ll.setVisibility(View.VISIBLE);
-                     file_ly.setVisibility(View.GONE);
-                     fragment_ttile_rl.setVisibility(View.VISIBLE);
-                     topic_ll.setVisibility(View.GONE);
-                     fragmentLine.setVisibility(View.VISIBLE);
-                     nn.setVisibility(View.GONE);
-                     scrollView_file.setVisibility(View.GONE);
-                     scrollView_cata.setVisibility(View.VISIBLE);
-                 }
+                if (Integer.valueOf(textNub) == 0) {
+                    if (listView_catalog != null && file_ly != null && fragment_ttile_rl != null && topic_ll != null && fragmentLine != null && nn != null && listView_catalog_ll != null && scrollView_file != null && scrollView_cata != null) {
+                        listView_catalog.setVisibility(View.VISIBLE);
+                        listView_catalog_ll.setVisibility(View.VISIBLE);
+                        file_ly.setVisibility(View.GONE);
+                        fragment_ttile_rl.setVisibility(View.VISIBLE);
+                        topic_ll.setVisibility(View.GONE);
+                        fragmentLine.setVisibility(View.VISIBLE);
+                        nn.setVisibility(View.GONE);
+                        scrollView_file.setVisibility(View.GONE);
+                        scrollView_cata.setVisibility(View.VISIBLE);
+                    }
 
-             }else {
-                 if (listView_catalog!=null&&file_ly!=null&&fragment_ttile_rl!=null&&topic_ll!=null&&fragmentLine!=null&&nn!=null&&listView_catalog_ll!=null&&scrollView_file!=null&&scrollView_cata!=null){
-                     listView_catalog.setVisibility(View.GONE);
-                     file_ly.setVisibility(View.VISIBLE);
-                     listView_catalog_ll.setVisibility(View.GONE);
-                     fragment_ttile_rl.setVisibility(View.GONE);
-                     topic_ll.setVisibility(View.VISIBLE);
-                     fragmentLine.setVisibility(View.GONE);
-                     nn.setVisibility(View.VISIBLE);
-                     scrollView_file.setVisibility(View.VISIBLE);
-                     scrollView_cata.setVisibility(View.GONE);
-                 }
+                } else {
+                    if (listView_catalog != null && file_ly != null && fragment_ttile_rl != null && topic_ll != null && fragmentLine != null && nn != null && listView_catalog_ll != null && scrollView_file != null && scrollView_cata != null) {
+                        listView_catalog.setVisibility(View.GONE);
+                        file_ly.setVisibility(View.VISIBLE);
+                        listView_catalog_ll.setVisibility(View.GONE);
+                        fragment_ttile_rl.setVisibility(View.GONE);
+                        topic_ll.setVisibility(View.VISIBLE);
+                        fragmentLine.setVisibility(View.GONE);
+                        nn.setVisibility(View.VISIBLE);
+                        scrollView_file.setVisibility(View.VISIBLE);
+                        scrollView_cata.setVisibility(View.GONE);
+                    }
 
-             }
-             if (tittle1!=null){
-                 tittle1.setText(editListBeanList.get(Integer.valueOf(textNub)).getTopics());
-                 if (Hawk.contains("company_name")){
-                     String str= Hawk.get("company_name");
-                     tittle1.setText(str);
-                 }
-             }
-             if (tittle2!=null){
+                }
+                if (tittle1 != null) {
+                    tittle1.setText(editListBeanList.get(Integer.valueOf(textNub)).getTopics());
+                    if (Hawk.contains("company_name")) {
+                        String str = Hawk.get("company_name");
+                        tittle1.setText(str);
+                    }
+                }
+                if (tittle2 != null) {
 
-                 tittle2.setText(editListBeanList.get(Integer.valueOf(textNub)).getTopic_type());
-                 if (Hawk.contains("tittle2")){
-                     String str= Hawk.get("tittle2");
-                     tittle2.setText(str);
-                 }
-             }
-             Log.d("fdafafaff=fragment",textNub+"editListBeanList=   "+editListBeanList.get(Integer.valueOf(textNub)).getTopics()+"   "+editListBeanList.get(Integer.valueOf(textNub)).getTopic_type());
-             if(topic!=null){
-                 topic.setText(editListBeanList.get(Integer.valueOf(textNub)).getSubTopics());
-             }
+                    tittle2.setText(editListBeanList.get(Integer.valueOf(textNub)).getTopic_type());
+                    if (Hawk.contains("tittle2")) {
+                        String str = Hawk.get("tittle2");
+                        tittle2.setText(str);
+                    }
+                }
+                Log.d("fdafafaff=fragment", textNub + "editListBeanList=   " + editListBeanList.get(Integer.valueOf(textNub)).getTopics() + "   " + editListBeanList.get(Integer.valueOf(textNub)).getTopic_type());
+                if (topic != null) {
+                    topic.setText(editListBeanList.get(Integer.valueOf(textNub)).getSubTopics());
+                }
 
-             if(attend!=null){
-                 attend.setText(editListBeanList.get(Integer.valueOf(textNub)).getReportingUnit());
-             }
+                if (attend != null) {
+                    attend.setText(editListBeanList.get(Integer.valueOf(textNub)).getReportingUnit());
+                }
 
-             if(attend2!=null){
-                 attend2.setText(editListBeanList.get(Integer.valueOf(textNub)).getParticipantUnits());
-             }
+                if (attend2 != null) {
+                    attend2.setText(editListBeanList.get(Integer.valueOf(textNub)).getParticipantUnits());
+                }
      /*    if (fileListAdapter!=null){
              fileListAdapter.notifyDataSetChanged();
          }*/
@@ -1690,12 +1675,12 @@ private void sendFragmenFlag(){
      *//*    if (fileListAdapter!=null){
              fileListAdapter.notifyDataSetChanged();
          }*/
-         }
+            }
             if (files == null) {
                 return;
             }
             getShareFile(files);
-     }
+        }
 
 
     }
@@ -1703,7 +1688,7 @@ private void sendFragmenFlag(){
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG+toString(), "onCreate: "+textNub);
+        Log.d(TAG + toString(), "onCreate: " + textNub);
     }
 
     @Nullable
@@ -1720,7 +1705,7 @@ private void sendFragmenFlag(){
         iFilter.addDataScheme("file");
         getActivity().registerReceiver(mBroadcastReceiver, iFilter);
         socketShareFileManager = new SocketShareFileManager(mHandler);
-        if (!mReceiverTag){     //在注册广播接受者的时候 判断是否已被注册,避免重复多次注册广播
+        if (!mReceiverTag) {     //在注册广播接受者的时候 判断是否已被注册,避免重复多次注册广播
             myBroadcastReceiver = new MyBroadcastReceiver();
             IntentFilter filter = new IntentFilter();
             filter.addAction(constant.SHARE_FILE_BROADCAST);
@@ -1728,8 +1713,7 @@ private void sendFragmenFlag(){
         }
 
 
-
-      mySaveBroadcastReceiver = new MyBroadcastReceiver();
+        mySaveBroadcastReceiver = new MyBroadcastReceiver();
         IntentFilter filter3 = new IntentFilter();
         filter3.addAction(constant.SAVE_SEPARATELY_BROADCAST);
         getActivity().registerReceiver(mySaveBroadcastReceiver, filter3);
@@ -1774,17 +1758,17 @@ private void sendFragmenFlag(){
                     Log.d("requestCodeUr00000", Environment.getExternalStorageDirectory().getAbsolutePath() + "===" + Environment.getExternalStorageDirectory().toString() + "====" + Environment.getStorageState(file));
                     Log.d("requestCodeUrl111", uri.getScheme() + "===" + uri.getPath() + "==" + file.getName() + "++++++++++" + getFilePath(getActivity(), uri) + "===" + uri.getAuthority());
                     String endStr = file.getName().substring(file.getName().lastIndexOf(".") + 1);
-                    Log.d("requestCodeUr7788", " 文件类型=" + endStr + "    文件名字=" + file.getName() + "     "+getFilePath(getActivity(), uri));
-                    if ("jpg".equals(endStr) || "gif".equals(endStr) || "png".equals(endStr) || "jpeg".equals(endStr) || "bmp".equals(endStr)||endStr.equals("m4a") || endStr.equals("mp3") || endStr.equals("mid") ||
-                            endStr.equals("xmf") || endStr.equals("ogg") || endStr.equals("wav")||endStr.equals("3gp") || endStr.equals("mp4")||endStr.equals("ppt") || endStr.equals("pptx")||
-                            endStr.equals("xls") || endStr.equals("xlsx")||endStr.equals("doc") || endStr.equals("docx")||endStr.equals("pdf") || endStr.equals("txt")) {
+                    Log.d("requestCodeUr7788", " 文件类型=" + endStr + "    文件名字=" + file.getName() + "     " + getFilePath(getActivity(), uri));
+                    if ("jpg".equals(endStr) || "gif".equals(endStr) || "png".equals(endStr) || "jpeg".equals(endStr) || "bmp".equals(endStr) || endStr.equals("m4a") || endStr.equals("mp3") || endStr.equals("mid") ||
+                            endStr.equals("xmf") || endStr.equals("ogg") || endStr.equals("wav") || endStr.equals("3gp") || endStr.equals("mp4") || endStr.equals("ppt") || endStr.equals("pptx") ||
+                            endStr.equals("xls") || endStr.equals("xlsx") || endStr.equals("doc") || endStr.equals("docx") || endStr.equals("pdf") || endStr.equals("txt")) {
                         fileBean = new FileListBean(file.getName(), file.getPath(), "", "");
                         fileBean.setResImage(getIamge(endStr));
                         fileBean.setFile_type(getType(endStr));
                         fileBean.setSuffix(endStr);//上传文件后缀名和文件类型；setSuffix和setType所赋值内容一样。
                         fileBean.setType(getFileType(endStr));
                         fileBean.setNet(false);
-                        if (textNub!=null){
+                        if (textNub != null) {
                             fileBean.setPos(textNub);
                         }
                         copyFileBeans.add(fileBean);
@@ -1804,29 +1788,29 @@ private void sendFragmenFlag(){
                             }
                             }
                         }*/
-                        if (Hawk.contains("wuhulocal")){
-                            List<FileListBean> fileListBeans=Hawk.get("wuhulocal");
+                        if (Hawk.contains("wuhulocal")) {
+                            List<FileListBean> fileListBeans = Hawk.get("wuhulocal");
                             fileListBeans.add(fileBean);
-                            Hawk.put("wuhulocal",fileListBeans);
-                        }else {
-                            Hawk.put("wuhulocal",copyFileBeans);
+                            Hawk.put("wuhulocal", fileListBeans);
+                        } else {
+                            Hawk.put("wuhulocal", copyFileBeans);
 
                         }
 
                         //通知所有fragment 都更新对应的议题文件列表
                         sendFragmenFlag();
-                      //  fileBeans.add(fileBean);
+                        //  fileBeans.add(fileBean);
                         Message msg = new Message();
                         //  msg.obj = fileListBean;//可以是基本类型，可以是对象，可以是List、map等；
                         msg.what = 88;
                         mHandler.sendMessage(msg);
-                    }else {
+                    } else {
                         Toast.makeText(getActivity(), "请选择正确的文件格式", Toast.LENGTH_SHORT).show();
                         return;
                     }
                     // fileBean = new FileListBean(file.getName(), "/storage/84BE-981E/声学在图书馆智慧空间建设中的应用.docx", "", "");
 
-                   //复制文件到指定目录
+                    //复制文件到指定目录
                  /*   new Thread() {
                         @Override
                         public void run() {
@@ -1852,9 +1836,9 @@ private void sendFragmenFlag(){
                             Log.d("requestCodeUr2222", uri.getScheme() + "===" + uri.getPath() + "==" + file.getName() + "++++++++++" + getFilePath(getActivity(), uri) + "===" + uri.getAuthority());
                             String endStr = file.getName().substring(file.getName().lastIndexOf(".") + 1);
 
-                            if ("jpg".equals(endStr) || "gif".equals(endStr) || "png".equals(endStr) || "jpeg".equals(endStr) || "bmp ".equals(endStr)||endStr.equals("m4a") || endStr.equals("mp3") || endStr.equals("mid") ||
-                                    endStr.equals("xmf") || endStr.equals("ogg") || endStr.equals("wav")||endStr.equals("3gp") || endStr.equals("mp4")||endStr.equals("ppt") || endStr.equals("pptx")||
-                                    endStr.equals("xls") || endStr.equals("xlsx")||endStr.equals("doc") || endStr.equals("docx")||endStr.equals("pdf") || endStr.equals("txt")) {
+                            if ("jpg".equals(endStr) || "gif".equals(endStr) || "png".equals(endStr) || "jpeg".equals(endStr) || "bmp ".equals(endStr) || endStr.equals("m4a") || endStr.equals("mp3") || endStr.equals("mid") ||
+                                    endStr.equals("xmf") || endStr.equals("ogg") || endStr.equals("wav") || endStr.equals("3gp") || endStr.equals("mp4") || endStr.equals("ppt") || endStr.equals("pptx") ||
+                                    endStr.equals("xls") || endStr.equals("xlsx") || endStr.equals("doc") || endStr.equals("docx") || endStr.equals("pdf") || endStr.equals("txt")) {
                                 Log.d(TAG, "文件类型=" + endStr + "文件名字" + file.getName());
                                 fileBean = new FileListBean(file.getName(), file.getPath(), "", "");
                                 //复制文件到指定目录
@@ -1867,7 +1851,7 @@ private void sendFragmenFlag(){
                                 fileBean.setResImage(getIamge(endStr));
                                 fileBean.setFile_type(getType(endStr));
                                 fileBean.setNet(false);
-                                if (textNub!=null){
+                                if (textNub != null) {
                                     fileBean.setPos(textNub);
                                 }
                                 copyFileBeans.add(fileBean);
@@ -1888,21 +1872,21 @@ private void sendFragmenFlag(){
 
                                     }}
                                 }*/
-                                if (Hawk.contains("wuhulocal")){
-                                    List<FileListBean> fileListBeans=Hawk.get("wuhulocal");
+                                if (Hawk.contains("wuhulocal")) {
+                                    List<FileListBean> fileListBeans = Hawk.get("wuhulocal");
                                     fileListBeans.add(fileBean);
-                                    Hawk.put("wuhulocal",fileListBeans);
+                                    Hawk.put("wuhulocal", fileListBeans);
 
-                                }else {
-                                    Hawk.put("wuhulocal",copyFileBeans);
+                                } else {
+                                    Hawk.put("wuhulocal", copyFileBeans);
 
                                 }
-                               // fileBeans.add(fileBean);
+                                // fileBeans.add(fileBean);
                                 Message msg = new Message();
                                 //  msg.obj = fileListBean;//可以是基本类型，可以是对象，可以是List、map等；
                                 msg.what = 88;
                                 mHandler.sendMessage(msg);
-                            }else {
+                            } else {
                                 Toast.makeText(getActivity(), "请选择正确的文件格式", Toast.LENGTH_SHORT).show();
                                 return;
                             }
@@ -1940,9 +1924,9 @@ private void sendFragmenFlag(){
                 Log.d("requestCodeUr55555", Environment.getExternalStorageDirectory() + "/" + split[1]);
                 if ("primary".equalsIgnoreCase(type)) {
                     return Environment.getExternalStorageDirectory() + "/" + split[1];
-                }else if("home".equalsIgnoreCase(type)){
+                } else if ("home".equalsIgnoreCase(type)) {
                     return Environment.getExternalStorageDirectory() + "/documents/" + split[1];
-                }else {
+                } else {
                     return "/storage/" + split[0] + "/" + split[1];
                 }
 
@@ -1950,9 +1934,7 @@ private void sendFragmenFlag(){
                 final String id = DocumentsContract.getDocumentId(uri);
 
 
-
-
-      //=====================================================================================
+                //=====================================================================================
 
                 if (id != null && id.startsWith("raw:")) {
                     return id.substring(4);
@@ -1960,7 +1942,7 @@ private void sendFragmenFlag(){
 
                 uri = ContentUris.withAppendedId(
                         Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
-           return  getDataColumn(context, uri, null, null);
+                return getDataColumn(context, uri, null, null);
 
 
 /*
@@ -1989,7 +1971,6 @@ private void sendFragmenFlag(){
                 }
 
                 return destinationPath;*/
-
 
 
             } else if (isMediaDocument(uri)) {
@@ -2026,7 +2007,7 @@ private void sendFragmenFlag(){
                 cursor = context.getContentResolver()
                         .query(uri, projection, selection, selectionArgs, null);
                 int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                if (column_index<0||column_index>cursor.getColumnCount()){
+                if (column_index < 0 || column_index > cursor.getColumnCount()) {
 
 
                     return null;
@@ -2047,7 +2028,7 @@ private void sendFragmenFlag(){
     }
 
     public static boolean isDownloadsDocument(Uri uri) {
-        Log.d("isDownloadsDocument",uri.getAuthority());
+        Log.d("isDownloadsDocument", uri.getAuthority());
         return "com.android.providers.downloads.documents".equals(uri.getAuthority());
     }
 
@@ -2059,8 +2040,8 @@ private void sendFragmenFlag(){
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
 
-    private   String getDataColumn(Context context, Uri uri, String selection,
-                                       String[] selectionArgs) {
+    private String getDataColumn(Context context, Uri uri, String selection,
+                                 String[] selectionArgs) {
         Cursor cursor = null;
         String column = MediaStore.Images.Media.DATA;
         String[] projection = {column};
@@ -2130,10 +2111,10 @@ private void sendFragmenFlag(){
         if (mBroadcastReceiver != null) {
             getActivity().unregisterReceiver(mBroadcastReceiver);
         }
-        if (myBroadcastReceiver != null&&myBroadcastReceiver.isOrderedBroadcast()) {
+        if (myBroadcastReceiver != null && myBroadcastReceiver.isOrderedBroadcast()) {
             getActivity().unregisterReceiver(myBroadcastReceiver);
         }
-       if (mediaPlayer != null) {
+        if (mediaPlayer != null) {
             //mediaPlayer.stop();
             mediaPlayer.release();
         }
@@ -2170,14 +2151,14 @@ private void sendFragmenFlag(){
                                         + file.getPath().toString());
                             } else {
                                 String fileName = file.getName();
-                                 String[] fileNameAll=null;
+                                String[] fileNameAll = null;
 
-                                if (fileName.contains("-push")){
+                                if (fileName.contains("-push")) {
                                     fileNameAll = fileName.split("-push");
-                                }else if(fileName.contains("-share")){
+                                } else if (fileName.contains("-share")) {
                                     fileNameAll = fileName.split("-share");
                                 }
-                                Log.d("wuhuwuwhuwuhuwwhu   cvi", fileNameAll.length+"   "+fileNameAll[1]+"    "+fileNameAll[0]);
+                                Log.d("wuhuwuwhuwuhuwwhu   cvi", fileNameAll.length + "   " + fileNameAll[1] + "    " + fileNameAll[0]);
                                 fileName = fileNameAll[1];
                                 String pos = fileNameAll[0];
                                 String endStr = fileName.substring(fileName.lastIndexOf(".") + 1);
@@ -2187,6 +2168,7 @@ private void sendFragmenFlag(){
                                 Log.d("requestCodeUr555", uri.getScheme() + "===" + uri.getPath() + "==" + fileName);
                                 fileBean.setResImage(getIamge(endStr));
                                 fileBean.setFile_type(getType(endStr));
+                                fileBean.setFileMd5(Md5Util.getFileMD5(file));//MD5文件校验
                                 fileBean.setPos(pos);
                                 fileBean.setNet(false);
                                 fileBean.setSuffix(endStr);//上传文件后缀名和文件类型；setSuffix和setType所赋值内容一样。
@@ -2222,7 +2204,7 @@ private void sendFragmenFlag(){
                             return;
                         }
                         for (int i = 0; i < fbList.size(); i++) {
-                            Log.d("rfrfeewtwtt0000  ", "     textNub=" + textNub + "   " + fbList.get(i).getPos() + "");
+                            Log.d("rfrfeewtwtt0000  遍历分享文件夹", "     textNub=" + textNub + "   " + fbList.get(i).getPos() + "");
                             if (fbList.get(i).getPos().equals(textNub)) {
                                 for (int n = 0; n < shareFileBeans.size(); n++) {
                                     if (fbList.get(i).getFileName().equals(shareFileBeans.get(n).getName()) && shareFileBeans.get(n).getPos().equals(textNub)) {
@@ -2247,33 +2229,34 @@ private void sendFragmenFlag(){
             }
         }).start();
     }
+
     @Override
     public void onStart() {
         super.onStart();
-        Log.d(TAG+toString(), "onStart: ");
+        Log.d(TAG + toString(), "onStart: ");
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("onResume的的textNub=",textNub+"  isDeletOption="+ isDeletOption);
-        if(textNub==null){
+        Log.d("onResume的的textNub=", textNub + "  isDeletOption=" + isDeletOption);
+        if (textNub == null) {
             return;
         }
-        if (Integer.valueOf(textNub)==0){
+        if (Integer.valueOf(textNub) == 0) {
             listView_catalog.setVisibility(View.VISIBLE);
             file_ly.setVisibility(View.GONE);
 
-        }else {
+        } else {
             listView_catalog.setVisibility(View.GONE);
             file_ly.setVisibility(View.VISIBLE);
 
         }
-        int s=Integer.valueOf(textNub);
+        int s = Integer.valueOf(textNub);
         // s= s+1;
         // tittle_num.setText("议题"+s);
-        setTopicText(s+"");
-        String  strFilePath=fileShare;
+        setTopicText(s + "");
+        String strFilePath = fileShare;
         File path = new File(strFilePath);
         File[] files = path.listFiles();// 读取
 /*
@@ -2355,24 +2338,24 @@ private void sendFragmenFlag(){
     @Override
     public void onPause() {
         super.onPause();
-        Log.d(TAG+toString(), "onPause: ");
+        Log.d(TAG + toString(), "onPause: ");
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Log.d(TAG+toString(), "onStop: ");
+        Log.d(TAG + toString(), "onStop: ");
     }
 
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d(TAG+toString(), "onDestroy: ");
-        if (mySaveBroadcastReceiver!=null){
+        Log.d(TAG + toString(), "onDestroy: ");
+        if (mySaveBroadcastReceiver != null) {
             getActivity().unregisterReceiver(mySaveBroadcastReceiver);
         }
-        if (myCatalogBroadcastReceiver!=null){
+        if (myCatalogBroadcastReceiver != null) {
             getActivity().unregisterReceiver(myCatalogBroadcastReceiver);
         }
         if (mReceiverTag) {   //判断广播是否注册
@@ -2386,6 +2369,7 @@ private void sendFragmenFlag(){
     public String toString() {
         return textNub;
     }
+
     @Override
     public void onClick(View v) {
 /*        Intent intent;
@@ -2406,7 +2390,8 @@ private void sendFragmenFlag(){
         }*/
 
     }
-    public void showFileTransferDialog( ) {
+
+    public void showFileTransferDialog() {
         //自定义dialog显示布局
         inflate = LayoutInflater.from(getActivity()).inflate(R.layout.wuhu_file_progress_dialog, null);
         //自定义dialog显示风格
@@ -2437,21 +2422,21 @@ private void sendFragmenFlag(){
                 dialog.getWindow().getDecorView().setSystemUiVisibility(uiOptions);
             }
         });
-         progressBar=inflate.findViewById(R.id.progressBar);
-        completedView=inflate.findViewById(R.id.tasks_view);
-        result_ima=inflate.findViewById(R.id.result_ima);
+        progressBar = inflate.findViewById(R.id.progressBar);
+        completedView = inflate.findViewById(R.id.tasks_view);
+        result_ima = inflate.findViewById(R.id.result_ima);
         completedView.setVisibility(View.VISIBLE);
-        tips=inflate.findViewById(R.id.tips);
+        tips = inflate.findViewById(R.id.tips);
         result_ima.setVisibility(View.GONE);
         //获取当前Activity所在的窗体
         Window window = dialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
-        wlp.alpha=1.0f;
+        wlp.alpha = 1.0f;
         Display d = window.getWindowManager().getDefaultDisplay(); // 获取屏幕宽，高
-        wlp.gravity= Gravity.CENTER;
+        wlp.gravity = Gravity.CENTER;
         wlp.width = WindowManager.LayoutParams.WRAP_CONTENT;
         wlp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        Point size=new Point();
+        Point size = new Point();
         d.getSize(size);
         int width = size.x;
         int height = size.y;
@@ -2461,12 +2446,13 @@ private void sendFragmenFlag(){
         dialog.setOnTouchOutside(new MyDialog.onTouchOutsideInterFace() {
             @Override
             public void outSide() {
-                Log.d("sdfsdfdsff","路过~~~~~");
-              //  Toast.makeText(getActivity(),"弹框",Toast.LENGTH_SHORT).show();
+                Log.d("sdfsdfdsff", "路过~~~~~");
+                //  Toast.makeText(getActivity(),"弹框",Toast.LENGTH_SHORT).show();
             }
         });
         dialog.show();
     }
+
     /**
      * websocket发送数据至其他设备
      */
@@ -2479,31 +2465,33 @@ private void sendFragmenFlag(){
         String strJson = new Gson().toJson(bean);
         JWebSocketClientService.sendMsg(strJson);
     }
+
     /**
-     *
      * 判断某activity是否处于栈顶
+     *
      * @return true在栈顶 false不在栈顶
      */
-    private boolean isActivityTop(Class cls,Context context){
+    private boolean isActivityTop(Class cls, Context context) {
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         String name = manager.getRunningTasks(1).get(0).topActivity.getClassName();
         return name.equals(cls.getName());
     }
+
     private class MyBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent in) {
-       if (in.getAction().equals(constant.SHARE_FILE_BROADCAST)){
-         // initData();
+            if (in.getAction().equals(constant.SHARE_FILE_BROADCAST)) {
+                // initData();
           /* if (UserUtil.ISCHAIRMAN){
 
            }*/
 
-            File path = new File(fileShare);
-            File[] files = path.listFiles();// 读取
-            if (files == null) {
-                return;
-            }
-           getShareFile(files);
+                File path = new File(fileShare);
+                File[] files = path.listFiles();// 读取
+                if (files == null) {
+                    return;
+                }
+                getShareFile(files);
 
          /*   String filePath=in.getStringExtra("filePath");
             String flag=in.getStringExtra("flag");
@@ -2604,70 +2592,67 @@ private void sendFragmenFlag(){
                 getActivity().startActivity(intent);
             }
 */
-        }else if (in.getAction().equals(constant.SAVE_SEPARATELY_BROADCAST)){
-           String type=in.getStringExtra("refreshType");
+            } else if (in.getAction().equals(constant.SAVE_SEPARATELY_BROADCAST)) {
+                String type = in.getStringExtra("refreshType");
 
-           if (type.equals("1")){
-               fragmentLine.setBackgroundColor(Color.parseColor("#EA4318"));
+                if (type.equals("1")) {
+                    fragmentLine.setBackgroundColor(Color.parseColor("#EA4318"));
 
-           }else if (type.equals("2")){
-               fragmentLine.setBackgroundColor(Color.parseColor("#1D1D1D"));
-           }else if (type.equals("3")){
-               root_lin.setBackgroundResource(R.mipmap.bg_wuhu_home);
-           }
-           else if (type.equals("4")){
-               root_lin.setBackgroundResource(R.mipmap.bg_wuhu_home2);
-           }
-           else if (type.equals("5")){
-               root_lin.setBackgroundColor(Color.parseColor("#EBE9EA"));
-           }
-           else if (type.equals("6")){
-               root_lin.setBackgroundColor(Color.parseColor("#EFF4F8"));
-           }
-           else if (type.equals("7")){
-               root_lin.setBackgroundColor(Color.parseColor("#F2F8F5"));
+                } else if (type.equals("2")) {
+                    fragmentLine.setBackgroundColor(Color.parseColor("#1D1D1D"));
+                } else if (type.equals("3")) {
+                    root_lin.setBackgroundResource(R.mipmap.bg_wuhu_home);
+                } else if (type.equals("4")) {
+                    root_lin.setBackgroundResource(R.mipmap.bg_wuhu_home2);
+                } else if (type.equals("5")) {
+                    root_lin.setBackgroundColor(Color.parseColor("#EBE9EA"));
+                } else if (type.equals("6")) {
+                    root_lin.setBackgroundColor(Color.parseColor("#EFF4F8"));
+                } else if (type.equals("7")) {
+                    root_lin.setBackgroundColor(Color.parseColor("#F2F8F5"));
 
-           }else if (type.equals("8")) {
+                } else if (type.equals("8")) {
 
-               if (Hawk.contains("WuHuFragmentData")) {
-                   WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
-                   List<WuHuEditBean.EditListBean> editListBeanList = new ArrayList<>();
-                   if (wuHuEditBean.getEditListBeanList() == null || wuHuEditBean.getEditListBeanList().size() == 0) {
-                       return;
-                   }
-                   editListBeanList = wuHuEditBean.getEditListBeanList();
-                   topic.setText(editListBeanList.get(Integer.valueOf(textNub)).getSubTopics());
-                   attend.setText(editListBeanList.get(Integer.valueOf(textNub)).getReportingUnit());
-                   attend2.setText(editListBeanList.get(Integer.valueOf(textNub)).getParticipantUnits());
-                   tittle1.setText(wuHuEditBean.getTopics());
-                   tittle2.setText(wuHuEditBean.getTopic_type());
-               }
+                    if (Hawk.contains("WuHuFragmentData")) {
+                        WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
+                        List<WuHuEditBean.EditListBean> editListBeanList = new ArrayList<>();
+                        if (wuHuEditBean.getEditListBeanList() == null || wuHuEditBean.getEditListBeanList().size() == 0) {
+                            return;
+                        }
+                        editListBeanList = wuHuEditBean.getEditListBeanList();
+                        topic.setText(editListBeanList.get(Integer.valueOf(textNub)).getSubTopics());
+                        attend.setText(editListBeanList.get(Integer.valueOf(textNub)).getReportingUnit());
+                        attend2.setText(editListBeanList.get(Integer.valueOf(textNub)).getParticipantUnits());
+                        tittle1.setText(wuHuEditBean.getTopics());
+                        tittle2.setText(wuHuEditBean.getTopic_type());
+                    }
 
-           }
+                }
 
-       }else if (in.getAction().equals(constant.FRESH_CATalog_BROADCAST)){
-           if (StringUtils.isEmpty(textNub)){
-               return;
-           }
-           if (Integer.valueOf(textNub)==0){
-               listView_catalog.setVisibility(View.VISIBLE);
-               file_ly.setVisibility(View.GONE);
-           }else {
-               listView_catalog.setVisibility(View.GONE);
-               file_ly.setVisibility(View.VISIBLE);
-           }
-           Log.d("fdgsgsgsgsg",Hawk.contains("WuHuFragmentData")+"");
-           if (Hawk.contains("WuHuFragmentData")){
-               wuHuEditBeanList.clear();
-               WuHuEditBean  wuHuEditBean= Hawk.get("WuHuFragmentData");
-               wuHuEditBeanList=wuHuEditBean.getEditListBeanList();
-               if (wuHuEditBeanList==null||wuHuEditBeanList.size()==0) {
-                   return;
-               }
-               wuHuCalalogListAdapter.setWuHuEditBeanList(wuHuEditBeanList);
-               wuHuCalalogListAdapter.notifyDataSetChanged();
-           }
+            } else if (in.getAction().equals(constant.FRESH_CATalog_BROADCAST)) {
+                if (StringUtils.isEmpty(textNub)) {
+                    return;
+                }
+                if (Integer.valueOf(textNub) == 0) {
+                    listView_catalog.setVisibility(View.VISIBLE);
+                    file_ly.setVisibility(View.GONE);
+                } else {
+                    listView_catalog.setVisibility(View.GONE);
+                    file_ly.setVisibility(View.VISIBLE);
+                }
+                Log.d("fdgsgsgsgsg", Hawk.contains("WuHuFragmentData") + "");
+                if (Hawk.contains("WuHuFragmentData")) {
+                    wuHuEditBeanList.clear();
+                    WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
+                    wuHuEditBeanList = wuHuEditBean.getEditListBeanList();
+                    if (wuHuEditBeanList == null || wuHuEditBeanList.size() == 0) {
+                        return;
+                    }
+                    wuHuCalalogListAdapter.setWuHuEditBeanList(wuHuEditBeanList);
+                    wuHuCalalogListAdapter.notifyDataSetChanged();
+                }
 
+            }
         }
     }
-}}
+}

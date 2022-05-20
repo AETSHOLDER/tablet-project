@@ -54,6 +54,8 @@ public class constant {
     /**
      * websocket 字段定义
      */
+    public final static String FILEMD5PUSH = "doesitexist";//查询推送文件是否存在
+    public final static String FILEMD5SHARE = "Isitunique";//查询分享文件是否存在
     public final static String QUERYVOTE = "queryVote";//查询投票数据
     public final static String REFRASHWuHUSIGLEDATA = "refreshdata";//更新单个芜湖数据
     public final static String WUHUADDFRAGMENT = "addfragments";//普通参会人员新增芜湖fragment
