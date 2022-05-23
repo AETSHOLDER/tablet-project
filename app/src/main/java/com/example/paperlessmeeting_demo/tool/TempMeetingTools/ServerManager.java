@@ -6,6 +6,7 @@ import android.util.Log;
 import com.example.paperlessmeeting_demo.WuHuLocalFileBean;
 import com.example.paperlessmeeting_demo.bean.AttendeBean;
 import com.example.paperlessmeeting_demo.bean.FileBean;
+import com.example.paperlessmeeting_demo.bean.SharePushFileBean;
 import com.example.paperlessmeeting_demo.bean.TempWSBean;
 import com.example.paperlessmeeting_demo.bean.VoteListBean;
 import com.example.paperlessmeeting_demo.bean.WuHuDeleteFragmentBean;
@@ -241,8 +242,6 @@ public class ServerManager {
                 wsebean1.setBody(wuHuEditBean);
                 editListBeans.clear();
                 editListBeans.addAll(wuHuEditBean.getEditListBeanList());
-
-
                 String strJson = new Gson().toJson(wsebean1);
                 SendMessageToAll(strJson);
 
@@ -333,8 +332,8 @@ public class ServerManager {
         // 文件推送时查询是否当前议题有该文件
         if(message.contains(constant.FILEMD5PUSH)){
             try {
-                TempWSBean<FileBean> wsebean = new Gson().fromJson(message, new TypeToken<TempWSBean<FileBean>>(){}.getType());
-                FileBean fileBean = wsebean.getBody();
+                TempWSBean< WuHuEditBean.EditListBean.FileListBean> wsebean = new Gson().fromJson(message, new TypeToken<TempWSBean< WuHuEditBean.EditListBean.FileListBean>>(){}.getType());
+                WuHuEditBean.EditListBean.FileListBean fileBean = wsebean.getBody();
                 TempWSBean wsebean1 = new TempWSBean();
                 wsebean1.setReqType(1);
                 wsebean1.setUserMac_id("");
@@ -350,8 +349,8 @@ public class ServerManager {
         // 文件分享时查询是否当前议题有该文件
         if(message.contains(constant.FILEMD5SHARE)){
             try {
-                TempWSBean<FileBean> wsebean = new Gson().fromJson(message, new TypeToken<TempWSBean<FileBean>>(){}.getType());
-                FileBean fileBean = wsebean.getBody();
+                TempWSBean< WuHuEditBean.EditListBean.FileListBean> wsebean = new Gson().fromJson(message, new TypeToken<TempWSBean< WuHuEditBean.EditListBean.FileListBean>>(){}.getType());
+                WuHuEditBean.EditListBean.FileListBean fileBean = wsebean.getBody();
                 TempWSBean wsebean1 = new TempWSBean();
                 wsebean1.setReqType(1);
                 wsebean1.setUserMac_id("");
@@ -369,6 +368,40 @@ public class ServerManager {
             SendMessageToAll(message);
         }
 
+        // 文件分享时回应发送端是否当前议题有该文件
+        if(message.contains(constant.FILERESPONDSHARE)){
+            try {
+                TempWSBean<SharePushFileBean> wsebean = new Gson().fromJson(message, new TypeToken<TempWSBean< SharePushFileBean>>(){}.getType());
+                SharePushFileBean sharePushFileBean = wsebean.getBody();
+                TempWSBean wsebean1 = new TempWSBean();
+                wsebean1.setReqType(1);
+                wsebean1.setUserMac_id("");
+                wsebean1.setPackType(constant.FILERESPONDSHARE);
+                wsebean1.setBody(sharePushFileBean);
+                String strJson = new Gson().toJson(wsebean1);
+                SendMessageToAll(strJson);
+
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        // 文件推送时回应发送端是否当前议题有该文件
+        if(message.contains(constant.FILERESPONDPUSH)){
+            try {
+                TempWSBean< SharePushFileBean> wsebean = new Gson().fromJson(message, new TypeToken<TempWSBean< SharePushFileBean>>(){}.getType());
+                SharePushFileBean sharePushFileBean = wsebean.getBody();
+                TempWSBean wsebean1 = new TempWSBean();
+                wsebean1.setReqType(1);
+                wsebean1.setUserMac_id("");
+                wsebean1.setPackType(constant.FILERESPONDPUSH);
+                wsebean1.setBody(sharePushFileBean);
+                String strJson = new Gson().toJson(wsebean1);
+                SendMessageToAll(strJson);
+
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         EventMessage msg = new EventMessage(MessageReceiveType.MessageServer,message);
         EventBus.getDefault().post(msg);
     }

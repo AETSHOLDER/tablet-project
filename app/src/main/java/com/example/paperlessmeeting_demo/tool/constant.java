@@ -21,6 +21,7 @@ public class constant {
     public final static String DOWNLOAD_PATH = "/meetings/";
     public final static String COPY_PATH = "/copy/";
 
+    public final static String FILEHAVEIT = "HaveIt";//推送分享文件有
 
     public final static String meeting_role = "meeting_role";  //  会议角色
     public final static String role = "role";          //  公司角色
@@ -57,6 +58,10 @@ public class constant {
      */
     public final static String FILEMD5PUSH = "doesitexist";//查询推送文件是否存在
     public final static String FILEMD5SHARE = "Isitunique";//查询分享文件是否存在
+
+    public final static String FILERESPONDSHARE = "responpdf";//回应分享文件是否存在
+    public final static String FILERESPONDPUSH = "whetherornot";//回应推送文件是否存在
+
     public final static String QUERYVOTE = "queryVote";//查询投票数据
     public final static String REFRASHWuHUSIGLEDATA = "refreshdata";//更新单个芜湖数据
     public final static String WUHUADDFRAGMENT = "addfragments";//普通参会人员新增芜湖fragment
@@ -97,6 +102,8 @@ public class constant {
     public final static String VOTE_FILE = "/voteFile/";//临时会议投票文件夹
     public final static int SHARE_PORT = 9999;////临时会议分享的文件端口
     public final static String SHARE_FILE_BROADCAST = "sharefile";////临时会议分享文件成功后，通知会议更新文件列表
+    public static String WUHUSHARE = "-share";//芜湖分享文件区分议题
+    public static String WUHUPUSH = "-push";//芜湖推送文件区分议题
     public final static String RUSH_VOTE_LIST_BROADCAST = "reshvotelistui";////临时会议分享文件成功后，通知会议更新投票列表
     public final static String RUSH_SIGN_LIST_BROADCAST = "reshsignlistui";////临时会议分享文件成功后，通知会议更新投票列表
     public final static String SEE_IMA_BROADCAST = "seeima";////临时会议查看投票大图
@@ -126,15 +133,15 @@ public class constant {
     public final static String micIP = "micIP";      // mic的ip地址
     public final static String micSta = "micSta";
     /*
-    * 签批广播
-    * */
+     * 签批广播
+     * */
     public final static String MEMBER_SIGN_BROADCAST = "memberSign";
     /**
      * 写入权限的请求code,提示语，和权限码
      */
     public final static int WRITE_PERMISSION_CODE1 = 0x0244;
     public final static String WRITE_PERMISSION_TIP = "为了正常使用，请允许一下权限!";
-    public final static String[] PERMS_WRITE = {Manifest.permission.READ_PHONE_STATE,Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO, Manifest.permission.INTERNET, Manifest.permission.READ_EXTERNAL_STORAGE
+    public final static String[] PERMS_WRITE = {Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO, Manifest.permission.INTERNET, Manifest.permission.READ_EXTERNAL_STORAGE
     };
     public final static String[] PERMS_WRITE1 = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET
     };

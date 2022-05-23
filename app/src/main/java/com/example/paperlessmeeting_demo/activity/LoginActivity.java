@@ -229,10 +229,10 @@ public class LoginActivity extends BaseActivity  {
         WuHuEditBean wuHuEditBean=new WuHuEditBean();
         Hawk.put("WuHuFragmentData",wuHuEditBean);*/
       //芜湖上传本地文件进行分享时由copy到一个文件夹改为Hawk储存
-        if (Hawk.contains("wuhulocal")){
+      /*  if (Hawk.contains("wuhulocal")){
 
             Hawk.delete("wuhulocal");
-        }
+        }*/
        agendaRl=(RelativeLayout) findViewById(R.id.agenda_rl);
        loginLeft=(LinearLayout) findViewById(R.id.login_left);
        //创建分享 添加本地，网络文件文件夹
@@ -700,12 +700,12 @@ public class LoginActivity extends BaseActivity  {
          Hawk.put("isFirst",true);
         }
      //文件关联到对应的议题 两个Hawk  wuhulocal  WuHuLocalFileBean
-        if (Hawk.contains("wuhulocal")){
+       /* if (Hawk.contains("wuhulocal")){
             Hawk.delete("wuhulocal");
         }
         if (Hawk.contains("WuHuLocalFileBean")){
             Hawk.delete("WuHuLocalFileBean");
-        }
+        }*/
 
         UserUtil.isTempMeeting = false;
         // 因为init页面会抢夺回调，所以返回后再次回调
@@ -720,16 +720,16 @@ public class LoginActivity extends BaseActivity  {
         loginLeft.setVisibility(View.VISIBLE);
         name.setVisibility(View.INVISIBLE);
         //app每次进入会议先删除分享、推送、签批，投票的图
-        deleteDirWihtFile(new File(fileShare));
-        deleteDirWihtFile(new File(COPY_PATH));
+     /*   deleteDirWihtFile(new File(fileShare));
+        deleteDirWihtFile(new File(COPY_PATH));*/
         deleteDirWihtFile(new File(VOTE_FILE));
         deleteDirWihtFile(new File(netFilePath));
-        if (Hawk.contains("wuhulocal")){
+      /*  if (Hawk.contains("wuhulocal")){
 
             Hawk.delete("wuhulocal");
-        }
-        List<FileListBean> copyFileBeans = new ArrayList<>();//本地上传得到的文件集合
-        Hawk.put("wuhulocal",copyFileBeans);
+        }*/
+      /*  List<FileListBean> copyFileBeans = new ArrayList<>();//本地上传得到的文件集合
+        Hawk.put("wuhulocal",copyFileBeans);*/
         // 重新获取一次会议信息
 
 //        requestRunable = new Runnable() {
