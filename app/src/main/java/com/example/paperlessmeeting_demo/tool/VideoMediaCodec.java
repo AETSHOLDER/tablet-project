@@ -3,10 +3,14 @@ package com.example.paperlessmeeting_demo.tool;
 import android.annotation.TargetApi;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
+import android.media.MediaCodecList;
 import android.media.MediaFormat;
 import android.os.Build;
+import android.util.Log;
 
 import com.example.paperlessmeeting_demo.util.BlackListHelper;
+
+import java.util.Arrays;
 
 
 @TargetApi(18)
@@ -22,10 +26,9 @@ public class VideoMediaCodec {
 //        }
         MediaFormat format = MediaFormat.createVideoFormat(videoConfiguration.mime, videoWidth, videoHeight);
         //设置颜色格式
-        format.setInteger(MediaFormat.KEY_COLOR_FORMAT,
-                MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
+        format.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
         //设置比特率(设置码率，通常码率越高，视频越清晰)
-        format.setInteger(MediaFormat.KEY_BIT_RATE, 8* 1920 * 1080);
+        format.setInteger(MediaFormat.KEY_BIT_RATE, 8* 1920 * 1200);
       //  format.setInteger(MediaFormat.KEY_BIT_RATE, videoConfiguration.maxBps * 1024);
         int fps = videoConfiguration.fps;
         //设置摄像头预览帧率
@@ -70,5 +73,40 @@ public class VideoMediaCodec {
     public static int getVideoSize(int size) {
         int multiple = (int) Math.ceil(size / 16.0);
         return multiple * 16;
+    }
+
+    // 既然不同的手机支持的KEY_COLOR_FORMAT 不一样，这里就需要动态的考虑先获取到手机可支持的颜色格式值，在进行设置，如下代码也是参考网上的资料。
+    private static int getSupportColorFormat() {
+        int numCodecs = MediaCodecList.getCodecCount();
+        MediaCodecInfo codecInfo = null;
+        for (int i = 0; i < numCodecs && codecInfo == null; i++) {
+            MediaCodecInfo info = MediaCodecList.getCodecInfoAt(i);
+            if (!info.isEncoder()) {
+                continue;
+            }
+            String[] types = info.getSupportedTypes();
+            boolean found = false;
+            for (int j = 0; j < types.length && !found; j++) {
+                if (types[j].equals("video/avc")) {
+                    Log.d("编码器VIdeoMediaCodec", "found");
+                    found = true;
+                }
+            }
+            if (!found)
+                continue;
+            codecInfo = info;
+        }
+        Log.e("AvcEncoder", "Found " + codecInfo.getName() + " supporting " + "video/avc");
+        // Find a color profile that the codec supports
+        MediaCodecInfo.CodecCapabilities capabilities = codecInfo.getCapabilitiesForType("video/avc");
+        Log.e("AvcEncoder",
+                "length-" + capabilities.colorFormats.length + "==" + Arrays.toString(capabilities.colorFormats));
+        for (int i = 0; i < capabilities.colorFormats.length; i++) {
+            Log.d("编码器VIdeoMediaCodec", "MediaCodecInfo COLOR FORMAT :" + capabilities.colorFormats[i]);
+            if ((capabilities.colorFormats[i] == MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar) || (capabilities.colorFormats[i] == MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420Planar)) {
+                return capabilities.colorFormats[i];
+            }
+        }
+        return MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420Flexible;
     }
 }

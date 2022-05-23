@@ -213,8 +213,9 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
 
         for (String msg : UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr){
             List<String> ipcodeInfo = FLUtil.dealUDPMsg(msg);
-
-            stringList.add(ipcodeInfo.get(1));
+            // 里面包含 ip code/1
+            String[] code_idnex = ipcodeInfo.get(1).split("/");
+            stringList.add(code_idnex[0]);
         }
 //        ipcodeInfo = FLUtil.dealUDPMsg(UDPBroadcastManager.getInstance().MythdReceive.receiveMsg);
 //        stringList.addAll(ipcodeInfo);
@@ -401,8 +402,9 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
 
                 for (String msg : UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr){
                     List<String> ipcodeInfo = FLUtil.dealUDPMsg(msg);
-
-                    stringList.add(ipcodeInfo.get(1));
+                    // 里面包含 ip code/1
+                    String[] code_idnex = ipcodeInfo.get(1).split("/");
+                    stringList.add(code_idnex[0]);
                 }
 //
 

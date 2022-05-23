@@ -7,6 +7,7 @@ import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ServerHandshake;
 
 import java.net.URI;
+import java.nio.ByteBuffer;
 
 public class JWebSocketClient extends WebSocketClient {
     public JWebSocketClient(URI serverUri) {
@@ -23,10 +24,17 @@ public class JWebSocketClient extends WebSocketClient {
         Log.e("JWebSocketClient", "onMessage()");
     }
 
+
+    @Override
+    public void onMessage(ByteBuffer bytes) {
+        super.onMessage(bytes);
+    }
+
     @Override
     public void onClose(int code, String reason, boolean remote) {
         Log.e("JWebSocketClient", "onClose()");
     }
+
 
     @Override
     public void onError(Exception ex) {

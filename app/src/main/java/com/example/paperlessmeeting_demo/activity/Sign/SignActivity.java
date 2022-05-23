@@ -13,9 +13,12 @@ import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
 import android.media.Image;
 import android.media.ImageReader;
+import android.media.MediaCodecInfo;
+import android.media.MediaFormat;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -38,10 +41,18 @@ import com.example.paperlessmeeting_demo.bean.UserBehaviorBean;
 import com.example.paperlessmeeting_demo.sharefile.SocketShareFileManager;
 import com.example.paperlessmeeting_demo.tool.CVIPaperDialogUtils;
 import com.example.paperlessmeeting_demo.tool.FLUtil;
+import com.example.paperlessmeeting_demo.tool.ScreenTools.controll.ScreenImageApi;
+import com.example.paperlessmeeting_demo.tool.ScreenTools.controll.ScreenVideoController;
+import com.example.paperlessmeeting_demo.tool.ScreenTools.controll.sender.StreamController;
+import com.example.paperlessmeeting_demo.tool.ScreenTools.controll.sender.TcpPacker;
+import com.example.paperlessmeeting_demo.tool.ScreenTools.controll.sender.WSSender;
 import com.example.paperlessmeeting_demo.tool.StoreUtil;
+import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.JWebSocketClient;
+import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.JWebSocketClientService;
 import com.example.paperlessmeeting_demo.tool.TimeUtils;
 import com.example.paperlessmeeting_demo.tool.ToastUtils;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
+import com.example.paperlessmeeting_demo.tool.VideoConfiguration;
 import com.example.paperlessmeeting_demo.tool.VideoEncoderUtil;
 import com.example.paperlessmeeting_demo.tool.constant;
 import com.example.paperlessmeeting_demo.widgets.FloatingActionsMenu;
@@ -160,6 +171,9 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     private boolean isScreen = false;
     private static final int ACTIVITY_RESULT_CODE_SCREEN = 110;
     private VideoEncoderUtil videoEncoder;
+    private StreamController mStreamController;
+    private WSSender tcpSender;
+    private VideoConfiguration mVideoConfiguration;
 
 
     private String url;
@@ -282,7 +296,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void onClick(View view) {
                 if(isScreen){
-                    ToastUtils.showShort("当前正在同屏!");
+                    ToastUtils.showShort("当前正在同屏,请先结束同屏!");
                     return;
                 }
 
@@ -377,46 +391,41 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
         });
 
         // 同屏
+        if(UserUtil.ISCHAIRMAN){
+            sign_screen.setVisibility(View.VISIBLE);
+        }else {
+            sign_screen.setVisibility(View.GONE);
+        }
         sign_screen.setSelected(false);
         sign_screen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (Build.MANUFACTURER.equalsIgnoreCase("XIAOMI")) {
+                    //
+                    ToastUtils.showShort("不支持小米机型投屏!");
+                    return;
+                }
+
                 sign_screen.setSelected(!sign_screen.isSelected());
                 isScreen = sign_screen.isSelected();
                 String text = sign_screen.isSelected() ? "退出同屏" : "同屏";
                 sign_screen.setText(text);
 
-                Thread sendThread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            DatagramSocket socket = new DatagramSocket();
-                            String str = constant.START_SHARE_SCEEN;
-                            ;
-                            byte[] sendStr = str.getBytes();
-                            InetAddress address = InetAddress.getByName(constant.EXTRAORDINARY_MEETING_INETADDRESS);
-                            DatagramPacket packet = new DatagramPacket(sendStr, sendStr.length, address, constant.EXTRAORDINARY_MEETING_PORT);
-                            socket.send(packet);
-                            socket.close();
-                        } catch (SocketException e) {
-                            e.printStackTrace();
-                        } catch (UnknownHostException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                if(sign_screen.isSelected()){
+                    JWebSocketClientService.sendMsg(constant.START_SHARE_SCEEN);
+                    try {
+                        Thread.sleep(1000);//休眠1秒，保证其他设备有足够的时间打开同屏界面
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                });
-                sendThread.start();
-                try {
-                    Thread.sleep(2000);//休眠2秒，保证其他设备有足够的时间打开同屏界面
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    mediaProjectionManager = (MediaProjectionManager) getApplication().getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+                    Intent captureIntent = mediaProjectionManager.createScreenCaptureIntent();
+                    startActivityForResult(captureIntent, ACTIVITY_RESULT_CODE_SCREEN);
+                }else {
+//                    videoEncoder.stop();
+                    mStreamController.stop();
+                    JWebSocketClientService.sendMsg(constant.FINISH_SHARE_SCEEN);
                 }
-                mediaProjectionManager = (MediaProjectionManager)
-                        getApplication().getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-                Intent captureIntent = mediaProjectionManager.createScreenCaptureIntent();
-                startActivityForResult(captureIntent, ACTIVITY_RESULT_CODE_SCREEN);
             }
         });
 
@@ -734,10 +743,32 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
         }
         //  同屏
         else if(requestCode == ACTIVITY_RESULT_CODE_SCREEN) {
-            MediaProjection mediaProjection = mediaProjectionManager.getMediaProjection(resultCode, data);
-            videoEncoder = new VideoEncoderUtil(mediaProjection, "");
-            videoEncoder.start();
+            mediaProjection = mediaProjectionManager.getMediaProjection(resultCode, data);
+//            videoEncoder = new VideoEncoderUtil(mediaProjection, "");
+//            videoEncoder.start();
+
+            startController(mediaProjection);
         }
+    }
+
+    /**
+     * 开始录制屏幕
+     */
+    public void startController(MediaProjection mediaProjection) {
+//        ScreenVideoController screenVideoController = new ScreenVideoController(mMediaProjectionManage, resultCode, data);
+        ScreenVideoController screenVideoController = new ScreenVideoController(mediaProjection);
+        mStreamController = new StreamController(screenVideoController);
+        TcpPacker packer = new TcpPacker();
+        tcpSender = new WSSender();
+//        tcpSender.setSenderListener(this);
+        tcpSender.setMianCmd(ScreenImageApi.RECORD.MAIN_CMD);
+        tcpSender.setSendBody(constant.CVI_PAPER_SCREEN_DATA);
+        mVideoConfiguration = new VideoConfiguration.Builder().setSize(1920, 1200).build();
+        mStreamController.setVideoConfiguration(mVideoConfiguration);
+        mStreamController.setPacker(packer);
+        mStreamController.setSender(tcpSender);
+        mStreamController.start();
+        tcpSender.openConnect();
     }
     /**
      * @param view 需要截取图片的view

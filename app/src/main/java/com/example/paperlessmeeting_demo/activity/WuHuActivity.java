@@ -320,8 +320,14 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                             Activity topActivity = (Activity) ActivityUtils.getTopActivity();
                             if (topActivity != null) {
                                 // 如果是在签批内，先关闭，再进入,否则未销毁tbs,会一直显示加载中(看情况添加用户提示)
-                                if (topActivity.getLocalClassName().contains("SignActivity")) {
-                                    SignActivity signActivity = (SignActivity) topActivity;
+                                if(topActivity.getLocalClassName().contains("SignActivity")){
+                                    // 防止前一个打开签批的立即结束
+                                    try {
+                                        Thread.sleep(100);
+                                    }catch (Exception e){
+                                        e.printStackTrace();
+                                    }
+                                    SignActivity signActivity = (SignActivity)topActivity;
                                     signActivity.clearData();
                                     topActivity.finish();
                                     try {
@@ -399,7 +405,36 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                 case 5:
                     Toast.makeText(WuHuActivity.this, "文件发送成功哈哈哈哈！", Toast.LENGTH_SHORT).show();
                     break;
+                case 120:
+//                    selfIp = (String) msg.obj;
+//                    if (Hawk.contains("SelfIpAddress")) {
+//                        stIp = Hawk.get("SelfIpAddress");
+//                        if (selfIp.equals(stIp)) {
+//                            //    delayBtn.setVisibility(View.VISIBLE);
+//                            return;
+//                        }
+//                    }
+//                    String  isScrenn="";
+////                    if (Hawk.contains("isSameScreen")){
+////                        isScrenn=Hawk.get("isSameScreen");
+////                    }
+////                    if ("1".equals(isScrenn)){
+//                        Intent inte = new Intent(WuHuActivity.this, ScreenReceiveActivity.class);
+//                        startActivity(inte);
+////                    }
 
+                    break;
+                case 911:
+//                    selfIp = (String) msg.obj;
+//                    if (Hawk.contains("SelfIpAddress")) {
+//                        stIp = Hawk.get("SelfIpAddress");
+//                        if (selfIp.equals(stIp)) {
+//                            //   delayBtn.setVisibility(View.GONE);
+//                            return;
+//                        }
+//                    }
+
+                    break;
             }
 
 
@@ -421,7 +456,22 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
         registerReceiver(myRefreshBroadcastReceiver, filter2);*/
 
 
-        mycatalogBroadcastReceiver = new MyBroadcastReceiver();
+//        List<String> aaa = new ArrayList<>();
+//        aaa.add("111");
+//        aaa.add("222");
+//        aaa.add("333");
+//
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                for (int i=0;i<aaa.size();i++){
+//                    Log.e("1111","aa=="+aaa.get(4));
+//                }
+//            }
+//        }, 5000);
+
+
+            mycatalogBroadcastReceiver = new MyBroadcastReceiver();
         IntentFilter filter4 = new IntentFilter();
         filter4.addAction(constant.CHANGE_CATALOG_BROADCAST);
         registerReceiver(mycatalogBroadcastReceiver, filter4);
@@ -1165,6 +1215,17 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
         }
         //  client端接收到信息
         if (message.getType().equals(MessageReceiveType.MessageClient)) {
+            if(message.getMessage().contains(constant.START_SHARE_SCEEN)){
+                if(UserUtil.ISCHAIRMAN){
+                    return;
+                }
+                Intent inte = new Intent(WuHuActivity.this, ScreenReceiveActivity.class);
+                startActivity(inte);
+            }else if(message.getMessage().contains(constant.FINISH_SHARE_SCEEN)){
+                Intent in = new Intent();
+                in.setAction(constant.FINISH_SHARE_SCREEN_BROADCAST);
+                sendBroadcast(in);
+            }else
             // 查询议题列表信息
             if (message.getMessage().contains(constant.WUHUADDFRAGMENT)) {
                 Log.e("onReceiveMsg11111: ", message.toString());

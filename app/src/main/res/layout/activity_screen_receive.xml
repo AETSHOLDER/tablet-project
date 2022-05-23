@@ -6,12 +6,12 @@
     <TextView
         android:id="@+id/tv_client_device_name"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="45dp"
         android:background="#e0000000"
-        android:text=""
+        android:text="正在接受同屏"
         android:textColor="#fff"
         android:gravity="center"
-        android:textSize="20px" />
+        android:textSize="38px" />
 
     <SurfaceView
         android:id="@+id/screen_share_re_surface_view"
