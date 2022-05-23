@@ -1,7 +1,5 @@
 package com.example.paperlessmeeting_demo.sharefile;
 
-import static com.example.paperlessmeeting_demo.tool.constant.WUHUPUSH;
-
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
@@ -144,9 +142,9 @@ public class SocketShareFileManager {
             Log.d("fenxiasng", "savePath==" + savePath+"fileName="+fileName);
             if (fileName.contains(signFlag)){
                 SendMessage(101, "接收完成:" + fileName, 0);
-            }else if (fileName.contains(constant.WUHUPUSH)){
+            }else if (fileName.contains(pushFlag)){
                 SendMessage(88, savePath, 0);
-            }else if (fileName.contains(constant.WUHUSHARE)){
+            }else if (fileName.contains(shareFlag)){
                 SendMessage(33, savePath, 0);
             }
 
@@ -216,10 +214,10 @@ public class SocketShareFileManager {
                 OutputStreamWriter outputWriter = new OutputStreamWriter(outputName);
                 BufferedWriter bwName = new BufferedWriter(outputWriter);
                 if (actionType.equals("1")){
-                    bwName.write(flag+constant.WUHUSHARE+fileName.get(i));
+                    bwName.write(flag+"-share"+fileName.get(i));
                 }else if (actionType.equals("2")){
 
-                    bwName.write(flag+constant.WUHUPUSH+fileName.get(i));
+                    bwName.write(flag+"-push"+fileName.get(i));
                 }
 
 
