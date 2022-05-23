@@ -216,10 +216,21 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                     int flag = msg.arg1;
                     int flag2 = msg.arg2;
                     String filePath1 = (String) msg.obj;
+                    File fileShare = new File(filePath1);
+                    String fileShareName = fileShare.getName();
+                    String posShare;
+                    if (fileShareName.contains(constant.WUHUSHARE)) {
+                        String[] fileNameAll = fileShareName.split(constant.WUHUSHARE);
+                        fileShareName = fileNameAll[1];
+                        posShare = fileNameAll[0];
+                    } else {
+                        posShare = "-1";
+                    }
+
                     Intent intent1 = new Intent();
                     Bundle bundle1 = new Bundle();
                     bundle1.putString("flag", "1");
-
+                    bundle1.putString("topicPos", posShare);
                     bundle1.putString("filePath", filePath1);
                     intent1.putExtras(bundle1);
                     intent1.setAction(constant.SHARE_FILE_BROADCAST);
@@ -237,23 +248,20 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                     String filePath = (String) msg.obj;
                     Intent intent = new Intent();
                     Bundle bundle = new Bundle();
-                    bundle.putString("flag", "2");
-                    bundle.putString("filePath", filePath);
-                    intent.putExtras(bundle);
-                    intent.setAction(constant.SHARE_FILE_BROADCAST);
-                    sendBroadcast(intent);
+
                     FileListBean fileBean;
                     File file = new File(filePath);
                     String fileName = file.getName();
                     String endStr = fileName.substring(fileName.lastIndexOf(".") + 1);
-
-                    if (fileName.contains("-push")) {
-                        String[] fileNameAll = fileName.split("-push");
+                    String pos;
+                    if (fileName.contains(constant.WUHUPUSH)) {
+                        String[] fileNameAll = fileName.split(constant.WUHUPUSH);
                         fileName = fileNameAll[1];
-                        String pos = fileNameAll[0];
+                         pos = fileNameAll[0];
                         fileBean = new FileListBean(fileName, file.getPath(), "", "");
                     } else {
                         fileBean = new FileListBean(file.getName(), file.getPath(), "", "");
+                        pos="-1";
                     }
 
                     Uri uri = Uri.fromFile(file);
@@ -261,18 +269,12 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                     fileBean.setFile_type(getType(endStr));
                     fileBean.setNet(false);
                     fileBean.setSuffix(endStr);//上传文件后缀名和文件类型；setSuffix和setType所赋值内容一样。
-                    //  fileBean.setType(endStr);
-                  /*  if (flag .equals("1")) {
-                        return;
-                    }
-                    if (StringUtils.isEmpty(pos)){
-                        return;
-                    }
-                    if (!textNub.equals(pos)){
-                        return;
-                    }*/
-
-
+                    bundle.putString("flag", "2");
+                    bundle.putString("filePath", filePath);
+                    bundle.putString("topicPos", pos);
+                    intent.putExtras(bundle);
+                    intent.setAction(constant.SHARE_FILE_BROADCAST);
+                    sendBroadcast(intent);
                     if (fileBean.getFile_type().equals("3")) {
                         //防止普通参会人员重复打开页面
                     /*    if ( isActivityTop(ActivityImage.class,WuHuActivity.this)){
@@ -435,6 +437,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
         mPagerAdapter = new PagerAdapter(getSupportFragmentManager(), mTestFragments);
         mViewPager.setAdapter(mPagerAdapter);
         mPagerAdapter.notifyDataSetChanged();
+       mViewPager.setOffscreenPageLimit(2);
         // 如果是临时会议,判断是否是主席
         if (UserUtil.isTempMeeting) {
             if (Hawk.get(constant.TEMPMEETING).equals(MessageReceiveType.MessageClient)) {
@@ -1019,6 +1022,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
     public void addData(int position) {
 
         WuHuEditBean.EditListBean editListBean = new WuHuEditBean.EditListBean();
+        editListBean.setPos(wuHuEditBeanList.size()+"");
         editListBean.setSubTopics(wuHuEditBeanList.get(wuHuEditBeanList.size() - 1).getSubTopics());
         editListBean.setReportingUnit(wuHuEditBeanList.get(wuHuEditBeanList.size() - 1).getReportingUnit());
         if (company_name != null) {
@@ -1116,6 +1120,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                                 });
                     }
 
+
                 }
             }
         });
@@ -1206,6 +1211,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                             wuHuFragmentData.setTopic_type(listBeans.get(0).getTopic_type());
                             wuHuFragmentData.setLine_color(listBeans.get(0).getLine_color());
                             wuHuFragmentData.setThem_color(listBeans.get(0).getThem_color());
+
                             wuHuFragmentData.setEditListBeanList(wuHuEditBeanList);
                             Hawk.put("WuHuFragmentData", wuHuFragmentData);
                           /*  //更新单个数据
@@ -1295,6 +1301,9 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                             wuHuListAdapter.notifyDataSetChanged();
                         }
 
+                        Intent intent = new Intent();
+                        intent.setAction(constant.FRESH_CATalog_BROADCAST);
+                        sendBroadcast(intent);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1381,6 +1390,9 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                     if (wsebean != null) {
                         editListBeans = wsebean.getBody();
                         querywuhufragment(editListBeans);
+                        Intent intent = new Intent();
+                        intent.setAction(constant.FRESH_CATalog_BROADCAST);
+                        sendBroadcast(intent);
 
                     }
                 } catch (Exception e) {
@@ -1392,8 +1404,8 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                     TempWSBean<FileBean> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<FileBean>>() {
                     }.getType());
                     if (wsebean != null) {
-                        FileBean fileBean= wsebean.getBody();
-                        checkFileMd5(fileBean,"2");
+                        FileBean fileBean = wsebean.getBody();
+                        checkFileMd5(fileBean, "2");
                     }
                 } catch (JsonSyntaxException e) {
                     e.printStackTrace();
@@ -1406,8 +1418,8 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                     TempWSBean<FileBean> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<FileBean>>() {
                     }.getType());
                     if (wsebean != null) {
-                        FileBean fileBean= wsebean.getBody();
-                        checkFileMd5(fileBean,"1");
+                        FileBean fileBean = wsebean.getBody();
+                        checkFileMd5(fileBean, "1");
                     }
                 } catch (JsonSyntaxException e) {
                     e.printStackTrace();
@@ -1417,9 +1429,9 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
             if (message.getMessage().contains(constant.SURENAME)) {
                 loadData();
             }
-            Intent intent = new Intent();
+          /*  Intent intent = new Intent();
             intent.setAction(constant.FRESH_CATalog_BROADCAST);
-            sendBroadcast(intent);
+            sendBroadcast(intent);*/
         }
     }
 
@@ -1470,6 +1482,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                     editListBean.setReportingUnit("某某，某某，某某，某");
                     editListBean.setParticipantUnits("某某2，某某2，某某2，某2");
                     editListBean.setTopics("区政府会议纪要");
+                    editListBean.setPos("0");
                     editListBean.setTopic_type("会议纪要");
                     wuHuEditBeanList.add(editListBean);
 
@@ -1477,9 +1490,10 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                     WuHuEditBean.EditListBean editListBean1 = new WuHuEditBean.EditListBean();
                     editListBean1.setSubTopics("总结2022年");
                     editListBean1.setReportingUnit("某某，某某，某某，某");
-                    editListBean.setParticipantUnits("某某2，某某2，某某2，某2");
+                    editListBean1.setParticipantUnits("某某2，某某2，某某2，某2");
                     editListBean1.setTopics("区政府会议纪要");
                     editListBean1.setTopic_type("会议纪要");
+                    editListBean1.setPos("1");
                     wuHuEditBeanList.add(editListBean1);
 
                     wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
@@ -1534,14 +1548,16 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                         editListBean.setParticipantUnits("某某2，某某2，某某2，某2");
                         editListBean.setTopics("区政府会议纪要");
                         editListBean.setTopic_type("会议纪要");
+                        editListBean.setPos("0");
                         wuHuEditBeanList.add(editListBean);
 
 
                         WuHuEditBean.EditListBean editListBean1 = new WuHuEditBean.EditListBean();
                         editListBean1.setSubTopics("总结2022年");
                         editListBean1.setReportingUnit("某某，某某，某某，某");
-                        editListBean.setParticipantUnits("某某2，某某2，某某2，某2");
+                        editListBean1.setParticipantUnits("某某2，某某2，某某2，某2");
                         editListBean1.setTopics("区政府会议纪要");
+                        editListBean1.setPos("1");
                         editListBean1.setTopic_type("会议纪要");
                         wuHuEditBeanList.add(editListBean1);
 
@@ -1567,6 +1583,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                         mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos + ""));
                         fragmentPos++;
                     }
+
                     if (Hawk.contains("WuHuFragmentData")) {
                         WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
                         wuHuEditBean.setTopics(wuHuEditBeanList.get(0).getTopics());
@@ -1581,7 +1598,6 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                         WuHuEditBean wuHuEditBean = new WuHuEditBean();
                         Hawk.put("WuHuFragmentData", wuHuEditBean);
                         if (Hawk.contains("WuHuFragmentData")) {
-
                             wuHuEditBean.setTopics("区政府会议纪要");
                             wuHuEditBean.setTopic_type("会议纪要");
                             wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
@@ -1612,15 +1628,16 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                             editListBean.setReportingUnit("某某，某某，某某，某");
                             editListBean.setParticipantUnits("某某2，某某2，某某2，某2");
                             editListBean.setTopics("区政府会议纪要");
+                            editListBean.setPos("0");
                             editListBean.setTopic_type("会议纪要");
                             wuHuEditBeanList.add(editListBean);
-
 
                             WuHuEditBean.EditListBean editListBean1 = new WuHuEditBean.EditListBean();
                             editListBean1.setSubTopics("总结2022年");
                             editListBean1.setReportingUnit("某某，某某，某某，某");
-                            editListBean.setParticipantUnits("某某2，某某2，某某2，某2");
+                            editListBean1.setParticipantUnits("某某2，某某2，某某2，某2");
                             editListBean1.setTopics("区政府会议纪要");
+                            editListBean1.setPos("1");
                             editListBean1.setTopic_type("会议纪要");
                             wuHuEditBeanList.add(editListBean1);
 
@@ -1806,6 +1823,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
             public void onClick(View v) {
 
                 WuHuEditBean.EditListBean editListBean = new WuHuEditBean.EditListBean();
+                editListBean.setPos(wuHuEditBeanList.size()+"");
                 editListBean.setSubTopics(wuHuEditBeanList.get(wuHuEditBeanList.size() - 1).getSubTopics());
                 editListBean.setReportingUnit(wuHuEditBeanList.get(wuHuEditBeanList.size() - 1).getReportingUnit());
                 wuHuEditBeanList.add(editListBean);
@@ -1827,6 +1845,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
             public void outSide() {
 
                 if (Hawk.contains("WuHuFragmentData")) {
+
                     WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
                     wuHuEditBean.setTopics(company_name.getText().toString());
                     wuHuEditBean.setTopic_type(tittle2.getText().toString());

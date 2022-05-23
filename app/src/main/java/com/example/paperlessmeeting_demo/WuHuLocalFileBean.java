@@ -4,13 +4,22 @@ import com.example.paperlessmeeting_demo.bean.MeetingInfoBean;
 
 import java.io.Serializable;
 import java.util.List;
-
+//推送到每次新建传到服务器service的
 public class WuHuLocalFileBean implements Serializable {
 
 
     private String flag;
-    private List<FileBean> fileBeanList;
 
+    public String getPos() {
+        return pos;
+    }
+
+    public void setPos(String pos) {
+        this.pos = pos;
+    }
+
+    private List<FileBean> fileBeanList;
+    private String pos;//用于标识哪个议题文件更新了
     public String getFlag() {
         return flag;
     }

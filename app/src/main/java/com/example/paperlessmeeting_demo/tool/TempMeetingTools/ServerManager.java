@@ -240,8 +240,6 @@ public class ServerManager {
                 wsebean1.setBody(wuHuEditBean);
                 editListBeans.clear();
                 editListBeans.addAll(wuHuEditBean.getEditListBeanList());
-
-
                 String strJson = new Gson().toJson(wsebean1);
                 SendMessageToAll(strJson);
 
