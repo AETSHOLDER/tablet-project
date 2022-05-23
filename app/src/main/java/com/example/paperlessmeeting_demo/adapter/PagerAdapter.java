@@ -10,8 +10,8 @@ import com.example.paperlessmeeting_demo.fragment.WuHuFragment;
 
 /**
  * Description：
- * Author：LiuYM
- * Date： 2017-05-10 10:44
+ * Author：LiuYM 原来：FragmentPagerAdapter
+ * Date： 2017-05-10 10:44 FragmentStatePagerAdapter
  */
 
 public class PagerAdapter extends FragmentPagerAdapter {

@@ -31,7 +31,7 @@ public class WuHuEditBean implements Serializable {
     private String line_color;
     private String them_color;
     private List<EditListBean> editListBeanList;
-   private VoteListBean voteListBean;
+    private VoteListBean voteListBean;
 
     public VoteListBean getVoteListBean() {
         return voteListBean;
@@ -87,6 +87,15 @@ public class WuHuEditBean implements Serializable {
         private String line_color;
         private String them_color;
         private List<FileListBean> fileListBeanList;
+        private String pos;//议题编号
+
+        public String getPos() {
+            return pos;
+        }
+
+        public void setPos(String pos) {
+            this.pos = pos;
+        }
 
         public List<FileListBean> getFileListBeanList() {
             return fileListBeanList;
@@ -184,6 +193,7 @@ public class WuHuEditBean implements Serializable {
         public void setReportingUnit(String reportingUnit) {
             this.reportingUnit = reportingUnit;
         }
+
         public static class FileListBean {
             public FileListBean(String name, String path, String author, String time) {
                 this.name = name;
@@ -191,6 +201,7 @@ public class WuHuEditBean implements Serializable {
                 this.author = author;
                 this.time = time;
             }
+
             public String getPath() {
                 return path;
             }
