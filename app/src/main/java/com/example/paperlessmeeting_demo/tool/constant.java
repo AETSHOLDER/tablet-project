@@ -21,6 +21,7 @@ public class constant {
     public final static String DOWNLOAD_PATH = "/meetings/";
     public final static String COPY_PATH = "/copy/";
 
+    public final static String FILEHAVEIT = "HaveIt";//推送分享文件有
 
     public final static String meeting_role = "meeting_role";  //  会议角色
     public final static String role = "role";          //  公司角色
@@ -56,6 +57,10 @@ public class constant {
      */
     public final static String FILEMD5PUSH = "doesitexist";//查询推送文件是否存在
     public final static String FILEMD5SHARE = "Isitunique";//查询分享文件是否存在
+
+    public final static String FILERESPONDSHARE = "responpdf";//回应分享文件是否存在
+    public final static String FILERESPONDPUSH = "whetherornot";//回应推送文件是否存在
+
     public final static String QUERYVOTE = "queryVote";//查询投票数据
     public final static String REFRASHWuHUSIGLEDATA = "refreshdata";//更新单个芜湖数据
     public final static String WUHUADDFRAGMENT = "addfragments";//普通参会人员新增芜湖fragment

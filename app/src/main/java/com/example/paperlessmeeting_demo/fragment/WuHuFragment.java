@@ -61,6 +61,7 @@ import com.example.paperlessmeeting_demo.bean.BasicResponse;
 import com.example.paperlessmeeting_demo.bean.CreateFileBeanRequest;
 import com.example.paperlessmeeting_demo.bean.CreateFileBeanResponse;
 import com.example.paperlessmeeting_demo.bean.FileListBean;
+import com.example.paperlessmeeting_demo.bean.SharePushFileBean;
 import com.example.paperlessmeeting_demo.bean.TempWSBean;
 import com.example.paperlessmeeting_demo.bean.UploadBean;
 import com.example.paperlessmeeting_demo.bean.WuHuDeleteFragmentBean;
@@ -216,6 +217,8 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
     private List<WuHuNetFileBean.DataBean> fileListBeanList = new ArrayList<>();
     private List<WuHuEditBean.EditListBean.FileListBean> fileOtherBeans = new ArrayList<>();//音视频文件
     private WuHuEditBean.EditListBean.FileListBean fileBean;
+    private ArrayList<String> fileNames = new ArrayList<>();
+    private ArrayList<String> paths = new ArrayList<>();
     private boolean mReceiverTag = false;   //广播接受者标识
     private boolean isDeletOption = false;//是否做了删除操作
     private ProgressBar progressBar;//显示文件传输进度
@@ -225,8 +228,15 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
     private String pushPath;
     private String pushType;
     private String pushName;
+
+    private String sharePath;
+    private String shareType;
+    private String shareName;
     private boolean isPush = false;
+    private  boolean opened=false;
     private String pos = "-1";
+    private int pushResponNum=0;
+    private int shareResponNum=0;
     private Handler mHandler = new Handler() {
 
         @Override
@@ -388,7 +398,10 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
                             intent.putExtra("url", pushPath);
                             intent.putExtra("isOpenFile", true);
                             intent.putExtra("isNetFile", false);
-                            startActivity(intent);
+                            if ( !opened){
+                                startActivity(intent);
+                            }
+                            opened=true;
                              /*     if ( isActivityTop(ActivityImage.class,context)){
                                       intent=new Intent(constant.WUHU_IMAGE_FILE_BROADCAST);
                                       Bundle bundle=new Bundle();
@@ -430,7 +443,10 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
                                 intent.putExtra("isNetFile", false);
                                 intent.putExtra("tempPath", false);
                                 intent.putExtra("fileName", pushName);
-                                startActivity(intent);
+                                if ( !opened){
+                                    startActivity(intent);
+                                }
+                                opened=true;
                             } else {
                                 CVIPaperDialogUtils.showConfirmDialog(getActivity(), "当前无外网，会使用wps打开文件", "知道了", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
                                     @Override
@@ -529,9 +545,9 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
         Log.d("GASDJKASDD碎片=", "rfresettt222");
         Log.d("fdgsgsgsgsg2222", Hawk.contains("WuHuFragmentData") + "    议题号:" + textNub + "        议题数量：" + wuHuEditBeanList.size() + "       文件大小：" + fileBeans.size());
 
-            wuHuCalalogListAdapter = new WuHuCalalogListAdapter(getActivity(), wuHuEditBeanList);
-            listView_catalog.setAdapter(wuHuCalalogListAdapter);
-            wuHuCalalogListAdapter.notifyDataSetChanged();
+        wuHuCalalogListAdapter = new WuHuCalalogListAdapter(getActivity(), wuHuEditBeanList);
+        listView_catalog.setAdapter(wuHuCalalogListAdapter);
+        wuHuCalalogListAdapter.notifyDataSetChanged();
 
         //除第一个fragment只显示会议目录外，其他碎片都显示文件列表界面
         fileListAdapter = new WuHuFileListAdapter(getActivity(), fileBeans);
@@ -887,34 +903,18 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
     @Override
     public void shareFileInfo(String path, String type, String flag, String name, String author, String time) {
         Log.d("FileFragment--分享", path + "===name==" + name);
-        //通知所有fragment 都更新对应的议题文件列表
-       // sendFragmenFlag();
+
+        WuHuEditBean.EditListBean.FileListBean fileListBean = new WuHuEditBean.EditListBean.FileListBean(name, path, "", "");
+        fileListBean.setFileMd5(Md5Util.getFileMD5(new File(path)));
+        fileListBean.setMac(FLUtil.getMacAddress());
+        fileListBean.setPos(textNub);
+        wsUpdata(fileListBean, constant.FILEMD5PUSH);
+
 
         isPush = false;
-        final ArrayList<String> fileNames = new ArrayList<>();
-        final ArrayList<String> paths = new ArrayList<>();
-        paths.add(path);
-        fileNames.add(name);
-        Message.obtain(mHandler, 4, name).sendToTarget();
-        /*
-         * 通知其他设备Service，这是分享文件
-         * */
-        Thread sendThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                if (Hawk.contains("stringsIp")) {
-                    stringListIp = Hawk.get("stringsIp");
-                }
-                //根据Ip将文件发送到不同的设备
-                for (int i = 0; i < stringListIp.size(); i++) {
-                    socketShareFileManager.SendFile(fileNames, paths, stringListIp.get(i), constant.SHARE_PORT, "1", textNub);
-                }
-            }
-
-        });
-        sendThread.start();
-
+         sharePath=path;
+         shareType=type;
+         shareName=name;
         // Message.obtain(handler, 0, response).sendToTarget();
     }
 
@@ -922,36 +922,15 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
     public void pushFileInfo(String path, String type, String flag, String name, String author, String time) {
         Log.d("FileFragment--推送", path + "===name==" + name);
         //通知所有fragment 都更新对应的议题文件列表
-     //   sendFragmenFlag();
+        //推送前查询其他客户端有无当前推送的文件
+
+        WuHuEditBean.EditListBean.FileListBean fileListBean = new WuHuEditBean.EditListBean.FileListBean(name, path, "", "");
+        fileListBean.setFileMd5(Md5Util.getFileMD5(new File(path)));
+        fileListBean.setMac(FLUtil.getMacAddress());
+        fileListBean.setPos(textNub);
+        wsUpdata(fileListBean, constant.FILEMD5PUSH);
+        opened=false;
         isPush = true;
-        final ArrayList<String> fileNames = new ArrayList<>();
-        final ArrayList<String> paths = new ArrayList<>();
-        fileNames.clear();
-        paths.clear();
-
-        paths.add(path);
-        fileNames.add(name);
-        Message.obtain(mHandler, 4, name).sendToTarget();
-        /*
-         * 通知其他设备Service，这是分享文件
-         *
-         * */
-        Thread sendThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                if (Hawk.contains("stringsIp")) {
-                    stringListIp = Hawk.get("stringsIp");
-                }
-                //根据Ip将文件发送到不同的设备
-                for (int i = 0; i < stringListIp.size(); i++) {
-                    socketShareFileManager.SendFile(fileNames, paths, stringListIp.get(i), constant.SHARE_PORT, "2", textNub);
-                }
-
-
-            }
-        });
-        sendThread.start();
         pushName = name;
         pushPath = path;
         pushType = type;
@@ -1344,12 +1323,135 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
 
 
             }
+            //分享回应
+            else if (message.getMessage().contains(constant.FILERESPONDSHARE)) {
+
+                try {
+                    TempWSBean<SharePushFileBean> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<SharePushFileBean>>() {
+                    }.getType());
+                    if (wsebean != null) {
+                        SharePushFileBean sharePushFileBean = wsebean.getBody();
+                        //其他fragment不处理
+                        if (!sharePushFileBean.getPos().equals(textNub)){
+                            return;
+                        }
+                        shareResponNum++;
+
+                        if (sharePushFileBean != null) {
+                            //谁发出的分享谁处理
+                            if (sharePushFileBean.getMac().equals(FLUtil.getMacAddress())) {
+                                pushShareRespon(sharePushFileBean, "1");
+                            }
+
+                        }
+                    }
+                } catch (JsonSyntaxException e) {
+                    e.printStackTrace();
+                }
+
+                //推送回应
+            } else if (message.getMessage().contains(constant.FILERESPONDPUSH)) {
+
+                try {
+                    TempWSBean<SharePushFileBean> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<SharePushFileBean>>() {
+                    }.getType());
+                    if (wsebean != null) {
+                        SharePushFileBean sharePushFileBean = wsebean.getBody();
+                        //其他fragment不处理
+                        if (!sharePushFileBean.getPos().equals(textNub)){
+                            return;
+                        }
+                        pushResponNum++;
+                        //谁发出的推送谁处理
+                        if (sharePushFileBean.getMac().equals(FLUtil.getMacAddress())) {
+                            pushShareRespon(sharePushFileBean, "2");
+                        }
+
+
+                    }
+                } catch (JsonSyntaxException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
 
         }
     }
 
     @Override
     public void sendfilePth(String filePth) {
+
+    }
+
+    private void pushShareRespon(SharePushFileBean sharePushFileBean, String action) {
+        //分享回应
+        if (action.equals("1")) {
+            if (sharePushFileBean.isHave()){
+
+                Toast.makeText(getActivity(),"对方文件已存在",Toast.LENGTH_SHORT).show();
+
+            }else {
+                paths.clear();
+                fileNames.clear();
+                paths.add(sharePath);
+                fileNames.add(shareName);
+                Message.obtain(mHandler, 4, name).sendToTarget();
+                Thread sendThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (Hawk.contains("stringsIp")) {
+                            stringListIp.clear();
+                            stringListIp = Hawk.get("stringsIp");
+                        }
+                        //根据Ip将文件发送到不同的设备
+                        for (int i = 0; i < stringListIp.size(); i++) {
+                            socketShareFileManager.SendFile(fileNames, paths, stringListIp.get(i), constant.SHARE_PORT, "1", textNub);
+                        }
+                    }
+
+                });
+                sendThread.start();
+
+            }
+
+            //推送回应
+        } else if (action.equals("2")) {
+
+            if (sharePushFileBean.isHave()){
+                Message.obtain(mHandler, 55, "").sendToTarget();
+
+            }else {
+                fileNames.clear();
+                paths.clear();
+                paths.add(pushPath);
+                fileNames.add(pushName);
+                Message.obtain(mHandler, 4, name).sendToTarget();
+
+                Thread sendThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (Hawk.contains("stringsIp")) {
+                            stringListIp.clear();
+                            stringListIp = Hawk.get("stringsIp");
+                        }
+                        //根据Ip将文件发送到不同的设备
+                        for (int i = 0; i < stringListIp.size(); i++) {
+                            socketShareFileManager.SendFile(fileNames, paths, stringListIp.get(i), constant.SHARE_PORT, "2", textNub);
+                        }
+
+
+                    }
+                });
+                sendThread.start();
+
+
+
+            }
+
+        }
+
 
     }
 
@@ -1771,7 +1873,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
             if (files == null) {
                 return;
             }
-           // getShareFile(files);
+            // getShareFile(files);
         }
 
 
@@ -2333,8 +2435,8 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
                                 Log.d("wuhuwuwhuwuhuwwhu   cvi", fileNameAll.length + "   " + fileNameAll[1] + "    " + fileNameAll[0]);
                                 fileName = fileNameAll[1];
                                 String pos = fileNameAll[0];
-                                if (textNub!=null&&pos!=null){
-                                    if (textNub.equals(pos)){
+                                if (textNub != null && pos != null) {
+                                    if (textNub.equals(pos)) {
                                         String endStr = fileName.substring(fileName.lastIndexOf(".") + 1);
                                         fileBean = new WuHuEditBean.EditListBean.FileListBean(fileName, file.getPath(), "", "");
                                         Uri uri = Uri.fromFile(file);

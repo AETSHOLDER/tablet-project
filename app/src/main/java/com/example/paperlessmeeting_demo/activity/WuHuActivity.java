@@ -20,6 +20,7 @@ import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -48,6 +49,7 @@ import com.example.paperlessmeeting_demo.adapter.PagerAdapter;
 import com.example.paperlessmeeting_demo.bean.BasicResponse;
 import com.example.paperlessmeeting_demo.bean.FileBean;
 import com.example.paperlessmeeting_demo.bean.FileListBean;
+import com.example.paperlessmeeting_demo.bean.SharePushFileBean;
 import com.example.paperlessmeeting_demo.bean.TempWSBean;
 import com.example.paperlessmeeting_demo.bean.WuHuEditBean;
 import com.example.paperlessmeeting_demo.enums.MessageReceiveType;
@@ -60,6 +62,7 @@ import com.example.paperlessmeeting_demo.sharefile.SocketShareFileManager;
 import com.example.paperlessmeeting_demo.tool.CVIPaperDialogUtils;
 import com.example.paperlessmeeting_demo.tool.FLUtil;
 import com.example.paperlessmeeting_demo.tool.FileUtils;
+import com.example.paperlessmeeting_demo.tool.Md5Util;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.ServerManager;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.UDPBroadcastManager;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.EventMessage;
@@ -186,6 +189,8 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
     private Handler handler;
     private Runnable runnable;
     private ArrayList<WuHuEditBean.EditListBean> editListBeans = new ArrayList<>();
+    private List<WuHuEditBean.EditListBean.FileListBean> shareFileBeans = new ArrayList<>();//其他设备分享得到的文件集合
+    private String fileShare = Environment.getExternalStorageDirectory() + constant.SHARE_FILE;//其他设备分享得到的文件夹路径
     private View foodView;
     private CompletedView completedView;
     private ImageView result_ima;
@@ -211,6 +216,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                     Toast.makeText(WuHuActivity.this, "正在接受文件", Toast.LENGTH_SHORT).show();
                     break;
                 case 33:
+                    //分享 有文件
                     Toast.makeText(WuHuActivity.this, "文件已成功接收，请在文件管理页面查看", Toast.LENGTH_SHORT).show();
                     Log.e("hahahahahahaa", "case 3");
                     int flag = msg.arg1;
@@ -239,7 +245,44 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                 case 4:
                     Toast.makeText(WuHuActivity.this, "文件接收失败", Toast.LENGTH_SHORT).show();
                     break;
+                case 400:
+                    //推送  无文件
+                    WuHuEditBean.EditListBean.FileListBean fileListBean1= (WuHuEditBean.EditListBean.FileListBean) msg.obj;
+                    SharePushFileBean pushNoFileBean=new SharePushFileBean();
+                    pushNoFileBean.setPos(fileListBean1.getPos());
+                    pushNoFileBean.setHave(false);
+                    pushNoFileBean.setMac(fileListBean1.getMac());
+                    wsUpdata(pushNoFileBean, constant.FILERESPONDPUSH);
+                    break;
+                case 500:
+                    //推送 有文件
+                    SharePushFileBean pushHaveFileBean=new SharePushFileBean();
+                    WuHuEditBean.EditListBean.FileListBean fileListBean2= (WuHuEditBean.EditListBean.FileListBean) msg.obj;
+                    pushHaveFileBean.setHave(true);
+                    pushHaveFileBean.setMac(fileListBean2.getMac());
+                    pushHaveFileBean.setPos(fileListBean2.getPos());
+                    wsUpdata(fileListBean2, constant.FILERESPONDPUSH);
+                    break;
+                case 600:
+                    //分享  无文件
+                    WuHuEditBean.EditListBean.FileListBean fileListBean3= (WuHuEditBean.EditListBean.FileListBean) msg.obj;
+                    SharePushFileBean shareNoFileBean=new SharePushFileBean();
+                    shareNoFileBean.setPos(fileListBean3.getPos());
+                    shareNoFileBean.setHave(false);
+                    shareNoFileBean.setMac(fileListBean3.getMac());
+                    wsUpdata(shareNoFileBean, constant.FILERESPONDSHARE);
+                    break;
+                case 700:
+                    //分享 有文件
+                    SharePushFileBean shareHaveFileBean=new SharePushFileBean();
+                    WuHuEditBean.EditListBean.FileListBean fileListBean4= (WuHuEditBean.EditListBean.FileListBean) msg.obj;
+                    shareHaveFileBean.setHave(true);
+                    shareHaveFileBean.setMac(fileListBean4.getMac());
+                    shareHaveFileBean.setPos(fileListBean4.getPos());
+                    wsUpdata(shareHaveFileBean, constant.FILERESPONDSHARE);
+                    break;
                 case 88:
+                    //推送 有文件
                     if (UserUtil.ISCHAIRMAN) {
                         return;
                     }
@@ -257,11 +300,11 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                     if (fileName.contains(constant.WUHUPUSH)) {
                         String[] fileNameAll = fileName.split(constant.WUHUPUSH);
                         fileName = fileNameAll[1];
-                         pos = fileNameAll[0];
+                        pos = fileNameAll[0];
                         fileBean = new FileListBean(fileName, file.getPath(), "", "");
                     } else {
                         fileBean = new FileListBean(file.getName(), file.getPath(), "", "");
-                        pos="-1";
+                        pos = "-1";
                     }
 
                     Uri uri = Uri.fromFile(file);
@@ -437,7 +480,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
         mPagerAdapter = new PagerAdapter(getSupportFragmentManager(), mTestFragments);
         mViewPager.setAdapter(mPagerAdapter);
         mPagerAdapter.notifyDataSetChanged();
-       mViewPager.setOffscreenPageLimit(2);
+        mViewPager.setOffscreenPageLimit(2);
         // 如果是临时会议,判断是否是主席
         if (UserUtil.isTempMeeting) {
             if (Hawk.get(constant.TEMPMEETING).equals(MessageReceiveType.MessageClient)) {
@@ -1022,7 +1065,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
     public void addData(int position) {
 
         WuHuEditBean.EditListBean editListBean = new WuHuEditBean.EditListBean();
-        editListBean.setPos(wuHuEditBeanList.size()+"");
+        editListBean.setPos(wuHuEditBeanList.size() + "");
         editListBean.setSubTopics(wuHuEditBeanList.get(wuHuEditBeanList.size() - 1).getSubTopics());
         editListBean.setReportingUnit(wuHuEditBeanList.get(wuHuEditBeanList.size() - 1).getReportingUnit());
         if (company_name != null) {
@@ -1368,20 +1411,6 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
             } else if (message.getMessage().contains(constant.QUERYVOTE_WUHU_FRAGMENT)) {
                 Log.d("wrewarawrawer", "查询");
                 Log.e("onReceiveMsg查询: ", message.toString());
-              /*  if (UserUtil.ISCHAIRMAN) {
-                    //主席不执行查询代码
-                    return;
-                }*/
-
-              /*  if (Hawk.contains("isreuse")){
-                    String isreuse=Hawk.get("isreuse");
-                    if (isreuse.equals("3")){
-                        Log.d("wrewarawrawer","查询 "+isreuse);
-                        //第一次安装不执行查询
-                      return;
-                    }
-                }*/
-
 
                 try {
                     TempWSBean<ArrayList> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<ArrayList<WuHuEditBean.EditListBean>>>() {
@@ -1401,10 +1430,10 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
             } else if (message.getMessage().contains(constant.FILEMD5PUSH)) {
                 //查询推送文件是否存在
                 try {
-                    TempWSBean<FileBean> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<FileBean>>() {
+                    TempWSBean<WuHuEditBean.EditListBean.FileListBean> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<WuHuEditBean.EditListBean.FileListBean>>() {
                     }.getType());
                     if (wsebean != null) {
-                        FileBean fileBean = wsebean.getBody();
+                        WuHuEditBean.EditListBean.FileListBean fileBean = wsebean.getBody();
                         checkFileMd5(fileBean, "2");
                     }
                 } catch (JsonSyntaxException e) {
@@ -1415,10 +1444,10 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                 //查询分享文件是否存在
                 //查询推送文件是否存在
                 try {
-                    TempWSBean<FileBean> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<FileBean>>() {
+                    TempWSBean<WuHuEditBean.EditListBean.FileListBean> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<WuHuEditBean.EditListBean.FileListBean>>() {
                     }.getType());
                     if (wsebean != null) {
-                        FileBean fileBean = wsebean.getBody();
+                        WuHuEditBean.EditListBean.FileListBean fileBean = wsebean.getBody();
                         checkFileMd5(fileBean, "1");
                     }
                 } catch (JsonSyntaxException e) {
@@ -1449,9 +1478,142 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     //action 1 分享 2  推送
-    private void checkFileMd5(FileBean fileBean, String action) {
+    private void checkFileMd5(WuHuEditBean.EditListBean.FileListBean fileBean, String action) {
+        File path = new File(fileShare);
+        File[] files = path.listFiles();// 读取
+        if (files == null) {
+            return;
+        }
+        //验证当前议题分享和推送文件有无
+        getShareFile(files, action, fileBean);
+    }
+
+    /*
+     * 遍历得到分享的文件
+     * */
+    private void getShareFile(File[] files, String action, final WuHuEditBean.EditListBean.FileListBean fileListBean) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //子线程开始
+                String content = "";
+                if (files != null) {
+                    String fileMd5 = "-1";
+                    String md5FilePath = null;
+                    // 先判断目录是否为空，否则会报空指针
+                    for (File file : files) {
+                        if (file.isDirectory()) {
+                            getFileName(file.listFiles());
+                        } else {
+                            String fileName = file.getName();
+                            String[] fileNameAll = null;
+
+                            //分享
+                            if (action.equals("1")) {
+                                fileNameAll = fileName.split(constant.WUHUPUSH);
+                                fileName = fileNameAll[1];
+                                String pos = fileNameAll[0];
+                                if (fileListBean.getPos() != null && pos != null) {
+                                    //议题号和MD5都相同则有这样的文件
+                                    if (fileListBean.getPos().equals(pos) && fileListBean.equals(Md5Util.getFileMD5(file))) {
+                                        fileMd5 = Md5Util.getFileMD5(file);
+                                        md5FilePath = file.getPath();
+                                    }
+                                }
+                                //推送
+                            } else if (action.equals("2")) {
+
+                                fileNameAll = fileName.split(constant.WUHUSHARE);
+                                fileName = fileNameAll[1];
+                                String pos = fileNameAll[0];
+                                if (fileListBean.getPos() != null && pos != null) {
+                                    //议题号和MD5都相同则有这样的文件
+                                    if (fileListBean.getPos().equals(pos) && fileListBean.equals(Md5Util.getFileMD5(file))) {
+                                        fileMd5 = Md5Util.getFileMD5(file);
+                                        md5FilePath = file.getPath();
+                                    }
+
+                                }
+
+                            }
+
+                        }
 
 
+                    }
+
+                    //子线程执行结束
+                    //分享
+                    if (action.equals("1")) {
+                        if (fileMd5.equals("-1")) {
+                            //本地有分享的文件 直接发送33更新列表
+                            Message shareMsg = new Message();
+                            shareMsg.what = 33;
+                            shareMsg.obj = md5FilePath;
+                            mHander.sendMessage(shareMsg);
+                        } else {
+                            //本地无分享的文件 回消息让其执行分享操作
+                            Message shareMsg = new Message();
+                            shareMsg.what = 500;
+                            shareMsg.obj = fileListBean;
+                            mHander.sendMessage(shareMsg);
+                        }
+
+                    } else if (action.equals("2")) {
+                        if (fileMd5.equals("-1")) {
+                            //本地有当前推送的文件，发送88直接打开
+                            Message shareMsg = new Message();
+                            shareMsg.what = 88;
+                            shareMsg.obj = md5FilePath;
+                            mHander.sendMessage(shareMsg);
+                        } else {
+                            //本地无推送的文件回给发送端  让其推送
+                            Message shareMsg = new Message();
+                            shareMsg.what = 400;
+                            shareMsg.obj = fileListBean;
+                            mHander.sendMessage(shareMsg);
+
+                        }
+
+
+                    }
+                }
+
+
+            }
+        }).start();
+    }
+
+    //获取本地上传的文件
+    private void getFileName(File[] files) {
+        WuHuEditBean.EditListBean.FileListBean fileBean;
+        String content = "";
+        if (files != null) {
+            // 先判断目录是否为空，否则会报空指针
+            for (File file : files) {
+
+
+                if (file.isDirectory()) {
+
+                    getFileName(file.listFiles());
+
+                } else {
+                    String fileName = file.getName();
+                    String endStr = fileName.substring(fileName.lastIndexOf(".") + 1);
+
+                    fileBean = new WuHuEditBean.EditListBean.FileListBean(file.getName(), file.getPath(), "", "");
+                    Uri uri = Uri.fromFile(file);
+                    Log.d("requestCodeUr555", uri.getScheme() + "===" + uri.getPath() + "==" + file.getName());
+                    fileBean.setFileMd5(Md5Util.getFileMD5(file));
+                    fileBean.setFile_type(getType(endStr));
+                    fileBean.setSuffix(endStr);//上传文件后缀名和文件类型；setSuffix和setType所赋值内容一样。
+                    //  fileBean.setType(endStr);
+                    fileBean.setNet(false);
+
+                }
+            }
+
+        }
     }
 
     private void querywuhufragment(List<WuHuEditBean.EditListBean> editListBeanList) {
@@ -1607,7 +1769,6 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
 
                     }
 
-                    Log.d("fdgsgsgsgsg1111", Hawk.contains("WuHuFragmentData") + "");
 
                 } else {
                     if (Hawk.contains("WuHuFragmentData")) {
@@ -1823,7 +1984,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
             public void onClick(View v) {
 
                 WuHuEditBean.EditListBean editListBean = new WuHuEditBean.EditListBean();
-                editListBean.setPos(wuHuEditBeanList.size()+"");
+                editListBean.setPos(wuHuEditBeanList.size() + "");
                 editListBean.setSubTopics(wuHuEditBeanList.get(wuHuEditBeanList.size() - 1).getSubTopics());
                 editListBean.setReportingUnit(wuHuEditBeanList.get(wuHuEditBeanList.size() - 1).getReportingUnit());
                 wuHuEditBeanList.add(editListBean);

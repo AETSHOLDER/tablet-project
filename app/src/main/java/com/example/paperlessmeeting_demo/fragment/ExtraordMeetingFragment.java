@@ -9,6 +9,7 @@ import android.graphics.Point;
 import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Display;
@@ -38,6 +39,7 @@ import com.example.paperlessmeeting_demo.bean.UserBehaviorBean;
 import com.example.paperlessmeeting_demo.bean.WuHuEditBean;
 import com.example.paperlessmeeting_demo.enums.MessageReceiveType;
 import com.example.paperlessmeeting_demo.tool.CVIPaperDialogUtils;
+import com.example.paperlessmeeting_demo.tool.DeleteFileUtil;
 import com.example.paperlessmeeting_demo.tool.FLUtil;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.UDPBroadcastManager;
 import com.example.paperlessmeeting_demo.tool.TimeUtils;
@@ -51,6 +53,7 @@ import com.jyn.vcview.VerificationCodeView;
 import com.orhanobut.hawk.Hawk;
 import com.snow.common.tool.utils.FastClickUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -81,6 +84,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
     private boolean isReuse=false;//根据有无会议记录来判断芜湖版本应用是否是第一次安装。
     private int currentSelIndex = 0;
     private MyDialog  historyConferenceDialog;//历史会议
+    private String fileShare = Environment.getExternalStorageDirectory() + constant.SHARE_FILE;//其他设备分享得到的文件夹路径
     public static ExtraordMeetingFragment newInstance(String movie) {
         ExtraordMeetingFragment extraordMeetingFragment = new ExtraordMeetingFragment();
         return extraordMeetingFragment;
@@ -705,6 +709,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                 bundle.putString("code", codeStr);
                 bundle.putString("isreuse","2");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
                 intent.putExtras(bundle);
+                 DeleteFileUtil.deleteDirectory(fileShare);//不用模版时删除分享文件夹
                 startActivity(intent);
                 Hawk.put("isreuse","2");
                 dialog.dismiss();

@@ -234,7 +234,6 @@ public class SocketShareFileManager {
                     SendMessage(0, "正在发送" + fileName.get(i), Integer.parseInt(actionType));
                 }
 
-
                 Socket data = new Socket(ipAddress, port);
                 OutputStream outputData = data.getOutputStream();
                 FileInputStream fileInput = new FileInputStream(path.get(i));
@@ -257,7 +256,6 @@ public class SocketShareFileManager {
             } else {
                 SendMessage(55, "所有文件发送完成", Integer.parseInt(actionType));
             }
-
 
             try {
                 DatagramSocket socket = new DatagramSocket();

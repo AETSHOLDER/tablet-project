@@ -271,6 +271,15 @@ public class WuHuEditBean implements Serializable {
             private String fileMd5;
             private String type;
 
+            public String getMac() {
+                return mac;
+            }
+
+            public void setMac(String mac) {
+                this.mac = mac;
+            }
+
+            private String  mac;//分享推送时文件来自哪个议题
             public String getType() {
                 return type;
             }
