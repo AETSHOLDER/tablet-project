@@ -52,6 +52,7 @@ public class ServerManager {
     public static final ServerManager getInstance() {
         return SingletonHolder.INSTANCE;
     }
+
    private  static WuHuEditBean  staticwuHuEditBean=new WuHuEditBean();
 
     private static ArrayList<WuHuEditBean.EditListBean> editListBeans = new ArrayList<>();
@@ -108,6 +109,27 @@ public class ServerManager {
                 e.printStackTrace();
             }
         }
+        // 芜湖主席端界面初始化提交自己本地议题
+        if(message.contains(constant.SUBMITANISSUE)){
+            try {
+                TempWSBean<WuHuEditBean> wsebean = new Gson().fromJson(message, new TypeToken<TempWSBean<WuHuEditBean>>(){}.getType());
+                WuHuEditBean wuHuEditBean = wsebean.getBody();
+                editListBeans.clear();
+                editListBeans.addAll(wuHuEditBean.getEditListBeanList());
+                Log.d("dfdsdgseditListBeans,",editListBeans.size()+"");
+                TempWSBean bean = new TempWSBean();
+                bean.setReqType(1);
+                bean.setUserMac_id("");
+                bean.setPackType(constant.SUBMITANISSUE);
+                bean.setBody(editListBeans);
+                String strJson = new Gson().toJson(bean);
+                //  谁查询，发送给谁
+                SendMessageToUser(conn,strJson);
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         // 查询参会人员
         if(message.contains(constant.QUERYATTEND)){
 

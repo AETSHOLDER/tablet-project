@@ -68,8 +68,13 @@ public class JWebSocketClientService {
             public void onMessage(String message) {
                 Log.d(TAG, "收到的消息：" + message);
                 // 发出消息
-                EventMessage msg = new EventMessage(MessageReceiveType.MessageClient, message);
-                EventBus.getDefault().post(msg);
+                if(message.contains(constant.QUERYVOTE_WUHU_FRAGMENT)){
+                    EventMessage msg = new EventMessage(MessageReceiveType.MessageClient, message);
+                    EventBus.getDefault().postSticky(msg);
+                }else {
+                    EventMessage msg = new EventMessage(MessageReceiveType.MessageClient, message);
+                    EventBus.getDefault().post(msg);
+                }
 
                 Activity topActivity = (Activity) ActivityUtils.getTopActivity();
                 //  处理通过ws收到的白板消息tempTeamReq

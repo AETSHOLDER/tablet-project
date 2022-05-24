@@ -70,6 +70,8 @@ public class constant {
     public final static String REFRESH_WUHU_FILE_FRAGMENT = "qufenliebiao";//更新芜湖添加本地文件数据fragment
     public final static String QUERYVOTE_WUHU_FRAGMENT = "querywuhufragment";//查询芜湖之前的fragment
 
+    public final static String SUBMITANISSUE = "SubmitAnIssue";//芜湖主席端界面初始化提交自己本地议题
+
     public final static String NEWVOTE = "newVote";//新增投票数据
     public final static String UPDATEVOTE = "updateVote";//更新投票数据
     public final static String FINISHVOTE = "finishVote";//结束投票数据
