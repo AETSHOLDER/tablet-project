@@ -290,7 +290,6 @@ public class WuHuNewTopicAdapter extends RecyclerView.Adapter<WuHuNewTopicAdapte
             }
         });
 
-
     }
 
     public interface saveSeparatelyInterface{
