@@ -62,6 +62,7 @@ import com.example.paperlessmeeting_demo.network.NetWorkManager;
 import com.example.paperlessmeeting_demo.sharefile.BroadcastUDPFileService;
 import com.example.paperlessmeeting_demo.sharefile.SocketShareFileManager;
 import com.example.paperlessmeeting_demo.tool.CVIPaperDialogUtils;
+import com.example.paperlessmeeting_demo.tool.DeleteFileUtil;
 import com.example.paperlessmeeting_demo.tool.FLUtil;
 import com.example.paperlessmeeting_demo.tool.FileUtils;
 import com.example.paperlessmeeting_demo.tool.Md5Util;
@@ -1636,17 +1637,17 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                         e.printStackTrace();
                     }
 
-                } else if (message.getMessage().contains(constant.QUERYATTEND)) {
+                } else if (message.getMessage().contains(constant.QUERYATTENDSize)) {
                     try {
-                        TempWSBean<ArrayList<AttendeBean>> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<ArrayList<AttendeBean>>>() {
+                        TempWSBean<Integer> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<Integer>>() {
                         }.getType());
-                        List<AttendeBean> attendeBeanList = new ArrayList<>();
-                        attendeBeanList = wsebean.getBody();
+                        int size = wsebean.getBody();
 
-                        Log.d("md5验证信息", "attendeBeanList.size=="+attendeBeanList.size());
-                        if (attendeBeanList != null) {
-                            Hawk.put("TempMeetingAttende", attendeBeanList.size() + "");
-                        }
+
+                        Log.d("md5验证信息", "attendeBeanList.size==" + size);
+//                        if (attendeBeanList != null) {
+                            Hawk.put("TempMeetingAttende", size + "");
+//                        }
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -1666,7 +1667,15 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
         if (UserUtil.ISCHAIRMAN) {
             //只有服务端才有的方法：初始化议题数据并提交到服务端
             initiaServerData();
+        }else {
+            if (Hawk.contains("isreuse")) {
+                String isreuse = Hawk.get("isreuse");
+                if (isreuse.equals("2") || isreuse.equals("3")) {
+                    DeleteFileUtil.deleteDirectory(fileShare);//不用模版时删除分享文件夹
+                }
+            }
         }
+
 
         TempWSBean bean = new TempWSBean();
         bean.setReqType(0);
@@ -1707,7 +1716,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                             Log.d("vvcvsvsfgsf1111  ", "1111111  " + file.getName());
                             String fileName = file.getName();
                             String[] fileNameAll = null;
-                            String pos=null;
+                            String pos = null;
                             Log.d("vvcvsvsfgsf22222 ", fileMd5 + "   action=" + action);
                             //分享
                             if (fileName.contains(constant.WUHUPUSH)) {
@@ -2317,8 +2326,12 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
             unregisterReceiver(myBroadcastReceiver);
         }
         if (serviceConnection != null) {
+            Log.d("gfdgfdhdfhdfhgdh11", "会结束销毁文件接收");
             unbindService(serviceConnection);
-
+        }
+        if (socketShareFileManager != null) {
+            socketShareFileManager = null;
+            Log.d("gfdgfdhdfhdfhgdh222", "会结束销毁文件接收");
         }
         if (mycatalogBroadcastReceiver != null) {
             unregisterReceiver(mycatalogBroadcastReceiver);

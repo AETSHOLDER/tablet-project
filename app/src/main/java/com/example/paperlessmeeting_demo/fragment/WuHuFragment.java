@@ -296,8 +296,8 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
                                 WuHuEditBean.EditListBean editListBean = copyEdList.get(i);
 
                                 if (editListBean.getPos().equals(textNub)) {
-                                    //把当前议题文件集合放入对应的议题
-                                    editListBean.setFileListBeanList(fileBeans);
+                                    //把当前分享的议题文件集合放入对应的议题
+                                    editListBean.setFileListBeanList(shareFileBeans);
                                     copyEdList.set(Integer.valueOf(textNub), editListBean);
                                 }
                             }
@@ -398,10 +398,11 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
                             intent.putExtra("url", pushPath);
                             intent.putExtra("isOpenFile", true);
                             intent.putExtra("isNetFile", false);
-                            if (!opened) {
+                            startActivity(intent);
+                         /*   if (!opened) {
                                 startActivity(intent);
                             }
-                            opened = true;
+                            opened = true;*/
 
                         } else if (pushType.equals("4")) {
                             if (UserUtil.isNetworkOnline) {
@@ -412,10 +413,11 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
                                 intent.putExtra("isNetFile", false);
                                 intent.putExtra("tempPath", false);
                                 intent.putExtra("fileName", pushName);
-                                if (!opened) {
+                                startActivity(intent);
+                              /*  if (!opened) {
                                     startActivity(intent);
                                 }
-                                opened = true;
+                                opened = true;*/
                             } else {
                                 CVIPaperDialogUtils.showConfirmDialog(getActivity(), "当前无外网，会使用wps打开文件", "知道了", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
                                     @Override
@@ -868,7 +870,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
         TempWSBean bean = new TempWSBean();
         bean.setReqType(0);
         bean.setUserMac_id(FLUtil.getMacAddress());
-        bean.setPackType(constant.QUERYATTEND);
+        bean.setPackType(constant.QUERYATTENDSize);
         bean.setBody("");
         String strJson = new Gson().toJson(bean);
         JWebSocketClientService.sendMsg(strJson);
@@ -897,7 +899,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
         TempWSBean bean = new TempWSBean();
         bean.setReqType(0);
         bean.setUserMac_id(FLUtil.getMacAddress());
-        bean.setPackType(constant.QUERYATTEND);
+        bean.setPackType(constant.QUERYATTENDSize);
         bean.setBody("");
         String strJson = new Gson().toJson(bean);
         JWebSocketClientService.sendMsg(strJson);
@@ -1548,10 +1550,11 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
                         intent.putExtra("url", pushPath);
                         intent.putExtra("isOpenFile", true);
                         intent.putExtra("isNetFile", false);
-                        if (!opened) {
-                            startActivity(intent);
-                        }
-                        opened = true;
+                        startActivity(intent);
+//                        if (!opened) {
+////                            startActivity(intent);
+////                        }
+////                        opened = true;
                              /*     if ( isActivityTop(ActivityImage.class,context)){
                                       intent=new Intent(constant.WUHU_IMAGE_FILE_BROADCAST);
                                       Bundle bundle=new Bundle();
@@ -1571,7 +1574,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
 
                     } else if (pushType.equals("4")) {
                         if (UserUtil.isNetworkOnline) {
-                                 /*     Activity topActivity = (Activity) ActivityUtils.getTopActivity();
+                                    Activity topActivity = (Activity) ActivityUtils.getTopActivity();
                                       if (topActivity != null) {
                                           // 如果是在签批内，先关闭，再进入,否则未销毁tbs,会一直显示加载中(看情况添加用户提示)
                                           if(topActivity.getLocalClassName().contains("SignActivity")){
@@ -1584,7 +1587,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
                                                   e.printStackTrace();
                                               }
                                           }
-                                      }*/
+                                      }
 
                             intent = new Intent();
                             intent.setClass(getActivity(), SignActivity.class);
@@ -1593,10 +1596,11 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
                             intent.putExtra("isNetFile", false);
                             intent.putExtra("tempPath", false);
                             intent.putExtra("fileName", pushName);
-                            if (!opened) {
+                            startActivity(intent);
+                          /*  if (!opened) {
                                 startActivity(intent);
                             }
-                            opened = true;
+                            opened = true;*/
                         } else {
                             CVIPaperDialogUtils.showConfirmDialog(getActivity(), "当前无外网，会使用wps打开文件", "知道了", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
                                 @Override
@@ -1652,7 +1656,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
 
             }
 
-        Log.d("md5验证信息","一共人数："+peopleNum+"    分享回复人数："+shareResponNum+"    分享没有文件人数："+shareResponNo+"    推送回复人数："+pushResponNum+"    推送没有文件人数："+pushResponNo);
+        Log.d("md5验证信息","除自身外一共人数："+peopleNum+"    分享回复人数："+shareResponNum+"    分享没有文件人数："+shareResponNo+"    推送回复人数："+pushResponNum+"    推送没有文件人数："+pushResponNo);
 
     }
 
@@ -2241,7 +2245,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
                                 }
                                 wuHuEditBean.setEditListBeanList(copyEdList);
                             }
-                            Hawk.put("WuHuFragmentData", wuHuEditBean);
+                           // Hawk.put("WuHuFragmentData", wuHuEditBean);
                         }
                         //通知所有fragment 都更新对应的议题文件列表
                         //   sendFragmenFlag();
@@ -2366,7 +2370,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
                                         wuHuEditBean.setEditListBeanList(copyEdList);
 
                                     }
-                                    Hawk.put("WuHuFragmentData", wuHuEditBean);
+                                   // Hawk.put("WuHuFragmentData", wuHuEditBean);
                                 }
                                 // fileBeans.add(fileBean);
                                 Message msg = new Message();
