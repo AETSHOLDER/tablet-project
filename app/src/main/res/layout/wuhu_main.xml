@@ -367,6 +367,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginRight="15dp"
+            android:maxLength="6"
             android:layout_toLeftOf="@id/comfirm"
             android:background="@null"
             android:gravity="left"

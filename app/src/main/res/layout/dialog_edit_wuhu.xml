@@ -56,16 +56,16 @@
     android:layout_marginTop="15dp"
     >
 
-    <TextView
-        android:id="@+id/aa"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="56dp"
-        android:gravity="center"
-        android:text="横线颜色："
-        android:textColor="#333333"
-        android:textSize="33sp" />
+       <TextView
+           android:id="@+id/aa"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_centerVertical="true"
+           android:layout_marginLeft="56dp"
+           android:gravity="center"
+           android:text="横线颜色："
+           android:textColor="#333333"
+           android:textSize="33sp" />
 
     <RadioGroup
         android:id="@+id/line_colors"
@@ -177,16 +177,24 @@
         android:background="#fff"
         android:scrollbars="none">
 
-        <com.example.paperlessmeeting_demo.widgets.MyListView
+
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/myList_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#fff"
+       >
+        </android.support.v7.widget.RecyclerView>
+    <!--    <com.example.paperlessmeeting_demo.widgets.MyListView
+            android:id="@+id/myList_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#fff"
+            android:visibility="gone"
             android:divider="@null">
+        </com.example.paperlessmeeting_demo.widgets.MyListView>-->
 
-        </com.example.paperlessmeeting_demo.widgets.MyListView>
-
-    </ScrollView>
+   </ScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"
