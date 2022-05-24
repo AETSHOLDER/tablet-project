@@ -2117,17 +2117,6 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
         add_topic_rl = inflate.findViewById(R.id.add_topic_rl);
         dialg_rl_root = inflate.findViewById(R.id.dialg_rl_root);
         sava_all = inflate.findViewById(R.id.sava_all);
-
-        WuHuEditBean.EditListBean editListBean=new WuHuEditBean.EditListBean();
-        editListBean.setSubTopics("就今天做完");
-        editListBean.setReportingUnit("议题一");
-        editListBean.setParticipantUnits("列席单位");
-        WuHuEditBean.EditListBean editListBean2=new WuHuEditBean.EditListBean();
-        editListBean2.setSubTopics("就今天做完fdfdsf");
-        editListBean2.setReportingUnit("议题二");
-        editListBean2.setParticipantUnits("列席单位");
-        wuHuEditBeanList.add(editListBean);
-        wuHuEditBeanList.add(editListBean2);
         Log.d("reyeyrty222", wuHuEditBeanList.size() + "");
         //myListView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         //myListView.addFooterView(foodView, null, false);
