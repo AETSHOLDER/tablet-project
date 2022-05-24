@@ -40,7 +40,7 @@ public class ServerManager {
     private Map<String, String> userMacMap=new HashMap<String, String>();  // 判断mac 之前是否添加，防止重复添加
     private String TAG = "ServerManager";
     private boolean serverIsOpen = false;  // 服务端是否开启
-    private List<AttendeBean> AttendeBeanList = new ArrayList<>(); // 参会人员列表
+    private static List<AttendeBean> AttendeBeanList = new ArrayList<>(); // 参会人员列表
     public boolean isServerIsOpen() {
         return serverIsOpen;
     }

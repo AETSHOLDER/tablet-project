@@ -1643,6 +1643,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                         List<AttendeBean> attendeBeanList = new ArrayList<>();
                         attendeBeanList = wsebean.getBody();
 
+                        Log.d("md5验证信息", "attendeBeanList.size=="+attendeBeanList.size());
                         if (attendeBeanList != null) {
                             Hawk.put("TempMeetingAttende", attendeBeanList.size() + "");
                         }
@@ -1706,6 +1707,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                             Log.d("vvcvsvsfgsf1111  ", "1111111  " + file.getName());
                             String fileName = file.getName();
                             String[] fileNameAll = null;
+                            String pos=null;
                             Log.d("vvcvsvsfgsf22222 ", fileMd5 + "   action=" + action);
                             //分享
                             if (fileName.contains(constant.WUHUPUSH)) {
@@ -1713,9 +1715,8 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                             } else if (fileName.contains(constant.WUHUSHARE)) {
                                 fileNameAll = fileName.split(constant.WUHUSHARE);
                             }
-                            Log.d("wuhuwuwhuwuhuwwhu   cvi", fileNameAll.length + "   " + fileNameAll[1] + "    " + fileNameAll[0]);
                             fileName = fileNameAll[1];
-                            String pos = fileNameAll[0];
+                            pos = fileNameAll[0];
                             if (fileListBean.getPos() != null && pos != null) {
                                 //议题号和MD5都相同则有这样的文件
                                 if (fileListBean.getPos().equals(pos) && fileListBean.getFileMd5().equals(Md5Util.getFileMD5(file))) {
