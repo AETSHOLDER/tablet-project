@@ -18,8 +18,15 @@ import android.widget.TextView;
 
 import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.base.BaseActivity;
+import com.example.paperlessmeeting_demo.enums.MessageReceiveType;
+import com.example.paperlessmeeting_demo.tool.ScreenTools.utils.ByteUtil;
+import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.EventScreenMessage;
 import com.example.paperlessmeeting_demo.tool.constant;
 import com.example.paperlessmeeting_demo.util.TyteUtil;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -34,8 +41,8 @@ import java.util.Arrays;
 
 public class ScreenReceiveActivity2 extends BaseActivity implements SurfaceHolder.Callback {
     private static final String TAG = "ScreenReceiveActivity";
-    int width = 1280;
-    int height = 720;
+    int width = 1920;
+    int height = 1200;
     int framerate = 20;
     private int mCount = 0;
     private MediaCodec mediaCodec;
@@ -59,7 +66,7 @@ public class ScreenReceiveActivity2 extends BaseActivity implements SurfaceHolde
 
     @Override
     protected void initView() {
-        initUdp();
+//        initUdp();
     }
 
     @Override
@@ -69,6 +76,7 @@ public class ScreenReceiveActivity2 extends BaseActivity implements SurfaceHolde
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        EventBus.getDefault().register(this);
         super.onCreate(savedInstanceState);
         //去掉状态栏
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -83,7 +91,7 @@ public class ScreenReceiveActivity2 extends BaseActivity implements SurfaceHolde
         mSurfaceHolder = surface_view.getHolder();
         mSurfaceHolder.setFormat(PixelFormat.RGBA_8888);//优化花屏
         screen_device_name = (TextView) findViewById(R.id.tv_client_device_name);
-        screen_device_name.setText("正在同屏");
+        screen_device_name.setText("正在接受同屏");
         //  mSurfaceHolder.setFormat(PixelFormat.RGBX_8888);//优化花屏
         //    android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" // 花屏可以考虑设置这个样式的acticity，不过尝试了效果有限~
         mSurfaceHolder.addCallback(this);
@@ -93,6 +101,32 @@ public class ScreenReceiveActivity2 extends BaseActivity implements SurfaceHolde
 
     private static final int FRAME_MAX_NUMBER = 40964;
     private byte[] frameBytes = new byte[FRAME_MAX_NUMBER];
+
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onGetStickyEvent(EventScreenMessage message) {
+        if (message.getType().equals(MessageReceiveType.MessageClient)) {
+//            try {
+            Log.e("111","收到数据！！！");
+            byte[] data  = ByteUtil.decodeValue(message.getBytes()) ;
+
+
+            byte[] lengthByte = new byte[4];
+            System.arraycopy(data, 0, lengthByte, 0, 4);
+            int frameLenth = TyteUtil.byteArrayToInt(lengthByte);
+            Log.e(TAG, frameLenth + " 接收的长度: ");
+            if(frameLenth==0){
+                return;
+            }
+            frameLenth = 40960 < frameLenth ? 40960 : frameLenth;
+            byte[] frame = new byte[frameLenth];
+            System.arraycopy(data, 4, frame, 0, frameLenth);
+            Log.e(TAG, frameLenth + " 喂的数据: " + Arrays.toString(frame));
+            Log.e(TAG, frameLenth + " 指定索引: " + frame[10]);
+            Log.d("yemiankaishi", "fffffffffff");
+            onFrame(frame);
+        }
+    }
+
 
     private void initUdp() {
         try {

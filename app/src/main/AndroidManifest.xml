@@ -201,12 +201,11 @@
         <activity
             android:name=".activity.ScreenReceiveActivity2"
             android:screenOrientation="landscape" />
-        <!--
-     <activity
-                 android:name=".activity.ScreenReceiveActivity"
-                 android:screenOrientation="landscape" />
-             <activity
-        -->
+
+        <activity
+             android:name=".activity.ScreenReceiveActivity"
+             android:screenOrientation="landscape" />
+
         <activity
             android:name=".activity.ActivityMinuteMeeting"
             android:screenOrientation="landscape"

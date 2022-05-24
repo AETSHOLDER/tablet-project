@@ -24,6 +24,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.java_websocket.WebSocket;
 
 import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -363,6 +364,10 @@ public class ServerManager {
             }
         }
 
+        if(message.contains(constant.START_SHARE_SCEEN) || message.contains(constant.FINISH_SHARE_SCEEN)){
+            SendMessageToAll(message);
+        }
+
         // 文件分享时回应发送端是否当前议题有该文件
         if(message.contains(constant.FILERESPONDSHARE)){
             try {
@@ -399,6 +404,15 @@ public class ServerManager {
         }
         EventMessage msg = new EventMessage(MessageReceiveType.MessageServer,message);
         EventBus.getDefault().post(msg);
+    }
+
+    /**
+     * 服务器收到byte数组，解析同屏数据(直接转发)
+     * 在本案例中，主席才能发起同屏
+     */
+    public void MsgReceiveByte(ByteBuffer message,WebSocket conn){
+
+        myWebsocketServer.broadcast(message);
     }
 
     /**

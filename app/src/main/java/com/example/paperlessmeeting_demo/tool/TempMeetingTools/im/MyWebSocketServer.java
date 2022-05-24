@@ -59,8 +59,12 @@ public class MyWebSocketServer extends WebSocketServer {
     @Override
     public void onMessage(WebSocket conn, ByteBuffer message) {
         // 接收到的是Byte数据，需要转成文本数据
-        Log.d(TAG, "onMessage()接收到ByteBuffer的数据->"+ ByteUtil.byteBufferToString(message));
-
+//        String strMsg = ByteUtil.byteBufferToString(message);
+//        Log.d(TAG, "onMessage()接收到ByteBuffer的数据->"+ strMsg);
+//        if(!strMsg.contains(constant.CVI_PAPER_SCREEN_DATA)){
+//            return;
+//        }
+        ServerManager.getInstance().MsgReceiveByte(message,conn);
     }
     @Override
     public void onError(WebSocket conn, Exception ex) {

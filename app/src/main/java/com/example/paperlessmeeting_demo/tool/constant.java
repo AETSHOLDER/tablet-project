@@ -52,6 +52,7 @@ public class constant {
     public final static String FILE_Public = "0";//文件类型公开
     public final static String TEMPMEETING = "TEMPMEETING";//临时会议server还是client
     public final static String InitiaMeeting = "InitiaMeeting";//推送过来的会议、人员信息
+    public final static String CVI_PAPER_SCREEN_DATA = "CVI_PAPER_SCREEN_DATA";//同屏数据
     /**
      * websocket 字段定义
      */

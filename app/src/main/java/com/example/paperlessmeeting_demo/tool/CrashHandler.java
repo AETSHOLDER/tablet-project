@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Handler;
 import android.os.Looper;
 import android.text.format.Time;
 import android.util.Log;
@@ -144,7 +145,13 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
                 String code = constant.temp_code;
                 UDPBroadcastManager.getInstance().sendDestroyCode(code);
                 ServerManager.getInstance().StopMyWebsocketServer();
-                UDPBroadcastManager.getInstance().removeUDPBroastcast();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        UDPBroadcastManager.getInstance().removeUDPBroastcast();
+                    }
+                },1000);
+
 
                 if(DEBUG){
                     Log.d(TAG, "异常信息->"+msg);

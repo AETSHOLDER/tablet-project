@@ -26,6 +26,7 @@ import com.example.paperlessmeeting_demo.bean.WSBean;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.example.paperlessmeeting_demo.tool.constant;
 import com.example.paperlessmeeting_demo.util.AutomaticVoteUtil;
+import com.example.paperlessmeeting_demo.util.ByteUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.orhanobut.hawk.Hawk;
@@ -33,6 +34,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.java_websocket.enums.ReadyState;
 import org.java_websocket.handshake.ServerHandshake;
 import java.net.URI;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -431,6 +433,19 @@ public class JWebSocketClientService {
                 }
             }
 
+            @Override
+            public void onMessage(ByteBuffer bytes) {
+//                super.onMessage(bytes);
+//                Log.e("222","每一个client 收到同屏数据！！！");
+//                String strMsg = ByteUtil.byteBufferToString(bytes);
+//                if(!strMsg.contains(constant.CVI_PAPER_SCREEN_DATA)){
+//                    return;
+//                }
+                dealWithScreenData(bytes);
+            }
+
+
+
             /**
              *  临时会议专用add
              * */
@@ -555,6 +570,49 @@ public class JWebSocketClientService {
         if (null != client && client.isOpen()) {
             Log.d("JWebSocketClientService", "发送的消息：" + msg);
             client.send(msg);
+        }
+    }
+    /**
+     * 发送同屏数据,和上面方法一样，数据类型不同
+     *
+     * @param bytes
+     */
+    public static void sendByteBuffer(ByteBuffer bytes) {
+        if (null != client && client.isOpen()) {
+//            Log.d("JWebSocketClientService", "发送同屏数据");
+
+            byte[] aa = com.example.paperlessmeeting_demo.tool.ScreenTools.utils.ByteUtil.decodeValue(bytes);
+
+//            String strMsg = ByteUtil.byteBufferToString(bytes);
+            Log.d(TAG, "发送同屏数据->"+ aa);
+            client.send(bytes);
+        }
+    }
+    public static void sendByteArr(byte[] bytes){
+        if (null != client && client.isOpen()) {
+//            Log.d("JWebSocketClientService", "发送同屏数据");
+
+            client.send(bytes);
+        }
+    }
+
+    /**
+     * 客户端处理同屏数据
+     * */
+    public static void dealWithScreenData(ByteBuffer bytes) {
+        if(UserUtil.ISCHAIRMAN){
+            return;
+        }
+        Activity topActivity = (Activity) ActivityUtils.getTopActivity();
+        if (topActivity != null) {
+            topActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    //  发黏性事件
+                    EventScreenMessage msg = new EventScreenMessage(MessageReceiveType.MessageClient, bytes);
+                    EventBus.getDefault().postSticky(msg);
+                }
+            });
         }
     }
 

@@ -269,11 +269,13 @@ public class SignDrawPenView extends View {
     public void clearImage() {
         getInstance().getSavePoints().clear();
         getInstance().getDeletePoints().clear();
-        int width = mCanvas.getWidth();
-        int height = mCanvas.getHeight();
-        mBottomBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        mCanvas.setBitmap(mBottomBitmap);
-        postInvalidate();
+        if(mCanvas!=null){
+            int width = mCanvas.getWidth();
+            int height = mCanvas.getHeight();
+            mBottomBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            mCanvas.setBitmap(mBottomBitmap);
+            postInvalidate();
+        }
     }
 
     public void undo() {

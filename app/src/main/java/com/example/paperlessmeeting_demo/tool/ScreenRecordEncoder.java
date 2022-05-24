@@ -9,6 +9,8 @@ import android.os.HandlerThread;
 import android.util.Log;
 import android.view.Surface;
 
+import com.example.paperlessmeeting_demo.tool.ScreenTools.controll.sender.OnVideoEncodeListener;
+
 import java.nio.ByteBuffer;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -17,16 +19,7 @@ import static android.os.Build.VERSION_CODES.LOLLIPOP;
 @TargetApi(LOLLIPOP)
 public class ScreenRecordEncoder {
     private MediaCodec mMediaCodec;
-
-    public MediaCodec getmMediaCodec() {
-        return mMediaCodec;
-    }
-
-    public void setmMediaCodec(MediaCodec mMediaCodec) {
-        this.mMediaCodec = mMediaCodec;
-    }
-
-    //  private OnVideoEncodeListener mListener;
+    private OnVideoEncodeListener mListener;
     private boolean mPause;
     private HandlerThread mHandlerThread;
     private Handler mEncoderHandler;
@@ -39,10 +32,10 @@ public class ScreenRecordEncoder {
         mConfiguration = configuration;
         mMediaCodec = VideoMediaCodec.getVideoMediaCodec(mConfiguration);
     }
-/*
+
     public void setOnVideoEncodeListener(OnVideoEncodeListener listener) {
         mListener = listener;
-    }*/
+    }
 
     public void setPause(boolean pause) {
         mPause = pause;
@@ -100,6 +93,7 @@ public class ScreenRecordEncoder {
         if (mMediaCodec == null) {
             return;
         }
+        SopCastLog.d("ScreenRecordEncoder", "bps :" + bps * 1024);
         // TODO: 2018/9/10 动态调整目标码率
         Bundle bitrate = new Bundle();
         bitrate.putInt(MediaCodec.PARAMETER_KEY_VIDEO_BITRATE, bps * 1024);
@@ -110,22 +104,28 @@ public class ScreenRecordEncoder {
         while (isStarted) {
             encodeLock.lock();
             if(mMediaCodec != null) {
-                int outBufferIndex = mMediaCodec.dequeueOutputBuffer(mBufferInfo, 12000);
-                if (outBufferIndex >= 0) {
-                    ByteBuffer bb = mMediaCodec.getOutputBuffer(outBufferIndex);
-                   /* if (mListener != null && !mPause) {
-                        mListener.onVideoEncode(bb, mBufferInfo);
-                    }*/
-                    mMediaCodec.releaseOutputBuffer(outBufferIndex, false);
-                } else {
-                    try {
-                        // wait 10ms
-                        Thread.sleep(10);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                // TODO 小米的平板屏幕录制 会crash在下面一行 是VIdeoMediaCodec 配置问题
+                try{
+                    int outBufferIndex = mMediaCodec.dequeueOutputBuffer(mBufferInfo, 12000);
+                    if (outBufferIndex >= 0) {
+                        ByteBuffer bb = mMediaCodec.getOutputBuffer(outBufferIndex);
+                        if (mListener != null && !mPause) {
+                            mListener.onVideoEncode(bb, mBufferInfo);
+                        }
+                        mMediaCodec.releaseOutputBuffer(outBufferIndex, false);
+                    } else {
+                        try {
+                            // wait 10ms
+                            Thread.sleep(10);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
+                    encodeLock.unlock();
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
-                encodeLock.unlock();
+
             } else {
                 encodeLock.unlock();
                 break;

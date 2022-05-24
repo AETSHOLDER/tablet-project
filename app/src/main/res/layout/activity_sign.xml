@@ -261,12 +261,13 @@
         </RelativeLayout>
         <TextView
             android:id="@+id/sign_screen"
-            android:layout_width="113dp"
+            android:layout_width="wrap_content"
             android:layout_height="60dp"
             android:layout_toRightOf="@id/iv_back"
             android:layout_centerVertical="true"
             android:layout_marginRight="57dp"
             android:drawableLeft="@mipmap/sign_screen"
+            android:drawablePadding="5dp"
             android:gravity="center_vertical"
             android:text="同屏"
             android:textColor="#4379F0"

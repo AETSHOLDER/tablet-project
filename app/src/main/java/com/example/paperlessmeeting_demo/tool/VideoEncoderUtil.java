@@ -18,6 +18,8 @@ import android.util.Log;
 import android.view.Surface;
 
 
+import com.example.paperlessmeeting_demo.tool.ScreenTools.utils.ByteUtil;
+import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.JWebSocketClientService;
 import com.example.paperlessmeeting_demo.util.ArrayUtil;
 import com.example.paperlessmeeting_demo.util.BlackListHelper;
 import com.example.paperlessmeeting_demo.util.TyteUtil;
@@ -94,8 +96,8 @@ public class VideoEncoderUtil {
         //监听的端口号
         static final int BROADCAST_PORT = 6789;
         private InetAddress inetAddress = null;
-        public int DEFAULT_HEIGHT = 720;
-        public int DEFAULT_WIDTH = 1280;
+        public int DEFAULT_HEIGHT = 1200;
+        public int DEFAULT_WIDTH = 1920;
         int num = 0;
 
         Encoder() {
@@ -164,15 +166,18 @@ public class VideoEncoderUtil {
                     byte[] lengthByte = TyteUtil.intToByteArray(frameLength);
                     byte[] concat = ArrayUtil.concat(lengthByte, dataFrame);
                     Log.d("VideoEncoderutil",  "数据包长度=="+frameLength);
-
-                    try {
-                        DatagramPacket dp = new DatagramPacket(concat, concat.length, InetAddress.getByName(BROADCAST_IP), BROADCAST_PORT);
-                        multicastSocket.send(dp);
-                        Log.d("Numbersendreceiving222", num + " ");
-                        num++;
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+//
+//                    try {
+//                        DatagramPacket dp = new DatagramPacket(concat, concat.length, InetAddress.getByName(BROADCAST_IP), BROADCAST_PORT);
+//                        multicastSocket.send(dp);
+//                        Log.d("Numbersendreceiving222", num + " ");
+//                        num++;
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+                    JWebSocketClientService.sendByteArr(concat);
+//                    sendData(frame.data);
+//                    num++;
                 }
 
             };
