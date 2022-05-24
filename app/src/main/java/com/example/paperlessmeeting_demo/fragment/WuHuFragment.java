@@ -2725,7 +2725,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("onResume的的textNub=", textNub + "  isDeletOption=" + isDeletOption);
+//        Log.d("onResume的的textNub=", textNub + "  isDeletOption=" + isDeletOption);
         if (textNub == null) {
             return;
         }

@@ -44,6 +44,7 @@ public class ServerManager {
     public boolean isServerIsOpen() {
         return serverIsOpen;
     }
+    public int attendSize = 0;
 
     private static class SingletonHolder {
         private static final ServerManager INSTANCE = new ServerManager();
@@ -146,6 +147,23 @@ public class ServerManager {
                 e.printStackTrace();
             }
         }
+        if(message.contains(constant.QUERYATTENDSize)){
+
+            try {
+                TempWSBean bean = new TempWSBean();
+                bean.setReqType(1);
+                bean.setUserMac_id(user_mac_id);
+                bean.setPackType(constant.QUERYATTENDSize);
+                bean.setBody(attendSize);
+                String strJson = new Gson().toJson(bean);
+                //  谁查询，发送给谁
+                SendMessageToUser(conn,strJson);
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
 
         // 新增投票
         if(message.contains(constant.NEWVOTE)){

@@ -322,6 +322,17 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
             public void onClick(View view) {
                 sign_Door.setSelected(!sign_Door.isSelected());
                 if (sign_Door.isSelected()) {
+                    if(isScreen){
+                        CVIPaperDialogUtils.showConfirmDialog(SignActivity.this,"请先退出同屏!","确定",false,new CVIPaperDialogUtils.ConfirmDialogListener() {
+                            @Override
+                            public void onClickButton(boolean clickConfirm, boolean clickCancel) {
+                                if (clickConfirm) {
+                                    return;
+                                }
+                            }
+                        });
+                        return;
+                    }
                     if(url.contains("ppt") || url.contains("xls")){
                         // getBitmap取得的截图很小，只能用这种方法
                         Log.e("111","url.contains(\"ppt\")");

@@ -81,6 +81,7 @@ public class constant {
     public final static String HEART = "heart";//心跳
     public final static String SERVERSTART = "serverStart";//服务端开启成功
     public final static String QUERYATTEND = "queryAttend";//查询参会人员
+    public final static String QUERYATTENDSize = "queryAttendSize";//查询参会人员数量
 
     public final static String TEMPSHARE = "tempShare";//临时会议白板同屏
     public final static String TEMPSHAREREQ = "tempShareReq";//临时会议白板同屏请求

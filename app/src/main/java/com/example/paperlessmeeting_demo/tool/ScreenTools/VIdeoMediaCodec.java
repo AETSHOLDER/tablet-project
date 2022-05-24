@@ -9,6 +9,8 @@ import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
+import com.example.paperlessmeeting_demo.util.BlackListHelper;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -24,7 +26,7 @@ public class VIdeoMediaCodec {
     private MediaCodec mCodec;
     private static final int VIDEO_WIDTH = 1920;
     private static final int VIDEO_HEIGHT = 1200;
-    private int FrameRate = 30;
+    private int FrameRate = 24;
     private boolean useSpsPPs = false;
     private SurfaceHolder mHolder;
     byte[] header_sps = {0, 0, 0, 1, 103, 66, 0, 42, (byte) 149, (byte) 168, 30, 0, (byte) 137, (byte) 249, 102, (byte) 224, 32, 32, 32, 64};
@@ -52,6 +54,9 @@ public class VIdeoMediaCodec {
             mediaformat.setByteBuffer("csd-1", ByteBuffer.wrap(header_pps));
         }
         //设置帧率
+//        if (BlackListHelper.deviceInFpsBlacklisted()) {
+//            FrameRate = 15;
+//        }
         mediaformat.setInteger(MediaFormat.KEY_FRAME_RATE, FrameRate);
 
 

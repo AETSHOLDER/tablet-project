@@ -29,6 +29,7 @@ public class MyWebSocketServer extends WebSocketServer {
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
         Log.d(TAG, "onOpen()一个客户端连接成功："+conn.getRemoteSocketAddress());
+
     }
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
@@ -53,6 +54,9 @@ public class MyWebSocketServer extends WebSocketServer {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+        if (message.contains(constant.QUERYATTENDSize)) {
+            ServerManager.getInstance().attendSize = this.getConnections().size();
         }
         ServerManager.getInstance().MsgReceive(message,conn);
     }
