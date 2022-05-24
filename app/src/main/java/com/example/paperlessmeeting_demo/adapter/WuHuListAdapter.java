@@ -4,12 +4,9 @@ import android.content.Context;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -109,10 +106,6 @@ public class WuHuListAdapter extends BaseAdapter {
         if (viHolder.tittle3.getTag() instanceof TextWatcher) {
             viHolder.tittle3.removeTextChangedListener((TextWatcher) viHolder.tittle3.getTag());
         }
-        if (viHolder.tittle4.getTag() instanceof TextWatcher) {
-            viHolder.tittle4.removeTextChangedListener((TextWatcher) viHolder.tittle4.getTag());
-        }
-
        if (i==0){
             viHolder.delete.setVisibility(View.GONE);
            viHolder.tittle_pos.setVisibility(View.GONE);
@@ -237,9 +230,6 @@ public class WuHuListAdapter extends BaseAdapter {
                 }
             }
         };
-        viHolder.tittle3.addTextChangedListener(tittle3Watcher);
-        viHolder.tittle3.setTag(tittle3Watcher);
-
         TextWatcher tittle4Watcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -252,7 +242,7 @@ public class WuHuListAdapter extends BaseAdapter {
             @Override
             public void afterTextChanged(Editable s) {
                 if (TextUtils.isEmpty(s)) {
-                    wuHuEditBean.setTemporaryAttendeBean2("");
+                    wuHuEditBean.setTemporaryAttendeBean("");
                     wuHuEditBean.setParticipantUnits("");
                 } else {
                     wuHuEditBean.setParticipantUnits(s.toString());//列席单位
@@ -261,15 +251,9 @@ public class WuHuListAdapter extends BaseAdapter {
             }
         };
 
-    /*    viHolder.tittle3.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-           if (hasFocus){
-               viHolder.tittle4.setFocusable(false);
-               viHolder.tittle2.setFocusable(false);
-           }
-            }
-        });*/
+        viHolder.tittle3.addTextChangedListener(tittle3Watcher);
+        viHolder.tittle3.setTag(tittle3Watcher);
+
         viHolder.tittle4.addTextChangedListener(tittle4Watcher);
         viHolder.tittle4.setTag(tittle4Watcher);
 
@@ -288,7 +272,7 @@ public class WuHuListAdapter extends BaseAdapter {
             public void onClick(View v) {
                 wuHuEditBean.setSubTopics(viHolder.tittle2.getText().toString());
                 wuHuEditBean.setReportingUnit(viHolder.tittle3.getText().toString());
-                 saveSeparatelyInterface.saveData(i,wuHuEditBean);
+                 saveSeparatelyInterface.saveData(i);
              /*   Intent intent = new Intent();
                 Bundle bundle=new Bundle();
                 bundle.putString("refreshType","8");
@@ -308,7 +292,7 @@ public class WuHuListAdapter extends BaseAdapter {
     }
   public interface saveSeparatelyInterface{
 
-    public void saveData(int position, WuHuEditBean.EditListBean wuHuEditBean);
+    public void saveData(int position);
 }
     public interface deletSeparatelyInterface{
 

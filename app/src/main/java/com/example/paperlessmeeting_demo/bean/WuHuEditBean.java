@@ -258,15 +258,6 @@ public class WuHuEditBean implements Serializable {
                 this.suffix = suffix;
             }
 
-            public String getMd5Path() {
-                return md5Path;
-            }
-
-            public void setMd5Path(String md5Path) {
-                this.md5Path = md5Path;
-            }
-
-            private String md5Path;//构造推送有文件跳转临时用的
             private String name;
             private String path;
             private int resImage;
@@ -288,8 +279,7 @@ public class WuHuEditBean implements Serializable {
                 this.mac = mac;
             }
 
-            private String mac;//分享推送时文件来自哪个议题
-
+            private String  mac;//分享推送时文件来自哪个议题
             public String getType() {
                 return type;
             }

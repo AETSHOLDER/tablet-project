@@ -12,7 +12,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="30dp"
+            android:layout_marginLeft="80dp"
             android:src="@mipmap/aa" />
 
         <TextView
@@ -22,14 +22,14 @@
             android:layout_height="60dp"
             android:layout_alignParentEnd="true"
             android:layout_marginLeft="16dp"
-            android:layout_marginRight="260dp"
+            android:layout_marginRight="380dp"
             android:layout_toRightOf="@id/type_ima"
             android:ellipsize="end"
             android:gravity="left"
             android:maxLines="1"
             android:text="无纸化会议厅无纸化会"
             android:textColor="#ff3c3c3c"
-            android:textSize="38sp" />
+            android:textSize="40sp" />
 
         <TextView
             android:id="@+id/person"
@@ -55,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="45dp"
+            android:layout_marginRight="65dp"
             android:background="@null"
             android:enabled="true"
             android:gravity="center_vertical|end"
