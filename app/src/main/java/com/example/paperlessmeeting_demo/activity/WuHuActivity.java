@@ -1731,7 +1731,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                             }
                             fileName = fileNameAll[1];
                             pos = fileNameAll[0];
-                            if (fileListBean.getPos() != null && pos != null&&Md5Util.getFileMD5(file)!=null) {
+                            if (fileListBean.getPos() != null && pos != null) {
                                 //议题号和MD5都相同则有这样的文件
                                 if (fileListBean.getPos().equals(pos) && fileListBean.getFileMd5().equals(Md5Util.getFileMD5(file))) {
                                     fileMd5 = Md5Util.getFileMD5(file);
