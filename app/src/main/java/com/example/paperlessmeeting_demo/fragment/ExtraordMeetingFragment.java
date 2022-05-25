@@ -712,6 +712,10 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                 bundle.putString("isreuse","2");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
                 intent.putExtras(bundle);
                  DeleteFileUtil.deleteDirectory(fileShare);//不用模版时删除分享文件夹
+                File share = new File(fileShare);
+                if (!share.exists()) {
+                    share.mkdir();
+                }
                 startActivity(intent);
                 Hawk.put("isreuse","2");
                 dialog.dismiss();

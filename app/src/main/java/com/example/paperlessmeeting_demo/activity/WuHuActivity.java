@@ -336,6 +336,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                         intent99.putExtra("isOpenFile", true);
                         intent99.putExtra("isNetFile", false);
                         startActivity(intent99);
+                        Log.d("重复打开  ActivityImage activity","11111111");
                     } else if (fileBean400.getFile_type().equals("4")) {
 
                         if (UserUtil.isNetworkOnline) {
@@ -370,7 +371,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                             intent400.putExtra("tempPath", false);
                             intent400.putExtra("fileName", fileBean400.getName());
                             startActivity(intent400);
-
+                            Log.d("重复打开  SignActivity activity","2222222");
                         } else {
                             CVIPaperDialogUtils.showConfirmDialog(WuHuActivity.this, "当前无外网，会使用wps打开文件", "知道了", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
                                 @Override
@@ -1672,6 +1673,10 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                 String isreuse = Hawk.get("isreuse");
                 if (isreuse.equals("2") || isreuse.equals("3")) {
                     DeleteFileUtil.deleteDirectory(fileShare);//不用模版时删除分享文件夹
+                    File share = new File(fileShare);
+                    if (!share.exists()) {
+                        share.mkdir();
+                    }
                 }
             }
         }
@@ -2329,10 +2334,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
             Log.d("gfdgfdhdfhdfhgdh11", "会结束销毁文件接收");
             unbindService(serviceConnection);
         }
-        if (socketShareFileManager != null) {
-            socketShareFileManager = null;
-            Log.d("gfdgfdhdfhdfhgdh222", "会结束销毁文件接收");
-        }
+
         if (mycatalogBroadcastReceiver != null) {
             unregisterReceiver(mycatalogBroadcastReceiver);
         }

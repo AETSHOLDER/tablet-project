@@ -64,7 +64,7 @@ public class constant {
 
     public final static String QUERYVOTE = "queryVote";//查询投票数据
     public final static String REFRASHWuHUSIGLEDATA = "refreshdata";//更新单个芜湖数据
-    public final static String WUHUADDFRAGMENT = "addfragments";//普通参会人员新增芜湖fragment
+    public final static String WUHUADDFRAGMENT = "tinajiyiti";//普通参会人员新增芜湖fragment
     public final static String REFRASHWuHUALL = "saveALL";//更新所有芜湖数据fragment
     public final static String DELETE_WUHU_FRAGMENT = "deletelwuhufragment";//删除芜湖数据fragment
     public final static String REFRESH_WUHU_FILE_FRAGMENT = "qufenliebiao";//更新芜湖添加本地文件数据fragment
@@ -121,7 +121,7 @@ public class constant {
     public final static String TEMP_MEETINGPUSH_FILE = "AAAAAAAAAAAAAAAAA";//socket 临时会议推送文件到其他设备标识
     public final static String TEMP_VOTE_IMAGE_FILE = "TEMP_VOTEIMAGE_FILE";//socket 临时会议投票的图片文件到其他设备标识
     public final static String FINISH_SHARE_SCEEN = "finish  share screen";//socket 结束同屏标识
-    public final static String START_SHARE_SCEEN = "video";//socket 开始同屏标识
+    public final static String START_SHARE_SCEEN = "LLLLLLvideokk";//socket 开始同屏标识
     public final static String INIATE_ENDORSEMENT = "initiate endorsement";//socket 秘书发起签批时，普通会员自动打开签名页面
     public final static String WUHU_IMAGE_FILE_BROADCAST = "WuHuImagefile";////芜湖版本，当用户位于图片页面时  再次检测到推送文件后，只替换文件路径，不需要重启新页面
     public final static String FINISH_WUHUVOTEACTIVITY_BROADCAST = "finishactivity";//自己刷新芜湖界面

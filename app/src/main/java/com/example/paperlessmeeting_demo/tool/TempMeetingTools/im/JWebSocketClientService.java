@@ -256,7 +256,7 @@ public class JWebSocketClientService {
                 }
 
                 //  芜湖增加fragment
-                if (message.contains("addfragments") || message.contains(constant.WUHUADDFRAGMENT)) {
+                if (message.contains("tinajiyiti") || message.contains(constant.WUHUADDFRAGMENT)) {
                     if (topActivity != null) {
                      /*
                         Intent intent = new Intent();
@@ -269,7 +269,7 @@ public class JWebSocketClientService {
                     }
                 }
                 //  芜湖删除某个fragment
-                if (message.contains("refreshdata") || message.contains(constant.DELETE_WUHU_FRAGMENT)) {
+                if (message.contains("deletelwuhufragment") || message.contains(constant.DELETE_WUHU_FRAGMENT)) {
                     if (topActivity != null) {
                      /*
                         Intent intent = new Intent();
@@ -340,7 +340,11 @@ public class JWebSocketClientService {
 
                                             Hawk.delete(constant._id);
                                             Hawk.delete(constant.user_id);
-
+                                          if (!UserUtil.ISCHAIRMAN) {
+                                              if (Hawk.contains("WuHuFragmentData")) {
+                                                  Hawk.delete("WuHuFragmentData");
+                                              }
+                                          }
                                             Intent intent = new Intent(topActivity, LoginActivity.class);
                                             topActivity.startActivity(intent);
                                             topActivity.finish();

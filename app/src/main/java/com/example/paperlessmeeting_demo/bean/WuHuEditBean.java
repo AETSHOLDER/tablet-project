@@ -87,6 +87,16 @@ public class WuHuEditBean implements Serializable {
         private String line_color;
         private String them_color;
         private List<FileListBean> fileListBeanList;
+
+        public List<FileListBean> getLocalFiles() {
+            return localFiles;
+        }
+
+        public void setLocalFiles(List<FileListBean> localFiles) {
+            this.localFiles = localFiles;
+        }
+
+        private List<FileListBean> localFiles;
         private String pos;//议题编号
 
         public String getPos() {
@@ -279,6 +289,7 @@ public class WuHuEditBean implements Serializable {
             private String flag;//1  分享  2  推送
             private String fileMd5;
             private String type;
+
 
             public String getMac() {
                 return mac;
