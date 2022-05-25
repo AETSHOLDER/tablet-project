@@ -1579,7 +1579,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
                 pushResponNo++;
             }
             //等人都回复完毕在判断是重新推送还是直接打开
-            if (peopleNum==shareResponNum){
+            if (peopleNum==pushResponNum){
 
                 if (pushResponNo==0) {
                     if (StringUtils.isEmpty(pushType) || StringUtils.isEmpty(pushPath) || StringUtils.isEmpty(pushName)) {
