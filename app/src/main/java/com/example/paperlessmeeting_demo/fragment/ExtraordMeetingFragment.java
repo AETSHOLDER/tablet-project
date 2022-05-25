@@ -449,6 +449,16 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                     return;
                 } else {
                     initMeetingDialog.dismiss();
+                    //  TODO 芜湖版不让创建两场会议
+//                    CVIPaperDialogUtils.showConfirmDialog(getActivity(), "存在其他已经创建的临时会议,不允许继续创建!", "知道了", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+//                        @Override
+//                        public void onClickButton(boolean clickConfirm, boolean clickCancel) {
+//                            if (clickConfirm) {
+//                                return;
+//                            }
+//                        }
+//                    });
+
                     CVIPaperDialogUtils.showCustomDialog(getActivity(), "存在其他已经创建的临时会议", "是否仍然创建?", "继续创建", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
                         @Override
                         public void onClickButton(boolean clickConfirm, boolean clickCancel) {

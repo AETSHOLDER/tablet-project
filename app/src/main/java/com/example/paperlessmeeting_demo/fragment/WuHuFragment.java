@@ -1590,15 +1590,23 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
                     if (pushType.equals("3")) {
                         Activity topActivity = (Activity) ActivityUtils.getTopActivity();
                         if (topActivity != null) {
-                            //防止普通参会人员重复打开页面
-                            // 如果是在签批内，先关闭，再进入,否则未销毁tbs,会一直显示加载中(看情况添加用户提示)
-                            if(topActivity.getLocalClassName().contains("SignActivity")){
-                                SignActivity signActivity = (SignActivity)topActivity;
+                            if (topActivity.getLocalClassName().contains("ActivityImage")) {
+                                {
+                                    ActivityImage activityImage = (ActivityImage) topActivity;
+                                    topActivity.finish();
+                                    try {
+                                        Thread.sleep(200);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            } else if (topActivity.getLocalClassName().contains("SignActivity")) {
+                                SignActivity signActivity = (SignActivity) topActivity;
                                 signActivity.clearData();
                                 topActivity.finish();
                                 try {
                                     Thread.sleep(200);
-                                }catch (Exception e){
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
@@ -1640,16 +1648,32 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
                                     Activity topActivity = (Activity) ActivityUtils.getTopActivity();
                                       if (topActivity != null) {
                                           // 如果是在签批内，先关闭，再进入,否则未销毁tbs,会一直显示加载中(看情况添加用户提示)
-                                          if(topActivity.getLocalClassName().contains("SignActivity")){
-                                              SignActivity signActivity = (SignActivity)topActivity;
+                                          if (topActivity.getLocalClassName().contains("SignActivity")) {
+                                              // 防止前一个打开签批的立即结束
+                                              try {
+                                                  Thread.sleep(100);
+                                              } catch (Exception e) {
+                                                  e.printStackTrace();
+                                              }
+                                              SignActivity signActivity = (SignActivity) topActivity;
                                               signActivity.clearData();
                                               topActivity.finish();
                                               try {
                                                   Thread.sleep(200);
-                                              }catch (Exception e){
+                                              } catch (Exception e) {
+                                                  e.printStackTrace();
+                                              }
+
+                                          } else if (topActivity.getLocalClassName().contains("ActivityImage")) {
+                                              ActivityImage activityImage = (ActivityImage) topActivity;
+                                              topActivity.finish();
+                                              try {
+                                                  Thread.sleep(200);
+                                              } catch (Exception e) {
                                                   e.printStackTrace();
                                               }
                                           }
+
                                       }
                             if ( pushPath==null){
                                 Toast.makeText(getActivity(), "文件不存在", Toast.LENGTH_SHORT).show();
