@@ -110,26 +110,6 @@ public class ServerManager {
                 e.printStackTrace();
             }
         }
-        // 芜湖主席端界面初始化提交自己本地议题
-        if(message.contains(constant.SUBMITANISSUE)){
-            try {
-                TempWSBean<WuHuEditBean> wsebean = new Gson().fromJson(message, new TypeToken<TempWSBean<WuHuEditBean>>(){}.getType());
-                WuHuEditBean wuHuEditBean = wsebean.getBody();
-                editListBeans.clear();
-                editListBeans.addAll(wuHuEditBean.getEditListBeanList());
-                Log.d("dfdsdgseditListBeans,",editListBeans.size()+"");
-                TempWSBean bean = new TempWSBean();
-                bean.setReqType(1);
-                bean.setUserMac_id("");
-                bean.setPackType(constant.SUBMITANISSUE);
-                bean.setBody(editListBeans);
-                String strJson = new Gson().toJson(bean);
-                //  谁查询，发送给谁
-                SendMessageToUser(conn,strJson);
-            }catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
 
         // 查询参会人员
         if(message.contains(constant.QUERYATTEND)){
@@ -308,6 +288,30 @@ public class ServerManager {
                 e.printStackTrace();
             }
         }
+        // 芜湖主席端界面初始化提交自己本地议题
+        if(message.contains(constant.SUBMITANISSUE)){
+            try {
+                TempWSBean<WuHuEditBean> wsebean = new Gson().fromJson(message, new TypeToken<TempWSBean<WuHuEditBean>>(){}.getType());
+                WuHuEditBean wuHuEditBean = wsebean.getBody();
+                editListBeans.clear();
+                editListBeans.addAll(wuHuEditBean.getEditListBeanList());
+                Log.d("fdsafadffadfazz3333 ,",editListBeans.size()+"");
+                for (int i = 0; i < editListBeans.size(); i++) {
+
+                    Log.d("fdsafadffadfazz5555   ", editListBeans.get(i).getLocalFiles().size() + "");
+                }
+                TempWSBean bean = new TempWSBean();
+                bean.setReqType(1);
+                bean.setUserMac_id("");
+                bean.setPackType(constant.SUBMITANISSUE);
+                bean.setBody(wsebean);
+                String strJson = new Gson().toJson(bean);
+                SendMessageToAll(strJson);
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         // 刷新单个芜湖新增fragment
         if(message.contains(constant.REFRASHWuHUSIGLEDATA)){
             try {

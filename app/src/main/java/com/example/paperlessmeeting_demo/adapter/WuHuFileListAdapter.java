@@ -79,6 +79,7 @@ public class WuHuFileListAdapter extends BaseAdapter {
     }
 
     public void setGridViewBeanList(List<WuHuEditBean.EditListBean.FileListBean> gridViewBeanList) {
+
         this.gridViewBeanList = gridViewBeanList;
     }
 
@@ -128,8 +129,10 @@ public class WuHuFileListAdapter extends BaseAdapter {
         viHolder.time.setText(gridViewBean.getTime());
         if(UserUtil.ISCHAIRMAN){
             viHolder.open.setVisibility(View.VISIBLE);
+            viHolder.proprietary.setVisibility(View.VISIBLE);
         }else {
             viHolder.open.setVisibility(View.GONE);
+            viHolder.proprietary.setVisibility(View.INVISIBLE);
         }
         if (UserUtil.isTempMeeting) {
             viHolder.open.setText("推送");

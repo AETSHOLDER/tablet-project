@@ -20,7 +20,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="70dp"
             android:gravity="center"
-            android:text="第8次政府常务会议"
+            android:text="区政府会议纪要"
             android:textColor="#ff1d1d1d"
             android:textSize="55sp" />
 
@@ -32,8 +32,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:gravity="left"
-            android:text="一、时间：2022年5月15日（星期日）下午2：30\n
-二、地点：区政府301会议室"
+            android:text="会议纪要"
             android:textColor="#ff1d1d1d"
             android:textSize="48sp" />
 
@@ -126,7 +125,7 @@
                 android:layout_marginLeft="15dp"
                 android:layout_toRightOf="@id/ad"
                 android:gravity="left"
-                android:text="某某，某某某 ，某某"
+                android:text="汇报单位名称"
                 android:textColor="#333333"
                 android:textSize="38sp" />
 
@@ -153,7 +152,7 @@
                 android:layout_marginLeft="15dp"
                 android:layout_toRightOf="@id/ss"
                 android:gravity="left"
-                android:text="某某，某某某 ，某某"
+                android:text="列席单位名称"
                 android:textColor="#333333"
                 android:textSize="38sp" />
 

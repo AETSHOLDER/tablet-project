@@ -81,6 +81,8 @@ public class SocketShareFileManager {
             name.close();
 
             Log.e("111","fileName==="+fileName);
+
+            int sharePush = -1;
             /**
              * 批注文件接收时path是全路径，signFlag区分
              * */
@@ -116,6 +118,14 @@ public class SocketShareFileManager {
                 }
             } else {
                 SendMessage(2, "正在接收:" + fileName, 0);
+
+                if (fileName.contains(constant.WUHUPUSH)){
+                    sharePush = 0;
+                    fileName = fileName.replace(constant.WUHUPUSH, "");
+                }else if (fileName.contains(constant.WUHUSHARE)){
+                    sharePush = 1;
+                    fileName = fileName.replace(constant.WUHUSHARE, "");
+                }
                 path = Environment.getExternalStorageDirectory().getPath() + constant.SHARE_FILE;
                 savePath = path + fileName;
                 File f = new File(path);
@@ -144,9 +154,9 @@ public class SocketShareFileManager {
             Log.d("fenxiasng", "savePath==" + savePath+"fileName="+fileName);
             if (fileName.contains(signFlag)){
                 SendMessage(101, "接收完成:" + fileName, 0);
-            }else if (fileName.contains(constant.WUHUPUSH)){
+            }else if (sharePush==0){
                 SendMessage(88, savePath, 0);
-            }else if (fileName.contains(constant.WUHUSHARE)){
+            }else if (sharePush==1){
                 SendMessage(33, savePath, 0);
             }
 
@@ -215,11 +225,12 @@ public class SocketShareFileManager {
                 OutputStream outputName = name.getOutputStream();
                 OutputStreamWriter outputWriter = new OutputStreamWriter(outputName);
                 BufferedWriter bwName = new BufferedWriter(outputWriter);
+//                bwName.write(fileName.get(i));
                 if (actionType.equals("1")){
-                    bwName.write(flag+constant.WUHUSHARE+fileName.get(i));
+                    bwName.write(constant.WUHUSHARE+fileName.get(i));
                 }else if (actionType.equals("2")){
 
-                    bwName.write(flag+constant.WUHUPUSH+fileName.get(i));
+                    bwName.write(constant.WUHUPUSH+fileName.get(i));
                 }
 
 

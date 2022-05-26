@@ -15,6 +15,7 @@ import com.example.paperlessmeeting_demo.activity.WhiteBoardActivity2;
 import com.example.paperlessmeeting_demo.bean.TeamDisagree;
 import com.example.paperlessmeeting_demo.bean.TempWSBean;
 import com.example.paperlessmeeting_demo.bean.VoteListBean;
+import com.example.paperlessmeeting_demo.bean.WuHuEditBean;
 import com.example.paperlessmeeting_demo.bean.meetingRecordId;
 import com.example.paperlessmeeting_demo.enums.MessageReceiveType;
 import com.example.paperlessmeeting_demo.tool.CVIPaperDialogUtils;
@@ -68,7 +69,7 @@ public class JWebSocketClientService {
             public void onMessage(String message) {
                 Log.d(TAG, "收到的消息：" + message);
                 // 发出消息
-                if(message.contains(constant.QUERYVOTE_WUHU_FRAGMENT)){
+                if(message.contains(constant.QUERYVOTE_WUHU_FRAGMENT) ){
                     EventMessage msg = new EventMessage(MessageReceiveType.MessageClient, message);
                     EventBus.getDefault().postSticky(msg);
                 }else {
@@ -343,8 +344,13 @@ public class JWebSocketClientService {
                                           if (!UserUtil.ISCHAIRMAN) {
                                               if (Hawk.contains("WuHuFragmentData")) {
                                                   Hawk.delete("WuHuFragmentData");
+                                                  if (Hawk.contains("wuhulocal")) {
+                                                      Hawk.delete("wuhulocal");
+
+                                                  }
                                               }
                                           }
+
                                             Intent intent = new Intent(topActivity, LoginActivity.class);
                                             topActivity.startActivity(intent);
                                             topActivity.finish();
