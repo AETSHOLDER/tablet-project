@@ -499,7 +499,8 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                         for (VoteListBean.VoteBean bean : voteList) {
                             bean.setStatus(bean.getStatus());
                         }
-                        Collections.reverse(voteList);
+
+
 
                         Log.d("gdgsdgsdgdgf4446666",flag+"");
                         refreshUI(voteList, flag);

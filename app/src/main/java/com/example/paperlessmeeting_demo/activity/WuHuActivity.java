@@ -219,9 +219,9 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
             String selfIp = "";
             String stIp = "";
             File file = null;
-            String fileName = null;
-            String endStr = null;
-            String pos = null;
+            String fileName = "-1";
+            String endStr = "-1";
+            String pos = "-1";
             Uri uri = null;
             switch (msg.what) {
 
@@ -693,14 +693,16 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                             } else {
                                 String fileName = file.getName();
                                 String[] fileNameAll = null;
+                                String pos="-1";
                                 if (fileName.contains(constant.WUHUPUSH)) {
                                     fileNameAll = fileName.split(constant.WUHUPUSH);
+                                    fileName = fileNameAll[1];
+                                    pos = fileNameAll[0];
                                 } else if (fileName.contains(constant.WUHUSHARE)) {
                                     fileNameAll = fileName.split(constant.WUHUSHARE);
+                                    pos = fileNameAll[0];
                                 }
-                                Log.d("wuhuwuwhuwuhuwwhu   cvi", fileNameAll.length + "   " + fileNameAll[1] + "    " + fileNameAll[0]);
-                                fileName = fileNameAll[1];
-                                String pos = fileNameAll[0];
+
                                 if (textNub != null && pos != null) {
                                     if (textNub.equals(pos)) {
                                         String endStr = fileName.substring(fileName.lastIndexOf(".") + 1);
