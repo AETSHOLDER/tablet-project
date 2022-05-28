@@ -2509,6 +2509,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                         wuHuEditBeanList.get(i).setTopic_type(tittle2.getText().toString());
                         wuHuEditBeanList.get(i).setLine_color(lineFlag);
                         wuHuEditBeanList.get(i).setThem_color(themFlag);
+                        Log.d("fsdfgsggsg","议题   "+i+"  对应的列席单位："+wuHuEditBeanList.get(i).getParticipantUnits());
                     }
 
                     wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
