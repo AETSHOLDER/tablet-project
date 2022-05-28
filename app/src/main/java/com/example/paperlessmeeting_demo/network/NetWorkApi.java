@@ -10,6 +10,7 @@ import com.example.paperlessmeeting_demo.bean.DeviceListBean;
 import com.example.paperlessmeeting_demo.bean.DeviceTypeBean;
 import com.example.paperlessmeeting_demo.bean.LoginBean;
 import com.example.paperlessmeeting_demo.bean.MeetingUserInfoBean;
+import com.example.paperlessmeeting_demo.bean.MergeChunkBean;
 import com.example.paperlessmeeting_demo.bean.NewFileBean;
 import com.example.paperlessmeeting_demo.bean.PaperlessBean;
 import com.example.paperlessmeeting_demo.bean.StreamConfigurationBean;
@@ -19,6 +20,7 @@ import com.example.paperlessmeeting_demo.bean.MeetingInfoBean;
 import com.example.paperlessmeeting_demo.bean.UploadBean;
 import com.example.paperlessmeeting_demo.bean.WuHuNetFileBean;
 
+import okhttp3.RequestBody;
 import retrofit2.http.Body;
 import retrofit2.http.HTTP;
 import retrofit2.http.Multipart;
@@ -34,6 +36,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.PartMap;
 import retrofit2.http.Path;
 import retrofit2.http.Part;
 import retrofit2.http.Query;
@@ -46,11 +49,12 @@ import retrofit2.http.Streaming;
 public interface NetWorkApi {
 
     /*
-    *  通过userId登录，临时使用
-    * */
+     *  通过userId登录，临时使用
+     * */
     @POST("loginByUserId")
     @FormUrlEncoded
     Observable<BasicResponse<LoginBean>> loginByUserId(@FieldMap Map<String, Object> map);
+
 
     @POST("loginUser")
     @FormUrlEncoded
@@ -72,14 +76,16 @@ public interface NetWorkApi {
     //获取文件列表
     @GET("findMeetingFileList")
     Observable<BasicResponse<NewFileBean>> getFileList(@Query("meeting_record_id") String meeting_record_id, @Query("type") String type);
-//
+
+    //
     @GET("meetingFile/getMeetingFile")
     Observable<BasicResponse<List<WuHuNetFileBean.DataBean>>> getWuHuFileList(@Query("meeting_id") String meeting_record_id);
 
 
     //获取文件列表
     @GET("fqMeetingFile")
-    Observable<BasicResponse<List<NewFileBean.MeetingFileListBean>>> getSearchFileList(@Query("key") String key,@Query("c_id") String c_id,@Query("meeting_record_id") String meeting_record_id);
+    Observable<BasicResponse<List<NewFileBean.MeetingFileListBean>>> getSearchFileList(@Query("key") String key, @Query("c_id") String c_id, @Query("meeting_record_id") String meeting_record_id);
+
     //获取参会人员列表
     @GET("findMeetingUserList")
     Observable<BasicResponse<List<AttendeBean>>> getMeetingUserList(@Query("meeting_record_id") String meeting_record_id);
@@ -117,6 +123,25 @@ public interface NetWorkApi {
     @POST("upload")
     Observable<BasicResponse<UploadBean>> upLoadFile(@Query("dirName") String dirName, @Query("uid") String uid, @Query("file") String f, @Part MultipartBody.Part file);
 
+    //大文件合并
+    @POST("mergeChunk")
+    Observable<BasicResponse<MergeChunkBean>> mergeChunk(@Body Map<String, Object> map);
+    /*
+     *  大文件分片上传
+     * */
+    //文件上传接口
+    @Multipart
+    @POST("receiveChunk")
+    Observable<BasicResponse> receiveChunk(@Part MultipartBody.Part file);
+
+
+    /*   *//*
+     *  大文件分片上传
+     * *//*
+    //文件上传接口
+    @Multipart
+    @POST("receiveChunk")
+    Observable<BasicResponse> receiveChunk( @Query("hash") String hash, @Query("fileName") String fileName);*/
     //创建文件
     @POST("createMeetingFile")
     Observable<BasicResponse<CreateFileBeanResponse>> createMeetingFile(@Body Object fields);
@@ -159,7 +184,7 @@ public interface NetWorkApi {
 
     /*  @FormUrlEncoded
       @DELETE("removeMeetingFile")*/
-  //  @FormUrlEncoded
+    //  @FormUrlEncoded
     @HTTP(method = "DELETE", path = "removeMeetingFile", hasBody = true)
     Observable<BasicResponse> removeMeetingFile(@Body Map<String, Object> map);
     //  Observable<BasicResponse> removeMeetingFile(@Field("ids[]") List<String> idList, @Query("c_id") String id);

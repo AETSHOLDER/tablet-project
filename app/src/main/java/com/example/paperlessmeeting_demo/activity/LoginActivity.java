@@ -150,6 +150,7 @@ public class LoginActivity extends BaseActivity  {
     @BindView(R.id.name5_rl)
     RelativeLayout name5Rl;
 
+
     //    private String[] titles = {"扫码进入", "手写签到", "邀请码"};
     private String[] titles = {"手写签到", "手写签到"};
     private List<Fragment> fragments = new ArrayList<>();
@@ -212,6 +213,15 @@ public class LoginActivity extends BaseActivity  {
 
     @Override
     protected void initView() {
+
+        tt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent  intent=new Intent(LoginActivity.this,UPloadActivity.class);
+                startActivity(intent);
+
+            }
+        });
         if(Hawk.contains(constant.user_name)){
             UserUtil.user_name = Hawk.get(constant.user_name);
         }

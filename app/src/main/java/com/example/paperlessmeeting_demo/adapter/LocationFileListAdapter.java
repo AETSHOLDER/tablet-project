@@ -119,6 +119,14 @@ public class LocationFileListAdapter extends BaseAdapter {
         viHolder.person.setText(gridViewBean.getAuthor());
         viHolder.time.setText(gridViewBean.getTime());
         if (UserUtil.isTempMeeting) {
+            //文件公开
+            viHolder.open.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("asdfasfsf", gridViewBean.getPath() + "=====" + gridViewBean.getFile_type());
+                    upLoadFileInterface.sendFileInfo(gridViewBean.getPath(), gridViewBean.getFile_type(), "0");
+                }
+            });
             viHolder.open.setText("推送");
             viHolder.proprietary.setText("分享");
             //文件分享
