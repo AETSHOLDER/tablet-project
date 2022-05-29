@@ -494,6 +494,7 @@ public class FileFragment extends BaseFragment implements MediaReceiver.sendfile
         map.put("uid", "");
         map.put("file", "");*/
         MultipartBody.Part part = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
+
         NetWorkManager.getInstance().getNetWorkApiService().upLoadFile(creatDirectory(type), "", "", part).compose(this.<BasicResponse<UploadBean>>bindToLifecycle())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

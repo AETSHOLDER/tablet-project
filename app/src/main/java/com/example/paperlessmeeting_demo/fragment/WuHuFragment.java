@@ -2335,6 +2335,8 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
 
                 if (attend2 != null) {
                     attend2.setText(editListBeanList.get(Integer.valueOf(textNub)).getParticipantUnits());
+
+                    Log.d("fdafafaff=fragment2222", "议题 "+textNub+"  对应的列席单位：" +editListBeanList.get(Integer.valueOf(textNub)).getParticipantUnits());
                 }
      /*    if (fileListAdapter!=null){
              fileListAdapter.notifyDataSetChanged();

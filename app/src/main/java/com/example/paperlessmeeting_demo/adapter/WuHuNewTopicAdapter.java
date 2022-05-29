@@ -107,11 +107,15 @@ public class WuHuNewTopicAdapter extends RecyclerView.Adapter<WuHuNewTopicAdapte
         if (viHolder.tittle3.getTag() instanceof TextWatcher) {
             viHolder.tittle3.removeTextChangedListener((TextWatcher) viHolder.tittle3.getTag());
         }
+        if (viHolder.tittle4.getTag() instanceof TextWatcher) {
+            viHolder.tittle4.removeTextChangedListener((TextWatcher) viHolder.tittle4.getTag());
+        }
         if (i==0){
             viHolder.delete.setVisibility(View.GONE);
             viHolder.tittle_pos.setVisibility(View.GONE);
             viHolder.tittle2.setVisibility(View.GONE);
             viHolder.tittle3.setVisibility(View.GONE);
+            viHolder.tittle4.setVisibility(View.GONE);
             viHolder.save.setVisibility(View.GONE);
             viHolder.add.setVisibility(View.GONE);
             viHolder.aa.setVisibility(View.GONE);
@@ -125,6 +129,7 @@ public class WuHuNewTopicAdapter extends RecyclerView.Adapter<WuHuNewTopicAdapte
             viHolder.tittle_pos.setVisibility(View.VISIBLE);
             viHolder.tittle2.setVisibility(View.VISIBLE);
             viHolder.tittle3.setVisibility(View.VISIBLE);
+            viHolder.tittle4.setVisibility(View.VISIBLE);
             viHolder.save.setVisibility(View.VISIBLE);
             viHolder.aa.setVisibility(View.VISIBLE);
             viHolder.bb.setVisibility(View.VISIBLE);
@@ -138,6 +143,7 @@ public class WuHuNewTopicAdapter extends RecyclerView.Adapter<WuHuNewTopicAdapte
             viHolder.tittle_pos.setVisibility(View.VISIBLE);
             viHolder.tittle2.setVisibility(View.VISIBLE);
             viHolder.tittle3.setVisibility(View.VISIBLE);
+            viHolder.tittle4.setVisibility(View.VISIBLE);
             viHolder.save.setVisibility(View.VISIBLE);
             viHolder.add.setVisibility(View.VISIBLE);
             viHolder.aa.setVisibility(View.VISIBLE);
@@ -273,6 +279,7 @@ public class WuHuNewTopicAdapter extends RecyclerView.Adapter<WuHuNewTopicAdapte
             public void onClick(View v) {
                 wuHuEditBean.setSubTopics(viHolder.tittle2.getText().toString());
                 wuHuEditBean.setReportingUnit(viHolder.tittle3.getText().toString());
+                wuHuEditBean.setParticipantUnits(viHolder.tittle4.getText().toString());
                 saveSeparatelyInterface.saveData(i);
              /*   Intent intent = new Intent();
                 Bundle bundle=new Bundle();
