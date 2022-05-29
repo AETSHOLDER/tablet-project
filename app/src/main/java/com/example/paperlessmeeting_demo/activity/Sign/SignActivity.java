@@ -306,7 +306,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                         @Override
                         public void onClickButton(boolean clickConfirm, boolean clickCancel) {
                             if (clickConfirm) {
-                                mDbView.clearImage();
+                                clearData();
                                 finish();
                             }
                         }
@@ -334,7 +334,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                         return;
                     }
                     if(url.contains("ppt") || url.contains("xls")){
-                        // getBitmap取得的截图很小，只能用这种方法
+                        // 这两种office类型getBitmap取得的截图很小，只能用这种方法
                         Log.e("111","url.contains(\"ppt\")");
                         takeScreenShot();
                     }else {
@@ -364,6 +364,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                                     SignOperationUtils.getInstance().DISABLE = false;
                                     changeSignUI();
                                     mDbView.clearImage();
+                                    mDtView.hideTextView();
                                     mDbView.setVisibility(View.GONE);
                                     mDtView.setVisibility(View.GONE);
                                     tbsReaderView.setVisibility(View.VISIBLE);
@@ -377,6 +378,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                         SignOperationUtils.getInstance().DISABLE = false;
                         changeSignUI();
                         mDbView.clearImage();
+                        mDtView.hideTextView();
                         mDbView.setVisibility(View.GONE);
                         mDtView.setVisibility(View.GONE);
                         tbsReaderView.setVisibility(View.VISIBLE);
@@ -414,6 +416,15 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                 if (Build.MANUFACTURER.equalsIgnoreCase("XIAOMI")) {
                     //
                     ToastUtils.showShort("不支持小米机型投屏!");
+                    return;
+                }
+                if(sign_Door.isSelected()){
+                    CVIPaperDialogUtils.showConfirmDialog(SignActivity.this, "请先退出批注!", "确定", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                        @Override
+                        public void onClickButton(boolean clickConfirm, boolean clickCancel) {
+
+                        }
+                    });
                     return;
                 }
 
@@ -578,7 +589,9 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
         if(mDbView!=null){
             mDbView.clearImage();
         }
-
+        if(mDtView!=null){
+            mDtView.hideTextView();
+        }
     }
 
     @Override
