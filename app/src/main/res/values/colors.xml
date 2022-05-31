@@ -58,6 +58,7 @@
     <!--progress渐变-->
     <color name="progress_color_1">#006CFF</color>
     <color name="progress_color_2">#63A5FF</color>
+    <color name="datePicker_color">#597EF7</color>
 
 
     <color name="colorPrimary1">#3F51B5</color>

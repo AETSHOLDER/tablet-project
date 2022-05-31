@@ -18,6 +18,9 @@ import com.example.paperlessmeeting_demo.bean.UUIdBean;
 import com.example.paperlessmeeting_demo.bean.VoteListBean;
 import com.example.paperlessmeeting_demo.bean.MeetingInfoBean;
 import com.example.paperlessmeeting_demo.bean.UploadBean;
+import com.example.paperlessmeeting_demo.bean.WuHuEditBean;
+import com.example.paperlessmeeting_demo.bean.WuHuEditBeanRequset;
+import com.example.paperlessmeeting_demo.bean.WuHuMeetingListResponse;
 import com.example.paperlessmeeting_demo.bean.WuHuNetFileBean;
 
 import okhttp3.RequestBody;
@@ -145,7 +148,13 @@ public interface NetWorkApi {
     //创建文件
     @POST("createMeetingFile")
     Observable<BasicResponse<CreateFileBeanResponse>> createMeetingFile(@Body Object fields);
+    //芜湖获取会议列表
+    @GET("meetingList")
+    Observable<BasicResponse<List<WuHuMeetingListResponse>>> meetingList(@Query("name") String name,@Query("startTime") String startTime);
 
+    //芜湖修改会议
+    @PUT("meeting")
+    Observable<BasicResponse> meeting(@Body WuHuEditBeanRequset wuHuEditBeanRequset);
     //下载文件、、
     @Streaming
     @POST("downloadFile")

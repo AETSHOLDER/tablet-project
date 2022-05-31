@@ -1,5 +1,6 @@
 package com.example.paperlessmeeting_demo.activity;
 
+import com.alibaba.fastjson.JSONObject;
 import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.example.paperlessmeeting_demo.activity.Sign.SignActivity;
@@ -51,9 +52,11 @@ import com.example.paperlessmeeting_demo.bean.AttendeBean;
 import com.example.paperlessmeeting_demo.bean.BasicResponse;
 import com.example.paperlessmeeting_demo.bean.FileBean;
 import com.example.paperlessmeeting_demo.bean.FileListBean;
+import com.example.paperlessmeeting_demo.bean.MergeChunkBean;
 import com.example.paperlessmeeting_demo.bean.SharePushFileBean;
 import com.example.paperlessmeeting_demo.bean.TempWSBean;
 import com.example.paperlessmeeting_demo.bean.WuHuEditBean;
+import com.example.paperlessmeeting_demo.bean.WuHuEditBeanRequset;
 import com.example.paperlessmeeting_demo.enums.MessageReceiveType;
 import com.example.paperlessmeeting_demo.fragment.WuHuFragment;
 import com.example.paperlessmeeting_demo.R;
@@ -447,7 +450,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                     bundle.putString("topicPos", pos);
                     intent.putExtras(bundle);
                     intent.setAction(constant.SHARE_FILE_BROADCAST);
-                  //  sendBroadcast(intent);
+                    //  sendBroadcast(intent);
                     if (fileBean.getFile_type().equals("3")) {
                         //防止普通参会人员重复打开页面
                     /*    if ( isActivityTop(ActivityImage.class,WuHuActivity.this)){
@@ -693,7 +696,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                             } else {
                                 String fileName = file.getName();
                                 String[] fileNameAll = null;
-                                String pos="-1";
+                                String pos = "-1";
                                 if (fileName.contains(constant.WUHUPUSH)) {
                                     fileNameAll = fileName.split(constant.WUHUPUSH);
                                     fileName = fileNameAll[1];
@@ -1446,6 +1449,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                 if (clickConfirm) {
 
                     if (UserUtil.isTempMeeting) {
+                        wuHuFinishMeeting();
                         if (Hawk.get(constant.TEMPMEETING).equals(MessageReceiveType.MessageServer) || ServerManager.getInstance().isServerIsOpen()) {
                             // 如果是服务端，关掉服务，关停广播
                             String code = getIntent().getStringExtra("code");
@@ -1520,6 +1524,40 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                 }
             }
         });
+    }
+
+    private void wuHuFinishMeeting() {
+        WuHuEditBean  wuHuEditBean=null;
+        if (Hawk.contains("WuHuFragmentData")) {
+             wuHuEditBean = Hawk.get("WuHuFragmentData");
+             String data= TimeUtils.getTime(System.currentTimeMillis(), TimeUtils.DATA_FORMAT_NO_HOURS_DATA7);//会议-年
+            wuHuEditBean.setStartTime(data);
+        }
+        WuHuEditBeanRequset wuHuEditBeanRequset=new WuHuEditBeanRequset();
+        wuHuEditBeanRequset.setContent(wuHuEditBean);
+        String   conten=  new Gson().toJson(wuHuEditBeanRequset);
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", "");
+        map.put("content", conten);
+        NetWorkManager.getInstance().getNetWorkApiService().meeting(wuHuEditBeanRequset).compose(this.<BasicResponse>bindToLifecycle())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DefaultObserver<BasicResponse>() {
+                    @Override
+                    protected void onFail(BasicResponse response) {
+                        super.onFail(response);
+                        Log.d("gtgwrtwwrtwt创建会议", "创建会议失败");
+                    }
+
+                    @Override
+                    protected void onSuccess(BasicResponse response) {
+                        Log.d("gtgwrtwwrtwt创建会议", "创建会议成功11111");
+                        if (response != null) {
+                            Log.d("gtgwrtwwrtwt创建会议", "创建会议成功"+response.getData().toString());
+                        }
+                    }
+                });
+
     }
 
     @Override
@@ -1692,7 +1730,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                             if (Hawk.contains("WuHuFragmentData")) {
                                 WuHuEditBean refrashWuHuFragmentData = Hawk.get("WuHuFragmentData");
                                 List<WuHuEditBean.EditListBean> listBeans = new ArrayList<>();
-                                listBeans .addAll(wuHuEditBean.getEditListBeanList());
+                                listBeans.addAll(wuHuEditBean.getEditListBeanList());
                                 if (listBeans.size() == 0) {
                                     return;
                                 }
@@ -1733,7 +1771,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                             if (Hawk.contains("WuHuFragmentData")) {
                                 WuHuEditBean wuHuFragmentData = Hawk.get("WuHuFragmentData");
                                 List<WuHuEditBean.EditListBean> listBeans = new ArrayList<>();
-                                listBeans .addAll(deletWuHuEditBean.getEditListBeanList());
+                                listBeans.addAll(deletWuHuEditBean.getEditListBeanList());
                                 if (listBeans.size() == 0) {
                                     return;
                                 }
@@ -1863,7 +1901,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                             List<WuHuEditBean.EditListBean> comitEdit = new ArrayList<>();
                             Log.d("fdsafadffadfazz1111  ", "提交成功!");
                             WuHuEditBean wuHuEditBean = wsebean.getBody();
-                            comitEdit .addAll(wuHuEditBean.getEditListBeanList()) ;
+                            comitEdit.addAll(wuHuEditBean.getEditListBeanList());
                             for (int i = 0; i < comitEdit.size(); i++) {
 
                                 Log.d("fdsafadffadfazz22222   ", comitEdit.get(i).getFileListBeanList().size() + "");
@@ -1932,7 +1970,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Log.e("111111111111111111"," 遍历得到分享的文件 遍历得到分享的文件 遍历得到分享的文件 遍历得到分享的文件");
+                Log.e("111111111111111111", " 遍历得到分享的文件 遍历得到分享的文件 遍历得到分享的文件 遍历得到分享的文件");
                 //子线程开始
                 String content = "";
                 if (files != null) {
@@ -1960,7 +1998,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                                 pos = fileNameAll[0];
                             }
 
-                            if ( Md5Util.getFileMD5(file) != null && fileListBean.getFileMd5() != null) {
+                            if (Md5Util.getFileMD5(file) != null && fileListBean.getFileMd5() != null) {
                                 //议题号和MD5都相同则有这样的文件
                                 if (fileListBean.getFileMd5().equals(Md5Util.getFileMD5(file))) {
                                     fileMd5 = Md5Util.getFileMD5(file);
@@ -2509,7 +2547,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                         wuHuEditBeanList.get(i).setTopic_type(tittle2.getText().toString());
                         wuHuEditBeanList.get(i).setLine_color(lineFlag);
                         wuHuEditBeanList.get(i).setThem_color(themFlag);
-                        Log.d("fsdfgsggsg","议题   "+i+"  对应的列席单位："+wuHuEditBeanList.get(i).getParticipantUnits());
+                        Log.d("fsdfgsggsg", "议题   " + i + "  对应的列席单位：" + wuHuEditBeanList.get(i).getParticipantUnits());
                     }
 
                     wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
