@@ -47,29 +47,48 @@
             android:textColor="#636363"
             android:textSize="15sp" />
     </RelativeLayout>
-
-    <ScrollView
+    <!-- <ScrollView
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:layout_below="@id/calender_rl"
+         android:layout_marginLeft="60dp"
+         android:layout_marginTop="27dp"
+         android:layout_marginRight="60dp"
+         android:layout_marginBottom="50dp"
+         android:background="@drawable/bg_dialog_wuhu_history_meeting"
+         android:scrollbars="none">-->
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/calender_rl"
         android:layout_marginLeft="60dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="27dp"
         android:layout_marginRight="60dp"
-        android:scrollbars="none"
+        android:layout_marginBottom="50dp"
         android:background="@drawable/bg_dialog_wuhu_history_meeting">
+        <TextView
+            android:id="@+id/no_data"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="暂无会议"
+            android:visibility="gone"
+            android:textSize="50sp"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:textColor="#3333"
 
-        <com.example.paperlessmeeting_demo.widgets.MyListView
+            />
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/myList_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:dividerHeight="0dp"
-            android:divider="@null"
-            android:scrollbars="none"
-            >
+            android:layout_height="match_parent"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="40dp"
 
+            ></android.support.v7.widget.RecyclerView>
+    </RelativeLayout>
+    <!-- </ScrollView>-->
 
-        </com.example.paperlessmeeting_demo.widgets.MyListView>
-
-    </ScrollView>
 
 </RelativeLayout>

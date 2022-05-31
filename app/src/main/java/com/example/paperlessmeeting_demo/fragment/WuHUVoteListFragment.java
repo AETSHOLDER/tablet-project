@@ -1468,6 +1468,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
             WuHuEditBean   wuHuEditBean=Hawk.get("WuHuFragment");
             wuHuEditBean.setVoteListBean(voteListBean);
             Log.d("toJSONString222", JSON.toJSONString(wuHuEditBean)) ;
+            Hawk.put("WuHuFragmentData", wuHuEditBean);
         }
 
     }

@@ -30,6 +30,16 @@ public class WuHuEditBean implements Serializable {
     private String topic_type;
     private String line_color;
     private String them_color;
+    private String startTime;
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
     private List<EditListBean> editListBeanList;
     private VoteListBean voteListBean;
 

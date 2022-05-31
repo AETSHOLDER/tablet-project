@@ -409,8 +409,51 @@
         <item name="android:windowExitAnimation">@anim/dialog_right_out</item>
     </style>
 
+  <!--  <style name="MyDatePickerDialogTheme" parent="android:Theme.Material.Light.Dialog">
+        <item name="android:colorPrimary">#597EF7</item>
+        <item name="android:colorPrimaryDark">#597EF7</item>
+        <item name="android:colorAccent">#597EF7</item>
+        <item name="android:windowBackground">@android:color/transparent</item> &lt;!&ndash;背景透明&ndash;&gt;
+        <item name="android:background">@android:color/transparent</item> &lt;!&ndash;背景透明&ndash;&gt;
+&lt;!&ndash;        <item name="android:layout_width">880dp</item>
+        <item name="android:layout_height">840dp</item>&ndash;&gt;
+    </style>-->
+    //==========================
 
 
+   <!-- <style name="MyDatePickerDialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:colorAccent">#597EF7</item>
+    </style>
+
+    <style name="MyDatePickerStyle" parent="@android:style/Widget.Material.Light.DatePicker">
+        <item name="android:headerBackground">#597EF7</item>
+        <item name="android:calendarTextColor">#597EF7</item>
+        <item name="android:dayOfWeekBackground">#597EF7</item>
+        <item name="android:yearListSelectorColor">#597EF7</item>
+        <item name="android:datePickerMode">calendar</item>
+    </style>-->
+
+    <style name="MyDatePickerStyle" parent="@android:style/Widget.Material.Light.DatePicker">
+        <item name="android:headerBackground">@color/datePicker_color</item>
+        <item name="android:text">@color/datePicker_color</item>
+        <item name="android:calendarTextColor">@color/datePicker_color</item>
+        <item name="android:dayOfWeekBackground">@color/datePicker_color</item>
+        <item name="android:selectedWeekBackgroundColor">@color/datePicker_color</item>
+        <item name="android:yearListSelectorColor">@color/datePicker_color</item>
+        <item name="android:colorPrimary">@color/datePicker_color</item>
+        <item name="android:colorPrimaryDark">@color/datePicker_color</item>
+        <item name="android:colorBackgroundCacheHint">@color/datePicker_color</item>
+        <item name="colorAccent">@color/datePicker_color</item>
+        <item name="android:textColorPrimary">@color/datePicker_color</item>
+        <item name="android:datePickerMode">calendar</item>
+        <item name="selectableItemBackground">@color/datePicker_color</item>
+        <item name="civ_circle_background_color">@color/datePicker_color</item>
+        <item name="picker_select_textColor">@color/datePicker_color</item>
+        <item name="android:colorAccent">@color/datePicker_color</item>
+    </style>
+
+
+    //============
 
         <style name="dialogTransparent" parent="@android:style/Theme.Dialog">
             <item name="android:windowFrame">@null</item> <!--边框-->
