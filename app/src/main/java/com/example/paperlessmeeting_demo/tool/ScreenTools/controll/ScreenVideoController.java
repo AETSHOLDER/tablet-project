@@ -9,11 +9,11 @@ import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.view.Surface;
 
-import com.example.paperlessmeeting_demo.tool.ScreenRecordEncoder;
+import com.example.paperlessmeeting_demo.tool.ScreenTools.utils.ScreenRecordEncoder;
 import com.example.paperlessmeeting_demo.tool.ScreenTools.controll.sender.OnVideoEncodeListener;
 import com.example.paperlessmeeting_demo.tool.SopCastLog;
 import com.example.paperlessmeeting_demo.tool.VideoConfiguration;
-import com.example.paperlessmeeting_demo.tool.VideoMediaCodec;
+import com.example.paperlessmeeting_demo.tool.ScreenTools.utils.VideoMediaCodec;
 
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 

@@ -1,4 +1,4 @@
-package com.example.paperlessmeeting_demo.tool;
+package com.example.paperlessmeeting_demo.tool.ScreenTools.utils;
 
 import android.annotation.TargetApi;
 import android.media.MediaCodec;
@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.Surface;
 
 import com.example.paperlessmeeting_demo.tool.ScreenTools.controll.sender.OnVideoEncodeListener;
+import com.example.paperlessmeeting_demo.tool.SopCastLog;
+import com.example.paperlessmeeting_demo.tool.VideoConfiguration;
 
 import java.nio.ByteBuffer;
 import java.util.concurrent.locks.ReentrantLock;

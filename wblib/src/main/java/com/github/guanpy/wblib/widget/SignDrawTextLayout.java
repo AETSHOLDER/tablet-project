@@ -65,8 +65,8 @@ public class SignDrawTextLayout extends FrameLayout {
                     }
                     Log.d(TAG, "添加文字-" + moveX + "," + moveY);
                     DrawTextPoint ip = new DrawTextPoint();
-                    ip.setX(moveX/2);
-                    ip.setY(moveY/2);
+                    ip.setX(moveX);
+                    ip.setY(moveY);
                     ip.setColor(SignOperationUtils.getInstance().mCurrentColor);
                     ip.setStatus(SignDrawTextView.TEXT_EDIT);
                     ip.setIsVisible(true);
@@ -114,6 +114,14 @@ public class SignDrawTextLayout extends FrameLayout {
                 this.addView(dw);
             }
     }
+
+    /**
+     * 清空页面
+     */
+    public void hideTextView() {
+        this.removeView(((SignDrawTextView)getChildAt(getChildCount()-1)));
+    }
+
 
     private SignDrawTextView.CallBackListener mCallBackListener = new  SignDrawTextView.CallBackListener() {
         @Override

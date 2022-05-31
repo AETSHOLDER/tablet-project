@@ -1,4 +1,4 @@
-package com.example.paperlessmeeting_demo.util;
+package com.example.paperlessmeeting_demo.tool.ScreenTools.utils;
 
 import android.os.Build;
 import android.text.TextUtils;

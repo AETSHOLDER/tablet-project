@@ -73,8 +73,8 @@ public class DrawTextLayout extends FrameLayout {
                     }
                     Log.d("bbbbb", "-" + moveX + "," + moveY);
                     DrawTextPoint ip = new DrawTextPoint();
-                    ip.setX(moveX/2);
-                    ip.setY(moveY/2);
+                    ip.setX(moveX);
+                    ip.setY(moveY);
                     ip.setColor(OperationUtils.getInstance().mCurrentColor);
                     ip.setStatus(DrawTextView.TEXT_EDIT);
                     ip.setIsVisible(true);

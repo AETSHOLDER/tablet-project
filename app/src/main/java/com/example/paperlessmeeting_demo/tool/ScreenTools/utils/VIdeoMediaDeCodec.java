@@ -1,28 +1,23 @@
-package com.example.paperlessmeeting_demo.tool.ScreenTools;
+package com.example.paperlessmeeting_demo.tool.ScreenTools.utils;
 
 import android.media.MediaCodec;
-import android.media.MediaCodecInfo;
-import android.media.MediaCodecList;
 import android.media.MediaFormat;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
-import android.util.Log;
 import android.view.SurfaceHolder;
-
-import com.example.paperlessmeeting_demo.util.BlackListHelper;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 
 /**
- * Created by wt
- * Date on  2018/5/28
- *
- * @Desc
+ * @author cyj
+ * @createDate 5/30/22
+ * @ClassName: VIdeoMediaDeCodec
+ * @Description: 解码器
+ * @Version: 1.0
  */
 
-public class VIdeoMediaCodec {
+public class VIdeoMediaDeCodec {
     private MediaCodec mCodec;
     private static final int VIDEO_WIDTH = 1920;
     private static final int VIDEO_HEIGHT = 1200;
@@ -33,7 +28,7 @@ public class VIdeoMediaCodec {
     byte[] header_pps = {0, 0, 0, 1, 104, (byte) 206, 60, (byte) 128, 0, 0, 0, 1, 6, (byte) 229, 1, (byte) 151, (byte) 128};
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    public VIdeoMediaCodec(SurfaceHolder holder) {
+    public VIdeoMediaDeCodec(SurfaceHolder holder) {
         this.mHolder = holder;
         initialCodec();
     }

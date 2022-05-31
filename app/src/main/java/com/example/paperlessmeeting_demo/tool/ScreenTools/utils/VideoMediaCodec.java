@@ -1,4 +1,4 @@
-package com.example.paperlessmeeting_demo.tool;
+package com.example.paperlessmeeting_demo.tool.ScreenTools.utils;
 
 import android.annotation.TargetApi;
 import android.media.MediaCodec;
@@ -8,7 +8,7 @@ import android.media.MediaFormat;
 import android.os.Build;
 import android.util.Log;
 
-import com.example.paperlessmeeting_demo.util.BlackListHelper;
+import com.example.paperlessmeeting_demo.tool.VideoConfiguration;
 
 import java.util.Arrays;
 

@@ -3,10 +3,9 @@ package com.example.paperlessmeeting_demo.tool.ScreenTools.controll;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
-import com.example.paperlessmeeting_demo.tool.ScreenTools.VIdeoMediaCodec;
+import com.example.paperlessmeeting_demo.tool.ScreenTools.utils.VIdeoMediaDeCodec;
 import com.example.paperlessmeeting_demo.tool.ScreenTools.decode.DecodeThread;
 import com.example.paperlessmeeting_demo.tool.ScreenTools.entity.DecodeFrame;
-import com.example.paperlessmeeting_demo.tool.ScreenTools.interf.OnAcceptBuffListener;
 import com.example.paperlessmeeting_demo.tool.ScreenTools.server.NormalPlayQueue;
 
 
@@ -19,7 +18,7 @@ import com.example.paperlessmeeting_demo.tool.ScreenTools.server.NormalPlayQueue
 
 public class VideoPlayController {
     private static final String TAG = "VideoPlayController";
-    private VIdeoMediaCodec videoMediaCodec;
+    private VIdeoMediaDeCodec videoMediaDeCodec;
     private DecodeThread mDecodeThread;
     private NormalPlayQueue mPlayqueue;
 
@@ -31,10 +30,10 @@ public class VideoPlayController {
     public void surfaceCreate(SurfaceHolder holder) {
         //初始化解码器
         Log.e(TAG, "initial play queue");
-        videoMediaCodec = new VIdeoMediaCodec(holder);
+        videoMediaDeCodec = new VIdeoMediaDeCodec(holder);
         //开启解码线程
-        mDecodeThread = new DecodeThread(videoMediaCodec.getCodec(), mPlayqueue);
-        videoMediaCodec.start();
+        mDecodeThread = new DecodeThread(videoMediaDeCodec.getCodec(), mPlayqueue);
+        videoMediaDeCodec.start();
         mDecodeThread.start();
     }
 
