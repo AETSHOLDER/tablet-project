@@ -48,9 +48,11 @@ import com.example.paperlessmeeting_demo.adapter.WuHuMeetingListAdapter;
 import com.example.paperlessmeeting_demo.base.BaseFragment;
 import com.example.paperlessmeeting_demo.bean.BasicResponse;
 import com.example.paperlessmeeting_demo.bean.CreateFileBeanResponse;
+import com.example.paperlessmeeting_demo.bean.TempWSBean;
 import com.example.paperlessmeeting_demo.bean.UserBehaviorBean;
 import com.example.paperlessmeeting_demo.bean.WuHuEditBean;
 import com.example.paperlessmeeting_demo.bean.WuHuMeetingListResponse;
+import com.example.paperlessmeeting_demo.bean.WuHuNetWorkBean;
 import com.example.paperlessmeeting_demo.enums.MessageReceiveType;
 import com.example.paperlessmeeting_demo.network.DefaultObserver;
 import com.example.paperlessmeeting_demo.network.NetWorkManager;
@@ -58,6 +60,7 @@ import com.example.paperlessmeeting_demo.tool.CVIPaperDialogUtils;
 import com.example.paperlessmeeting_demo.tool.DeleteFileUtil;
 import com.example.paperlessmeeting_demo.tool.FLUtil;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.UDPBroadcastManager;
+import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.JWebSocketClientService;
 import com.example.paperlessmeeting_demo.tool.TimeUtils;
 import com.example.paperlessmeeting_demo.tool.ToastUtils;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
@@ -65,6 +68,7 @@ import com.example.paperlessmeeting_demo.tool.constant;
 import com.example.paperlessmeeting_demo.util.ToastUtil;
 import com.example.paperlessmeeting_demo.widgets.MyDialog;
 import com.example.paperlessmeeting_demo.widgets.MyListView;
+import com.google.gson.Gson;
 import com.jyn.vcview.VerificationCodeView;
 import com.orhanobut.hawk.Hawk;
 import com.snow.common.tool.utils.FastClickUtils;
@@ -181,6 +185,10 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
         join_meeting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
+
+
                 showHistoryDialog();
                 //老版：通过选取临时会议邀请码进入会议
                 // joinMeetingDialog();
@@ -463,7 +471,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                                 List<String> ipcodeInfo = FLUtil.dealUDPMsg(UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr.get(index));
                                 String[] strAll = ipcodeInfo.get(1).split("/");
                                 String isRu = strAll[1];
-
+                                UserUtil.isNetDATA = false;
                                 Intent intent2 = new Intent(getActivity(), WuHuActivity.class);
                                 Bundle bundle = new Bundle();
                                 bundle.putString("ip", ipcodeInfo.get(0));
@@ -499,6 +507,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                                 } else {
                                     initMeetingDialog.dismiss();
                                     UserUtil.isTempMeeting = true;
+                                    UserUtil.isNetDATA = false;
                                     constant.temp_code = content;
                                     Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
                                     Intent intent = new Intent(getActivity(), WuHuActivity.class);
@@ -522,6 +531,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                 } else {
                     initMeetingDialog.dismiss();
                     UserUtil.isTempMeeting = true;
+                    UserUtil.isNetDATA = false;
                     constant.temp_code = content;
                     Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
                     Intent intent = new Intent(getActivity(), WuHuActivity.class);
@@ -751,14 +761,69 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
         wuHuMeetingListAdapter.notifyDataSetChanged();
 
     }
+
     @Override
     public void onItem(int position, WuHuMeetingListResponse wuHuMeetingListResponse) {
-        UserUtil.ISCHAIRMAN = true;
-        UserUtil.isTempMeeting=false;
-        Hawk.put("WuHuMeetingListResponse", wuHuMeetingListResponse);
-        Intent intent=new Intent(getActivity(),WuHuActivity.class);
-        getActivity().startActivity(intent);
+        if (!FLUtil.netIsConnect(getActivity())) {
+            ToastUtils.showToast(getActivity(), "网络不可用，请检查网络!");
+            return;
+        }
+        // 有在接收到广播消息
+        if (UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr.size() > 0 && !UDPBroadcastManager.getInstance().MythdReceive.pause) {
 
+            for (String msg : UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr) {
+                List<String> ipcodeInfo = FLUtil.dealUDPMsg(msg);
+                // 里面包含 ip code/1
+                String[] code_idnex = ipcodeInfo.get(1).split("/");
+                stringList.add(code_idnex[0]);
+            }
+            UserUtil.isNetDATA = true;
+            UserUtil.isTempMeeting=true;
+            UserUtil.ISCHAIRMAN = true;
+            constant.temp_code = "formalmeeting."+wuHuMeetingListResponse.getName();
+            Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
+            Intent intent = new Intent(getActivity(), WuHuActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("code", "formalmeeting."+wuHuMeetingListResponse.getName());
+            bundle.putString("isreuse", "4");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
+            intent.putExtras(bundle);
+            Hawk.put("WuHuMeetingListResponse", wuHuMeetingListResponse);
+            getActivity().startActivity(intent);
+
+        }else {
+            UserUtil.isTempMeeting=true;
+            UserUtil.ISCHAIRMAN = true;
+            UserUtil.isNetDATA = true;
+            constant.temp_code = "formalmeeting-"+wuHuMeetingListResponse.getName();
+            Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
+            Intent intent = new Intent(getActivity(), WuHuActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("code", "formalmeeting-"+wuHuMeetingListResponse.getName());
+            bundle.putString("isreuse", "4");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
+            intent.putExtras(bundle);
+            Hawk.put("WuHuMeetingListResponse", wuHuMeetingListResponse);
+            getActivity().startActivity(intent);
+
+        }
+
+
+
+       //====
+
+
+
+    }
+    /**
+     * websocket发送数据至其他设备
+     */
+    private void wsUpdata(Object obj, String packType) {
+        TempWSBean bean = new TempWSBean();
+        bean.setReqType(0);
+        bean.setUserMac_id(FLUtil.getMacAddress());
+        bean.setPackType(packType);
+        bean.setBody(obj);
+        String strJson = new Gson().toJson(bean);
+        JWebSocketClientService.sendMsg(strJson);
     }
     private void showMeetDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

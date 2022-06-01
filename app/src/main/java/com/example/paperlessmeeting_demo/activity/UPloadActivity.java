@@ -54,11 +54,13 @@ public class UPloadActivity extends BaseActivity {
     private String videoname = "VID_20220426_154506.mp4";
     //   private int filenum = 0;
     private List<Integer> integers = new ArrayList<>();
-  private int  sucess=0;
-  private  int i=0;
-  private int k=0;
-  private  int pos=0;
-  private int fail=0;
+    private int sucess = 0;
+    private int i = 0;
+    private int k = 0;
+    private int pos = 0;
+    private int fail = 0;
+    private int size = 1024 * 1024 * 100;
+
     @Override
     protected int getLayoutId() {
         return R.layout.upload_file_activity;
@@ -81,19 +83,19 @@ public class UPloadActivity extends BaseActivity {
     }
 
     private void upload() {
-        sucess=0;
+        sucess = 0;
         integers.clear();
-        pos=0;
-        fail=0;
-        Log.d("gtgwrtwwrtwt大文件分片：",littlefilelist.size()+"");
-        for ( int i = 0; i < littlefilelist.size(); i++) {
-            pos=i;
+        pos = 0;
+        fail = 0;
+        Log.d("gtgwrtwwrtwt大文件分片：", littlefilelist.size() + "");
+        for (int i = 0; i < littlefilelist.size(); i++) {
+            pos = i;
             upLoadFileType = getMimeType(littlefilelist.get(i).getName());
             endStrAll = littlefilelist.get(i).getName().substring(littlefilelist.get(i).getName().lastIndexOf(".") + 1);
 
-            if (sucess<littlefilelist.size()){
-                for (  int k=0;k<integers.size();k++){
-                    fail=k;
+            if (sucess < littlefilelist.size()) {
+                for (int k = 0; k < integers.size(); k++) {
+                    fail = k;
                     RequestBody requestBody = RequestBody.create(MediaType.parse(upLoadFileType), littlefilelist.get(integers.get(k)));
                     MultipartBody.Part part = MultipartBody.Part.createFormData("file", littlefilelist.get(integers.get(k)).getName() + "/" + integers.get(k), requestBody);
                     NetWorkManager.getInstance().getNetWorkApiService().receiveChunk(part).compose(this.<BasicResponse>bindToLifecycle())
@@ -105,11 +107,13 @@ public class UPloadActivity extends BaseActivity {
                                     super.onFail(response);
                                     integers.add(fail);
                                 }
+
                                 @Override
                                 protected void onSuccess(BasicResponse response) {
                                     if (response != null) {
                                         sucess++;
                                         Log.d("gtgwrtwwrtwt大文件上传", "上传路过");
+                                        mergeShards();
                                     }
                                 }
                             });
@@ -125,11 +129,13 @@ public class UPloadActivity extends BaseActivity {
                                 super.onFail(response);
                                 integers.add(pos);
                             }
+
                             @Override
                             protected void onSuccess(BasicResponse response) {
                                 if (response != null) {
                                     sucess++;
-                                    Log.d("gtgwrtwwrtwt大文件上传", "上传路过   "+sucess);
+                                    mergeShards();
+                                    Log.d("gtgwrtwwrtwt大文件上传", "上传路过   " + sucess);
                                 }
                             }
                         });
@@ -138,14 +144,21 @@ public class UPloadActivity extends BaseActivity {
 
 
         }
-        if (sucess==littlefilelist.size()){
-            Toast.makeText(UPloadActivity.this,"上传成功",Toast.LENGTH_SHORT).show();
-            Map<String,Object> map = new HashMap<>();
-            map.put("fileName",videoname);
-            map.put("dirName","1");
-            map.put("size",1024 * 1024 * 100);
-            map.put("updateFileList",1);
-            map.put("index",1);
+
+
+    }
+
+    private void mergeShards(){
+
+        if (sucess == littlefilelist.size()) {
+            Log.d("gtgwrtwwrtwt大文件上传", "合片");
+            Toast.makeText(UPloadActivity.this, "上传成功", Toast.LENGTH_SHORT).show();
+            Map<String, Object> map = new HashMap<>();
+            map.put("fileName", videoname);
+            map.put("dirName", "1");
+            map.put("size", size);
+            map.put("updateFileList", 1);
+            map.put("index", 1);
             NetWorkManager.getInstance().getNetWorkApiService().mergeChunk(map).compose(this.<BasicResponse<MergeChunkBean>>bindToLifecycle())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -153,7 +166,9 @@ public class UPloadActivity extends BaseActivity {
                         @Override
                         protected void onFail(BasicResponse<MergeChunkBean> response) {
                             super.onFail(response);
+                            Log.d("gtgwrtwwrtwt大文件上传", "上传失败");
                         }
+
                         @Override
                         protected void onSuccess(BasicResponse response) {
                             if (response != null) {
@@ -165,7 +180,6 @@ public class UPloadActivity extends BaseActivity {
         }
 
     }
-
     /**
      * 获取文件MimeType
      *
@@ -183,7 +197,7 @@ public class UPloadActivity extends BaseActivity {
 
     private void cutfile(String filePath, String fileName) {
         try {
-            long mBufferSize = 1024 * 1024 * 100; //分片的大小，可自定义
+            long mBufferSize = size; //分片的大小，可自定义
             fileCutUtils = new FileCutUtils();
             littlefilecount = fileCutUtils.getSplitFile(new File(filePath), mBufferSize);
             littlefilelist = fileCutUtils.getLittlefilelist();

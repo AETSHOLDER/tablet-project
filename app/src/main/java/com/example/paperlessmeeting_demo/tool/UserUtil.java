@@ -44,6 +44,7 @@ public class UserUtil {
     public static boolean isFloating = false;    // 悬浮记事本是否打开
 
     public static boolean isTempMeeting = false;    // 是否是临时会议
+    public static boolean isNetDATA =true;    // 芜湖-是否是网络数据
     public static boolean isNetworkOnline = false;  // 是否有外网
     public static String serverIP = "";             // 服务端IP
 

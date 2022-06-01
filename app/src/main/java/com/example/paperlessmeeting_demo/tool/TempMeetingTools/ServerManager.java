@@ -11,6 +11,7 @@ import com.example.paperlessmeeting_demo.bean.TempWSBean;
 import com.example.paperlessmeeting_demo.bean.VoteListBean;
 import com.example.paperlessmeeting_demo.bean.WuHuDeleteFragmentBean;
 import com.example.paperlessmeeting_demo.bean.WuHuEditBean;
+import com.example.paperlessmeeting_demo.bean.WuHuNetWorkBean;
 import com.example.paperlessmeeting_demo.enums.MessageReceiveType;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.EventMessage;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.MyWebSocketServer;

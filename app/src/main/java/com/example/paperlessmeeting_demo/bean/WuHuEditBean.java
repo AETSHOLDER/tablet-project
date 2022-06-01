@@ -17,6 +17,15 @@ public class WuHuEditBean implements Serializable {
      * file_list : [{"path":"","size":"","name":"","suffix":"","type":""}]
      */
     private String position;
+    private String _id;
+
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
+    }
 
     public String getPosition() {
         return position;
@@ -299,7 +308,15 @@ public class WuHuEditBean implements Serializable {
             private String flag;//1  分享  2  推送
             private String fileMd5;
             private String type;
+            private String localPath;//仅用于网络下载到的文件
 
+            public String getLocalPath() {
+                return localPath;
+            }
+
+            public void setLocalPath(String localPath) {
+                this.localPath = localPath;
+            }
 
             public String getMac() {
                 return mac;

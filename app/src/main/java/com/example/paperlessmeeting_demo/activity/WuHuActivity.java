@@ -42,6 +42,7 @@ import android.widget.Button;
 import android.support.v4.view.ViewPager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -57,6 +58,8 @@ import com.example.paperlessmeeting_demo.bean.SharePushFileBean;
 import com.example.paperlessmeeting_demo.bean.TempWSBean;
 import com.example.paperlessmeeting_demo.bean.WuHuEditBean;
 import com.example.paperlessmeeting_demo.bean.WuHuEditBeanRequset;
+import com.example.paperlessmeeting_demo.bean.WuHuMeetingListResponse;
+import com.example.paperlessmeeting_demo.bean.WuHuNetWorkBean;
 import com.example.paperlessmeeting_demo.enums.MessageReceiveType;
 import com.example.paperlessmeeting_demo.fragment.WuHuFragment;
 import com.example.paperlessmeeting_demo.R;
@@ -66,6 +69,7 @@ import com.example.paperlessmeeting_demo.sharefile.BroadcastUDPFileService;
 import com.example.paperlessmeeting_demo.sharefile.SocketShareFileManager;
 import com.example.paperlessmeeting_demo.tool.CVIPaperDialogUtils;
 import com.example.paperlessmeeting_demo.tool.DeleteFileUtil;
+import com.example.paperlessmeeting_demo.tool.DownloadUtil;
 import com.example.paperlessmeeting_demo.tool.Md5Util;
 import com.example.paperlessmeeting_demo.tool.FLUtil;
 import com.example.paperlessmeeting_demo.tool.FileUtils;
@@ -140,6 +144,8 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
     @BindView(R.id.cc2)
     RelativeLayout cc2;
     private MyDialog dialog;
+    private MyDialog networkFileDialog;
+
     @BindView(R.id.comfirm)
     ImageView comfirm;
     @BindView(R.id.edit_name)
@@ -201,11 +207,17 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
     private ArrayList<WuHuEditBean.EditListBean> editListBeans = new ArrayList<>();
     private List<WuHuEditBean.EditListBean.FileListBean> shareFileBeans = new ArrayList<>();//其他设备分享得到的文件集合
     private String fileShare = Environment.getExternalStorageDirectory() + constant.SHARE_FILE;//其他设备分享得到的文件夹路径
+    private String netFilePath = Environment.getExternalStorageDirectory() + constant.WUHU_NET_FILE;//网络请求得到的文件夹路径
     private View foodView;
     private CompletedView completedView;
     private ImageView result_ima;
     private TextView tips;
     private String sharePushPos;
+    private int allFileNum = 0;//总文件数量
+    private int dowLoadNum = 0;//下载成功的文件数量
+    private List<WuHuNetWorkBean> failList = new ArrayList<>();//下载失败的文件集合
+    private ProgressBar progressBar;//显示文件传输进度
+    private List<WuHuNetWorkBean> filesList = new ArrayList<>();//储存所有的文件地址
     /**
      * 点击返回时间
      */
@@ -776,6 +788,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
         mViewPager.setAdapter(mPagerAdapter);
         mPagerAdapter.notifyDataSetChanged();
         mViewPager.setOffscreenPageLimit(2);
+        UDPBroadcastManager.getInstance().stopReceiveUDP();
         // 如果是临时会议,判断是否是主席
         if (UserUtil.isTempMeeting) {
             if (Hawk.get(constant.TEMPMEETING).equals(MessageReceiveType.MessageClient)) {
@@ -947,82 +960,242 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void initiaServerData() {
-        if (Hawk.contains("isreuse")) {
-            String isreuse = Hawk.get("isreuse");
-            //1:代表复用模板  2：代表不复用模板 3：代表没有模板
-            if (isreuse.equals("2") || isreuse.equals("3")) {
-                wuHuEditBeanList.clear();
+
+        if (UserUtil.isNetDATA) {
+            showFileTransferDialog();
+            List<WuHuEditBean.EditListBean> wb = new ArrayList<>();
+            WuHuMeetingListResponse wuHuMeetingListResponse;
+            if (Hawk.contains("WuHuMeetingListResponse")) {
+                failList.clear();//清空下载失败的url
+                wuHuMeetingListResponse = Hawk.get("WuHuMeetingListResponse");
+                WuHuMeetingListResponse.ContentDTO contentDTO = wuHuMeetingListResponse.getContent();
+                List<WuHuMeetingListResponse.ContentDTO.EditListBeanListDTO> netEditListBeanList = new ArrayList<>();//议题集合
+                netEditListBeanList.size();
+                netEditListBeanList.addAll(contentDTO.getEditListBeanList());
+                for (int i = 0; i < netEditListBeanList.size(); i++) {
+                    WuHuMeetingListResponse.ContentDTO.EditListBeanListDTO editListBeanListDTO = netEditListBeanList.get(i);//获取单个议题
+                    List<WuHuMeetingListResponse.ContentDTO.EditListBeanListDTO.FileListBeanListDTO> netLocaFiles = new ArrayList<>();//存放议题对应的文件集合
+                    netLocaFiles.clear();
+                    if (editListBeanListDTO.getFileListBeanList() != null && editListBeanListDTO.getFileListBeanList().size() > 0) {
+                        netLocaFiles.addAll(editListBeanListDTO.getFileListBeanList());
+                        for (int k = 0; k < netLocaFiles.size(); k++) {
+                            WuHuNetWorkBean wuHuNetWorkBean = new WuHuNetWorkBean();
+                            wuHuNetWorkBean.setUrl(UrlConstant.baseUrl + "/" + netLocaFiles.get(k).getPath());
+                            wuHuNetWorkBean.setName(netLocaFiles.get(k).getName());
+                            allFileNum++;
+                            filesList.add(wuHuNetWorkBean);
+                        }
+                    }
+                }
+                //遍历议题下载文件
+                for (int i = 0; i < filesList.size(); i++) {
+                    if (dowLoadNum < filesList.size()) {
+                        WuHuNetWorkBean wuHuNetWorkBean = filesList.get(i);
+                        DownloadUtil.get().download(wuHuNetWorkBean.getUrl(), netFilePath, wuHuNetWorkBean.getName(), new DownloadUtil.OnDownloadListener() {
+                            @Override
+                            public void onDownloadSuccess(File file) {
+                                dowLoadNum++;
+                                Log.d("gfdfddhdh下载    ",wuHuNetWorkBean.getName());
+                            }
+
+                            @Override
+                            public void onDownloading(int progress) {
+//                            Log.v(TAG, "下載進度" + progress);
+//                progressDialog.setProgress(progress);
+                            }
+
+                            @Override
+                            public void onDownloadFailed(Exception e) {
+//                if (progressDialog != null && progressDialog.isShowing()) {
+//                    progressDialog.dismiss();
+//                }
+                                failList.add(wuHuNetWorkBean);
+                            }
+                        });
+                    } else if (dowLoadNum == filesList.size()) {
+
+
+                    }
+                }
+
+                if (failList != null && failList.size() > 0) {
+                    for (int i = 0; i < failList.size(); i++) {
+                        WuHuNetWorkBean wuHuNetWorkBean = failList.get(i);
+                        DownloadUtil.get().download(wuHuNetWorkBean.getUrl(), netFilePath, wuHuNetWorkBean.getName(), new DownloadUtil.OnDownloadListener() {
+                            @Override
+                            public void onDownloadSuccess(File file) {
+                                dowLoadNum++;
+                            }
+
+                            @Override
+                            public void onDownloading(int progress) {
+//                            Log.v(TAG, "下載進度" + progress);
+//                progressDialog.setProgress(progress);
+                            }
+
+                            @Override
+                            public void onDownloadFailed(Exception e) {
+//                if (progressDialog != null && progressDialog.isShowing()) {
+//                    progressDialog.dismiss();
+//                }
+                                failList.add(wuHuNetWorkBean);
+                            }
+                        });
+                    }
+                }
+
+                if (dowLoadNum == filesList.size()) {
+                    Message msg = new Message();
+                    msg.obj = filesList;//可以是基本类型，可以是对象，可以是List、map等；
+                    msg.what = 999;
+                    handler.sendMessage(msg);
+                }
+                //索引0充当目录页面
+                WuHuMeetingListResponse.ContentDTO.EditListBeanListDTO editListBeanDTO = new WuHuMeetingListResponse.ContentDTO.EditListBeanListDTO();
+                editListBeanDTO.setParticipantUnits("aa");
+                editListBeanDTO.setReportingUnit("bb");
+                editListBeanDTO.setSubTopics("cc");
+                contentDTO.getEditListBeanList().add(0, editListBeanDTO);
+                wb.clear();
                 WuHuEditBean wuHuEditBean = new WuHuEditBean();
                 Hawk.put("WuHuFragmentData", wuHuEditBean);
                 if (Hawk.contains("WuHuFragmentData")) {
-                    wuHuEditBean = Hawk.get("WuHuFragmentData");
-                    wuHuEditBean.setTopics("区政府会议纪要");
-                    wuHuEditBean.setTopic_type("会议纪要");
-
-                    WuHuEditBean.EditListBean editListBean = new WuHuEditBean.EditListBean();
-                    editListBean.setSubTopics("总结2022年");
-                    editListBean.setReportingUnit("汇报单位名称");
-                    editListBean.setParticipantUnits("列席单位名称");
-                    editListBean.setTopics("区政府会议纪要");
-                    editListBean.setPos("0");
-                    editListBean.setTopic_type("会议纪要");
-                    wuHuEditBeanList.add(editListBean);
-                    WuHuEditBean.EditListBean editListBean1 = new WuHuEditBean.EditListBean();
-                    editListBean1.setSubTopics("总结2022年");
-                    editListBean1.setReportingUnit("汇报单位名称");
-                    editListBean1.setParticipantUnits("列席单位名称");
-                    editListBean1.setTopics("区政府会议纪要");
-                    editListBean1.setTopic_type("会议纪要");
-                    editListBean1.setPos("1");
-                    wuHuEditBeanList.add(editListBean1);
-
-                    wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
+                    //会议名称，横线颜色  背景图，会议类型
+                    wuHuEditBean.set_id(wuHuMeetingListResponse.get_id());
+                    wuHuEditBean.setTopics(contentDTO.getTopics());
+                    wuHuEditBean.setTopic_type(contentDTO.getTopic_type());
+                   /wuHuEditBean.setLine_color("1");
+                    wuHuEditBean.setThem_color("2");
+                    List<WuHuMeetingListResponse.ContentDTO.EditListBeanListDTO> editListBeanListDTOS = new ArrayList<>();
+                    editListBeanListDTOS.clear();
+                    //议题集合赋值
+                    editListBeanListDTOS.addAll(contentDTO.getEditListBeanList());
+                    for (int i = 0; i < editListBeanListDTOS.size(); i++) {
+                        WuHuMeetingListResponse.ContentDTO.EditListBeanListDTO editListBeanListDTO = editListBeanListDTOS.get(i);
+                        //创建本地议题接受类
+                        WuHuEditBean.EditListBean editListBean = new WuHuEditBean.EditListBean();
+                        editListBean.setLine_color("1");
+                        editListBean.setPos(i + "");
+                        editListBean.setThem_color("2");
+                        editListBean.setParticipantUnits(editListBeanListDTO.getParticipantUnits());
+                        editListBean.setReportingUnit(editListBeanListDTO.getReportingUnit());
+                        editListBean.setSubTopics(editListBeanListDTO.getSubTopics());
+                       // editListBean.setTopics(editListBeanListDTO.getTopics());
+                      /*  editListBean.setTemporaryAttendeBean(editListBeanListDTO.getTemporaryAttendeBean());
+                        editListBean.setTemporaryAttendeBean2(editListBeanListDTO.getTemporaryAttendeBean2());*/
+                       // editListBean.setTemporarySubTopics(editListBeanListDTO.);
+                       // editListBean.setTopic_type(editListBeanListDTO.getTopic_type());
+                        //赋值主席的本地文件（包含分享和本地文件）
+                        List<WuHuEditBean.EditListBean.FileListBean> editFiles = new ArrayList<>();
+                        editFiles.clear();
+                        if (editListBeanListDTO.getFileListBeanList() != null && editListBeanListDTO.getFileListBeanList().size() > 0) {
+                            for (int k = 0; k < editListBeanListDTO.getFileListBeanList().size(); k++) {
+                                WuHuMeetingListResponse.ContentDTO.EditListBeanListDTO.FileListBeanListDTO localFilesDTO = editListBeanListDTO.getFileListBeanList().get(k);
+                                Log.d("gfdfddhdh下载时的文件路径    ", localFilesDTO.getName()+"   "+localFilesDTO.getPath());
+                                WuHuEditBean.EditListBean.FileListBean fileListBean = new WuHuEditBean.EditListBean.FileListBean(localFilesDTO.getName(), localFilesDTO.getPath(), "", "");
+                                // fileListBean.setFileMd5(localFilesDTO.get);
+                                fileListBean.setPos((Integer.valueOf(localFilesDTO.getPos())+1)+"");
+                                //  fileListBean.setMac(localFilesDTO.get);
+                               // fileListBean.setSuffix(localFilesDTO.getSuffix());
+                                fileListBean.setNet(localFilesDTO.getNet());
+                                fileListBean.setLocalPath(netFilePath + localFilesDTO.getName());
+                                Log.d("gfdfddhdh下载后的文件路径    ",netFilePath + localFilesDTO.getName());
+                                //fileListBean.setFlag(localFilesDTO.getF);
+                             //   fileListBean.setType(localFilesDTO.getType());
+                                fileListBean.setResImage(localFilesDTO.getResImage());
+                               // fileListBean.setFile_type(localFilesDTO.getFile_type());
+                                // fileListBean.setMd5Path(localFilesDTO.get);
+                                editFiles.add(fileListBean);
+                            }
+                        }
+                        editListBean.setLocalFiles(editFiles);
+                        // editListBean.setFileListBeanList();
+                        wb.add(editListBean);
+                    }
+                    //提交到主席service端
+                    wuHuEditBean.setEditListBeanList(wb);
                     Hawk.put("WuHuFragmentData", wuHuEditBean);
                     wsUpdata(wuHuEditBean, constant.SUBMITANISSUE);
-                }
-            } else if (isreuse.equals("1")) {
-                WuHuEditBean templetEuHuEditBean = null;
-                if (Hawk.contains("WuHuFragmentData")) {
-                    //有模版直接提交服务器
-                    templetEuHuEditBean = Hawk.get("WuHuFragmentData");
-                    wsUpdata(templetEuHuEditBean, constant.SUBMITANISSUE);
-                }
 
-            } else {
-                //参会端第一次做主席  选择了模版操作
-                WuHuEditBean wuHuEditBean = new WuHuEditBean();
-                Hawk.put("WuHuFragmentData", wuHuEditBean);
-                if (Hawk.contains("WuHuFragmentData")) {
-                    wuHuEditBean = Hawk.get("WuHuFragmentData");
-                    wuHuEditBean.setTopics("区政府会议纪要");
-                    wuHuEditBean.setTopic_type("会议纪要");
-                    WuHuEditBean.EditListBean editListBean = new WuHuEditBean.EditListBean();
-                    editListBean.setSubTopics("总结2022年");
-                    editListBean.setReportingUnit("汇报单位名称");
-                    editListBean.setParticipantUnits("列席单位名称");
-                    editListBean.setTopics("区政府会议纪要");
-                    editListBean.setPos("0");
-                    editListBean.setTopic_type("会议纪要");
-                    wuHuEditBeanList.add(editListBean);
-                    WuHuEditBean.EditListBean editListBean1 = new WuHuEditBean.EditListBean();
-                    editListBean1.setSubTopics("总结2022年");
-                    editListBean1.setReportingUnit("汇报单位名称");
-                    editListBean1.setParticipantUnits("列席单位名称");
-                    editListBean1.setTopics("区政府会议纪要");
-                    editListBean1.setTopic_type("会议纪要");
-                    editListBean1.setPos("1");
-                    wuHuEditBeanList.add(editListBean1);
-                    wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
+                }
+            }
+            //====
+        } else {
+            if (Hawk.contains("isreuse")) {
+                String isreuse = Hawk.get("isreuse");
+                //1:代表复用模板  2：代表不复用模板 3：代表没有模板
+                if (isreuse.equals("2") || isreuse.equals("3")) {
+                    wuHuEditBeanList.clear();
+                    WuHuEditBean wuHuEditBean = new WuHuEditBean();
                     Hawk.put("WuHuFragmentData", wuHuEditBean);
-                    wsUpdata(wuHuEditBean, constant.SUBMITANISSUE);
+                    if (Hawk.contains("WuHuFragmentData")) {
+                        wuHuEditBean = Hawk.get("WuHuFragmentData");
+                        wuHuEditBean.setTopics("区政府会议纪要");
+                        wuHuEditBean.setTopic_type("会议纪要");
+
+                        WuHuEditBean.EditListBean editListBean = new WuHuEditBean.EditListBean();
+                        editListBean.setSubTopics("总结2022年");
+                        editListBean.setReportingUnit("汇报单位名称");
+                        editListBean.setParticipantUnits("列席单位名称");
+                        editListBean.setTopics("区政府会议纪要");
+                        editListBean.setPos("0");
+                        editListBean.setTopic_type("会议纪要");
+                        wuHuEditBeanList.add(editListBean);
+                        WuHuEditBean.EditListBean editListBean1 = new WuHuEditBean.EditListBean();
+                        editListBean1.setSubTopics("总结2022年");
+                        editListBean1.setReportingUnit("汇报单位名称");
+                        editListBean1.setParticipantUnits("列席单位名称");
+                        editListBean1.setTopics("区政府会议纪要");
+                        editListBean1.setTopic_type("会议纪要");
+                        editListBean1.setPos("1");
+                        wuHuEditBeanList.add(editListBean1);
+
+                        wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
+                        Hawk.put("WuHuFragmentData", wuHuEditBean);
+                        wsUpdata(wuHuEditBean, constant.SUBMITANISSUE);
+                    }
+                } else if (isreuse.equals("1")) {
+                    WuHuEditBean templetEuHuEditBean = null;
+                    if (Hawk.contains("WuHuFragmentData")) {
+                        //有模版直接提交服务器
+                        templetEuHuEditBean = Hawk.get("WuHuFragmentData");
+                        wsUpdata(templetEuHuEditBean, constant.SUBMITANISSUE);
+                    }
+
+                } else {
+                    //参会端第一次做主席  选择了模版操作
+                    WuHuEditBean wuHuEditBean = new WuHuEditBean();
+                    Hawk.put("WuHuFragmentData", wuHuEditBean);
+                    if (Hawk.contains("WuHuFragmentData")) {
+                        wuHuEditBean = Hawk.get("WuHuFragmentData");
+                        wuHuEditBean.setTopics("区政府会议纪要");
+                        wuHuEditBean.setTopic_type("会议纪要");
+                        WuHuEditBean.EditListBean editListBean = new WuHuEditBean.EditListBean();
+                        editListBean.setSubTopics("总结2022年");
+                        editListBean.setReportingUnit("汇报单位名称");
+                        editListBean.setParticipantUnits("列席单位名称");
+                        editListBean.setTopics("区政府会议纪要");
+                        editListBean.setPos("0");
+                        editListBean.setTopic_type("会议纪要");
+                        wuHuEditBeanList.add(editListBean);
+                        WuHuEditBean.EditListBean editListBean1 = new WuHuEditBean.EditListBean();
+                        editListBean1.setSubTopics("总结2022年");
+                        editListBean1.setReportingUnit("汇报单位名称");
+                        editListBean1.setParticipantUnits("列席单位名称");
+                        editListBean1.setTopics("区政府会议纪要");
+                        editListBean1.setTopic_type("会议纪要");
+                        editListBean1.setPos("1");
+                        wuHuEditBeanList.add(editListBean1);
+                        wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
+                        Hawk.put("WuHuFragmentData", wuHuEditBean);
+                        wsUpdata(wuHuEditBean, constant.SUBMITANISSUE);
+
+                    }
 
                 }
 
             }
-
         }
-
-
     }
 
     public void showUpLoadFileDialog() {
@@ -1373,7 +1546,6 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                     wuHuDeleteFragmentBean.setListPosition(position+"");
                     wuHuDeleteFragmentBean.setListSize(wuHuEditBeanList.size()+"");*/
                     //通知其他设备增加fragment
-
                     wuHuListAdapter.setWuHuEditBeanList(wuHuEditBeanList);
                     wuHuListAdapter.notifyDataSetChanged();
 
@@ -1527,15 +1699,15 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void wuHuFinishMeeting() {
-        WuHuEditBean  wuHuEditBean=null;
+        WuHuEditBean wuHuEditBean = null;
         if (Hawk.contains("WuHuFragmentData")) {
-             wuHuEditBean = Hawk.get("WuHuFragmentData");
-             String data= TimeUtils.getTime(System.currentTimeMillis(), TimeUtils.DATA_FORMAT_NO_HOURS_DATA7);//会议-年
+            wuHuEditBean = Hawk.get("WuHuFragmentData");
+            String data = TimeUtils.getTime(System.currentTimeMillis(), TimeUtils.DATA_FORMAT_NO_HOURS_DATA7);//会议-年
             wuHuEditBean.setStartTime(data);
         }
-        WuHuEditBeanRequset wuHuEditBeanRequset=new WuHuEditBeanRequset();
+        WuHuEditBeanRequset wuHuEditBeanRequset = new WuHuEditBeanRequset();
         wuHuEditBeanRequset.setContent(wuHuEditBean);
-        String   conten=  new Gson().toJson(wuHuEditBeanRequset);
+        String conten = new Gson().toJson(wuHuEditBeanRequset);
         Map<String, Object> map = new HashMap<>();
         map.put("id", "");
         map.put("content", conten);
@@ -1553,7 +1725,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                     protected void onSuccess(BasicResponse response) {
                         Log.d("gtgwrtwwrtwt创建会议", "创建会议成功11111");
                         if (response != null) {
-                            Log.d("gtgwrtwwrtwt创建会议", "创建会议成功"+response.getData().toString());
+                            Log.d("gtgwrtwwrtwt创建会议", "创建会议成功" + response.getData().toString());
                         }
                     }
                 });
@@ -1570,6 +1742,79 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
             wuHuEditBeanList = wuHuEditBean.getEditListBeanList();
 
         }
+    }
+
+
+    //网络文件初始化
+    public void showFileTransferDialog() {
+        //自定义dialog显示布局
+        View inflate = LayoutInflater.from(WuHuActivity.this).inflate(R.layout.wuhu_file_progress_dialog, null);
+        //自定义dialog显示风格
+        networkFileDialog = new MyDialog(WuHuActivity.this, R.style.dialogTransparent);
+        networkFileDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        //弹窗点击周围空白处弹出层自动消失弹窗消失(false时为点击周围空白处弹出层不自动消失)
+        networkFileDialog.setCanceledOnTouchOutside(false);
+        //将布局设置给Dialog
+        networkFileDialog.setContentView(inflate);
+        networkFileDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        networkFileDialog.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+        networkFileDialog.getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+            @Override
+            public void onSystemUiVisibilityChange(int visibility) {
+                int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                        //布局位于状态栏下方
+                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                        //全屏
+                        View.SYSTEM_UI_FLAG_FULLSCREEN |
+                        //隐藏导航栏
+                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+                if (Build.VERSION.SDK_INT >= 19) {
+                    uiOptions |= 0x00001000;
+                } else {
+                    uiOptions |= View.SYSTEM_UI_FLAG_LOW_PROFILE;
+                }
+                networkFileDialog.getWindow().getDecorView().setSystemUiVisibility(uiOptions);
+            }
+        });
+        progressBar = inflate.findViewById(R.id.progressBar);
+        completedView = inflate.findViewById(R.id.tasks_view);
+        result_ima = inflate.findViewById(R.id.result_ima);
+        completedView.setVisibility(View.GONE);
+        tips = inflate.findViewById(R.id.tips);
+        result_ima.setVisibility(View.GONE);
+        //获取当前Activity所在的窗体
+        Window window = networkFileDialog.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        wlp.alpha = 1.0f;
+        Display d = window.getWindowManager().getDefaultDisplay(); // 获取屏幕宽，高
+        wlp.gravity = Gravity.CENTER;
+        wlp.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        wlp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        Point size = new Point();
+        d.getSize(size);
+        int width = size.x;
+        int height = size.y;
+        wlp.width = (int) (width * 0.45);//设置宽
+        wlp.height = (int) (width * 0.3);//设置宽
+        window.setAttributes(wlp);
+        networkFileDialog.setOnTouchOutside(new MyDialog.onTouchOutsideInterFace() {
+            @Override
+            public void outSide() {
+                Log.d("sdfsdfdsff", "路过~~~~~");
+                //  Toast.makeText(getActivity(),"弹框",Toast.LENGTH_SHORT).show();
+            }
+        });
+        networkFileDialog.show();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (networkFileDialog != null) {
+                    networkFileDialog.dismiss();
+                }
+            }
+        }, 3000);
     }
 
     /**
@@ -2092,7 +2337,9 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
 
     private void querywuhufragment(List<WuHuEditBean.EditListBean> editListBeanList) {
         Log.e("onReceiveMsg查询editListBeanList大小: ", editListBeanList.size() + "");
+        Log.d("onReceiveMsg查询editListBeanList大小2222: ", wuHuEditBeanList.isEmpty() + "");
         wuHuEditBeanList.clear();
+
         wuHuEditBeanList.addAll(editListBeanList);
         for (int i = 0; i < wuHuEditBeanList.size(); i++) {
             mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos + ""));

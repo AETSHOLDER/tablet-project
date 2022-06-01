@@ -57,43 +57,18 @@ public class WuHuMeetingListResponse implements Serializable {
         }
 
         public static class ContentDTO {
-            private List<EditListBeanListDTO> editListBeanList;
-            private String line_color;
-            private String startTime;
-            private String them_color;
-            private String topic_type;
             private String topics;
+            private String topic_type;
+            private String startTime;
+            private List<EditListBeanListDTO> editListBeanList;
+            private VoteListBeanDTO voteListBean;
 
-            public List<EditListBeanListDTO> getEditListBeanList() {
-                return editListBeanList;
+            public String getTopics() {
+                return topics;
             }
 
-            public void setEditListBeanList(List<EditListBeanListDTO> editListBeanList) {
-                this.editListBeanList = editListBeanList;
-            }
-
-            public String getLine_color() {
-                return line_color;
-            }
-
-            public void setLine_color(String line_color) {
-                this.line_color = line_color;
-            }
-
-            public String getStartTime() {
-                return startTime;
-            }
-
-            public void setStartTime(String startTime) {
-                this.startTime = startTime;
-            }
-
-            public String getThem_color() {
-                return them_color;
-            }
-
-            public void setThem_color(String them_color) {
-                this.them_color = them_color;
+            public void setTopics(String topics) {
+                this.topics = topics;
             }
 
             public String getTopic_type() {
@@ -104,34 +79,159 @@ public class WuHuMeetingListResponse implements Serializable {
                 this.topic_type = topic_type;
             }
 
-            public String getTopics() {
-                return topics;
+            public String getStartTime() {
+                return startTime;
             }
 
-            public void setTopics(String topics) {
-                this.topics = topics;
+            public void setStartTime(String startTime) {
+                this.startTime = startTime;
+            }
+
+            public List<EditListBeanListDTO> getEditListBeanList() {
+                return editListBeanList;
+            }
+
+            public void setEditListBeanList(List<EditListBeanListDTO> editListBeanList) {
+                this.editListBeanList = editListBeanList;
+            }
+
+            public VoteListBeanDTO getVoteListBean() {
+                return voteListBean;
+            }
+
+            public void setVoteListBean(VoteListBeanDTO voteListBean) {
+                this.voteListBean = voteListBean;
+            }
+
+            public static class VoteListBeanDTO {
+                private List<ContentDTO.VoteListBeanDTO.DataDTO> data;
+
+                public List<ContentDTO.VoteListBeanDTO.DataDTO> getData() {
+                    return data;
+                }
+
+                public void setData(List<ContentDTO.VoteListBeanDTO.DataDTO> data) {
+                    this.data = data;
+                }
+
+                public static class DataDTO {
+                    private String topic;
+                    private List<ContentDTO.VoteListBeanDTO.DataDTO.TemporBeanListDTO> temporBeanList;
+                    private String type;
+                    private String anonymity;
+                    private String status;
+                    private String id;
+                    private Integer mvoteStatus;
+                    private Integer flag;
+
+                    public String getTopic() {
+                        return topic;
+                    }
+
+                    public void setTopic(String topic) {
+                        this.topic = topic;
+                    }
+
+                    public List<ContentDTO.VoteListBeanDTO.DataDTO.TemporBeanListDTO> getTemporBeanList() {
+                        return temporBeanList;
+                    }
+
+                    public void setTemporBeanList(List<ContentDTO.VoteListBeanDTO.DataDTO.TemporBeanListDTO> temporBeanList) {
+                        this.temporBeanList = temporBeanList;
+                    }
+
+                    public String getType() {
+                        return type;
+                    }
+
+                    public void setType(String type) {
+                        this.type = type;
+                    }
+
+                    public String getAnonymity() {
+                        return anonymity;
+                    }
+
+                    public void setAnonymity(String anonymity) {
+                        this.anonymity = anonymity;
+                    }
+
+                    public String getStatus() {
+                        return status;
+                    }
+
+                    public void setStatus(String status) {
+                        this.status = status;
+                    }
+
+                    public String getId() {
+                        return id;
+                    }
+
+                    public void setId(String id) {
+                        this.id = id;
+                    }
+
+                    public Integer getMvoteStatus() {
+                        return mvoteStatus;
+                    }
+
+                    public void setMvoteStatus(Integer mvoteStatus) {
+                        this.mvoteStatus = mvoteStatus;
+                    }
+
+                    public Integer getFlag() {
+                        return flag;
+                    }
+
+                    public void setFlag(Integer flag) {
+                        this.flag = flag;
+                    }
+
+                    public static class TemporBeanListDTO {
+                        private Boolean checked;
+                        private String content;
+                        private String orderNumb;
+
+                        public Boolean getChecked() {
+                            return checked;
+                        }
+
+                        public void setChecked(Boolean checked) {
+                            this.checked = checked;
+                        }
+
+                        public String getContent() {
+                            return content;
+                        }
+
+                        public void setContent(String content) {
+                            this.content = content;
+                        }
+
+                        public String getOrderNumb() {
+                            return orderNumb;
+                        }
+
+                        public void setOrderNumb(String orderNumb) {
+                            this.orderNumb = orderNumb;
+                        }
+                    }
+                }
             }
 
             public static class EditListBeanListDTO {
-                private String line_color;
-                private String participantUnits;
-                private String pos;
                 private String reportingUnit;
+                private String participantUnits;
                 private String subTopics;
-                private String temporaryAttendeBean;
-                private String temporaryAttendeBean2;
-                private String temporarySubTopics;
-                private String them_color;
-                private String topic_type;
-                private String topics;
-                private List<LocalFilesDTO> localFiles;
+                private List<FileListBeanListDTO> fileListBeanList;
 
-                public String getLine_color() {
-                    return line_color;
+                public String getReportingUnit() {
+                    return reportingUnit;
                 }
 
-                public void setLine_color(String line_color) {
-                    this.line_color = line_color;
+                public void setReportingUnit(String reportingUnit) {
+                    this.reportingUnit = reportingUnit;
                 }
 
                 public String getParticipantUnits() {
@@ -142,22 +242,6 @@ public class WuHuMeetingListResponse implements Serializable {
                     this.participantUnits = participantUnits;
                 }
 
-                public String getPos() {
-                    return pos;
-                }
-
-                public void setPos(String pos) {
-                    this.pos = pos;
-                }
-
-                public String getReportingUnit() {
-                    return reportingUnit;
-                }
-
-                public void setReportingUnit(String reportingUnit) {
-                    this.reportingUnit = reportingUnit;
-                }
-
                 public String getSubTopics() {
                     return subTopics;
                 }
@@ -166,97 +250,20 @@ public class WuHuMeetingListResponse implements Serializable {
                     this.subTopics = subTopics;
                 }
 
-                public String getTemporaryAttendeBean() {
-                    return temporaryAttendeBean;
+                public List<FileListBeanListDTO> getFileListBeanList() {
+                    return fileListBeanList;
                 }
 
-                public void setTemporaryAttendeBean(String temporaryAttendeBean) {
-                    this.temporaryAttendeBean = temporaryAttendeBean;
+                public void setFileListBeanList(List<FileListBeanListDTO> fileListBeanList) {
+                    this.fileListBeanList = fileListBeanList;
                 }
 
-                public String getTemporaryAttendeBean2() {
-                    return temporaryAttendeBean2;
-                }
-
-                public void setTemporaryAttendeBean2(String temporaryAttendeBean2) {
-                    this.temporaryAttendeBean2 = temporaryAttendeBean2;
-                }
-
-                public String getTemporarySubTopics() {
-                    return temporarySubTopics;
-                }
-
-                public void setTemporarySubTopics(String temporarySubTopics) {
-                    this.temporarySubTopics = temporarySubTopics;
-                }
-
-                public String getThem_color() {
-                    return them_color;
-                }
-
-                public void setThem_color(String them_color) {
-                    this.them_color = them_color;
-                }
-
-                public String getTopic_type() {
-                    return topic_type;
-                }
-
-                public void setTopic_type(String topic_type) {
-                    this.topic_type = topic_type;
-                }
-
-                public String getTopics() {
-                    return topics;
-                }
-
-                public void setTopics(String topics) {
-                    this.topics = topics;
-                }
-
-                public List<LocalFilesDTO> getLocalFiles() {
-                    return localFiles;
-                }
-
-                public void setLocalFiles(List<LocalFilesDTO> localFiles) {
-                    this.localFiles = localFiles;
-                }
-
-                public static class LocalFilesDTO {
-                    private String author;
-                    private String file_type;
-                    private Boolean isNet;
+                public static class FileListBeanListDTO {
                     private String name;
+                    private Boolean net;
                     private String path;
                     private String pos;
                     private Integer resImage;
-                    private String suffix;
-                    private String time;
-                    private String type;
-
-                    public String getAuthor() {
-                        return author;
-                    }
-
-                    public void setAuthor(String author) {
-                        this.author = author;
-                    }
-
-                    public String getFile_type() {
-                        return file_type;
-                    }
-
-                    public void setFile_type(String file_type) {
-                        this.file_type = file_type;
-                    }
-
-                    public Boolean getIsNet() {
-                        return isNet;
-                    }
-
-                    public void setIsNet(Boolean isNet) {
-                        this.isNet = isNet;
-                    }
 
                     public String getName() {
                         return name;
@@ -264,6 +271,14 @@ public class WuHuMeetingListResponse implements Serializable {
 
                     public void setName(String name) {
                         this.name = name;
+                    }
+
+                    public Boolean getNet() {
+                        return net;
+                    }
+
+                    public void setNet(Boolean net) {
+                        this.net = net;
                     }
 
                     public String getPath() {
@@ -289,32 +304,9 @@ public class WuHuMeetingListResponse implements Serializable {
                     public void setResImage(Integer resImage) {
                         this.resImage = resImage;
                     }
-
-                    public String getSuffix() {
-                        return suffix;
-                    }
-
-                    public void setSuffix(String suffix) {
-                        this.suffix = suffix;
-                    }
-
-                    public String getTime() {
-                        return time;
-                    }
-
-                    public void setTime(String time) {
-                        this.time = time;
-                    }
-
-                    public String getType() {
-                        return type;
-                    }
-
-                    public void setType(String type) {
-                        this.type = type;
-                    }
                 }
             }
         }
     }
+
 

@@ -58,6 +58,7 @@ public class constant {
      */
     public final static String FILEMD5PUSH = "doesitexist";//查询推送文件是否存在
     public final static String FILEMD5SHARE = "Isitunique";//查询分享文件是否存在
+    public final static String NETWORKSIDE = "network side";//芜湖网络请求数据主席进入主界面时向其他参会端发送自己身ip地址
 
     public final static String FILERESPONDSHARE = "responpdf";//回应分享文件是否存在
     public final static String FILERESPONDPUSH = "whetherornot";//回应推送文件是否存在
@@ -101,6 +102,7 @@ public class constant {
     public final static String MEETINGFINISH = "meetingFinish";//会议结束
     public final static String EXTRAORDINARY_MEETING_INETADDRESS = "255.255.255.255";//临时会议分享文件IP。
     public final static int EXTRAORDINARY_MEETING_PORT = 4127;//临时会议分享文件端口。
+    public final static int WuHu_PORT = 8270;//临时会议分享文件端口。
     public final static String SHARE_FILE = "/shareFile/";//临时会议分享的文件存储文件夹
     public final static String WUHU_NET_FILE = "/netFile/";//网络文件储存文件夹
     public final static String VOTE_FILE = "/voteFile/";//临时会议投票文件夹

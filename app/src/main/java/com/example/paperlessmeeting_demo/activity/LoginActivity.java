@@ -43,8 +43,10 @@ import com.example.paperlessmeeting_demo.bean.FileListBean;
 import com.example.paperlessmeeting_demo.bean.InitiaBean.InitiaMeeting;
 import com.example.paperlessmeeting_demo.bean.MeetingInfoBean;
 import com.example.paperlessmeeting_demo.bean.PaperlessBean;
+import com.example.paperlessmeeting_demo.bean.TempWSBean;
 import com.example.paperlessmeeting_demo.bean.UploadBean;
 import com.example.paperlessmeeting_demo.bean.WuHuEditBean;
+import com.example.paperlessmeeting_demo.bean.WuHuNetWorkBean;
 import com.example.paperlessmeeting_demo.enums.MessageReceiveType;
 import com.example.paperlessmeeting_demo.fragment.ExtraordMeetingFragment;
 import com.example.paperlessmeeting_demo.fragment.SweepCodeFragment;
@@ -63,6 +65,9 @@ import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.example.paperlessmeeting_demo.tool.constant;
 import com.example.paperlessmeeting_demo.tool.VideoEncoderUtil;
 import com.example.paperlessmeeting_demo.widgets.NoScrollViewPager;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import com.jyn.vcview.VerificationCodeView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -98,7 +103,7 @@ import q.rorbin.verticaltablayout.util.DisplayUtil;
  * Created by 梅涛 on 2020/9/18.
  */
 
-public class LoginActivity extends BaseActivity  {
+public class LoginActivity extends BaseActivity {
 
     @BindView(R.id.tip)
     TextView tip;
@@ -206,6 +211,7 @@ public class LoginActivity extends BaseActivity  {
     };
     private Handler requestMeetingHandler = new Handler();
     private Runnable requestRunable = null;
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_wuhu_login;
@@ -217,18 +223,18 @@ public class LoginActivity extends BaseActivity  {
         tt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent  intent=new Intent(LoginActivity.this,UPloadActivity.class);
+                Intent intent = new Intent(LoginActivity.this, UPloadActivity.class);
                 startActivity(intent);
 
             }
         });
-        if(Hawk.contains(constant.user_name)){
+        if (Hawk.contains(constant.user_name)) {
             UserUtil.user_name = Hawk.get(constant.user_name);
         }
-        if (Hawk.contains("company_name")){
+        if (Hawk.contains("company_name")) {
             Hawk.delete("company_name");
         }
-        if (Hawk.contains("tittle2")){
+        if (Hawk.contains("tittle2")) {
             Hawk.delete("tittle2");
         }
   /*      //如芜湖数据存在则清除
@@ -238,14 +244,14 @@ public class LoginActivity extends BaseActivity  {
       /*  //创建芜湖数据
         WuHuEditBean wuHuEditBean=new WuHuEditBean();
         Hawk.put("WuHuFragmentData",wuHuEditBean);*/
-      //芜湖上传本地文件进行分享时由copy到一个文件夹改为Hawk储存
+        //芜湖上传本地文件进行分享时由copy到一个文件夹改为Hawk储存
       /*  if (Hawk.contains("wuhulocal")){
 
             Hawk.delete("wuhulocal");
         }*/
-       agendaRl=(RelativeLayout) findViewById(R.id.agenda_rl);
-       loginLeft=(LinearLayout) findViewById(R.id.login_left);
-       //创建分享 添加本地，网络文件文件夹
+        agendaRl = (RelativeLayout) findViewById(R.id.agenda_rl);
+        loginLeft = (LinearLayout) findViewById(R.id.login_left);
+        //创建分享 添加本地，网络文件文件夹
         File share = new File(fileShare);
         if (!share.exists()) {
             share.mkdir();
@@ -261,10 +267,10 @@ public class LoginActivity extends BaseActivity  {
         }
 
         //删除临时会议分享文件文件夹
-     //   DeleteFileUtil.deleteDirectory(fileShare);
+        //   DeleteFileUtil.deleteDirectory(fileShare);
         /*
-        * 清除每次的会议的暂存纪要数据
-        * */
+         * 清除每次的会议的暂存纪要数据
+         * */
         if (Hawk.contains("cacheData")) {
             Hawk.delete("cacheData");
         }
@@ -275,7 +281,6 @@ public class LoginActivity extends BaseActivity  {
 
         agendaRl.setVisibility(View.GONE);
         loginLeft.setVisibility(View.VISIBLE);
-
 
 
         name.setVisibility(View.INVISIBLE);
@@ -307,7 +312,7 @@ public class LoginActivity extends BaseActivity  {
      */
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onGetStickyEvent(EventMessage message) {
-        if (!PermissionManager.checkPermission(this, constant.PERMS_WRITE1)){
+        if (!PermissionManager.checkPermission(this, constant.PERMS_WRITE1)) {
             return;
         }
         if (message.getMessage().equals(constant.start_meeting)) {
@@ -319,7 +324,7 @@ public class LoginActivity extends BaseActivity  {
             agendaRl.setVisibility(View.VISIBLE);
             loginLeft.setVisibility(View.GONE);
 //            getAttenData();
-            if(Hawk.contains(constant.InitiaMeeting)){
+            if (Hawk.contains(constant.InitiaMeeting)) {
                 InitiaMeeting initiaMeeting = Hawk.get(constant.InitiaMeeting);
                 if (initiaMeeting != null) {
 //                    Drawable drawable = MeetingAPP.getContext().getResources().getDrawable(R.mipmap.bg_login);
@@ -327,8 +332,8 @@ public class LoginActivity extends BaseActivity  {
 //                            cacheInMemory(true).bitmapConfig(Bitmap.Config.RGB_565).displayer(new SimpleBitmapDisplayer()).handler(new Handler()).build();
 //                    ImageLoader.getInstance().displayImage(meetingInfoBean.getBackground_img(), theme_bg_ima, options);
 
-                    Log.d("getStart_time", ""+initiaMeeting.getStart_time());
-                    Log.d("getEnd_time", ""+initiaMeeting.getEnd_time());
+                    Log.d("getStart_time", "" + initiaMeeting.getStart_time());
+                    Log.d("getEnd_time", "" + initiaMeeting.getEnd_time());
 //                    Hawk.put("background_img", meetingInfoBean.getBackground_img());//会议动态主题图片
 //                    Hawk.put("getStart_time", initiaMeeting.getStart_time());//会议名字
 //                    Hawk.put("meetingInfoBean", meetingInfoBean);//会议实体类
@@ -345,7 +350,7 @@ public class LoginActivity extends BaseActivity  {
                     dateTv.setText(starHous + "-" + endHous);
                     Hawk.put("meeting_time", yaer + "/" + month + " " + starHous + "-" + endHous);
                     issues.setText(initiaMeeting.getMeeting_name());
-                    if(Hawk.contains(constant.user_name)){
+                    if (Hawk.contains(constant.user_name)) {
                         nameAttendee.setText(Hawk.get(constant.user_name));
                     }
 //                    name.setText(UserUtil.user_name);
@@ -353,7 +358,7 @@ public class LoginActivity extends BaseActivity  {
             }
         }
         if (message.getMessage().equals(constant.get_server_ip)) {
-           getMacIsRegister();
+            getMacIsRegister();
 //           resumeToGetMeetingInfo();
         }
         if (message.getMessage().equals(constant.continusClick)) {
@@ -361,39 +366,75 @@ public class LoginActivity extends BaseActivity  {
 //            Toast.makeText(this, tips, Toast.LENGTH_SHORT).show();
 //            visitor.setVisibility(View.VISIBLE);
         }
+    /*    //芜湖网络请求数据主席进入主界面时向其他参会端发送自己身ip地址
+        if (message.getMessage().equals(constant.NETWORKSIDE)) {
+            try {
+                TempWSBean<WuHuNetWorkBean> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<WuHuNetWorkBean>>() {
+                }.getType());
+                //  收到vote的websocket的信息
+                if (wsebean != null) {
+                    Log.d("gfdgfdfhh", "芜湖网络会议模版");
+                    WuHuNetWorkBean wuHuNetWorkBean = wsebean.getBody();
+                    Log.d("gfdgfdfhh", "芜湖网络会议模版    " + wuHuNetWorkBean.getIp() + "   " + wuHuNetWorkBean.getMac());
+                    Hawk.put("wuHuServerIp", wuHuNetWorkBean.getIp());
+                }
+            } catch (JsonSyntaxException e) {
+                e.printStackTrace();
+            }
+
+
+        }*/
         if (message.getType().equals(MessageReceiveType.MessageCreatTempMeeting)) {
             Activity topActivity = (Activity) ActivityUtils.getTopActivity();
             if (topActivity != null && topActivity.getLocalClassName().contains("LoginActivity")) {
                 String[] ip_code = message.getMessage().split(",");
                 String ip = ip_code[0];
-                String[]allCode=ip_code[1].split("/");//分离出邀请码和是否重复利用会议模板标识
-                String isReuse=allCode[1];
-                Hawk.put("isreuse",isReuse);//储存是否重复利用会议模板标识
+                String[] allCode = ip_code[1].split("/");//分离出邀请码和是否重复利用会议模板标识
+                String isReuse = allCode[1];
+                Hawk.put("isreuse", isReuse);//储存是否重复利用会议模板标识
                 String code = allCode[0];
-                String title = "您收到邀请码为("+code+")的临时会议!";
+                String title = "";
+                //芜湖网络会议客户端收到广播后的弹框提示
+                if (code.contains("formalmeeting-")) {
+                    UserUtil.isNetDATA = true;
+                    String[] allStr = code.split("-");
+                    if (allStr.length > 1) {
+                        String str = allStr[1];
+                        if (str.length() > 23) {
+                            title = "请您加入" + "\n" + str.substring(0, 22) + "...会议";
+                        } else {
+                            title = "请您加入" + "\n" + str;
+                        }
+                    }
+                    //芜湖临时会议客户端收到广播后的邀请码弹框提示
+                } else {
+                    UserUtil.isNetDATA = false;
+                    title = "您收到邀请码为(" + code + ")的临时会议!";
+                }
+
                 CVIPaperDialogUtils.showCountDownCustomDialog(LoginActivity.this, title, "确定加入", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
                     @Override
                     public void onClickButton(boolean clickConfirm, boolean clickCancel) {
-                        if(clickConfirm){
-                            Log.e("111111","倒计时结束");
+                        if (clickConfirm) {
+                            Log.e("111111", "倒计时结束");
 
                             UserUtil.isTempMeeting = true;
                             Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageClient);
 
                             boolean flag = false;
-                            for (String msg : UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr){
-                                if(msg.contains(ip)){
+                            for (String msg : UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr) {
+                                if (msg.contains(ip)) {
                                     flag = true;
                                 }
                             }
-                            if(!flag){
-                                ToastUtils.showToast(LoginActivity.this,"该会议已结束!!!");
+                            if (!flag) {
+                                ToastUtils.showToast(LoginActivity.this, "该会议已结束!!!");
                                 return;
                             }
-                             Intent intent1 = new Intent(LoginActivity.this, WuHuActivity.class);
-                              Bundle bundle=new Bundle();
-                             bundle.putString("ip", ip);
-                             bundle.putString("isreuse",isReuse);
+                            Intent intent1 = new Intent(LoginActivity.this, WuHuActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("ip", ip);
+                            bundle.putString("isreuse", isReuse);
                             intent1.putExtras(bundle);
                             startActivity(intent1);
                         }
@@ -407,18 +448,18 @@ public class LoginActivity extends BaseActivity  {
     /**
      * 获取参会人员信息
      * &&进入登录页面重新获取一次
-     * */
+     */
     private void resumeToGetMeetingInfo() {
-        if(Hawk.contains(constant._id) && !StringUtils.isEmpty(Hawk.get(constant._id))) {
+        if (Hawk.contains(constant._id) && !StringUtils.isEmpty(Hawk.get(constant._id))) {
             UserUtil.meeting_record_id = Hawk.get(constant._id);
-            if(Hawk.contains(constant.user_name) && !StringUtils.isEmpty(Hawk.get(constant.user_name))){
+            if (Hawk.contains(constant.user_name) && !StringUtils.isEmpty(Hawk.get(constant.user_name))) {
                 UserUtil.user_name = Hawk.get(constant.user_name);
             }
-            if(Hawk.contains(constant.user_id) && !StringUtils.isEmpty(Hawk.get(constant.user_id))){
+            if (Hawk.contains(constant.user_id) && !StringUtils.isEmpty(Hawk.get(constant.user_id))) {
                 UserUtil.user_id = Hawk.get(constant.user_id);
             }
             getMeeingInfo(UserUtil.meeting_record_id);
-        }else {
+        } else {
             loginToFragmentListener.onHideUserInfo();
         }
     }
@@ -447,19 +488,19 @@ public class LoginActivity extends BaseActivity  {
 
     private void setAgendaUi(List<AttendeBean> attendeBeans) {
 
-        if (strChairman!=null){
+        if (strChairman != null) {
             strChairman.clear();
         }
-        if (strSecretary!=null){
+        if (strSecretary != null) {
             strSecretary.clear();
         }
-        if (strServant!=null){
+        if (strServant != null) {
             strServant.clear();
         }
-        if (strOther!=null){
+        if (strOther != null) {
             strOther.clear();
         }
-        if (strForeign!=null){
+        if (strForeign != null) {
             strForeign.clear();
         }
         for (int i = 0; i < attendeBeans.size(); i++) {
@@ -544,9 +585,9 @@ public class LoginActivity extends BaseActivity  {
         } else {
             name5Rl.setVisibility(View.GONE);
         }
-            /*
-            * 登录界面先用会议议程自动生成一份会议纪要，秘书界面（ActivityMinuteMeeting）再次提交会议纪要时将此界面生成的会议纪要覆盖掉。
-            * */
+        /*
+         * 登录界面先用会议议程自动生成一份会议纪要，秘书界面（ActivityMinuteMeeting）再次提交会议纪要时将此界面生成的会议纪要覆盖掉。
+         * */
 
         new Thread(new Runnable() {
             @Override
@@ -571,7 +612,7 @@ public class LoginActivity extends BaseActivity  {
                     @Override
                     protected void onSuccess(BasicResponse<String> response) {
                         if (response != null) {
-                            if(StringUtils.isEmpty(response.getData())){
+                            if (StringUtils.isEmpty(response.getData())) {
                                 // 设备没有注册
                                 Intent intent = new Intent(LoginActivity.this, InitiaActivity.class);
                                 startActivity(intent);
@@ -608,7 +649,7 @@ public class LoginActivity extends BaseActivity  {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                 finish();
+                finish();
             }
         });
 
@@ -670,13 +711,13 @@ public class LoginActivity extends BaseActivity  {
         projectionManager = (MediaProjectionManager) getSystemService(MEDIA_PROJECTION_SERVICE);
 //        PermissionManager.RequestOverlayPermission(this);
         Log.d("fgdgg222", selfIp);
-       // File file = new File("这里是文件夹得路径");
+        // File file = new File("这里是文件夹得路径");
         //创建临时文件夹
         File f = new File(COPY_PATH);
         if (!f.exists()) {
             f.mkdir();
         }
-        File netFile= new File(netFilePath);
+        File netFile = new File(netFilePath);
         if (!f.exists()) {
             f.mkdir();
         }
@@ -690,7 +731,7 @@ public class LoginActivity extends BaseActivity  {
     }*/
 
     //删除文件夹和文件夹里面的文件
-    private   void deleteDirWihtFile(File dir) {
+    private void deleteDirWihtFile(File dir) {
         if (dir == null || !dir.exists() || !dir.isDirectory() || dir.listFiles() == null)
             return;
         for (File file : dir.listFiles()) {
@@ -700,16 +741,17 @@ public class LoginActivity extends BaseActivity  {
                 deleteDirWihtFile(file); // 递规的方式删除文件夹
         }
     }
+
     @Override
     protected void onResume() {
         super.onResume();
         //客户端是否第一次安装
-     if (Hawk.contains("WuHuFragmentData")){
-         Hawk.put("isFirst",false);
-        }else {
-         Hawk.put("isFirst",true);
+        if (Hawk.contains("WuHuFragmentData")) {
+            Hawk.put("isFirst", false);
+        } else {
+            Hawk.put("isFirst", true);
         }
-     //文件关联到对应的议题 两个Hawk  wuhulocal  WuHuLocalFileBean
+        //文件关联到对应的议题 两个Hawk  wuhulocal  WuHuLocalFileBean
        /* if (Hawk.contains("wuhulocal")){
             Hawk.delete("wuhulocal");
         }
@@ -719,12 +761,12 @@ public class LoginActivity extends BaseActivity  {
 
         UserUtil.isTempMeeting = false;
         // 因为init页面会抢夺回调，所以返回后再次回调
-        if(InitSocketManager.socket != null && !InitSocketManager.socket.connected()){
+        if (InitSocketManager.socket != null && !InitSocketManager.socket.connected()) {
             FLUtil.initSocketIO();
         }
         selfIp = FLUtil.getNetworkType();
         Hawk.put("SelfIpAddress", selfIp);//自身Ip
-        Hawk.put("isSameScreen","0");//标识是否跳转同屏界面:1-跳转  0-不跳转
+        Hawk.put("isSameScreen", "0");//标识是否跳转同屏界面:1-跳转  0-不跳转
         UDPBroadcastManager.getInstance().receiveUDP();
         agendaRl.setVisibility(View.GONE);
         loginLeft.setVisibility(View.VISIBLE);
@@ -778,6 +820,7 @@ public class LoginActivity extends BaseActivity  {
      */
     public interface LoginToFragmentListener {
         void onUserInfoReceive();
+
         void onHideUserInfo();
     }
 
@@ -791,11 +834,11 @@ public class LoginActivity extends BaseActivity  {
                     protected void onSuccess(BasicResponse<MeetingInfoBean> response) {
                         if (response != null) {
                             MeetingInfoBean meetingInfoBean = response.getData();
-                            if(meetingInfoBean==null){
+                            if (meetingInfoBean == null) {
                                 return;
                             }
                             // 会议不是正在进行中，返回
-                            if(!meetingInfoBean.getStatus().equals("UNDERWAY")){
+                            if (!meetingInfoBean.getStatus().equals("UNDERWAY")) {
                                 // 清除信息，不再显示
                                 Hawk.delete(constant._id);
                                 agendaRl.setVisibility(View.GONE);
@@ -848,6 +891,7 @@ public class LoginActivity extends BaseActivity  {
                         loginLeft.setVisibility(View.VISIBLE);
                         loginToFragmentListener.onHideUserInfo();
                     }
+
                     // 新增网络异常处理
                     @Override
                     public void onError(Throwable e) {
@@ -871,13 +915,15 @@ public class LoginActivity extends BaseActivity  {
             videoEncoder.start();
         }
     }
+
     // 根据手机的分辨率从 px(像素) 的单位 转成为 dp
-    public  int px2dip( float pxValue) {
+    public int px2dip(float pxValue) {
         // 获取当前手机的像素密度（1个dp对应几个px）
         float scale = getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f); // 四舍五入取整
     }
-    public  int px2sp( float pxValue) {
+
+    public int px2sp(float pxValue) {
 
         float fontScale = getResources().getDisplayMetrics().scaledDensity;
 
@@ -1028,13 +1074,13 @@ public class LoginActivity extends BaseActivity  {
                     @Override
                     protected void onFail(BasicResponse<CreateFileBeanResponse> response) {
                         super.onFail(response);
-                       /* progressBarLl.setVisibility(View.GONE);*/
+                        /* progressBarLl.setVisibility(View.GONE);*/
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         super.onError(e);
-                     /*   progressBarLl.setVisibility(View.GONE);*/
+                        /*   progressBarLl.setVisibility(View.GONE);*/
                     }
 
                     @Override
