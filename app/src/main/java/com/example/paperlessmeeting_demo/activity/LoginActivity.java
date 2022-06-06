@@ -193,6 +193,7 @@ public class LoginActivity extends BaseActivity {
     private String VOTE_FILE = Environment.getExternalStorageDirectory() + constant.VOTE_FILE;
     private String netFilePath = Environment.getExternalStorageDirectory() + constant.WUHU_NET_FILE;//网络请求得到的文件夹路径
     private String selfIp = "";
+    private   String isReuse = "";
     private Handler handler = new Handler() {
         @Override
 
@@ -390,20 +391,31 @@ public class LoginActivity extends BaseActivity {
                 String[] ip_code = message.getMessage().split(",");
                 String ip = ip_code[0];
                 String[] allCode = ip_code[1].split("/");//分离出邀请码和是否重复利用会议模板标识
-                String isReuse = allCode[1];
-                Hawk.put("isreuse", isReuse);//储存是否重复利用会议模板标识
+                if (allCode.length == 3) {
+                    isReuse = allCode[2];
+                    Hawk.put("isreuse", isReuse);//储存是否重复利用会议模板标识
+                    String strId = allCode[1];
+                    Hawk.put("WuHuMeetingID", strId);//芜湖会议id  参会人员会用到
+
+                } else {
+                    isReuse = allCode[1];
+                    Hawk.put("isreuse", isReuse);//储存是否重复利用会议模板标识
+                }
+
                 String code = allCode[0];
                 String title = "";
                 //芜湖网络会议客户端收到广播后的弹框提示
                 if (code.contains("formalmeeting-")) {
                     UserUtil.isNetDATA = true;
+                    //格式为："formalmeeting-"+会议名字+“/”+会议ID；
                     String[] allStr = code.split("-");
                     if (allStr.length > 1) {
-                        String str = allStr[1];
-                        if (str.length() > 23) {
-                            title = "请您加入" + "\n" + str.substring(0, 22) + "...会议";
+                        String strName = allStr[1];
+
+                        if (strName.length() > 23) {
+                            title = "请您加入" + "\n" + strName.substring(0, 22) + "...会议";
                         } else {
-                            title = "请您加入" + "\n" + str;
+                            title = "请您加入" + "\n" + strName;
                         }
                     }
                     //芜湖临时会议客户端收到广播后的邀请码弹框提示

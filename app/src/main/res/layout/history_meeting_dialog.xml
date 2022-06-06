@@ -18,12 +18,12 @@
     <RelativeLayout
         android:id="@+id/calender_rl"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
+        android:layout_height="60dp"
         android:layout_below="@id/aa"
         android:layout_centerHorizontal="true"
-        android:layout_marginLeft="290dp"
+        android:layout_marginLeft="280dp"
         android:layout_marginTop="10dp"
-        android:layout_marginRight="290dp"
+        android:layout_marginRight="280dp"
         android:background="@drawable/bg_wuhu_calender">
 
         <ImageView
@@ -43,7 +43,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="30dp"
             android:layout_toRightOf="@id/cc"
-            android:text="2022-2-22"
+            android:text="请选择日期"
             android:textColor="#636363"
             android:textSize="15sp" />
     </RelativeLayout>
@@ -79,6 +79,7 @@
             android:textColor="#3333"
 
             />
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/myList_view"
             android:layout_width="match_parent"

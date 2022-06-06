@@ -12,6 +12,11 @@ import java.util.List;
  */
 public class WuHuEditBeanRequset implements Serializable {
  private WuHuEditBean content;
+private String id;
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public WuHuEditBean getContent() {
         return content;

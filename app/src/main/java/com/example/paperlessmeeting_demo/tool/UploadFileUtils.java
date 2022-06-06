@@ -1,3 +1,4 @@
+/*
 package com.example.paperlessmeeting_demo.tool;
 
 import android.content.Context;
@@ -26,13 +27,15 @@ import java.util.Map;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import com.orhanobut.hawk.Hawk;
+*/
 /**
  * @ProjectName: MyCutFileUpload
  * @Package: com.sun.mycutfileupload.utils
  * @ClassName: UploadFileUtils
  * @Author: littletree
  * @CreateDate: 2020/9/16/016 13:58
- */
+ *//*
+
 public class UploadFileUtils {
     private String getfilepath;
     private String getfilename;
@@ -114,13 +117,15 @@ public class UploadFileUtils {
         if (null != onUpLoadListener) {
             onUpLoadListener.start();
         }
-     /*   new Thread() {
+     */
+/*   new Thread() {
             @Override
             public void run() {
                 filemd5 = Md5Util.getFileMD5(getfilepath);   //文件转md5耗时操作，需要在子线程执行
                 mHandler.sendEmptyMessage(0x123);
             }
-        }.start();*/
+        }.start();*//*
+
     }
 
     private Handler mHandler = new Handler(Looper.getMainLooper()) {
@@ -134,6 +139,7 @@ public class UploadFileUtils {
     };
 
     //秒传接口 校验文件
+*/
 /*  private void checkvideofile(String mfilepath, String mfilename,String mbustype){
         EasyHttp.get("receiveChunk")
               //  .params("busType", mbustype)   //文件类型 固定为doc
@@ -162,7 +168,8 @@ public class UploadFileUtils {
 
                     }
                 });
-    }*/
+    }*//*
+
 
     private void cutfile(String filePath, String fileName) {
         try {
@@ -214,3 +221,4 @@ public class UploadFileUtils {
         this.onUpLoadListener = onUpLoadListener;
     }
 }
+*/

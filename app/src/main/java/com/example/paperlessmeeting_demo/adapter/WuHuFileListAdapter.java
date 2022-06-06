@@ -117,26 +117,31 @@ public class WuHuFileListAdapter extends BaseAdapter {
         } else {
             viHolder = (ViewHolder) view.getTag();
         }
-       if (gridViewBean.isNet()){
 
-
-           viHolder.open.setVisibility(View.GONE);
-           viHolder.proprietary.setVisibility(View.GONE);
-       }
         viHolder.typeIma.setImageResource(gridViewBean.getResImage());
         viHolder.fielName.setText(gridViewBean.getName());
         viHolder.person.setText(gridViewBean.getAuthor());
         viHolder.time.setText(gridViewBean.getTime());
-        if(UserUtil.ISCHAIRMAN){
+      /*  if(UserUtil.ISCHAIRMAN){
             viHolder.open.setVisibility(View.VISIBLE);
             viHolder.proprietary.setVisibility(View.VISIBLE);
         }else {
             viHolder.open.setVisibility(View.GONE);
             viHolder.proprietary.setVisibility(View.INVISIBLE);
-        }
+        }*/
         if (UserUtil.isTempMeeting) {
-            viHolder.open.setText("推送");
-            viHolder.proprietary.setText("分享");
+            if (gridViewBean.isNet()){
+                viHolder.open.setVisibility(View.VISIBLE);
+                viHolder.proprietary.setVisibility(View.INVISIBLE);
+                viHolder.open.setText("推送");
+                viHolder.proprietary.setText("分享");
+            }else {
+                viHolder.open.setVisibility(View.VISIBLE);
+                viHolder.proprietary.setVisibility(View.VISIBLE);
+                viHolder.open.setText("推送");
+                viHolder.proprietary.setText("分享");
+            }
+
             //文件分享
             viHolder.proprietary.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -149,8 +154,14 @@ public class WuHuFileListAdapter extends BaseAdapter {
             viHolder.open.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d("asdfasfsf222", gridViewBean.getPath() + "=====" + gridViewBean.getFile_type());
-                    pushFileInterface.pushFileInfo(gridViewBean.getPath(), gridViewBean.getFile_type(), "1", gridViewBean.getName(), gridViewBean.getAuthor(), gridViewBean.getTime());
+                    if (gridViewBean.isNet()){
+                        pushFileInterface.pushFileInfo(gridViewBean.getLocalPath(), gridViewBean.getFile_type(), "1", gridViewBean.getName(), gridViewBean.getAuthor(), gridViewBean.getTime());
+
+                    }else {
+
+                        pushFileInterface.pushFileInfo(gridViewBean.getPath(), gridViewBean.getFile_type(), "1", gridViewBean.getName(), gridViewBean.getAuthor(), gridViewBean.getTime());
+
+                    }
                 }
             });
 

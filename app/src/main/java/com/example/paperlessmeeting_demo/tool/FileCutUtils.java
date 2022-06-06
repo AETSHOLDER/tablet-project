@@ -45,6 +45,8 @@ public class FileCutUtils {
                 long end = (i + 1) * maxSize;
                 offSet = getWrite(targetFile.getAbsolutePath(), i, begin, end);
             }
+
+
             if (length - offSet > 0) {
                 getWrite(targetFile.getAbsolutePath(), count-1, offSet, length);
             }

@@ -94,7 +94,7 @@ import io.reactivex.schedulers.Schedulers;
  * 临时会议
  */
 @SuppressLint("ValidFragment")
-public class ExtraordMeetingFragment extends BaseFragment implements VerificationCodeView.OnCodeFinishListener ,  WuHuMeetingListAdapter.onItemInterface{
+public class ExtraordMeetingFragment extends BaseFragment implements VerificationCodeView.OnCodeFinishListener, WuHuMeetingListAdapter.onItemInterface {
 
     @BindView(R.id.initiate_meeting_tv)
     TextView init_meeting;
@@ -185,8 +185,6 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
         join_meeting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
 
 
                 showHistoryDialog();
@@ -762,6 +760,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
 
     }
 
+    //网络会议模版
     @Override
     public void onItem(int position, WuHuMeetingListResponse wuHuMeetingListResponse) {
         if (!FLUtil.netIsConnect(getActivity())) {
@@ -778,27 +777,27 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                 stringList.add(code_idnex[0]);
             }
             UserUtil.isNetDATA = true;
-            UserUtil.isTempMeeting=true;
+            UserUtil.isTempMeeting = true;
             UserUtil.ISCHAIRMAN = true;
-            constant.temp_code = "formalmeeting."+wuHuMeetingListResponse.getName();
+            constant.temp_code = "formalmeeting." + wuHuMeetingListResponse.getName();
             Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
             Intent intent = new Intent(getActivity(), WuHuActivity.class);
             Bundle bundle = new Bundle();
-            bundle.putString("code", "formalmeeting."+wuHuMeetingListResponse.getName());
+            bundle.putString("code", "formalmeeting." + wuHuMeetingListResponse.getName() + "/" + wuHuMeetingListResponse.get_id());
             bundle.putString("isreuse", "4");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
             intent.putExtras(bundle);
             Hawk.put("WuHuMeetingListResponse", wuHuMeetingListResponse);
             getActivity().startActivity(intent);
 
-        }else {
-            UserUtil.isTempMeeting=true;
+        } else {
+            UserUtil.isTempMeeting = true;
             UserUtil.ISCHAIRMAN = true;
             UserUtil.isNetDATA = true;
-            constant.temp_code = "formalmeeting-"+wuHuMeetingListResponse.getName();
+            constant.temp_code = "formalmeeting-" + wuHuMeetingListResponse.getName();
             Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
             Intent intent = new Intent(getActivity(), WuHuActivity.class);
             Bundle bundle = new Bundle();
-            bundle.putString("code", "formalmeeting-"+wuHuMeetingListResponse.getName());
+            bundle.putString("code", "formalmeeting-" + wuHuMeetingListResponse.getName() + "/" + wuHuMeetingListResponse.get_id());
             bundle.putString("isreuse", "4");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
             intent.putExtras(bundle);
             Hawk.put("WuHuMeetingListResponse", wuHuMeetingListResponse);
@@ -807,12 +806,11 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
         }
 
 
-
-       //====
-
+        //====
 
 
     }
+
     /**
      * websocket发送数据至其他设备
      */
@@ -825,6 +823,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
         String strJson = new Gson().toJson(bean);
         JWebSocketClientService.sendMsg(strJson);
     }
+
     private void showMeetDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         View view = LayoutInflater.from(getActivity()).inflate(null, null);
@@ -981,6 +980,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
             public void onClick(View v) {
 
                 UserUtil.isTempMeeting = true;
+                UserUtil.isNetDATA = false;
                 constant.temp_code = codeStr;
                 Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
                 Intent intent = new Intent(getActivity(), WuHuActivity.class);
@@ -998,6 +998,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
             public void onClick(View v) {
 
                 UserUtil.isTempMeeting = true;
+                UserUtil.isNetDATA = false;
                 constant.temp_code = codeStr;
                 Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
                 Intent intent = new Intent(getActivity(), WuHuActivity.class);

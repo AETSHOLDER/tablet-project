@@ -9,6 +9,7 @@ import com.example.paperlessmeeting_demo.bean.CreateFileBeanResponse;
 import com.example.paperlessmeeting_demo.bean.DeviceListBean;
 import com.example.paperlessmeeting_demo.bean.DeviceTypeBean;
 import com.example.paperlessmeeting_demo.bean.LoginBean;
+import com.example.paperlessmeeting_demo.bean.MeetingIdBean;
 import com.example.paperlessmeeting_demo.bean.MeetingUserInfoBean;
 import com.example.paperlessmeeting_demo.bean.MergeChunkBean;
 import com.example.paperlessmeeting_demo.bean.NewFileBean;
@@ -154,12 +155,14 @@ public interface NetWorkApi {
 
     //芜湖修改会议
     @PUT("meeting")
-    Observable<BasicResponse> meeting(@Body WuHuEditBeanRequset wuHuEditBeanRequset);
+    Observable<BasicResponse<MeetingIdBean>> meeting(@Body WuHuEditBeanRequset wuHuEditBeanRequset);
     //下载文件、、
     @Streaming
     @POST("downloadFile")
     Observable<BasicResponse> downloadFile(@Query("uri") String uri, @Query("dest") String dest);
-
+    //芜湖查询单个会议
+    @GET("meetingInfo")
+    Observable<BasicResponse<WuHuMeetingListResponse>> getWuHuMeetingInfo(@Query("id") String id);
     //查询会议信息
     @GET("findMeetingRecordInfo")
     Observable<BasicResponse<MeetingInfoBean>> getMeetingInfo(@Query("id") String id);
