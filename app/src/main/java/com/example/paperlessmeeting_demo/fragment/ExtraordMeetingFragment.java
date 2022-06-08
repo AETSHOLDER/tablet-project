@@ -501,7 +501,19 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                             if (clickConfirm) {
                                 if (!isReuse) {
                                     initMeetingDialog.dismiss();
-                                    showRightDialog(content);
+                                    UserUtil.isTempMeeting = true;
+                                    UserUtil.isNetDATA = false;
+                                    constant.temp_code = content;
+                                    Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
+                                    Intent intent = new Intent(getActivity(), WuHuActivity.class);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString("code", content);
+                                    bundle.putString("isreuse", "3");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
+                                    intent.putExtras(bundle);
+                                    startActivity(intent);
+                                    Hawk.put("isreuse", "3");
+                                    //添加网络会议后 不弹框
+                                  //  showRightDialog(content);
                                 } else {
                                     initMeetingDialog.dismiss();
                                     UserUtil.isTempMeeting = true;
@@ -525,7 +537,20 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
             } else {
                 if (!isReuse) {
                     initMeetingDialog.dismiss();
-                    showRightDialog(content);
+                    UserUtil.isTempMeeting = true;
+                    UserUtil.isNetDATA = false;
+                    constant.temp_code = content;
+                    Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
+                    Intent intent = new Intent(getActivity(), WuHuActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("code", content);
+                    bundle.putString("isreuse", "3");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                    Hawk.put("isreuse", "3");
+
+                    //添加网络会议后 不弹框
+                  //  showRightDialog(content);
                 } else {
                     initMeetingDialog.dismiss();
                     UserUtil.isTempMeeting = true;
@@ -805,7 +830,9 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
 
         }
 
-
+        if(historyConferenceDialog!=null){
+            historyConferenceDialog.dismiss();
+        }
         //====
 
 

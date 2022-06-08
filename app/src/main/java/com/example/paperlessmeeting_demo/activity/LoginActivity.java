@@ -788,6 +788,10 @@ public class LoginActivity extends BaseActivity {
         deleteDirWihtFile(new File(COPY_PATH));*/
         deleteDirWihtFile(new File(VOTE_FILE));
         deleteDirWihtFile(new File(netFilePath));
+        File netFile = new File(netFilePath);
+        if (!netFile.exists()) {
+            netFile.mkdir();
+        }
       /*  if (Hawk.contains("wuhulocal")){
 
             Hawk.delete("wuhulocal");

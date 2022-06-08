@@ -230,6 +230,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
 
     private int upLoadNum = 0;//每个文件的切片数
     private int upLoadFileNum = 0;
+    private int locaFileNum = 0;
     private int size = 1024 * 1024 * 10;
     private String upLoadFileType;
     private FileCutUtils fileCutUtils;  //文件切割工具类
@@ -1300,11 +1301,10 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
             }
         });
 
-        completedView = inflate.findViewById(R.id.tasks_view);
+      /*  completedView = inflate.findViewById(R.id.tasks_view);
         result_ima = inflate.findViewById(R.id.result_ima);
-        completedView.setVisibility(View.VISIBLE);
-        tips = inflate.findViewById(R.id.tips);
-        result_ima.setVisibility(View.GONE);
+        completedView.setVisibility(View.VISIBLE);*/
+        // result_ima.setVisibility(View.GONE);
         //获取当前Activity所在的窗体
         Window window = dialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
@@ -1318,7 +1318,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
         int width = size.x;
         int height = size.y;
         wlp.width = (int) (width * 0.45);//设置宽
-        wlp.height = (int) (width * 0.3);//设置宽
+        wlp.height = (int) (height * 0.25);
         window.setAttributes(wlp);
         dialog.setOnTouchOutside(new MyDialog.onTouchOutsideInterFace() {
             @Override
@@ -1661,6 +1661,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                                                 if (Hawk.contains(constant.user_id)) {
                                                     Hawk.delete(constant.user_id);
                                                 }
+                                                finish();
                                             }
                                         }
                                     });
@@ -1671,7 +1672,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
 
                         }
 
-                        finish();
+
                     } else {
                         String _id = UserUtil.meeting_record_id;
                         String c_id = Hawk.contains(constant.c_id) ? Hawk.get(constant.c_id) : "";
@@ -1708,6 +1709,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void wuHuFinishMeeting() {
+        showUpLoadFileDialog();
         WuHuEditBean wuHuEditBean = null;
         if (Hawk.contains("WuHuFragmentData")) {
             wuHuEditBean = Hawk.get("WuHuFragmentData");
@@ -1763,6 +1765,27 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
             wuHuEditBean.setEditListBeanList(ets);
             Hawk.put("WuHuFragmentData", wuHuEditBean);
 
+
+            for (int i = 0; i < ets.size(); i++) {
+                WuHuEditBean.EditListBean editListBean = ets.get(i);
+                List<WuHuEditBean.EditListBean.FileListBean> fileListBeanList = new ArrayList<>();
+                fileListBeanList.clear();
+                if (editListBean.getFileListBeanList() != null && editListBean.getFileListBeanList().size() > 0) {
+
+                    for (int k = 0; k < editListBean.getFileListBeanList().size(); k++) {
+                        if (!editListBean.getFileListBeanList().get(k).isNet()) {
+                            locaFileNum++;
+                        }
+
+                    }
+                }
+
+            }
+            //locaFileNum==0;代表没有本地文件要上传的，直接上传文本会议记录
+            if (locaFileNum == 0) {
+                reSetdata();
+            }
+
             for (int i = 0; i < wuHuEditBeanList.size(); i++) {
                 WuHuEditBean.EditListBean editListBean = wuHuEditBeanList.get(i);
                 List<WuHuEditBean.EditListBean.FileListBean> fileListBeanList = new ArrayList<>();
@@ -1771,14 +1794,18 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                     fileListBeanList.addAll(editListBean.getLocalFiles());
                     editListBean.setFileListBeanList(fileListBeanList);//每个议题下的本地文件复制到网络文件中去
                     for (int k = 0; k < fileListBeanList.size(); k++) {
-
-                        allFileNum++;
                         WuHuEditBean.EditListBean.FileListBean fileListBean = fileListBeanList.get(k);
                         if (!fileListBean.isNet()) {
                             //只上传本地文件
                             /* synchronized (UserUtil.object2) {*/
-                            cutfile(fileListBean.getPath(), fileListBean.getName());
-                            upload(fileListBean.getName(), fileListBean.getPos());
+
+                         /*   try {
+                                Thread.sleep(500);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }*/
+                            cutfile(fileListBean.getPath(), fileListBean.getName(), fileListBean.getPos());
+
 /*
                             }*/
                         }
@@ -1808,28 +1835,28 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
         return contentType;
     }
 
-    private void cutfile(String filePath, String fileName) {
+    private void cutfile(String filePath, String fileName, String pos) {
         try {
             long mBufferSize = size; //分片的大小，可自定义
             fileCutUtils = new FileCutUtils();
 //            littlefilecount = 0;
-//            littlefilelist.clear();
+            //  littlefilelist.clear();
             littlefilecount = fileCutUtils.getSplitFile(new File(filePath), mBufferSize);
             littlefilelist = fileCutUtils.getLittlefilelist();
+            upload(fileName, pos, littlefilelist);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void upload(String fileName, String pos) {
-        upLoadNum = 0;
-        Log.d("gtgwrtwwrtwt大文件上传分片33", "议题：  " + pos + "切片数：" + littlefilelist.size());
-        for (int i = 0; i < littlefilelist.size(); i++) {
-            upLoadFileType = getMimeType(littlefilelist.get(i).getName());
-            endStrAll = littlefilelist.get(i).getName().substring(littlefilelist.get(i).getName().lastIndexOf(".") + 1);
+    private void upload(String fileName, String pos, List<File> filelist) {
+        Log.d("gtgwrtwwrtwt大文件上传分片33", "议题：  " + pos + "    " + fileName + "  切片数：" + filelist.size());
+        for (int i = 0; i < filelist.size(); i++) {
+            upLoadFileType = getMimeType(filelist.get(i).getName());
+            endStrAll = filelist.get(i).getName().substring(filelist.get(i).getName().lastIndexOf(".") + 1);
             RequestBody requestBody = RequestBody.create(MediaType.parse(upLoadFileType), fileName);
-            MultipartBody.Part part = MultipartBody.Part.createFormData("file", fileName + "/" + i, requestBody);
+            MultipartBody.Part part = MultipartBody.Part.createFormData("file", fileName + "/" + pos, requestBody);
             NetWorkManager.getInstance().getNetWorkApiService().receiveChunk(part).compose(this.<BasicResponse>bindToLifecycle())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -1838,15 +1865,22 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                         protected void onFail(BasicResponse response) {
                             super.onFail(response);
                             upLoadNum++;
-                            Log.d("gtgwrtwwrtwt大文件上传分片111", "上传路过   upLoadNum" + upLoadNum);
-                            mergeShards(fileName, pos);
+                            Log.d("gtgwrtwwrtwt大文件上传分片111", "上传路过   upLoadNum" + upLoadNum + "  fileName=   " + fileName);
+                            if (upLoadNum == filelist.size()) {
+                                upLoadNum=0;
+                                mergeShards(fileName, pos);
+                            }
+
                         }
 
                         @Override
                         protected void onSuccess(BasicResponse response) {
                             upLoadNum++;
-                            Log.d("gtgwrtwwrtwt大文件上传分片222", "上传路过   upLoadNum" + upLoadNum);
-                            mergeShards(fileName, pos);
+                            Log.d("gtgwrtwwrtwt大文件上传分片222", "议题：  " + pos + "  上传路过   upLoadNum   分片数：" + upLoadNum + "    分片集合大小：" + filelist.size() + "  fileName=   " + fileName);
+                            if (upLoadNum == filelist.size()) {
+                                upLoadNum=0;
+                                mergeShards(fileName, pos);
+                            }
                         }
                     });
         }
@@ -1854,69 +1888,69 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void mergeShards(String fileName, String pos) {
-        if (upLoadNum == littlefilelist.size()) {
-            upLoadNum = 0;
-            Map<String, Object> map = new HashMap<>();
-            map.put("fileName", fileName);
-            map.put("dirName", UserUtil.meeting_record_id);
-            map.put("size", size);
-            //  map.put("updateFileList", 1);
-            map.put("index", Integer.valueOf(pos));
-            NetWorkManager.getInstance().getNetWorkApiService().mergeChunk(map).compose(this.<BasicResponse<MergeChunkBean>>bindToLifecycle())
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new DefaultObserver<BasicResponse<MergeChunkBean>>() {
-                        @Override
-                        protected void onFail(BasicResponse<MergeChunkBean> response) {
-                            super.onFail(response);
-                            upLoadFileNum++;
-                            if (allFileNum == upLoadFileNum) {
-                                reSetdata();
-                            }
-                            Log.d("fgfhgdherete", "总文件： " + allFileNum + "     执行过上传的数量：" + upLoadFileNum);
-                        }
 
-                        @Override
-                        protected void onSuccess(BasicResponse<MergeChunkBean> response) {
-                            if (response != null) {
-                                upLoadFileNum++;
-                                MergeChunkBean mergeChunkBean = response.getData();
-                                if (Hawk.contains("WuHuFragmentData")) {
-                                    List<WuHuEditBean.EditListBean> beanList = new ArrayList<>();
-                                    beanList.clear();
-                                    WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
-                                    beanList.addAll(wuHuEditBean.getEditListBeanList());
-                                    if (beanList == null || beanList.size() == 0) {
-                                        return;
-                                    }
-                                    for (int i = 0; i < beanList.size(); i++) {
-                                        WuHuEditBean.EditListBean editListBean = beanList.get(i);
-                                        if (String.valueOf(mergeChunkBean.getIndex()).equals(editListBean.getPos())) {
-                                            List<WuHuEditBean.EditListBean.FileListBean> fileListBeanList = new ArrayList<>();
-                                            fileListBeanList.clear();
-                                            if (editListBean.getFileListBeanList() != null & editListBean.getFileListBeanList().size() > 0) {
-                                                fileListBeanList.addAll(editListBean.getFileListBeanList());
-                                                for (int k = 0; k < fileListBeanList.size(); k++) {
-                                                    fileListBeanList.get(k).setNet(true);
-                                                    fileListBeanList.get(k).setPath(mergeChunkBean.getUrl());
-                                                }
-                                                editListBean.setFileListBeanList(fileListBeanList);
+        Map<String, Object> map = new HashMap<>();
+        map.put("fileName", fileName);
+        map.put("dirName", UserUtil.meeting_record_id);
+        map.put("size", size);
+        //  map.put("updateFileList", 1);
+        map.put("index", Integer.valueOf(pos));
+        NetWorkManager.getInstance().getNetWorkApiService().mergeChunk(map).compose(this.<BasicResponse<MergeChunkBean>>bindToLifecycle())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DefaultObserver<BasicResponse<MergeChunkBean>>() {
+                    @Override
+                    protected void onFail(BasicResponse<MergeChunkBean> response) {
+                        super.onFail(response);
+                        upLoadFileNum++;
+                        upLoadNum=0;//合并完文件的分片总数量置为0
+                        if (locaFileNum == upLoadFileNum) {
+                            reSetdata();
+                        }
+                        Log.d("gtgwrtwwrtwt大文件上传分片33333", "总文件： " + locaFileNum + "     执行过上传的数量：" + upLoadFileNum + "  fileName   " + fileName);
+                    }
+
+                    @Override
+                    protected void onSuccess(BasicResponse<MergeChunkBean> response) {
+                        if (response != null) {
+                            upLoadFileNum++;
+                            MergeChunkBean mergeChunkBean = response.getData();
+                            if (Hawk.contains("WuHuFragmentData")) {
+                                List<WuHuEditBean.EditListBean> beanList = new ArrayList<>();
+                                beanList.clear();
+                                WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
+                                beanList.addAll(wuHuEditBean.getEditListBeanList());
+                                if (beanList == null || beanList.size() == 0) {
+                                    return;
+                                }
+                                for (int i = 0; i < beanList.size(); i++) {
+                                    WuHuEditBean.EditListBean editListBean = beanList.get(i);
+                                    if (String.valueOf(mergeChunkBean.getIndex()).equals(editListBean.getPos())) {
+                                        List<WuHuEditBean.EditListBean.FileListBean> fileListBeanList = new ArrayList<>();
+                                        fileListBeanList.clear();
+                                        if (editListBean.getFileListBeanList() != null & editListBean.getFileListBeanList().size() > 0) {
+                                            fileListBeanList.addAll(editListBean.getFileListBeanList());
+                                            for (int k = 0; k < fileListBeanList.size(); k++) {
+                                                fileListBeanList.get(k).setNet(true);
+                                                fileListBeanList.get(k).setPath(mergeChunkBean.getUrl());
                                             }
+                                            editListBean.setFileListBeanList(fileListBeanList);
                                         }
                                     }
-                                    wuHuEditBean.setEditListBeanList(beanList);
-                                    Hawk.put("WuHuFragmentData", wuHuEditBean);
                                 }
-                                if (allFileNum == upLoadFileNum) {
-                                    reSetdata();
-                                }
-                                //  isFinish=true;
-                                Log.d("fgfhgdherete", "总文件： " + allFileNum + "     执行过上传的数量：" + upLoadFileNum);
+                                wuHuEditBean.setEditListBeanList(beanList);
+                                Hawk.put("WuHuFragmentData", wuHuEditBean);
                             }
+                            if (locaFileNum == upLoadFileNum) {
+                                reSetdata();
+                            }
+                            upLoadNum=0;//合并完文件的分片总数量置为0
+                            //  isFinish=true;
+                            Log.d("gtgwrtwwrtwt大文件上传分片4444444", "总文件： " + locaFileNum + "     执行过上传的数量：" + upLoadFileNum + "  fileName   " + fileName+"   upLoadNum="+upLoadNum);
                         }
-                    });
-        }
-        upLoadNum = 0;
+                    }
+                });
+
     }
 
     @Override
@@ -1959,11 +1993,19 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                         //上传文件成功
                         if (response != null) {
                             MeetingIdBean meetingIdBean = response.getData();
+                            Log.d("gtgwrtwwrtwt大文件上传分片66666", "文件上传成功！");
                             allFileNum = 0;
                             upLoadFileNum = 0;
-                            if (networkFileDialog != null) {
-                                networkFileDialog.dismiss();
+                            upLoadNum = 0;
+                            if (dialog != null) {
+                                dialog.dismiss();
                             }
+                            //会议结束后删除模版
+                            if (Hawk.contains("WuHuFragmentData")) {
+                                Hawk.delete("WuHuFragmentData");
+                            }
+                            locaFileNum = 0;
+                            finish();
                         }
                     }
                 });
