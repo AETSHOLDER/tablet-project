@@ -8,7 +8,7 @@ public class UrlConstant {
     // public static final String baseUrl = "http://192.168.1.5:3000";
 //    public static final String baseUrl = "http://192.168.11.39:3001";
 
-    public static String baseUrl = "http://192.168.31.76:3006";
+    public static String baseUrl = "http://192.168.1.1:3006";
     public static String baseUuIdUrl = "http://192.168.8.141:6583";//请求中控摄像头的IP,勿改勿动
 
     public static final String login_url = "mobileLogin";

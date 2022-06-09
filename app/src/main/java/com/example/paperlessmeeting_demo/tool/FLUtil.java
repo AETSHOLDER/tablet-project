@@ -322,11 +322,11 @@ public class FLUtil {
                                  *   第一次进来肯定不相等，初始化一次即可
                                  * */
                                 if (!ip.equals(BroadCastIP)) {
-                                    UrlConstant.initSocketUrl = "http://" + ip + ":3006" ;
-                                    UrlConstant.baseUrl = "http://"+ip + ":3005";
-                                    UrlConstant.wsUrl = "ws://"+ip + ":8010";
+//                                    UrlConstant.initSocketUrl = "http://" + ip + ":3006" ;
+                                    UrlConstant.baseUrl = "http://"+ip + ":3006";
+//                                    UrlConstant.wsUrl = "ws://"+ip + ":8010";
 
-                                    FLUtil.initSocketIO();
+//                                    FLUtil.initSocketIO();
                                     BroadCastIP = ip;
 
                                     NetWorkManager.getInstance().resetNetworkApi();

@@ -122,7 +122,7 @@ public class MeetingAPP extends Application {
 //        serialPortClient = new SerialPortClient();
 //        serialPortClient.openPort();
         // 初始化socket连接 ，寻址广播
-//        FLUtil.receiveBroadcast();
+        FLUtil.receiveBroadcast();
 
         Utils.init(this);
         initOkHttpUtil();
