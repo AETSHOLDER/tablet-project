@@ -192,6 +192,7 @@ public class LoginActivity extends BaseActivity {
     private String COPY_PATH = Environment.getExternalStorageDirectory() + constant.COPY_PATH;
     private String VOTE_FILE = Environment.getExternalStorageDirectory() + constant.VOTE_FILE;
     private String netFilePath = Environment.getExternalStorageDirectory() + constant.WUHU_NET_FILE;//网络请求得到的文件夹路径
+    private   String FileCathePath = Environment.getExternalStorageDirectory() + File.separator + "cutlittlefile";   //切片视频切割后缓存地址
     private String selfIp = "";
     private   String isReuse = "";
     private Handler handler = new Handler() {
@@ -730,8 +731,8 @@ public class LoginActivity extends BaseActivity {
             f.mkdir();
         }
         File netFile = new File(netFilePath);
-        if (!f.exists()) {
-            f.mkdir();
+        if (!netFile.exists()) {
+            netFile.mkdir();
         }
     }
    /* private void deleteFile(String filePath) {
@@ -792,6 +793,14 @@ public class LoginActivity extends BaseActivity {
         if (!netFile.exists()) {
             netFile.mkdir();
         }
+
+        deleteDirWihtFile(new File(FileCathePath));
+        File cutFiles = new File(FileCathePath);
+        if (!cutFiles.exists()) {
+            cutFiles.mkdir();
+        }
+
+
       /*  if (Hawk.contains("wuhulocal")){
 
             Hawk.delete("wuhulocal");
