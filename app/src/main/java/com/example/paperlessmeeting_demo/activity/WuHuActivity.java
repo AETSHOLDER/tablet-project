@@ -1024,6 +1024,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                         for (int k = 0; k < netLocaFiles.size(); k++) {
                             WuHuNetWorkBean wuHuNetWorkBean = new WuHuNetWorkBean();
                             wuHuNetWorkBean.setUrl(UrlConstant.baseUrl + "/" + netLocaFiles.get(k).getPath());
+                            Log.d("coming_id2222",UrlConstant.baseUrl + "/" + netLocaFiles.get(k).getPath());
                             wuHuNetWorkBean.setName(netLocaFiles.get(k).getName());
                             allFileNum++;
                             filesList.add(wuHuNetWorkBean);
