@@ -225,9 +225,9 @@ public class LoginActivity extends BaseActivity {
         tt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, UPloadActivity.class);
+               /* Intent intent = new Intent(LoginActivity.this, UPloadActivity.class);
                 startActivity(intent);
-
+*/
             }
         });
         if (Hawk.contains(constant.user_name)) {

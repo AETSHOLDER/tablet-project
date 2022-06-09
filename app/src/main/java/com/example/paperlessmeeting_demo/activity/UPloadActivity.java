@@ -1,3 +1,4 @@
+/*
 package com.example.paperlessmeeting_demo.activity;
 
 import android.content.Context;
@@ -137,11 +138,15 @@ public class UPloadActivity extends BaseActivity {
                         WuHuEditBean.EditListBean.FileListBean fileListBean = fileListBeanList.get(k);
                         if (!fileListBean.isNet()) {
                             //只上传本地文件
-                            /* synchronized (UserUtil.object2) {*/
+                            */
+/* synchronized (UserUtil.object2) {*//*
+
                             cutfile(fileListBean.getPath(), fileListBean.getName());
                             upload(fileListBean.getName(), fileListBean.getPos());
+*/
 /*
-                            }*/
+                            }*//*
+
                         }
 
                     }
@@ -187,11 +192,13 @@ public class UPloadActivity extends BaseActivity {
     }
 
     private void mergeShards(String fileName, String pos) {
-  /*      try {
+  */
+/*      try {
             Thread.sleep(1000*60);
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }*//*
+
 
         if (upLoadNum == littlefilelist.size()) {
             upLoadNum = 0;
@@ -290,9 +297,11 @@ public class UPloadActivity extends BaseActivity {
                             MeetingIdBean meetingIdBean = response.getData();
                             allFileNum=0;
                             upLoadFileNum=0;
-                           /*  UserUtil.meeting_record_id=meetingIdBean.getId();
+                           */
+/*  UserUtil.meeting_record_id=meetingIdBean.getId();
                              //开始上传文件
-                             uploadFile();*/
+                             uploadFile();*//*
+
 
                         }
                     }
@@ -334,12 +343,14 @@ public class UPloadActivity extends BaseActivity {
 
     }
 
-    /**
+    */
+/**
      * 获取文件MimeType
      *
      * @param filename 文件名
      * @return
-     */
+     *//*
+
     private static String getMimeType(String filename) {
         FileNameMap filenameMap = URLConnection.getFileNameMap();
         String contentType = filenameMap.getContentTypeFor(filename);
@@ -368,9 +379,11 @@ public class UPloadActivity extends BaseActivity {
 
     }
 
-    /**
+    */
+/**
      * 显示加载框
-     */
+     *//*
+
     public void showTip(String txt) {
         Log.i("孙", "显示框: " + txt);
         if (null == mSvp) {
@@ -383,9 +396,11 @@ public class UPloadActivity extends BaseActivity {
         }
     }
 
-    /**
+    */
+/**
      * 隐藏加载框
-     */
+     *//*
+
     public void dismissTip() {
         if (null == mSvp) {
             mSvp = new SVProgressHUD(this);
@@ -396,3 +411,4 @@ public class UPloadActivity extends BaseActivity {
         }
     }
 }
+*/

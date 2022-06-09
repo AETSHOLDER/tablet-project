@@ -99,10 +99,10 @@
         <activity
             android:name=".activity.Initialization.InitiaActivity"
             android:screenOrientation="landscape" />
-        <activity
+     <!--   <activity
             android:name=".activity.UPloadActivity"
             android:screenOrientation="landscape" />
-
+-->
         <activity
             android:name=".activity.StartActivity"
             android:screenOrientation="landscape" />
