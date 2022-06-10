@@ -479,7 +479,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                     //  收到vote的websocket的信息
                     if (wsebean != null) {
                       /*  tempList= wsebean.getBody();
-                        for (VoteBean bean : tempList) {
+                        for (VoteBean bean : tempList) {VoteListBean
                             bean.setStatus(bean.getStatus());
                         }
                         for (int i=0;i<tempList.size();i++){
@@ -500,15 +500,15 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                             bean.setStatus(bean.getStatus());
                         }
 
-
+                        VoteListBean voteListBean=new VoteListBean();
+                        voteListBean.setData(voteList);
+                        Hawk.put("VoteListBean",voteListBean);
 
                         Log.d("gdgsdgsdgdgf4446666",flag+"");
                         refreshUI(voteList, flag);
                         if (UserUtil.ISCHAIRMAN){
 
                         }else {
-
-
                             File path = new File(votePath);
                             File[] files = path.listFiles();// 读取
                             if (files == null) {
@@ -1464,12 +1464,13 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
       VoteListBean voteListBean=new VoteListBean();
         voteListBean.setData(voteList);
 
-        if (Hawk.contains("WuHuFragment")){
+        Hawk.put("VoteListBean",voteListBean);
+       /* if (Hawk.contains("WuHuFragment")){
             WuHuEditBean   wuHuEditBean=Hawk.get("WuHuFragment");
             wuHuEditBean.setVoteListBean(voteListBean);
-            Log.d("toJSONString222", JSON.toJSONString(wuHuEditBean)) ;
+
             Hawk.put("WuHuFragmentData", wuHuEditBean);
-        }
+        }*/
 
     }
     //  单选按钮选择

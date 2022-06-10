@@ -1000,6 +1000,12 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                 failList.clear();//清空下载失败的url
                 wuHuMeetingListResponse = Hawk.get("WuHuMeetingListResponse");
                 WuHuMeetingListResponse.ContentDTO contentDTO = wuHuMeetingListResponse.getContent();
+                if (contentDTO.getTopics()!=null){
+                    Hawk.put("company_name",contentDTO.getTopics());
+                }
+                if (contentDTO.getTopic_type() != null) {
+                    Hawk.put("tittle2",contentDTO.getTopic_type());
+                }
                 UserUtil.meeting_record_id= wuHuMeetingListResponse.get_id();
                 Log.d("coming_id",UserUtil.meeting_record_id);
                 if (wuHuMeetingListResponse.getContent().getVoteListBean() != null) {
@@ -1590,32 +1596,32 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
 
     }
 
+
+
     //全部保存数据及点击首页按钮刷新目录页面
     private void saveAllData() {
-
         if (Hawk.contains("WuHuFragmentData")) {
             WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
-            wuHuEditBean.setTopics(company_name.getText().toString());
+       /*     wuHuEditBean.setTopics(company_name.getText().toString());
             wuHuEditBean.setTopic_type(tittle2.getText().toString());
             wuHuEditBean.setLine_color(lineFlag);
             wuHuEditBean.setThem_color(themFlag);
-
+            wuHuEditBean.setPosition(position + "");
             for (int i = 0; i < wuHuEditBeanList.size(); i++) {
                 wuHuEditBeanList.get(i).setTopics(company_name.getText().toString());
                 wuHuEditBeanList.get(i).setTopic_type(tittle2.getText().toString());
                 wuHuEditBeanList.get(i).setLine_color(lineFlag);
                 wuHuEditBeanList.get(i).setThem_color(themFlag);
-                Log.d("fsdfgsggsg", "议题   " + i + "  对应的列席单位：" + wuHuEditBeanList.get(i).getParticipantUnits());
             }
 
-            wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
+            wuHuEditBean.setEditListBeanList(wuHuEditBeanList);*/
             Hawk.put("WuHuFragmentData", wuHuEditBean);
             //更新单个数据
-            wsUpdata(wuHuEditBean, constant.REFRASHWuHUALL);
+            wsUpdata(wuHuEditBean, constant.REFRASHWuHUSIGLEDATA);
         }
 
-        Hawk.put("company_name", company_name.getText().toString());
-        Hawk.put("tittle2", tittle2.getText().toString());
+
+
     }
 
     @Override
@@ -2110,6 +2116,17 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
         WuHuEditBeanRequset wuHuEditBeanRequset = new WuHuEditBeanRequset();
         if (Hawk.contains("WuHuFragmentData")) {
             WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
+
+            if (Hawk.contains("VoteListBean")){
+                VoteListBean  voteListBean= Hawk.get("VoteListBean");
+                wuHuEditBean.setVoteListBean(voteListBean);
+            }else {
+                VoteListBean  voteListBean=new VoteListBean();
+                ArrayList<VoteListBean.VoteBean> voteList = new ArrayList<>();
+                voteListBean.setData(voteList);
+                wuHuEditBean.setVoteListBean(voteListBean);
+            }
+
             String data = TimeUtils.getTime(System.currentTimeMillis(), TimeUtils.DATA_FORMAT_NO_HOURS_DATA7);//会议-年
             wuHuEditBean.setStartTime(data);
             wuHuEditBeanRequset.setContent(wuHuEditBean);
@@ -2142,6 +2159,9 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                             //会议结束后删除模版
                             if (Hawk.contains("WuHuFragmentData")) {
                                 Hawk.delete("WuHuFragmentData");
+                            }
+                            if (Hawk.contains("VoteListBean")){
+                                Hawk.delete("VoteListBean");
                             }
                             locaFileNum = 0;
                             finish();
@@ -2327,7 +2347,8 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                             if (Hawk.contains("WuHuFragmentData")) {
                                 WuHuEditBean refrashWuHuFragmentData = Hawk.get("WuHuFragmentData");
                                 List<WuHuEditBean.EditListBean> listBeans = new ArrayList<>();
-                                listBeans = wuHuEditBean.getEditListBeanList();
+                                listBeans.clear();
+                                listBeans .addAll(wuHuEditBean.getEditListBeanList());
                                 if (listBeans.size() == 0) {
                                     return;
                                 }
@@ -2457,7 +2478,9 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                         }.getType());
                         //  收到vote的websocket的信息
                         if (wsebean != null) {
-                            editListBeans = wsebean.getBody();
+                            editListBeans.clear();
+                            editListBeans .addAll(wsebean.getBody());
+                            Log.d("fddgdsgsdgsgdsg-actiivity",editListBeans.size()+"");
                             if (Hawk.contains("WuHuFragmentData")) {
                                 WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
                                 wuHuEditBean.setEditListBeanList(editListBeans);
@@ -2476,27 +2499,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                } else if (message.getMessage().contains(constant.FILEMD5PUSH)) {
-                    //查询推送文件是否存在
-                    try {
-                        TempWSBean<WuHuEditBean.EditListBean.FileListBean> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<WuHuEditBean.EditListBean.FileListBean>>() {
-                        }.getType());
-                        if (wsebean != null) {
-                            WuHuEditBean.EditListBean.FileListBean fileBean = wsebean.getBody();
-                            if (fileBean != null) {
-                                if (!fileBean.getMac().equals(FLUtil.getMacAddress())) {
-                                    checkFileMd5(fileBean, "2");
-
-                                }
-
-                            }
-
-                        }
-                    } catch (JsonSyntaxException e) {
-                        e.printStackTrace();
-                    }
-
-                } else if (message.getMessage().contains(constant.FILEMD5SHARE)) {
+                } else if (message.getMessage().contains(constant.FILEMD5PUSH))   else if (message.getMessage().contains(constant.FILEMD5SHARE)) {
                     //查询分享文件是否存在
                     //查询推送文件是否存在
                     try {
@@ -2639,6 +2642,13 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
     private void setData(WuHuMeetingListResponse wuHuMeetingListResponse) {
         filesList.clear();
         allFileNum = 0;
+        if (wuHuMeetingListResponse.getContent().getTopics()!=null){
+            Hawk.put("company_name",wuHuMeetingListResponse.getContent().getTopics());
+        }
+        if (wuHuMeetingListResponse.getContent().getTopic_type()!=null){
+            Hawk.put("tittle2",wuHuMeetingListResponse.getContent().getTopic_type());
+        }
+
         List<WuHuMeetingListResponse.ContentDTO.EditListBeanListDTO> editListBeanListDTOS = new ArrayList<>();
         editListBeanListDTOS.clear();
         editListBeanListDTOS.addAll(wuHuMeetingListResponse.getContent().getEditListBeanList());
@@ -2833,9 +2843,21 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void querywuhufragment(List<WuHuEditBean.EditListBean> editListBeanList) {
+        if (editListBeanList.size()>=1){
+            if (editListBeanList.get(1).getTopics()!=null){
+
+                Hawk.put("company_name",editListBeanList.get(1).getTopics());
+            }
+           if (editListBeanList.get(1).getTopic_type()!=null){
+
+               Hawk.put("tittle2",editListBeanList.get(1).getTopic_type());
+           }
+
+
+        }
+
 
         wuHuEditBeanList.clear();
-
         wuHuEditBeanList.addAll(editListBeanList);
         for (int i = 0; i < wuHuEditBeanList.size(); i++) {
             mTestFragments.put(key++, WuHuFragment.newInstance(fragmentPos + ""));
@@ -3258,7 +3280,29 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
         sava_all.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveAllData();
+                if (Hawk.contains("WuHuFragmentData")) {
+                    WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
+                    wuHuEditBean.setTopics(company_name.getText().toString());
+                    wuHuEditBean.setTopic_type(tittle2.getText().toString());
+                    wuHuEditBean.setLine_color(lineFlag);
+                    wuHuEditBean.setThem_color(themFlag);
+
+                    for (int i = 0; i < wuHuEditBeanList.size(); i++) {
+                        wuHuEditBeanList.get(i).setTopics(company_name.getText().toString());
+                        wuHuEditBeanList.get(i).setTopic_type(tittle2.getText().toString());
+                        wuHuEditBeanList.get(i).setLine_color(lineFlag);
+                        wuHuEditBeanList.get(i).setThem_color(themFlag);
+                        Log.d("fsdfgsggsg", "议题   " + i + "  对应的列席单位：" + wuHuEditBeanList.get(i).getParticipantUnits());
+                    }
+
+                    wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
+                    Hawk.put("WuHuFragmentData", wuHuEditBean);
+                    //更新单个数据
+                    wsUpdata(wuHuEditBean, constant.REFRASHWuHUALL);
+                }
+
+                Hawk.put("company_name", company_name.getText().toString());
+                Hawk.put("tittle2", tittle2.getText().toString());
                 Toast.makeText(WuHuActivity.this, "全部保存成功", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
 
@@ -3490,7 +3534,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
             } else if (in.getAction().equals(constant.CHANGE_CATALOG_BROADCAST)) {
                 String pos = in.getStringExtra("catalog");
                 mViewPager.setCurrentItem(Integer.valueOf(pos));
-
+                saveAllData();
             }
 
 
