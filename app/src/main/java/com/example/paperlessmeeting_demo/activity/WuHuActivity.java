@@ -2499,7 +2499,27 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                } else if (message.getMessage().contains(constant.FILEMD5PUSH))   else if (message.getMessage().contains(constant.FILEMD5SHARE)) {
+                }else if (message.getMessage().contains(constant.FILEMD5PUSH)) {
+                    //查询推送文件是否存在
+                    try {
+                        TempWSBean<WuHuEditBean.EditListBean.FileListBean> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<WuHuEditBean.EditListBean.FileListBean>>() {
+                        }.getType());
+                        if (wsebean != null) {
+                            WuHuEditBean.EditListBean.FileListBean fileBean = wsebean.getBody();
+                            if (fileBean != null) {
+                                if (!fileBean.getMac().equals(FLUtil.getMacAddress())) {
+                                    checkFileMd5(fileBean, "2");
+
+                                }
+
+                            }
+
+                        }
+                    } catch (JsonSyntaxException e) {
+                        e.printStackTrace();
+                    }
+
+                } else if (message.getMessage().contains(constant.FILEMD5SHARE)) {
                     //查询分享文件是否存在
                     //查询推送文件是否存在
                     try {
