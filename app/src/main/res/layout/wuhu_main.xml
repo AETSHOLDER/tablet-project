@@ -129,7 +129,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginRight="80dp"
+        android:layout_marginRight="64dp"
         android:layout_toLeftOf="@id/finish_ll">
 
         <ImageView
@@ -152,7 +152,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginRight="80dp"
+        android:layout_marginRight="64dp"
         android:layout_toLeftOf="@id/edit_ll">
 
         <ImageView
@@ -175,7 +175,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginRight="80dp"
+        android:layout_marginRight="64dp"
         android:layout_toLeftOf="@id/consult_ll">
 
         <ImageView
@@ -191,14 +191,35 @@
             android:text="投票" />
 
     </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/shareScreen_ll1"
+        style="@style/wuhu_tittle_rl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="64dp"
+        android:layout_toLeftOf="@id/vote_ll">
+        <ImageView
+            android:id="@+id/aa41"
+            style="@style/wuhu_tittle_ima"
+            android:src="@mipmap/share_screen" />
+        <TextView
+            android:id="@+id/shareScreen_tv"
+            style="@style/wuhu_tittle_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/aa41"
+            android:text="pc投屏" />
+    </RelativeLayout>
     <RelativeLayout
         android:id="@+id/home_ll"
         style="@style/wuhu_tittle_rl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginRight="80dp"
-        android:layout_toLeftOf="@id/vote_ll">
+        android:layout_marginRight="64dp"
+        android:layout_toLeftOf="@id/shareScreen_ll1">
 
         <ImageView
             android:id="@+id/aa5"
@@ -214,7 +235,7 @@
 
     </RelativeLayout>
 
-</RelativeLayout>
+    </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/cc2"
@@ -229,7 +250,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="80dp">
+                android:layout_marginRight="64dp">
 
                 <ImageView
                     android:id="@+id/aa21"
@@ -250,7 +271,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="80dp"
+                android:layout_marginRight="64dp"
                 android:layout_toLeftOf="@id/consult_ll1">
 
                 <ImageView
@@ -272,7 +293,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="80dp"
+                android:layout_marginRight="64dp"
                 android:layout_toLeftOf="@id/vote_ll1">
 
                 <ImageView
@@ -288,8 +309,6 @@
                     android:text="首页" />
 
             </RelativeLayout>
-
-
         </RelativeLayout>
 
     </RelativeLayout>

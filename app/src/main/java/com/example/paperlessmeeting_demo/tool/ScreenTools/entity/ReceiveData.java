@@ -1,10 +1,7 @@
 package com.example.paperlessmeeting_demo.tool.ScreenTools.entity;
 
 /**
- * Created by wt
- * Date on  2018/6/12
- *
- * @Desc 返回一组解析后的数据
+ * 返回一组解析后的数据
  */
 
 public class ReceiveData {

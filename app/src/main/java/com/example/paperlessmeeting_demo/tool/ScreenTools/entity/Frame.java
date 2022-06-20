@@ -1,6 +1,5 @@
 package com.example.paperlessmeeting_demo.tool.ScreenTools.entity;
 
-// TODO: 2018/5/29 wt修改Frame<T>
 public class Frame {
     public static final int FRAME_TYPE_AUDIO = 1;
     public static final int FRAME_TYPE_KEY_FRAME = 2;

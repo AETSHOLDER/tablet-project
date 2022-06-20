@@ -138,10 +138,17 @@ public class constant {
     public final static String micNumber = "micNumber";  // mic的机号
     public final static String micIP = "micIP";      // mic的ip地址
     public final static String micSta = "micSta";
-    /*
+    /**
      * 签批广播
      * */
     public final static String MEMBER_SIGN_BROADCAST = "memberSign";
+    /**
+     * pc同屏模块
+     * */
+    public static String serverResponse = ".Cvi,Respond='This is the Server'";//  服务应答
+    public static final String BROADCAST_IP = "255.255.255.255";              //  UDP广播地址
+    public static final int BROADCAST_PORT = 9707;                            //  UDP广播、单播端口
+    public static final int TCP_PORT = 8606;                                  //  TCP端口
     /**
      * 写入权限的请求code,提示语，和权限码
      */

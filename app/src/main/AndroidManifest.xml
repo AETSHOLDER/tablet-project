@@ -202,9 +202,6 @@
         <activity
             android:name=".activity.LoginA"
             android:screenOrientation="landscape" />
-        <activity
-            android:name=".activity.ScreenReceiveActivity2"
-            android:screenOrientation="landscape" />
 
         <activity
              android:name=".activity.ScreenReceiveActivity"
@@ -273,6 +270,10 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+        <service
+            android:name=".tool.PCScreen.ScreenImageService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

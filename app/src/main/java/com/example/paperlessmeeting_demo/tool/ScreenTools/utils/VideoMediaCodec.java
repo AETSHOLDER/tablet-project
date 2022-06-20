@@ -70,9 +70,11 @@ public class VideoMediaCodec {
 
     // We avoid the device-specific limitations on width and height by using values that
     // are multiples of 16, which all tested devices seem to be able to handle.
+    // 不建议使用下面的16倍数的方法，pc同屏会花屏
     public static int getVideoSize(int size) {
-        int multiple = (int) Math.ceil(size / 16.0);
-        return multiple * 16;
+//        int multiple = (int) Math.ceil(size / 16.0);
+//        return multiple * 16;
+        return size;
     }
 
     // 既然不同的手机支持的KEY_COLOR_FORMAT 不一样，这里就需要动态的考虑先获取到手机可支持的颜色格式值，在进行设置，如下代码也是参考网上的资料。

@@ -1,12 +1,5 @@
 package com.example.paperlessmeeting_demo.tool.ScreenTools.entity;
 
-/**
- * Created by wt
- * Date on  2018/6/4
- *
- * @Desc
- */
-
 public class DecodeFrame {
     public static final int SPSPPS = 2;
     public static final int KEY_FRAME = 4;

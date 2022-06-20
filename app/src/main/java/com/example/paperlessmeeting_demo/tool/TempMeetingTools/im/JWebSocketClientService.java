@@ -20,6 +20,8 @@ import com.example.paperlessmeeting_demo.bean.meetingRecordId;
 import com.example.paperlessmeeting_demo.enums.MessageReceiveType;
 import com.example.paperlessmeeting_demo.tool.CVIPaperDialogUtils;
 import com.example.paperlessmeeting_demo.tool.FLUtil;
+import com.example.paperlessmeeting_demo.tool.ScreenTools.entity.ReceiveData;
+import com.example.paperlessmeeting_demo.tool.ScreenTools.utils.AnalyticDataUtils;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.ServerManager;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.UDPBroadcastManager;
 import com.example.paperlessmeeting_demo.tool.UrlConstant;
@@ -34,6 +36,8 @@ import com.orhanobut.hawk.Hawk;
 import org.greenrobot.eventbus.EventBus;
 import org.java_websocket.enums.ReadyState;
 import org.java_websocket.handshake.ServerHandshake;
+
+import java.io.IOException;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -42,6 +46,7 @@ import java.util.Random;
 import static com.blankj.utilcode.util.ActivityUtils.startActivity;
 
 public class JWebSocketClientService {
+    private static AnalyticDataUtils mAnalyticUtils = null;
     public static JWebSocketClient client;
     public static String TAG = "JWebSocketClientService";
     //范围内的随机数
@@ -57,6 +62,7 @@ public class JWebSocketClientService {
         if(client != null && client.isOpen()){
             return;
         }
+        mAnalyticUtils = new AnalyticDataUtils();
         URI uri = null;
         if (UserUtil.isTempMeeting) {
             uri = URI.create(UrlConstant.TempWSIPString);
@@ -618,16 +624,22 @@ public class JWebSocketClientService {
         if(UserUtil.ISCHAIRMAN){
             return;
         }
-        Activity topActivity = (Activity) ActivityUtils.getTopActivity();
-        if (topActivity != null) {
-            topActivity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    //  发黏性事件
-                    EventScreenMessage msg = new EventScreenMessage(MessageReceiveType.MessageClient, bytes);
-                    EventBus.getDefault().postSticky(msg);
-                }
-            });
+        try {
+            final ReceiveData receiveData = mAnalyticUtils.analyticData(bytes);
+            Activity topActivity = (Activity) ActivityUtils.getTopActivity();
+            if (topActivity != null) {
+                topActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //  发黏性事件
+                        EventScreenMessage eventScreenMessage = new EventScreenMessage(MessageReceiveType.MessageScreenData, receiveData);
+                        EventBus.getDefault().postSticky(eventScreenMessage);
+                    }
+                });
+            }
+
+        }catch (IOException e){
+
         }
     }
 

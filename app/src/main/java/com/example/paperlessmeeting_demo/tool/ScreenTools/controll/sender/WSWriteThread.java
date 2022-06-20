@@ -1,25 +1,11 @@
 package com.example.paperlessmeeting_demo.tool.ScreenTools.controll.sender;
 
-import android.util.Log;
-
 import com.example.paperlessmeeting_demo.tool.ScreenTools.controll.sender.sendqueue.ISendQueue;
 import com.example.paperlessmeeting_demo.tool.ScreenTools.entity.Frame;
 import com.example.paperlessmeeting_demo.tool.ScreenTools.server.EncodeV1;
-import com.example.paperlessmeeting_demo.tool.ScreenTools.utils.ByteUtil;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.JWebSocketClientService;
-
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.Timer;
-import java.util.TimerTask;
 
-/**
- * Created by wt
- * Date on  2018/5/28
- *
- * @Desc
- */
 
 public class WSWriteThread extends Thread {
     private ISendQueue iSendQueue;
@@ -45,10 +31,6 @@ public class WSWriteThread extends Thread {
         startFlag = true;
     }
 
-//    public void setOnTcpWriteThread(OnTcpWriteListener listener) {
-//        this.mListener = listener;
-//    }
-
     @Override
     public void run() {
         super.run();
@@ -71,16 +53,9 @@ public class WSWriteThread extends Thread {
             return;
         }
 
-        byte[] sendBuff = new EncodeV1(mainCmd, sendBody, buff).buildSendContent();
-//        Log.e(TAG,"发送的sendBuff===="+new String(sendBuff));
+        byte[] sendBuff = new EncodeV1(mainCmd, buff).buildSendContent();
         if (isCalculate) readLength += sendBuff.length;
-
-//            JWebSocketClientService.sendByteBuffer(ByteUtil.encodeValue(sendBuff));
-//        ByteBuffer byteBuffer = ByteUtil.encodeValue(buff);
-//         JWebSocketClientService.sendByteBuffer(byteBuffer);
-
-
-        JWebSocketClientService.sendByteArr(buff);
+        JWebSocketClientService.sendByteArr(sendBuff);
 //            Log.e(TAG,"send data ");
 
     }

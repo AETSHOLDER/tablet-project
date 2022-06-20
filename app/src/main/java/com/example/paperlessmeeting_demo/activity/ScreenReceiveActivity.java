@@ -24,6 +24,7 @@ import com.example.paperlessmeeting_demo.tool.ScreenTools.entity.ReceiveData;
 import com.example.paperlessmeeting_demo.tool.ScreenTools.utils.AnalyticDataUtils;
 import com.example.paperlessmeeting_demo.tool.ScreenTools.utils.ByteUtil;
 import com.example.paperlessmeeting_demo.tool.ScreenTools.utils.DecodeUtils;
+import com.example.paperlessmeeting_demo.tool.ScreenTools.utils.SocketCmd;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.EventScreenMessage;
 import com.example.paperlessmeeting_demo.tool.constant;
 
@@ -32,10 +33,8 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
+import java.util.Arrays;
 
-/**
- * Created by pengds on 2017/9/2.
- */
 
 public class ScreenReceiveActivity extends BaseActivity{
     private static final String TAG = "ScreenReceiveActivity";
@@ -154,23 +153,30 @@ public class ScreenReceiveActivity extends BaseActivity{
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onGetStickyEvent(EventScreenMessage message) {
-        if (message.getType().equals(MessageReceiveType.MessageClient)) {
-//            try {
-//                Log.e("111","收到数据！！！");
-//                ReceiveData receiveData = mAnalyticDataUtils.analyticData(message.getBytes());
-//                if (receiveData == null || receiveData.getBuff() == null || receiveData.getHeader() == null) {
-//                    return;
-//                }
+//        if (message.getType().equals(MessageReceiveType.MessageClient)) {
+//            if(mDecoderUtils==null){
+//                return;
+//            }
+//            byte[] aa = ByteUtil.decodeValue(message.getBytes()) ;
+//            //区分音视频
+//            mDecoderUtils.isCategory(aa);
+//        }
+
+        if (message.getType().equals(MessageReceiveType.MessageScreenData)) {
             if(mDecoderUtils==null){
                 return;
             }
 
-                byte[] aa = ByteUtil.decodeValue(message.getBytes()) ;
-                //区分音视频
-                mDecoderUtils.isCategory(aa);
-//            }catch (IOException e){
-//                e.printStackTrace();
-//            }
+            ReceiveData receiveData = message.getBytes();
+            if(receiveData.getHeader().getMainCmd() == SocketCmd.SocketCmd_ScreentData){
+                Log.e("服务端收到数据","Arrays.toString(arr)==="+ Arrays.toString(receiveData.getBuff()));
+                mDecoderUtils.isCategory(receiveData.getBuff());
+            }
+        }else if(message.getType().equals(MessageReceiveType.MessageScreenDisconnect)){
+            getFrameData = false;
+            if (mController != null) mController.stop();
+            mAnalyticDataUtils.stop();
+            finish();
         }
     }
 

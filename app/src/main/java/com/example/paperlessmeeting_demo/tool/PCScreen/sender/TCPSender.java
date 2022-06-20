@@ -1,5 +1,8 @@
-package com.example.paperlessmeeting_demo.tool.ScreenTools.controll.sender;
+package com.example.paperlessmeeting_demo.tool.PCScreen.sender;
 
+
+import com.example.paperlessmeeting_demo.tool.ScreenTools.controll.sender.Sender;
+import com.example.paperlessmeeting_demo.tool.ScreenTools.controll.sender.TcpPacker;
 import com.example.paperlessmeeting_demo.tool.ScreenTools.controll.sender.sendqueue.ISendQueue;
 import com.example.paperlessmeeting_demo.tool.ScreenTools.controll.sender.sendqueue.NormalSendQueue;
 import com.example.paperlessmeeting_demo.tool.ScreenTools.entity.Frame;
@@ -9,12 +12,12 @@ import com.example.paperlessmeeting_demo.tool.VideoConfiguration;
 /**
  * tcp发送
  */
-
-public class WSSender implements Sender {
+public class TCPSender implements Sender {
     private ISendQueue mSendQueue = new NormalSendQueue();
-    private static final String TAG = "WSSender";
+    private ISendQueue mWSSendQueue = new NormalSendQueue();  // ws 专开一个sendqueue,防止sendqueue取数据总量计算有误
+    private static final String TAG = "TCPSender";
 //    private OnSenderListener sendListener;
-    private WSConnection mTcpConnection;
+    private TCPConnection mTcpConnection;
     private WeakHandler weakHandler = new WeakHandler();
     private int mainCmd;
     private int subCmd;
@@ -22,32 +25,29 @@ public class WSSender implements Sender {
     private String sendBody = null;
 
 
-    public WSSender() {
-        mTcpConnection = new WSConnection();
-//        this.ip = ip;
-//        this.port = port;
+    public TCPSender() {
+        mTcpConnection = new TCPConnection();
     }
 
     public void setVideoParams(VideoConfiguration videoConfiguration) {
         mTcpConnection.setVideoParams(videoConfiguration);
     }
 
-    // TODO: 2018/6/11 wt设置主指令
+    // TODO 设置主指令
     public void setMianCmd(int mainCmd) {
         this.mainCmd = mainCmd;
     }
 
-    // TODO: 2018/6/11 wt设置子指令
+    // TODO 设置子指令
     public void setSubCmd(int subCmd) {
         this.subCmd = subCmd;
     }
 
-    // TODO: 2018/6/11 wt设置要发送的文本内容
+    // TODO 设置要发送的文本内容
     public void setSendBody(String body) {
         this.sendBody = body;
     }
 
-    // TODO: 2018/5/29 wt
     @Override
     public void onData(byte[] data, int type) {
         Frame frame = null;
@@ -64,6 +64,7 @@ public class WSSender implements Sender {
             return;
         }
         mSendQueue.putFrame(frame);
+        mWSSendQueue.putFrame(frame);
     }
 
     /**
@@ -72,6 +73,7 @@ public class WSSender implements Sender {
     public void openConnect() {
         //设置缓存队列
         mTcpConnection.setSendQueue(mSendQueue);
+        mTcpConnection.setmWSSendQueue(mWSSendQueue);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -83,25 +85,36 @@ public class WSSender implements Sender {
 
     @Override
     public void start() {
-//        mSendQueue.setSendQueueListener(this);
         mSendQueue.start();
+        mWSSendQueue.start();
     }
 
     @Override
     public void stop() {
         mTcpConnection.stop();
         mSendQueue.stop();
+        mWSSendQueue.stop();
     }
 
     private synchronized void connectNotInUi() {
-        //设置连接回调
-//        mTcpConnection.setConnectListener(mTcpListener);
-        //开始连接服务器
-        mTcpConnection.sendScreenData(mainCmd, sendBody);
+        // 直接发送屏幕数据
+        mTcpConnection.sendScreenData();
+    }
+
+    public void sendWSScreenData() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mTcpConnection.sendWSScreenData();
+            }
+        }).start();
+    }
+    public void finishWSSender() {
+        if (mTcpConnection != null) mTcpConnection.finishWSSender();
     }
 
     /**
-     * add by wt 为解决首次黑屏而加
+     *  为解决首次黑屏而加
      */
     public void setSpsPps(byte[] spsPps) {
         if (mTcpConnection != null) mTcpConnection.setSpsPps(spsPps);

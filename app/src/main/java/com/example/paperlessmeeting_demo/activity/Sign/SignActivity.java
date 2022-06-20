@@ -1,8 +1,10 @@
 package com.example.paperlessmeeting_demo.activity.Sign;
 
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
@@ -22,6 +24,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -41,11 +44,13 @@ import com.example.paperlessmeeting_demo.bean.UserBehaviorBean;
 import com.example.paperlessmeeting_demo.sharefile.SocketShareFileManager;
 import com.example.paperlessmeeting_demo.tool.CVIPaperDialogUtils;
 import com.example.paperlessmeeting_demo.tool.FLUtil;
+import com.example.paperlessmeeting_demo.tool.PCScreen.ScreenImageService;
 import com.example.paperlessmeeting_demo.tool.ScreenTools.controll.ScreenImageApi;
 import com.example.paperlessmeeting_demo.tool.ScreenTools.controll.ScreenVideoController;
 import com.example.paperlessmeeting_demo.tool.ScreenTools.controll.sender.StreamController;
 import com.example.paperlessmeeting_demo.tool.ScreenTools.controll.sender.TcpPacker;
 import com.example.paperlessmeeting_demo.tool.ScreenTools.controll.sender.WSSender;
+import com.example.paperlessmeeting_demo.tool.ScreenTools.utils.SocketCmd;
 import com.example.paperlessmeeting_demo.tool.StoreUtil;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.JWebSocketClient;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.JWebSocketClientService;
@@ -175,6 +180,8 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     private WSSender tcpSender;
     private VideoConfiguration mVideoConfiguration;
 
+    private MyServiceConnect mConnect;
+    private ScreenImageService screenImageService;
 
     private String url;
     TbsReaderView tbsReaderView;
@@ -280,6 +287,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     protected void initData() {
+        bindScreenService();
         socketShareFileManager = new SocketShareFileManager(mHandler);
         SignOperationUtils.getInstance().DISABLE = false;
         if (Hawk.contains("UserBehaviorBean")) {
@@ -440,17 +448,46 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    mediaProjectionManager = (MediaProjectionManager) getApplication().getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-                    Intent captureIntent = mediaProjectionManager.createScreenCaptureIntent();
-                    startActivityForResult(captureIntent, ACTIVITY_RESULT_CODE_SCREEN);
+                    // 当前用户正在投屏
+                    if(UserUtil.isShareScreen){
+                        screenImageService.startWSSender();
+                    }else {
+                        mediaProjectionManager = (MediaProjectionManager) getApplication().getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+                        Intent captureIntent = mediaProjectionManager.createScreenCaptureIntent();
+                        startActivityForResult(captureIntent, ACTIVITY_RESULT_CODE_SCREEN);
+                    }
+
                 }else {
-//                    videoEncoder.stop();
-                    mStreamController.stop();
+                    if(UserUtil.isShareScreen){
+                        screenImageService.finishWSSender();
+                    }else {
+                        mStreamController.stop();
+                    }
                     JWebSocketClientService.sendMsg(constant.FINISH_SHARE_SCEEN);
                 }
             }
         });
+    }
 
+    /**
+     * 绑定首页面同屏服务
+     */
+    private void bindScreenService() {
+        Intent intent = new Intent(this, ScreenImageService.class);
+        mConnect = new MyServiceConnect();
+        bindService(intent, mConnect, Context.BIND_AUTO_CREATE);
+    }
+
+    class MyServiceConnect implements ServiceConnection {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder binder) {
+            screenImageService = ((ScreenImageService.ScreenImageBinder) binder).getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
     }
     /**
      * 签批按钮点击的UI更改
@@ -785,7 +822,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
         TcpPacker packer = new TcpPacker();
         tcpSender = new WSSender();
 //        tcpSender.setSenderListener(this);
-        tcpSender.setMianCmd(ScreenImageApi.RECORD.MAIN_CMD);
+        tcpSender.setMianCmd(SocketCmd.SocketCmd_ScreentData);
         tcpSender.setSendBody(constant.CVI_PAPER_SCREEN_DATA);
         mVideoConfiguration = new VideoConfiguration.Builder().setSize(1920, 1200).build();
         mStreamController.setVideoConfiguration(mVideoConfiguration);

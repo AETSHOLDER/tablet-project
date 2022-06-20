@@ -1,16 +1,16 @@
 package com.example.paperlessmeeting_demo.activity;
 
-import com.alibaba.fastjson.JSONObject;
+
 import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.StringUtils;
+import com.example.paperlessmeeting_demo.MeetingAPP;
 import com.example.paperlessmeeting_demo.activity.Sign.SignActivity;
 import com.example.paperlessmeeting_demo.activity.Sign.SignListActivity;
-import com.example.paperlessmeeting_demo.adapter.WuHuListAdapter;
 import com.example.paperlessmeeting_demo.adapter.WuHuNewTopicAdapter;
 import com.example.paperlessmeeting_demo.base.BaseActivity;
-
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -19,6 +19,8 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.media.projection.MediaProjection;
+import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -48,7 +50,6 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.paperlessmeeting_demo.adapter.PagerAdapter;
 import com.example.paperlessmeeting_demo.bean.AttendeBean;
 import com.example.paperlessmeeting_demo.bean.BasicResponse;
@@ -79,11 +80,20 @@ import com.example.paperlessmeeting_demo.tool.FileCutUtils;
 import com.example.paperlessmeeting_demo.tool.Md5Util;
 import com.example.paperlessmeeting_demo.tool.FLUtil;
 import com.example.paperlessmeeting_demo.tool.FileUtils;
+import com.example.paperlessmeeting_demo.tool.PCScreen.Netty.NettyListener;
+import com.example.paperlessmeeting_demo.tool.PCScreen.ScreenImageService;
+import com.example.paperlessmeeting_demo.tool.PCScreen.sender.TCPSender;
+import com.example.paperlessmeeting_demo.tool.PCScreen.udp.Manager.UDPClientManager;
+import com.example.paperlessmeeting_demo.tool.PCScreen.udp.OnUdpConnectListener;
+import com.example.paperlessmeeting_demo.tool.ScreenTools.entity.ReceiveData;
+import com.example.paperlessmeeting_demo.tool.ScreenTools.server.EncodeV1;
+import com.example.paperlessmeeting_demo.tool.ScreenTools.utils.SocketCmd;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.ServerManager;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.UDPBroadcastManager;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.EventMessage;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.JWebSocketClientService;
 import com.example.paperlessmeeting_demo.tool.TimeUtils;
+import com.example.paperlessmeeting_demo.tool.ToastUtils;
 import com.example.paperlessmeeting_demo.tool.UrlConstant;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.example.paperlessmeeting_demo.tool.constant;
@@ -93,12 +103,11 @@ import com.example.paperlessmeeting_demo.widgets.MyListView;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import com.jyn.vcview.VerificationCodeView;
 import com.orhanobut.hawk.Hawk;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -113,19 +122,20 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.LinearLayoutManager;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.util.internal.StringUtil;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
-public class WuHuActivity extends BaseActivity implements View.OnClickListener, WuHuNewTopicAdapter.saveSeparatelyInterface, WuHuNewTopicAdapter.deletSeparatelyInterface, WuHuNewTopicAdapter.addSeparatelyInterface {
+public class WuHuActivity extends BaseActivity implements View.OnClickListener, WuHuNewTopicAdapter.saveSeparatelyInterface, WuHuNewTopicAdapter.deletSeparatelyInterface, WuHuNewTopicAdapter.addSeparatelyInterface, NettyListener {
 
 
     @BindView(R.id.edit_ll)
@@ -149,6 +159,11 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
     RelativeLayout home_ll1;
     @BindView(R.id.home_ll)
     RelativeLayout home_ll;
+
+    @BindView(R.id.shareScreen_ll1)
+    RelativeLayout shareScreen_rl;
+    @BindView(R.id.shareScreen_tv)
+    TextView shareScreen_tv;
 
     @BindView(R.id.cc1)
     RelativeLayout cc1;
@@ -189,7 +204,6 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
     private Button mBtnDelete;
     private Button mBtnAdd;
     private SparseArray<WuHuFragment> mTestFragments = new SparseArray<>();
-    ;
     private PagerAdapter mPagerAdapter;
     private int key;
     private int mCurPos;
@@ -229,6 +243,17 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
     private List<WuHuNetWorkBean> failList = new ArrayList<>();//下载失败的文件集合
     private ProgressBar progressBar;//显示文件传输进度
     private List<WuHuNetWorkBean> filesList = new ArrayList<>();//储存所有的文件地址
+
+    // ----------------屏幕录制投屏模块
+    private String TAG = "WuHuActivity";
+    private Dialog shareScreenDialog;           // 投屏code弹框
+    private VerificationCodeView shareScreen_codeview;
+    private String my_code;
+    private String mIp = "192.168.1.1";  // 获取到的服务端IP
+    private MediaProjectionManager mMediaProjectionManage;
+    private MediaProjection mediaProjection;
+    private static final int ACTIVITY_RESULT_CODE_SCREEN = 110;
+    private MyServiceConnect mConnect;
 
     private int upLoadNum = 0;//每个文件的切片数
     private int upLoadFileNum = 0;
@@ -983,6 +1008,25 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
         Log.d("gsfgdgg3333", isBind + "");
         isReuse();
 
+        UDPClientManager.getInstance().receiveUDP(new OnUdpConnectListener() {
+            @Override
+            public void udpConnectSuccess(String ip) {
+                // 单播对接上，进行tcp 连接
+                Log.e(TAG, "马上进行tcp 连接 ip===" + ip);
+
+                mIp = ip;
+                MeetingAPP.getInstance().reinitSocket(mIp);
+                MeetingAPP.getInstance().getNettyClient().setListener(WuHuActivity.this);
+
+                if (!MeetingAPP.getInstance().getNettyClient().getConnectStatus()) {
+                    MeetingAPP.getInstance().getNettyClient().connect();
+                }
+            }
+            @Override
+            public void udpDisConnec(String message) {
+
+            }
+        });
     }
 
     private void initiaServerData() {
@@ -1262,8 +1306,6 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                 networkFileDialog.dismiss();
             }
         }
-
-
     }
 
     private void creatVote(VoteListBean.VoteBean bean, String flag) {
@@ -1429,6 +1471,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
         vote_ll1.setOnClickListener(this);
         home_ll1.setOnClickListener(this);
         home_ll.setOnClickListener(this);
+        shareScreen_rl.setOnClickListener(this);
         mBtnDelete = (Button) findViewById(R.id.btn_delete);
         mBtnAdd = (Button) findViewById(R.id.btn_add);
         edit_name_rl.setVisibility(View.GONE);
@@ -1556,6 +1599,21 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                 currentItem2 = currentItem2 - 1;
                 mViewPager.setCurrentItem(currentItem2, true);
                 break;
+            case R.id.shareScreen_ll1:
+                if(UserUtil.isShareScreen){
+                    CVIPaperDialogUtils.showCustomDialog(WuHuActivity.this, "是否结束投屏?", "", "结束", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                        @Override
+                        public void onClickButton(boolean clickConfirm, boolean clickCancel) {
+                            if(clickConfirm){
+                                stopRecording();
+                                shareScreen_tv.setText("pc投屏");
+                            }
+                        }
+                    });
+                }else {
+                    alertShareScreen();
+                }
+                break;
             case R.id.home_ll1:
                 mViewPager.setCurrentItem(0);
                 saveAllData();
@@ -1567,6 +1625,192 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
         }
 
     }
+
+    /******************************************投屏模块************************************************************/
+    /**
+     * 投屏弹框
+     * */
+    private void alertShareScreen() {
+        shareScreenDialog = new Dialog(WuHuActivity.this, R.style.update_dialog);
+        View view = LayoutInflater.from(WuHuActivity.this).inflate(R.layout.diaog_sharescreen_code, null);//加载自己的布局
+        shareScreen_codeview = view.findViewById(R.id.verificationcodeview);
+        shareScreen_codeview.setOnCodeFinishListener(new VerificationCodeView.OnCodeFinishListener() {
+            @Override
+            public void onTextChange(View view, String content) {
+
+            }
+
+            @Override
+            public void onComplete(View view, String content) {
+                if (view == shareScreen_codeview) {
+                    closeKeyboardHidden(WuHuActivity.this);
+                    my_code = content;
+                    Log.e("WuHuActivity", "content===" + content);
+
+                    if(StringUtil.isNullOrEmpty(my_code)){
+                        ToastUtils.showShort("连接码为空!");
+                        return;
+                    }
+                    UDPClientManager.getInstance().removeUDPBroastcast();
+                    UDPClientManager.getInstance().sendUDPWithCode(my_code);
+                    shareScreenDialog.dismiss();
+
+
+                }
+
+            }
+        });
+        ImageView imageView = view.findViewById(R.id.clear_ima);
+        ImageView close_img = view.findViewById(R.id.ima_close);
+        shareScreenDialog.setContentView(view);
+        shareScreenDialog.setCancelable(false);
+        shareScreenDialog.show();
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareScreen_codeview.setEmpty();
+            }
+        });
+        close_img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shareScreenDialog.dismiss();
+            }
+        });
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == ACTIVITY_RESULT_CODE_SCREEN) {
+            mediaProjection = mMediaProjectionManage.getMediaProjection(resultCode, data);
+
+            startRecord();
+        }
+    }
+    private void startRecord() {
+        UserUtil.isShareScreen = true;
+        shareScreen_tv.setText("断开投屏");
+        Intent intent = new Intent(this, ScreenImageService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent);
+        } else {
+            startService(intent);
+        }
+        mConnect = new MyServiceConnect();
+        bindService(intent, mConnect, Context.BIND_AUTO_CREATE);
+//        checkIgnoreBattery();
+    }
+
+    //TCP 连接回调
+    @Override
+    public void onMessageReaderTimeout() {
+    }
+
+    /**
+     * 回调客户端接收的信息
+     */
+    @Override
+    public void onMessageResponse(final ReceiveData data) {
+        Log.e(TAG,"客户端收到消息==="+data.getHeader().getMainCmd());
+
+        switch (data.getHeader().getMainCmd()) {
+            case SocketCmd.SocketCmd_RepAccept:
+                // TODO 获取屏幕发数据
+                mMediaProjectionManage = (MediaProjectionManager) getApplication().getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+                Intent captureIntent = mMediaProjectionManage.createScreenCaptureIntent();
+                startActivityForResult(captureIntent, ACTIVITY_RESULT_CODE_SCREEN);
+
+                break;
+            case SocketCmd.SocketCmd_RepReject_001:
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ToastUtils.showShort("拒绝投屏!!!");
+                    }
+                });
+                break;
+        }
+    }
+
+    //连接状态变化
+    @Override
+    public void onServiceStatusConnectChanged(final int statusCode) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (statusCode == NettyListener.STATUS_CONNECT_SUCCESS) {
+                    Log.e(TAG, "STATUS_CONNECT_SUCCESS:");
+                    if (MeetingAPP.getInstance().getNettyClient().getConnectStatus()) {
+                        ToastUtils.showShort("投屏服务连接成功");
+                        sendStartData();
+                    }
+                } else {
+//                    ToastUtils.showShort("连接失败");
+                    Log.e(TAG, "onServiceStatusConnectChanged:" + statusCode);
+                    stopRecording();
+                }
+            }
+        });
+    }
+
+    /**
+     * 发送开始标识
+     * */
+    private void sendStartData() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                EncodeV1 encodeV1 = new EncodeV1(SocketCmd.SocketCmd_ReqReceiveScreen,new byte[0]);
+                MeetingAPP.getInstance().getNettyClient().sendMsgToServer(encodeV1.buildSendContent(), new ChannelFutureListener() {
+                    @Override
+                    public void operationComplete(ChannelFuture channelFuture) throws Exception {
+                        if (channelFuture.isSuccess()) {                //4
+                            Log.d(TAG,   "sendStartData  successful");
+                        } else {
+                            Log.d(TAG, "Write auth error");
+                        }
+                    }
+                });
+            }
+        }).start();
+
+    }
+    /**
+     * 停止录屏
+     */
+    private void stopRecording() {
+        try {
+            unbindService(mConnect);
+        } catch (Exception e) {
+
+        }
+        UserUtil.isShareScreen = false;
+//        ToastUtils.showShort("已停止投屏");
+    }
+
+    class MyServiceConnect implements ServiceConnection {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder binder) {
+            ((ScreenImageService.ScreenImageBinder) binder).getService().startController(mediaProjection);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    }
+
+    /**
+     * 隐藏软键盘
+     **/
+    private static void closeKeyboardHidden(Activity context) {
+        View view = context.getWindow().peekDecorView();
+        if (view != null) {
+            InputMethodManager inputmanger = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputmanger.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+
 
     //保存单个数据
     @Override
@@ -1681,7 +1925,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void onClickButton(boolean clickConfirm, boolean clickCancel) {
                 if (clickConfirm) {
-
+                    stopRecording();
                     if (UserUtil.isTempMeeting) {
                         wuHuFinishMeeting();
                         if (Hawk.get(constant.TEMPMEETING).equals(MessageReceiveType.MessageServer) || ServerManager.getInstance().isServerIsOpen()) {

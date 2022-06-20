@@ -580,8 +580,8 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
                         isScrenn=Hawk.get("isSameScreen");
                     }
                     if ("1".equals(isScrenn)){
-                        Intent inte = new Intent(MainActivity.this, ScreenReceiveActivity2.class);
-                        startActivity(inte);
+//                        Intent inte = new Intent(MainActivity.this, ScreenReceiveActivity2.class);
+//                        startActivity(inte);
                     }
 
                     break;

@@ -11,7 +11,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * Created by wt on 2018/6/12.
  * 根据协议解析数据
  */
 public class AnalyticDataUtils {
@@ -20,110 +19,64 @@ public class AnalyticDataUtils {
     private Timer timer;
     private boolean isCalculate = false;
 
-    /**
-     * 分析头部数据
-     */
-//    public ReceiveHeader analysisHeader(ByteBuffer bytes) {
-//        byte[] header = ByteUtil.decodeValue(bytes);
-//        //实现数组之间的复制
-//        //bytes：源数组
-//        //srcPos：源数组要复制的起始位置
-//        //dest：目的数组
-//        //destPos：目的数组放置的起始位置
-//        //length：复制的长度
-//        byte[] buff = new byte[4];
-//        System.arraycopy(header, 1, buff, 0, 4);
-//        final int mainCmd = ByteUtil.bytesToInt(buff);       //主指令  1`5
-//        buff = new byte[4];
-//        System.arraycopy(header, 5, buff, 0, 4);
-//        int stringBodyLength = ByteUtil.bytesToInt(buff);//文本数据 9 ~ 13;
-//        buff = new byte[4];
-//        System.arraycopy(header, 9, buff, 0, 4);
-//        int byteBodySize = ByteUtil.bytesToInt(buff);//byte数据 13^17
-//
-//        return new ReceiveHeader(mainCmd, stringBodyLength, byteBodySize);
-//    }
-
-    public ReceiveData analyticData(ByteBuffer bytes) throws IOException {
-        byte[] header = ByteUtil.decodeValue(bytes);
+    public ReceiveData analyticData(byte[] header) throws IOException {
         byte[] sendBody = null;
         byte[] buffData = null;
-
-        //实现数组之间的复制
-        //bytes：源数组
-        //srcPos：源数组要复制的起始位置
-        //dest：目的数组
-        //destPos：目的数组放置的起始位置
-        //length：复制的长度
-        byte[] buff = new byte[4];
-        System.arraycopy(header, 0, buff, 0, 4);
-        final int mainCmd = ByteUtil.bytesToInt(buff);       //主指令  1`5
-        buff = new byte[4];
-        System.arraycopy(header, 4, buff, 0, 4);
-        int stringBodyLength = ByteUtil.bytesToInt(buff);//文本数据 9 ~ 13;
-        buff = new byte[4];
-        System.arraycopy(header, 8, buff, 0, 4);
-        int byteBodySize = ByteUtil.bytesToInt(buff);//byte数据 13^17
-
-        ReceiveHeader receiveHeader = new ReceiveHeader(mainCmd, stringBodyLength, byteBodySize);
-
-        //文本长度
-        if (receiveHeader.getStringBodylength() != 0) {
-            buff = new byte[stringBodyLength];
-            Log.e("ttt", "analyticData: "+stringBodyLength);
-            System.arraycopy(header, 8, buff, 0, stringBodyLength);
-            sendBody = header;
+        if(header.length <8){
+            return null;
         }
-        //音视频长度
-        if (receiveHeader.getBuffSize() != 0) {
-            buff = new byte[byteBodySize];
-            Log.e("ttt", "analyticData: "+byteBodySize);
-            System.arraycopy(header, 8+stringBodyLength, buff, 0, byteBodySize);
-            buffData = header;
+        byte[] buff = null;
+        buff = ByteUtil.byteSub(header,0,4);
+        int cmd =  ByteUtil.bytesToInt(buff);
+
+        buff = ByteUtil.byteSub(header,4,4);
+        int size =  ByteUtil.bytesToInt(buff);
+
+        int byteBodySize = 0; //视频内容长度
+        int x =0;
+        int y =0;
+        int stringContentLength = 0;
+        String content = "";
+        switch (cmd){
+            case SocketCmd.SocketCmd_RepAccept:
+            case SocketCmd.SocketCmd_RepReject_001:
+                buff = ByteUtil.byteSub(header,8,4);
+                stringContentLength = ByteUtil.bytesToInt(buff);//文本数据长度
+                buff = ByteUtil.byteSub(header,12,size-12);
+                content = ByteToString.convertByteArrToASC(buff);
+
+                break;
+            case SocketCmd.SocketCmd_ScreentData:
+                stringContentLength = 0;
+                buff = ByteUtil.byteSub(header,8,4);
+                x = ByteUtil.bytesToInt(buff);
+                buff = ByteUtil.byteSub(header,12,4);
+                y = ByteUtil.bytesToInt(buff);
+
+
+                byteBodySize = size-16;
+                // avpacket 有4字节长度，要去掉
+                buff = ByteUtil.byteSub(header,16,byteBodySize);
+                break;
+
         }
+
+        ReceiveHeader receiveHeader = new ReceiveHeader(cmd, stringContentLength, byteBodySize);
         ReceiveData data = new ReceiveData();
         data.setHeader(receiveHeader);
-        data.setSendBody(sendBody == null ? "" : new String(sendBody));
-        data.setBuff(buffData);
+        data.setSendBody(content);
+        data.setBuff(buff);
+        Log.e("111","cmd=="+cmd+"  size==="+size);
         return data;
     }
 
-    /**
-     * 保证从流里读到指定长度数据
-     *
-     * @return
-     * @throws Exception
-     */
-//    public byte[] readByte(InputStream is, int readSize) throws IOException {
-//        byte[] buff = new byte[readSize];
-//        int len = 0;
-//        int eachLen = 0;
-//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//        while (len < readSize) {
-//            eachLen = is.read(buff);
-//            if (eachLen != -1) {
-//                if (isCalculate) readLength += eachLen;
-//                len += eachLen;
-//                baos.write(buff, 0, eachLen);
-//            } else {
-//                baos.close();
-//                throw new IOException();
-//            }
-//            if (len < readSize) {
-//                buff = new byte[readSize - len];
-//            }
-//        }
-//        byte[] b = baos.toByteArray();
-//        baos.close();
-//        return b;
-//    }
-
+    public ReceiveData analyticData(ByteBuffer bytes) throws IOException {
+        byte[] header = ByteUtil.decodeValue(bytes);
+        return analyticData(header);
+    }
 
     public interface OnAnalyticDataListener {
-//        void onSuccess(ReceiveData data);
-
         void netSpeed(String msg);
-
     }
 
     public void setOnAnalyticDataListener(OnAnalyticDataListener listener) {

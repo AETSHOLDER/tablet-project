@@ -12,6 +12,7 @@ import com.example.paperlessmeeting_demo.tool.Constants;
 import com.example.paperlessmeeting_demo.tool.CrashHandler;
 import com.example.paperlessmeeting_demo.tool.FLUtil;
 import com.example.paperlessmeeting_demo.tool.NetWorkUtils;
+import com.example.paperlessmeeting_demo.tool.PCScreen.Netty.NettyClient;
 import com.example.paperlessmeeting_demo.tool.SdCardStatus;
 import com.example.paperlessmeeting_demo.tool.SerialPortUtils.HexadecimalConversion;
 import com.example.paperlessmeeting_demo.tool.SerialPortUtils.SerialPortClient;
@@ -59,10 +60,10 @@ public class MeetingAPP extends Application {
     private RefWatcher mRefWatcher;
     private static Context context;
     private static MeetingAPP meetingAPP = null;
-
+    public static Handler mHandler;
     private SerialPortClient serialPortClient;
     private HexadecimalConversion hexadecimal;
-    private String ipStr;
+    private NettyClient nettyClient;//socket操作连接对象
     //static 代码段可以防止内存泄露
     static {
     /* //设置全局的Header构建器
@@ -94,22 +95,14 @@ public class MeetingAPP extends Application {
         return serialPortClient;
     }
 
-    Handler mHander = new Handler() {
-
-        public void handleMessage(Message msg) {
-            // TODO Auto-generated method stub
-            switch (msg.what) {
-                case 1:
-                    String str = (String) msg.obj;
-                    Log.d("dsff", str);
-                    ipStr = str.substring(4, str.length() - 4);
-                    break;
-
-            }
+    public void reinitSocket(String ip){
+        nettyClient = new NettyClient(ip, constant.TCP_PORT);
+    }
 
 
-        }
-    };
+    public NettyClient getNettyClient() {
+        return nettyClient;
+    }
 
     @Override
     public void onCreate() {
@@ -117,6 +110,8 @@ public class MeetingAPP extends Application {
         meetingAPP = this;
         context = getApplicationContext();
 
+        //让代码执行在主线程
+        mHandler = new Handler(getMainLooper());
         //  串口相关
         hexadecimal = new HexadecimalConversion();
 //        serialPortClient = new SerialPortClient();

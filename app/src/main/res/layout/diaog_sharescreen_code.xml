@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/ima_close"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="20dp"
+        android:src="@mipmap/ic_invite_close" />
+
+    <LinearLayout
+        android:id="@+id/aa"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:layout_below="@id/ima_close"
+        android:background="@mipmap/bg_invita_code"
+        android:orientation="vertical"></LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ee"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/aa"
+        android:background="@drawable/bg_invite_code"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp">
+
+
+            <TextView
+                android:id="@+id/dd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:text="请输入投屏码"
+                android:textColor="#ff5b5b5b"
+                android:textSize="28sp" />
+
+            <ImageView
+                android:id="@+id/clear_ima"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
+                android:layout_toRightOf="@id/dd"
+                android:src="@mipmap/ic_invita_clear" />
+        </RelativeLayout>
+
+        <com.jyn.vcview.VerificationCodeView
+            android:id="@+id/verificationcodeview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="120dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:vcv_et_bg="@drawable/et_login_code"
+            app:vcv_et_cursor="@drawable/et_cursor"
+            app:vcv_et_inputType="number"
+            app:vcv_et_number="4"
+            app:vcv_et_text_color="@android:color/black"
+            app:vcv_et_text_size="58sp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/ok_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ee"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="90dp"
+        android:background="@mipmap/ic_invita_code_konw"
+        android:gravity="center"
+        android:paddingBottom="5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="5dp"
+        android:text="确定"
+        android:textColor="#ffffffff"
+        android:textSize="32sp"
+        android:visibility="gone" />
+
+</RelativeLayout>

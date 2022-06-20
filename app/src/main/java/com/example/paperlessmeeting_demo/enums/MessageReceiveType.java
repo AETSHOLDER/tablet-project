@@ -15,4 +15,7 @@ public enum MessageReceiveType {
     MessageRefreshMicSta,
     ConnectClientFail,
     MessageCreatTempMeeting,
+    MessageScreenReq,
+    MessageScreenData,
+    MessageScreenDisconnect,
 }

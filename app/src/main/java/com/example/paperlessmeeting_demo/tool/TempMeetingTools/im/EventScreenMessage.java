@@ -1,17 +1,18 @@
 package com.example.paperlessmeeting_demo.tool.TempMeetingTools.im;
 
 import com.example.paperlessmeeting_demo.enums.MessageReceiveType;
+import com.example.paperlessmeeting_demo.tool.ScreenTools.entity.ReceiveData;
 
 import java.nio.ByteBuffer;
 
 public class EventScreenMessage {
     private MessageReceiveType type;
-    private ByteBuffer bytes;
+    private ReceiveData receiveData;
 
 
-    public EventScreenMessage(MessageReceiveType type, ByteBuffer bytes) {
+    public EventScreenMessage(MessageReceiveType type, ReceiveData receiveData) {
         this.type = type;
-        this.bytes = bytes;
+        this.receiveData = receiveData;
     }
 
     @Override
@@ -28,11 +29,11 @@ public class EventScreenMessage {
         this.type = type;
     }
 
-    public ByteBuffer getBytes() {
-        return bytes;
+    public ReceiveData getBytes() {
+        return receiveData;
     }
 
-    public void setBytes(ByteBuffer bytes) {
-        this.bytes = bytes;
+    public void setBytes(ReceiveData receiveData) {
+        this.receiveData = receiveData;
     }
 }
