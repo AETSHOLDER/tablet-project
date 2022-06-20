@@ -114,7 +114,10 @@ public class CVIPaperDialogUtils {
                 } else {
                     uiOptions |= View.SYSTEM_UI_FLAG_LOW_PROFILE;
                 }
-                confirmDialog.getWindow().getDecorView().setSystemUiVisibility(uiOptions);
+                if (confirmDialog!=null&&confirmDialog.getWindow()!=null){
+                    confirmDialog.getWindow().getDecorView().setSystemUiVisibility(uiOptions);
+                }
+
             }
         });
         confirmDialog.show();

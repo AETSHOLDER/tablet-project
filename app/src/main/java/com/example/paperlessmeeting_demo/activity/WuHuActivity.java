@@ -1680,9 +1680,10 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == ACTIVITY_RESULT_CODE_SCREEN) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d("requestCodeUractivity","requestCode= "+requestCode+"   resultCode="+resultCode);
+        if(requestCode == ACTIVITY_RESULT_CODE_SCREEN&&resultCode == Activity.RESULT_OK) {
             mediaProjection = mMediaProjectionManage.getMediaProjection(resultCode, data);
-
             startRecord();
         }
     }
@@ -2023,7 +2024,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                     @Override
                     protected void onFail(BasicResponse<MeetingIdBean> response) {
                         super.onFail(response);
-                        Log.d("gtgwrtwwrtwt大文件上传分片0000", response.getMsg() + "   " + response.getData().toString());
+                        Log.d("失败11111111", response.getMsg() + "   " + response.getData().toString());
                     }
 
                     @Override
@@ -2190,7 +2191,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                             upLoadNum++;//每个文件的切片数
                             littelFilePos++;//议题下的文件分片索引
                             Log.d("gtgwrtwwrtwt大文件上传分片111", "上传路过   upLoadNum" + upLoadNum + "  fileName=   " + fileName);
-
+                            Log.d("失败111222222", response.getMsg() + "   " + response.getData().toString());
 
                             for (int n = 0; n < fileFragmentationBeans.size(); n++) {
                                 if (fileFragmentationBeans.get(n).getFileName().equals(fileName)) {
@@ -2281,6 +2282,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                         if (locaFileNum == upLoadFileNum) {
                             reSetdata();
                         }
+                        Log.d("失败1113333", response.getMsg() + "   " + response.getData().toString());
                         Log.d("gtgwrtwwrtwt大文件上传分片33333", "总文件： " + locaFileNum + "     执行过上传的数量：" + upLoadFileNum + "  fileName   " + fileName);
                     }
 
@@ -2377,6 +2379,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                     @Override
                     protected void onFail(BasicResponse<MeetingIdBean> response) {
                         super.onFail(response);
+                        Log.d("失败11144444", response.getMsg() + "   " + response.getData().toString());
                         upLoadNum = 0;//合并完文件的分片总数量置为0
                     }
 

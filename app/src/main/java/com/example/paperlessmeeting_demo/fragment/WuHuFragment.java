@@ -2531,7 +2531,8 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
+        Log.d("requestCodeUrfragmnet","requestCode= "+requestCode+"   resultCode="+resultCode);
+        if (resultCode == Activity.RESULT_OK&&requestCode==1) {
             if (data.getData() != null) {
                 Uri uri = data.getData();
                 boolean repetition = false;//文件是否有重复
