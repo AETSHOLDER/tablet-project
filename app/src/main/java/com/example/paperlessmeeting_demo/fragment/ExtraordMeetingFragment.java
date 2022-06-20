@@ -804,11 +804,11 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
             UserUtil.isNetDATA = true;
             UserUtil.isTempMeeting = true;
             UserUtil.ISCHAIRMAN = true;
-            constant.temp_code = "formalmeeting." + wuHuMeetingListResponse.getName();
+            constant.temp_code = "formalmeeting-" + wuHuMeetingListResponse.getName();
             Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
             Intent intent = new Intent(getActivity(), WuHuActivity.class);
             Bundle bundle = new Bundle();
-            bundle.putString("code", "formalmeeting." + wuHuMeetingListResponse.getName() + "/" + wuHuMeetingListResponse.get_id());
+            bundle.putString("code", "formalmeeting-" + wuHuMeetingListResponse.getName() + "/" + wuHuMeetingListResponse.get_id());
             bundle.putString("isreuse", "4");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
             intent.putExtras(bundle);
             Hawk.put("WuHuMeetingListResponse", wuHuMeetingListResponse);
