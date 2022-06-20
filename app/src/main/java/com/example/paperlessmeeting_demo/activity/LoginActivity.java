@@ -360,7 +360,7 @@ public class LoginActivity extends BaseActivity {
             }
         }
         if (message.getMessage().equals(constant.get_server_ip)) {
-            getMacIsRegister();
+           // getMacIsRegister();
 //           resumeToGetMeetingInfo();
         }
         if (message.getMessage().equals(constant.continusClick)) {

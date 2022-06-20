@@ -126,7 +126,7 @@ public abstract class DefaultObserver<T extends BasicResponse> implements Observ
                 break;
 
             case BAD_NETWORK:
-                ToastUtils.showShort(R.string.bad_network);
+                //ToastUtils.showShort(R.string.bad_network);
                 break;
 
             case PARSE_ERROR:
