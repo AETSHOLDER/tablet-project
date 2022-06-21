@@ -8,6 +8,7 @@ import com.example.paperlessmeeting_demo.activity.Sign.SignActivity;
 import com.example.paperlessmeeting_demo.activity.Sign.SignListActivity;
 import com.example.paperlessmeeting_demo.adapter.WuHuNewTopicAdapter;
 import com.example.paperlessmeeting_demo.base.BaseActivity;
+
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Dialog;
@@ -50,6 +51,7 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.example.paperlessmeeting_demo.adapter.PagerAdapter;
 import com.example.paperlessmeeting_demo.bean.AttendeBean;
 import com.example.paperlessmeeting_demo.bean.BasicResponse;
@@ -105,9 +107,11 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.jyn.vcview.VerificationCodeView;
 import com.orhanobut.hawk.Hawk;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -122,8 +126,10 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.LinearLayoutManager;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.netty.channel.ChannelFuture;
@@ -1022,6 +1028,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                     MeetingAPP.getInstance().getNettyClient().connect();
                 }
             }
+
             @Override
             public void udpDisConnec(String message) {
 
@@ -1600,17 +1607,17 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                 mViewPager.setCurrentItem(currentItem2, true);
                 break;
             case R.id.shareScreen_ll1:
-                if(UserUtil.isShareScreen){
+                if (UserUtil.isShareScreen) {
                     CVIPaperDialogUtils.showCustomDialog(WuHuActivity.this, "是否结束投屏?", "", "结束", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
                         @Override
                         public void onClickButton(boolean clickConfirm, boolean clickCancel) {
-                            if(clickConfirm){
+                            if (clickConfirm) {
                                 stopRecording();
                                 shareScreen_tv.setText("pc投屏");
                             }
                         }
                     });
-                }else {
+                } else {
                     alertShareScreen();
                 }
                 break;
@@ -1629,7 +1636,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
     /******************************************投屏模块************************************************************/
     /**
      * 投屏弹框
-     * */
+     */
     private void alertShareScreen() {
         shareScreenDialog = new Dialog(WuHuActivity.this, R.style.update_dialog);
         View view = LayoutInflater.from(WuHuActivity.this).inflate(R.layout.diaog_sharescreen_code, null);//加载自己的布局
@@ -1647,7 +1654,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                     my_code = content;
                     Log.e("WuHuActivity", "content===" + content);
 
-                    if(StringUtil.isNullOrEmpty(my_code)){
+                    if (StringUtil.isNullOrEmpty(my_code)) {
                         ToastUtils.showShort("连接码为空!");
                         return;
                     }
@@ -1678,15 +1685,17 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
             }
         });
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d("requestCodeUractivity","requestCode= "+requestCode+"   resultCode="+resultCode);
-        if(requestCode == ACTIVITY_RESULT_CODE_SCREEN&&resultCode == Activity.RESULT_OK) {
+        Log.d("requestCodeUractivity", "requestCode= " + requestCode + "   resultCode=" + resultCode);
+        if (requestCode == ACTIVITY_RESULT_CODE_SCREEN && resultCode == Activity.RESULT_OK) {
             mediaProjection = mMediaProjectionManage.getMediaProjection(resultCode, data);
             startRecord();
         }
     }
+
     private void startRecord() {
         UserUtil.isShareScreen = true;
         shareScreen_tv.setText("断开投屏");
@@ -1711,7 +1720,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
      */
     @Override
     public void onMessageResponse(final ReceiveData data) {
-        Log.e(TAG,"客户端收到消息==="+data.getHeader().getMainCmd());
+        Log.e(TAG, "客户端收到消息===" + data.getHeader().getMainCmd());
 
         switch (data.getHeader().getMainCmd()) {
             case SocketCmd.SocketCmd_RepAccept:
@@ -1755,17 +1764,17 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
 
     /**
      * 发送开始标识
-     * */
+     */
     private void sendStartData() {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                EncodeV1 encodeV1 = new EncodeV1(SocketCmd.SocketCmd_ReqReceiveScreen,new byte[0]);
+                EncodeV1 encodeV1 = new EncodeV1(SocketCmd.SocketCmd_ReqReceiveScreen, new byte[0]);
                 MeetingAPP.getInstance().getNettyClient().sendMsgToServer(encodeV1.buildSendContent(), new ChannelFutureListener() {
                     @Override
                     public void operationComplete(ChannelFuture channelFuture) throws Exception {
                         if (channelFuture.isSuccess()) {                //4
-                            Log.d(TAG,   "sendStartData  successful");
+                            Log.d(TAG, "sendStartData  successful");
                         } else {
                             Log.d(TAG, "Write auth error");
                         }
@@ -1775,6 +1784,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
         }).start();
 
     }
+
     /**
      * 停止录屏
      */
@@ -1810,7 +1820,6 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
             inputmanger.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
-
 
 
     //保存单个数据
@@ -1926,17 +1935,42 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                 if (clickConfirm) {
                     stopRecording();
                     if (UserUtil.isTempMeeting) {
-                        wuHuFinishMeeting();
-                        if (Hawk.get(constant.TEMPMEETING).equals(MessageReceiveType.MessageServer) || ServerManager.getInstance().isServerIsOpen()) {
-                            // 如果是服务端，关掉服务，关停广播
-                            String code = getIntent().getStringExtra("code");
-                            UDPBroadcastManager.getInstance().sendDestroyCode(code);
-                            ServerManager.getInstance().StopMyWebsocketServer();
-                            UDPBroadcastManager.getInstance().removeUDPBroastcast();
+                        Log.d("fdgggsgdsg","UrlConstant.baseUrl= "+UrlConstant.baseUrl);
+                        if (UrlConstant.baseUrl.equals("http://192.168.1.1:3006")) {
+                            Toast.makeText(WuHuActivity.this, "服务端不在线！", Toast.LENGTH_SHORT).show();
+                            UserUtil.user_id = "";
+                            UserUtil.meeting_record_id = "";
+                            if (Hawk.contains(constant._id)) {
+                                Hawk.delete(constant._id);
+                            }
+                            if (Hawk.contains(constant.user_id)) {
+                                Hawk.delete(constant.user_id);
+                            }
+                            if (Hawk.get(constant.TEMPMEETING).equals(MessageReceiveType.MessageServer) || ServerManager.getInstance().isServerIsOpen()) {
+                                // 如果是服务端，关掉服务，关停广播
+                                String code = getIntent().getStringExtra("code");
+                                UDPBroadcastManager.getInstance().sendDestroyCode(code);
+                                ServerManager.getInstance().StopMyWebsocketServer();
+                                UDPBroadcastManager.getInstance().removeUDPBroastcast();
+                            }
+                            JWebSocketClientService.closeConnect();
+                            finish();
+                        } else {
+                            //1.显示上传文件进度弹框；2.会议数据上传服务器
+                            wuHuFinishMeeting();
+                            if (Hawk.get(constant.TEMPMEETING).equals(MessageReceiveType.MessageServer) || ServerManager.getInstance().isServerIsOpen()) {
+                                // 如果是服务端，关掉服务，关停广播
+                                String code = getIntent().getStringExtra("code");
+                                UDPBroadcastManager.getInstance().sendDestroyCode(code);
+                                ServerManager.getInstance().StopMyWebsocketServer();
+                                UDPBroadcastManager.getInstance().removeUDPBroastcast();
+                            }
+                            JWebSocketClientService.closeConnect();
                         }
-                        JWebSocketClientService.closeConnect();
 
-                        if (Hawk.contains(constant._id)) {
+
+
+               /*         if (Hawk.contains(constant._id)) {
                             String _id = Hawk.contains(constant._id) ? Hawk.get(constant._id) : "";
                             Map<String, Object> map = new HashMap<>();
                             map.put("id", _id);
@@ -1961,7 +1995,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                                             }
                                         }
                                     });
-                        }
+                        }*/
                         try {
                             Thread.sleep(100);
                         } catch (Exception e) {
@@ -2005,12 +2039,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void wuHuFinishMeeting() {
-        if (UrlConstant.baseUrl.equals("http://192.168.1.1:3006")){
-            Toast.makeText(WuHuActivity.this,"服务端不在线！",Toast.LENGTH_SHORT).show();
-        }else {
-            showUpLoadFileDialog();
-        }
-
+        showUpLoadFileDialog();
         WuHuEditBean wuHuEditBean = null;
         if (Hawk.contains("WuHuFragmentData")) {
             wuHuEditBean = Hawk.get("WuHuFragmentData");
@@ -2386,6 +2415,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                         super.onFail(response);
                         Log.d("失败11144444", response.getMsg() + "   " + response.getData().toString());
                         upLoadNum = 0;//合并完文件的分片总数量置为0
+                        UrlConstant.baseUrl="http://192.168.1.1:3006";
                     }
 
                     @Override
@@ -2408,8 +2438,9 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                             if (Hawk.contains("VoteListBean")) {
                                 Hawk.delete("VoteListBean");
                             }
-                            UserUtil.meeting_record_id="";
+                            UserUtil.meeting_record_id = "";
                             locaFileNum = 0;
+                            UrlConstant.baseUrl="http://192.168.1.1:3006";
                             finish();
                         }
                     }
@@ -2633,6 +2664,8 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                             wuHuEditBeanList.clear();
                             WuHuEditBean wuHuEditBean = wsebean.getBody();
                             Log.d("onReceiveMsg q全部保存 wuhuactivity  ", "REFRASHWuHUALL");
+                            Hawk.put("company_name", wuHuEditBean.getTopics());
+                            Hawk.put("tittle2", wuHuEditBean.getTopic_type());
                             if (Hawk.contains("WuHuFragmentData")) {
                                 WuHuEditBean refrashWuHuFragmentData = Hawk.get("WuHuFragmentData");
                                 List<WuHuEditBean.EditListBean> listBeans = new ArrayList<>();
