@@ -2007,6 +2007,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
     private void wuHuFinishMeeting() {
         if (UrlConstant.baseUrl.equals("http://192.168.1.1:3006")){
             Toast.makeText(WuHuActivity.this,"服务端不在线！",Toast.LENGTH_SHORT).show();
+            finish();
             return;
         }
 
