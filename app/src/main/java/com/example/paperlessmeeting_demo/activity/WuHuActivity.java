@@ -1929,13 +1929,14 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
 
     //结束会议
     private void showFinishMeetingDialog() {
+        Log.d("Broadcast111","UrlConstant.baseUrl= "+UrlConstant.baseUrl);
         CVIPaperDialogUtils.showCustomDialog(WuHuActivity.this, "确定要结束会议？", "请保存/上传好会议文件!!!", "确定", true, new CVIPaperDialogUtils.ConfirmDialogListener() {
             @Override
             public void onClickButton(boolean clickConfirm, boolean clickCancel) {
                 if (clickConfirm) {
                     stopRecording();
                     if (UserUtil.isTempMeeting) {
-                        Log.d("fdgggsgdsg","UrlConstant.baseUrl= "+UrlConstant.baseUrl);
+                        Log.d("Broadcast22","UrlConstant.baseUrl= "+UrlConstant.baseUrl);
                         if (UrlConstant.baseUrl.equals("http://192.168.1.1:3006")) {
                             Toast.makeText(WuHuActivity.this, "服务端不在线！", Toast.LENGTH_SHORT).show();
                             UserUtil.user_id = "";
@@ -1958,14 +1959,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                         } else {
                             //1.显示上传文件进度弹框；2.会议数据上传服务器
                             wuHuFinishMeeting();
-                            if (Hawk.get(constant.TEMPMEETING).equals(MessageReceiveType.MessageServer) || ServerManager.getInstance().isServerIsOpen()) {
-                                // 如果是服务端，关掉服务，关停广播
-                                String code = getIntent().getStringExtra("code");
-                                UDPBroadcastManager.getInstance().sendDestroyCode(code);
-                                ServerManager.getInstance().StopMyWebsocketServer();
-                                UDPBroadcastManager.getInstance().removeUDPBroastcast();
-                            }
-                            JWebSocketClientService.closeConnect();
+
                         }
 
 
@@ -2416,6 +2410,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                         Log.d("失败11144444", response.getMsg() + "   " + response.getData().toString());
                         upLoadNum = 0;//合并完文件的分片总数量置为0
                         UrlConstant.baseUrl="http://192.168.1.1:3006";
+                        FLUtil.BroadCastIP= "192.168.00.000";
                     }
 
                     @Override
@@ -2441,6 +2436,16 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                             UserUtil.meeting_record_id = "";
                             locaFileNum = 0;
                             UrlConstant.baseUrl="http://192.168.1.1:3006";
+                            FLUtil.BroadCastIP= "192.168.00.000";
+
+                            if (Hawk.get(constant.TEMPMEETING).equals(MessageReceiveType.MessageServer) || ServerManager.getInstance().isServerIsOpen()) {
+                                // 如果是服务端，关掉服务，关停广播
+                                String code = getIntent().getStringExtra("code");
+                                UDPBroadcastManager.getInstance().sendDestroyCode(code);
+                                ServerManager.getInstance().StopMyWebsocketServer();
+                                UDPBroadcastManager.getInstance().removeUDPBroastcast();
+                            }
+                            JWebSocketClientService.closeConnect();
                             finish();
                         }
                     }

@@ -64,10 +64,11 @@ import static com.blankj.utilcode.util.ActivityUtils.startActivity;
 public class FLUtil {
     public static String BroadCastIP = "192.168.00.000";  //  广播得到的Ip,只用于判断
     public static Handler handler = new Handler();
+
     /*
-    * 网络是否可用
-    *
-    * */
+     * 网络是否可用
+     *
+     * */
     public static boolean netIsConnect(Context context) {
         ConnectivityManager manager = (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         if (manager == null) {
@@ -83,6 +84,7 @@ public class FLUtil {
 
     /**
      * 自定义裁剪，根据第一个像素点(左上角)X和Y轴坐标和需要的宽高来裁剪
+     *
      * @param srcBitmap
      * @param firstPixelX
      * @param firstPixelY
@@ -93,30 +95,30 @@ public class FLUtil {
      */
     public static Bitmap cropBitmapCustom(Bitmap srcBitmap, int firstPixelX, int firstPixelY, int needWidth, int needHeight, boolean recycleSrc) {
 
-        Log.d("danxx", "cropBitmapRight before w : "+srcBitmap.getWidth());
-        Log.d("danxx", "cropBitmapRight before h : "+srcBitmap.getHeight());
+        Log.d("danxx", "cropBitmapRight before w : " + srcBitmap.getWidth());
+        Log.d("danxx", "cropBitmapRight before h : " + srcBitmap.getHeight());
 
-        if(firstPixelX + needWidth > srcBitmap.getWidth()){
+        if (firstPixelX + needWidth > srcBitmap.getWidth()) {
             needWidth = srcBitmap.getWidth() - firstPixelX;
         }
 
-        if(firstPixelY + needHeight > srcBitmap.getHeight()){
+        if (firstPixelY + needHeight > srcBitmap.getHeight()) {
             needHeight = srcBitmap.getHeight() - firstPixelY;
         }
 
         /**裁剪关键步骤*/
         Bitmap cropBitmap = Bitmap.createBitmap(srcBitmap, firstPixelX, firstPixelY, needWidth, needHeight);
 
-        Log.d("danxx", "cropBitmapRight after w : "+cropBitmap.getWidth());
-        Log.d("danxx", "cropBitmapRight after h : "+cropBitmap.getHeight());
+        Log.d("danxx", "cropBitmapRight after w : " + cropBitmap.getWidth());
+        Log.d("danxx", "cropBitmapRight after h : " + cropBitmap.getHeight());
 
         return cropBitmap;
     }
 
 
     /*
-    *  显示
-    * */
+     *  显示
+     * */
     public static void showShortToast(Context context, String text) {
         Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
     }
@@ -143,8 +145,8 @@ public class FLUtil {
     }
 
     /*
-    * 图片保存路径
-    * */
+     * 图片保存路径
+     * */
     public static String imageSavePath() {
 
         String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/images/";
@@ -153,8 +155,8 @@ public class FLUtil {
     }
 
     /*
-    * 音频保存路径
-    * */
+     * 音频保存路径
+     * */
     public static String audioSavePath() {
         String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/audios/";
         // FileUtils.createOrExistsDir(path);
@@ -313,7 +315,7 @@ public class FLUtil {
                             datagramSocket.receive(datagramPacket);
                             String strMsg = new String(datagramPacket.getData(), datagramPacket.getOffset(), datagramPacket.getLength(), "UTF-8");
                             Message msg = new Message();
-                            Log.d("Broadcast", "strMsg==" + strMsg);
+                            Log.d("Broadcast", "strMsg==" + strMsg + "  (UrlConstant.baseUrl=" + UrlConstant.baseUrl);
                             if (strMsg.contains("fang wei biao shi")) {
                                 String ip = datagramPacket.getAddress().getHostAddress();
                                 Log.d("ip", "ip==" + ip);
@@ -323,7 +325,7 @@ public class FLUtil {
                                  * */
                                 if (!ip.equals(BroadCastIP)) {
 //                                    UrlConstant.initSocketUrl = "http://" + ip + ":3006" ;
-                                    UrlConstant.baseUrl = "http://"+ip + ":3006";
+                                    UrlConstant.baseUrl = "http://" + ip + ":3006";
 //                                    UrlConstant.wsUrl = "ws://"+ip + ":8010";
 
 //                                    FLUtil.initSocketIO();
@@ -332,7 +334,7 @@ public class FLUtil {
                                     NetWorkManager.getInstance().resetNetworkApi();
 
                                     Activity topActivity = (Activity) ActivityUtils.getTopActivity();
-                                    if(topActivity!=null){
+                                    if (topActivity != null) {
                                         topActivity.runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
@@ -359,7 +361,7 @@ public class FLUtil {
         InitSocketManager.SocketCallBack callBack = new InitSocketManager.SocketCallBack() {
             @Override
             public void success() {
-                if(InitSocketManager.socket == null){
+                if (InitSocketManager.socket == null) {
                     return;
                 }
                 //  监听会议开启
@@ -374,7 +376,7 @@ public class FLUtil {
                             InitiaMeeting Meeting = gson.fromJson(msg.toString(), InitiaMeeting.class);
 //                            Hawk.put(constant.InitiaMeeting,Meeting);
 
-                            Hawk.put(constant.InitiaMeeting,Meeting);
+                            Hawk.put(constant.InitiaMeeting, Meeting);
 
                             //  赋值会议ID
                             UserUtil.meeting_record_id = Meeting.getMeeting_id();
@@ -408,7 +410,6 @@ public class FLUtil {
         };
         InitSocketManager.connect(callBack);
     }
-
 
 
     /**
@@ -471,14 +472,14 @@ public class FLUtil {
     /**
      * 提取白板需要的服务器ip地址
      * "http://192.168.8.141:3000"
-     * */
+     */
     public static String getWhiteIPAdress() {
         String ip = UrlConstant.baseUrl;
-       if(ip.contains("http://")){
-           ip = ip.replace("http://","");
-       }
-       String[] spArr = ip.split(":");
-       return  spArr[0];
+        if (ip.contains("http://")) {
+            ip = ip.replace("http://", "");
+        }
+        String[] spArr = ip.split(":");
+        return spArr[0];
     }
 
     /**
@@ -550,7 +551,7 @@ public class FLUtil {
     /**
      * 临时会议获取IP地址 方法
      * 临时会议时获取设备是有线网还是无线网
-     * */
+     */
     public static String getNetworkType() {
         ConnectivityManager manager = (ConnectivityManager) MeetingAPP.getContext().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo info = manager.getActiveNetworkInfo();
@@ -567,7 +568,7 @@ public class FLUtil {
 
     /**
      * 临时会议时获取设备有线网IP地址
-     * */
+     */
     public static String getIpAddressString() {
         try {
             for (Enumeration<NetworkInterface> enNetI = NetworkInterface
@@ -589,7 +590,7 @@ public class FLUtil {
 
     /**
      * 临时会议时获取设备无线网IP地址
-     * */
+     */
     public static String getIpAddress() {
         WifiManager wifiManager = (WifiManager) MeetingAPP.getContext().getApplicationContext().getSystemService(WIFI_SERVICE);
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
@@ -600,18 +601,14 @@ public class FLUtil {
                 ((i >> 24) & 0xFF);
     }
 
-    public static boolean checkPackage(Context context, String packageName)
-    {
+    public static boolean checkPackage(Context context, String packageName) {
         if (packageName == null || "".equals(packageName))
             return false;
 
-        try
-        {
+        try {
             context.getPackageManager().getApplicationInfo(packageName, PackageManager.GET_UNINSTALLED_PACKAGES);
             return true;
-        }
-        catch (PackageManager.NameNotFoundException e)
-        {
+        } catch (PackageManager.NameNotFoundException e) {
             return false;
         }
     }
