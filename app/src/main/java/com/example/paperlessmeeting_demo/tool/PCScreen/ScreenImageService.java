@@ -13,6 +13,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.view.View;
 
 import com.example.paperlessmeeting_demo.MeetingAPP;
 import com.example.paperlessmeeting_demo.R;
@@ -22,15 +23,20 @@ import com.example.paperlessmeeting_demo.tool.ScreenTools.controll.ScreenImageAp
 import com.example.paperlessmeeting_demo.tool.ScreenTools.controll.ScreenVideoController;
 import com.example.paperlessmeeting_demo.tool.ScreenTools.controll.sender.StreamController;
 import com.example.paperlessmeeting_demo.tool.ScreenTools.controll.sender.TcpPacker;
+import com.example.paperlessmeeting_demo.tool.ScreenTools.controll.sender.WSSender;
+import com.example.paperlessmeeting_demo.tool.ScreenTools.utils.SocketCmd;
 import com.example.paperlessmeeting_demo.tool.ToastUtils;
 import com.example.paperlessmeeting_demo.tool.VideoConfiguration;
 import com.example.paperlessmeeting_demo.tool.constant;
 
 public class ScreenImageService extends Service{
+    private MediaProjection mMediaProjection;
     private TCPSender tcpSender;
     private VideoConfiguration mVideoConfiguration;
     private StreamController mStreamController;
 
+    private StreamController mWSStreamController;
+    private WSSender wsSender;
     private static final int foregroundId = 1234;
     NotificationManager notificationManager;
     Notification notification;
@@ -96,8 +102,9 @@ public class ScreenImageService extends Service{
      * 开始录制屏幕
      */
     public void startController(MediaProjection mediaProjection) {
+        mMediaProjection = mediaProjection;
         Log.e("ScreenImageService","开始录制屏幕");
-        ScreenVideoController screenVideoController = new ScreenVideoController(mediaProjection);
+        ScreenVideoController screenVideoController = new ScreenVideoController(mediaProjection,false);
         mStreamController = new StreamController(screenVideoController);
         TcpPacker packer = new TcpPacker();
         tcpSender = new TCPSender();
@@ -113,22 +120,55 @@ public class ScreenImageService extends Service{
     }
 
     /**
-     * 通过ws 发送数据
+     * 开始ws录制屏幕
      */
-    public void startWSSender() {
-        if(tcpSender!=null){
-            tcpSender.sendWSScreenData();
+    public void startWSController() {
+        if(mMediaProjection==null){
+            return;
         }
+        ScreenVideoController screenVideoController = new ScreenVideoController(mMediaProjection,true);
+        mWSStreamController = new StreamController(screenVideoController);
+        TcpPacker packer = new TcpPacker();
+        wsSender = new WSSender();
+//        tcpSender.setSenderListener(this);
+        wsSender.setMianCmd(SocketCmd.SocketCmd_ScreentData);
+        wsSender.setSendBody(constant.CVI_PAPER_SCREEN_DATA);
+        mVideoConfiguration = new VideoConfiguration.Builder().setSize(1920, 1080).build();
+        mWSStreamController.setVideoConfiguration(mVideoConfiguration);
+        mWSStreamController.setPacker(packer);
+        mWSStreamController.setSender(wsSender);
+        mWSStreamController.start();
+        wsSender.openConnect();
     }
 
     /**
-     * 结束ws 发送线程
+     * 结束ws录制屏幕
      */
-    public void finishWSSender() {
-        if(tcpSender!=null){
-            tcpSender.finishWSSender();
+    public void stopWSRecording() {
+        Log.e("stopWSRecording", "stopRecording: zzz");
+        if (mWSStreamController != null) {
+            mWSStreamController.stop();
         }
     }
+
+
+    /**
+     * 通过ws 发送数据
+     */
+//    public void startWSSender() {
+//        if(tcpSender!=null){
+//            tcpSender.sendWSScreenData();
+//        }
+//    }
+//
+//    /**
+//     * 结束ws 发送线程
+//     */
+//    public void finishWSSender() {
+//        if(tcpSender!=null){
+//            tcpSender.finishWSSender();
+//        }
+//    }
 
 
     @Override

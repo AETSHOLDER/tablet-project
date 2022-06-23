@@ -102,7 +102,6 @@ public class UDPClientReceiveThread extends Thread {
                         mListener.udpConnectSuccess(ip);
                     }
                 });
-                Log.d(TAG, "[Rx]" + recMsg);
 
             } catch (Exception e){
                 final Exception exception = e;
@@ -113,6 +112,8 @@ public class UDPClientReceiveThread extends Thread {
                         mListener.udpDisConnec(exception.getMessage());
                     }
                 });
+                pauseThread();
+                rSocket.close();
                 Log.d(TAG,"Socket.receive超时error");
             }
         }

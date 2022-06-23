@@ -14,7 +14,6 @@ import com.example.paperlessmeeting_demo.tool.VideoConfiguration;
  */
 public class TCPSender implements Sender {
     private ISendQueue mSendQueue = new NormalSendQueue();
-    private ISendQueue mWSSendQueue = new NormalSendQueue();  // ws 专开一个sendqueue,防止sendqueue取数据总量计算有误
     private static final String TAG = "TCPSender";
 //    private OnSenderListener sendListener;
     private TCPConnection mTcpConnection;
@@ -23,7 +22,6 @@ public class TCPSender implements Sender {
     private int subCmd;
     //文本消息
     private String sendBody = null;
-
 
     public TCPSender() {
         mTcpConnection = new TCPConnection();
@@ -64,7 +62,6 @@ public class TCPSender implements Sender {
             return;
         }
         mSendQueue.putFrame(frame);
-        mWSSendQueue.putFrame(frame);
     }
 
     /**
@@ -73,7 +70,6 @@ public class TCPSender implements Sender {
     public void openConnect() {
         //设置缓存队列
         mTcpConnection.setSendQueue(mSendQueue);
-        mTcpConnection.setmWSSendQueue(mWSSendQueue);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -86,31 +82,18 @@ public class TCPSender implements Sender {
     @Override
     public void start() {
         mSendQueue.start();
-        mWSSendQueue.start();
+//        mWSSendQueue.start();
     }
 
     @Override
     public void stop() {
         mTcpConnection.stop();
         mSendQueue.stop();
-        mWSSendQueue.stop();
     }
 
     private synchronized void connectNotInUi() {
         // 直接发送屏幕数据
         mTcpConnection.sendScreenData();
-    }
-
-    public void sendWSScreenData() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mTcpConnection.sendWSScreenData();
-            }
-        }).start();
-    }
-    public void finishWSSender() {
-        if (mTcpConnection != null) mTcpConnection.finishWSSender();
     }
 
     /**

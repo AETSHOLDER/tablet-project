@@ -44,7 +44,7 @@ public class TCPWriteThread extends Thread {
     public void sendData(byte[] buff) {
         EncodeV1 encodeV1 = new EncodeV1(SocketCmd.SocketCmd_ScreentData,buff);
 
-        Log.e("发送数据","data===="+ Arrays.toString(encodeV1.buildSendContent()));
+//        Log.e("发送数据","data===="+ Arrays.toString(encodeV1.buildSendContent()));
         MeetingAPP.getInstance().getNettyClient().sendMsgToServer(encodeV1.buildSendContent(), new ChannelFutureListener() {
             @Override
             public void operationComplete(ChannelFuture channelFuture) throws Exception {

@@ -84,6 +84,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.FileNameMap;
 import java.net.URLConnection;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -221,7 +222,6 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-
         tt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

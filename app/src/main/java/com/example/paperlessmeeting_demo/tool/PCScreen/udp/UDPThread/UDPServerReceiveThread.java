@@ -81,9 +81,10 @@ public class UDPServerReceiveThread extends Thread {
         Log.d(TAG, " is running");
         DatagramSocket rSocket = null;
         try {
-            rSocket = new DatagramSocket(new InetSocketAddress(constant.BROADCAST_PORT));
+            rSocket = new DatagramSocket(null);
             rSocket.setReuseAddress(true);
             rSocket.setBroadcast(true);
+            rSocket.bind(new InetSocketAddress(constant.BROADCAST_PORT));
         } catch (SocketException e) {
             e.printStackTrace();
             Log.e(TAG,"接受数据DatagramSocket启动失败");

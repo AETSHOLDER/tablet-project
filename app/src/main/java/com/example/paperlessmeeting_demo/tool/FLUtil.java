@@ -42,6 +42,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
@@ -303,11 +304,12 @@ public class FLUtil {
                     } catch (UnknownHostException e) {
                         e.printStackTrace();
                     }
-                    DatagramSocket datagramSocket = new DatagramSocket(12345);
+                    DatagramSocket datagramSocket = new DatagramSocket(null);
+                    datagramSocket.setReuseAddress(true);
                     datagramSocket.setBroadcast(true);
-                    DatagramPacket datagramPacket = new DatagramPacket(message,
-                            message.length);
+                    datagramSocket.bind(new InetSocketAddress(12345));
 
+                    DatagramPacket datagramPacket = new DatagramPacket(message, message.length);
                     try {
                         while (true) {
                             int p = datagramPacket.getPort();

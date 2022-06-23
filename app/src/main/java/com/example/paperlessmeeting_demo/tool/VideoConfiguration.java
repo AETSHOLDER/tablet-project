@@ -4,7 +4,7 @@ package com.example.paperlessmeeting_demo.tool;
 public final class VideoConfiguration {
     // TODO modify by xu.wang
     //--------------------默认标清时的设置参数--------------------------------
-    public static final int DEFAULT_HEIGHT = 1200;
+    public static final int DEFAULT_HEIGHT = 1080;
     public static final int DEFAULT_WIDTH = 1920;
     public static final int DEFAULT_FPS = 24;
     public static final int DEFAULT_MAX_BPS = 1500;

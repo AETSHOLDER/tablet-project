@@ -1,5 +1,7 @@
 package com.example.paperlessmeeting_demo.tool;
 
+import android.util.Log;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -227,5 +229,21 @@ public class TimeUtils {
             e.printStackTrace();
         }
         return date.getTime();
+    }
+
+    /**
+     *  hh:mm:ss zzz换算成整型的数值
+     *  比如 11:22:20.949 转换为 40940949  11*3600 + 22*20 + 20
+     * */
+    public static int getScreenTime() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm:ss:SSS");
+        String timeStr = TimeUtils.getCurrentTimeInString(simpleDateFormat);
+//        Log.e("getTime","timeStr===="+timeStr);
+        String[] split = timeStr.split(":");
+        if(split.length!=4){
+            return 0;
+        }
+        int ms = (Integer.valueOf(split[0]) *3600 + Integer.valueOf(split[1])*60 + Integer.valueOf(split[2]) )*1000 + Integer.valueOf(split[3]);
+        return ms;
     }
 }

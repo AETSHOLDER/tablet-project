@@ -58,7 +58,6 @@ import com.example.paperlessmeeting_demo.tool.TimeUtils;
 import com.example.paperlessmeeting_demo.tool.ToastUtils;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.example.paperlessmeeting_demo.tool.VideoConfiguration;
-import com.example.paperlessmeeting_demo.tool.VideoEncoderUtil;
 import com.example.paperlessmeeting_demo.tool.constant;
 import com.example.paperlessmeeting_demo.widgets.FloatingActionsMenu;
 import com.example.paperlessmeeting_demo.widgets.FloatingImageButton;
@@ -175,7 +174,6 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     // 同屏相关
     private boolean isScreen = false;
     private static final int ACTIVITY_RESULT_CODE_SCREEN = 110;
-    private VideoEncoderUtil videoEncoder;
     private StreamController mStreamController;
     private WSSender tcpSender;
     private VideoConfiguration mVideoConfiguration;
@@ -450,7 +448,8 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                     }
                     // 当前用户正在投屏
                     if(UserUtil.isShareScreen){
-                        screenImageService.startWSSender();
+//                        screenImageService.startWSSender();
+                        screenImageService.startWSController();
                     }else {
                         mediaProjectionManager = (MediaProjectionManager) getApplication().getSystemService(Context.MEDIA_PROJECTION_SERVICE);
                         Intent captureIntent = mediaProjectionManager.createScreenCaptureIntent();
@@ -459,7 +458,8 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
 
                 }else {
                     if(UserUtil.isShareScreen){
-                        screenImageService.finishWSSender();
+//                        screenImageService.finishWSSender();
+                        screenImageService.stopWSRecording();
                     }else {
                         mStreamController.stop();
                     }
@@ -805,9 +805,6 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
         //  同屏
         else if(requestCode == ACTIVITY_RESULT_CODE_SCREEN) {
             mediaProjection = mediaProjectionManager.getMediaProjection(resultCode, data);
-//            videoEncoder = new VideoEncoderUtil(mediaProjection, "");
-//            videoEncoder.start();
-
             startController(mediaProjection);
         }
     }
@@ -817,14 +814,14 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
      */
     public void startController(MediaProjection mediaProjection) {
 //        ScreenVideoController screenVideoController = new ScreenVideoController(mMediaProjectionManage, resultCode, data);
-        ScreenVideoController screenVideoController = new ScreenVideoController(mediaProjection);
+        ScreenVideoController screenVideoController = new ScreenVideoController(mediaProjection,false);
         mStreamController = new StreamController(screenVideoController);
         TcpPacker packer = new TcpPacker();
         tcpSender = new WSSender();
 //        tcpSender.setSenderListener(this);
         tcpSender.setMianCmd(SocketCmd.SocketCmd_ScreentData);
         tcpSender.setSendBody(constant.CVI_PAPER_SCREEN_DATA);
-        mVideoConfiguration = new VideoConfiguration.Builder().setSize(1920, 1200).build();
+        mVideoConfiguration = new VideoConfiguration.Builder().setSize(1920, 1080).build();
         mStreamController.setVideoConfiguration(mVideoConfiguration);
         mStreamController.setPacker(packer);
         mStreamController.setSender(tcpSender);

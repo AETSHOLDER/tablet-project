@@ -29,8 +29,14 @@ public class ScreenVideoController implements IVideoController {
     private VideoConfiguration mVideoConfiguration = VideoConfiguration.createDefault();
     private ScreenRecordEncoder mEncoder;
     private OnVideoEncodeListener mListener;
+    private boolean isWSScreen = false;
 
-    public ScreenVideoController(MediaProjection mediaProjection ) {
+    /**
+     * isWS  是否销毁MediaProjection
+     * 如果是二次投屏，不能销毁
+     * */
+    public ScreenVideoController(MediaProjection mediaProjection,boolean isWS) {
+        isWSScreen = isWS;
         mMediaProjection = mediaProjection;
 //        mManager = manager;
 //        this.resultCode = resultCode;
@@ -60,7 +66,7 @@ public class ScreenVideoController implements IVideoController {
             mEncoder.stop();
             mEncoder = null;
         }
-        if (mMediaProjection != null) {
+        if (mMediaProjection != null && !isWSScreen ) {
             mMediaProjection.stop();
             mMediaProjection = null;
         }

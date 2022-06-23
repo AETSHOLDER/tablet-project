@@ -118,6 +118,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.FileNameMap;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
@@ -911,8 +912,12 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                         }
                         DatagramSocket datagramSocket = null;
                         try {
-                            datagramSocket = new DatagramSocket(constant.EXTRAORDINARY_MEETING_PORT);
+                            datagramSocket = new DatagramSocket(null);
+                            datagramSocket.setReuseAddress(true);
                             datagramSocket.setBroadcast(true);
+                            datagramSocket.bind(new InetSocketAddress(constant.EXTRAORDINARY_MEETING_PORT));
+
+
                             DatagramPacket datagramPacket = new DatagramPacket(bytes,
                                     bytes.length);
                             while (true) {
@@ -1031,11 +1036,9 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
 
             @Override
             public void udpDisConnec(String message) {
-
             }
         });
     }
-
     private void initiaServerData() {
 
         if (UserUtil.isNetDATA) {
@@ -1651,6 +1654,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
             public void onComplete(View view, String content) {
                 if (view == shareScreen_codeview) {
                     closeKeyboardHidden(WuHuActivity.this);
+                    shareScreenDialog.dismiss();
                     my_code = content;
                     Log.e("WuHuActivity", "content===" + content);
 
@@ -1660,11 +1664,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                     }
                     UDPClientManager.getInstance().removeUDPBroastcast();
                     UDPClientManager.getInstance().sendUDPWithCode(my_code);
-                    shareScreenDialog.dismiss();
-
-
                 }
-
             }
         });
         ImageView imageView = view.findViewById(R.id.clear_ima);
@@ -1686,11 +1686,14 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
         });
     }
 
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d("requestCodeUractivity", "requestCode= " + requestCode + "   resultCode=" + resultCode);
         if (requestCode == ACTIVITY_RESULT_CODE_SCREEN && resultCode == Activity.RESULT_OK) {
+            if(mMediaProjectionManage==null){
+                mMediaProjectionManage = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+            }
             mediaProjection = mMediaProjectionManage.getMediaProjection(resultCode, data);
             startRecord();
         }
@@ -1721,14 +1724,20 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public void onMessageResponse(final ReceiveData data) {
         Log.e(TAG, "客户端收到消息===" + data.getHeader().getMainCmd());
-
         switch (data.getHeader().getMainCmd()) {
             case SocketCmd.SocketCmd_RepAccept:
-                // TODO 获取屏幕发数据
-                mMediaProjectionManage = (MediaProjectionManager) getApplication().getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-                Intent captureIntent = mMediaProjectionManage.createScreenCaptureIntent();
-                startActivityForResult(captureIntent, ACTIVITY_RESULT_CODE_SCREEN);
-
+//                MeetingAPP.mHandler.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+                        // TODO 获取屏幕发数据 直接调用startActivityForResult在WuHuActivity可以，退出到login再进来没有回调，原因未知，用下面方法解决了。。。
+                        mMediaProjectionManage = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+                        Intent captureIntent = mMediaProjectionManage.createScreenCaptureIntent();
+                        Activity top = ActivityUtils.getTopActivity();
+                        if(top!=null && top.getLocalClassName().contains("WuHuActivity")){
+                            top.startActivityForResult(captureIntent, ACTIVITY_RESULT_CODE_SCREEN);
+                        }
+//                    }
+//                });
                 break;
             case SocketCmd.SocketCmd_RepReject_001:
                 runOnUiThread(new Runnable() {

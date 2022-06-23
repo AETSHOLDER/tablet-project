@@ -94,7 +94,7 @@ public class VideoEncoderUtil {
         //监听的端口号
         static final int BROADCAST_PORT = 6789;
         private InetAddress inetAddress = null;
-        public int DEFAULT_HEIGHT = 1200;
+        public int DEFAULT_HEIGHT = 1080;
         public int DEFAULT_WIDTH = 1920;
         int num = 0;
 

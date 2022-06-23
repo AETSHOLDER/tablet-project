@@ -38,7 +38,6 @@ import java.util.Arrays;
 
 public class ScreenReceiveActivity extends BaseActivity{
     private static final String TAG = "ScreenReceiveActivity";
-    private MediaCodec mediaCodec;
     private SurfaceView surface_view;
     private SurfaceHolder mSurfaceHolder;
 
@@ -103,11 +102,6 @@ public class ScreenReceiveActivity extends BaseActivity{
                 //销毁时激发，一般在这里将画面的线程停止、释放。
                 mController.surfaceDestrory();
                 getFrameData = false;
-                if (mediaCodec != null) {
-                    mediaCodec.stop();
-                    mediaCodec.release();
-                    mediaCodec = null;
-                }
             }
         });
 
@@ -153,15 +147,6 @@ public class ScreenReceiveActivity extends BaseActivity{
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onGetStickyEvent(EventScreenMessage message) {
-//        if (message.getType().equals(MessageReceiveType.MessageClient)) {
-//            if(mDecoderUtils==null){
-//                return;
-//            }
-//            byte[] aa = ByteUtil.decodeValue(message.getBytes()) ;
-//            //区分音视频
-//            mDecoderUtils.isCategory(aa);
-//        }
-
         if (message.getType().equals(MessageReceiveType.MessageScreenData)) {
             if(mDecoderUtils==null){
                 return;
@@ -169,7 +154,7 @@ public class ScreenReceiveActivity extends BaseActivity{
 
             ReceiveData receiveData = message.getBytes();
             if(receiveData.getHeader().getMainCmd() == SocketCmd.SocketCmd_ScreentData){
-                Log.e("服务端收到数据","Arrays.toString(arr)==="+ Arrays.toString(receiveData.getBuff()));
+//                Log.e("服务端收到数据","Arrays.toString(arr)==="+ Arrays.toString(receiveData.getBuff()));
                 mDecoderUtils.isCategory(receiveData.getBuff());
             }
         }else if(message.getType().equals(MessageReceiveType.MessageScreenDisconnect)){

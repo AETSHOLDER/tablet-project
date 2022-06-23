@@ -19,10 +19,7 @@ public class TCPConnection {
 //    private TcpConnectListener listener;
     private static final String TAG = "TCPConnection";
     private ISendQueue mSendQueue;
-    private ISendQueue mWSSendQueue;
     private TCPWriteThread mWrite;     // tcp 发送线程
-
-    private WSWriteThread mWSWrite;     // ws 发送线程
     private int width, height;
     private int maxBps;
     private int fps;
@@ -37,9 +34,6 @@ public class TCPConnection {
         mSendQueue = sendQueue;
     }
 
-    public void setmWSSendQueue(ISendQueue mWSSendQueue) {
-        this.mWSSendQueue = mWSSendQueue;
-    }
 
     public void setVideoParams(VideoConfiguration videoConfiguration) {
         width = videoConfiguration.width;
@@ -58,24 +52,6 @@ public class TCPConnection {
         mWrite.start();
     }
 
-    // 通过ws屏幕数据
-    public void sendWSScreenData() {
-        mWSWrite = new WSWriteThread( mWSSendQueue, SocketCmd.SocketCmd_ScreentData, "");
-        mWSWrite.start();
-    }
-    public void finishWSSender() {
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                if (mWSWrite != null) {
-//                    mWrite.setOnTcpWriteThread(null);
-                    mWSWrite.shutDown();
-                }
-            }
-        }.start();
-    }
-
     public void stop() {
         new Thread() {
             @Override
@@ -84,9 +60,6 @@ public class TCPConnection {
                 if (mWrite != null) {
 //                    mWrite.setOnTcpWriteThread(null);
                     mWrite.shutDown();
-                }
-                if(mWSWrite != null){
-                    mWSWrite.shutDown();
                 }
             }
         }.start();

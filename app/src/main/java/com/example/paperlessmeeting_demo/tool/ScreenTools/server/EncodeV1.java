@@ -4,7 +4,10 @@ import android.text.TextUtils;
 import android.util.Log;
 import com.example.paperlessmeeting_demo.tool.ScreenTools.utils.ByteUtil;
 import com.example.paperlessmeeting_demo.tool.ScreenTools.utils.SocketCmd;
+import com.example.paperlessmeeting_demo.tool.TimeUtils;
+
 import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
 
 /**
  * 传输数据格式
@@ -93,10 +96,12 @@ public class EncodeV1 {
                 }
                 break;
             case SocketCmd.SocketCmd_ScreentData:
-                // SocketCmd_ScreentData（4字节）+ Size（4字节）+ 鼠标X坐标（4字节）+ 鼠标Y坐标（4字节）+ AVPacket（未知字节）
+                // SocketCmd_ScreentData（4字节）+ Size（4字节）+ 鼠标X坐标（4字节）+ 鼠标Y坐标（4字节）+ AVPacket（未知字节）AVPacket 头部包含4个字节大小包长
+                // 原来的坐标x值被我填写成了 hh:mm:ss zzz换算成整型的数值
                 bb = ByteBuffer.allocate(20 + bodyByteSize);
                 bb.put(ByteUtil.int2Bytes(mainCmd));
                 bb.put(ByteUtil.int2Bytes(20 + bodyByteSize));
+                // TimeUtils.getScreenTime()
                 bb.put(ByteUtil.int2Bytes(0));
                 bb.put(ByteUtil.int2Bytes(0));
                 bb.put(ByteUtil.int2Bytes(bodyByteSize));
@@ -107,5 +112,6 @@ public class EncodeV1 {
         }
         return bb.array();
     }
+
 
 }

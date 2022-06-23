@@ -67,9 +67,9 @@ public class UDPClientManager {
         scheduledExecutorService.execute(new Runnable() {
             @Override
             public void run() {
-                // 30秒后停止广播
+                // 15秒后停止广播
                 try {
-                    if(!scheduledExecutorService.awaitTermination(30, TimeUnit.SECONDS)){
+                    if(!scheduledExecutorService.awaitTermination(15, TimeUnit.SECONDS)){
                         removeUDPBroastcast();
                     }
                 }catch (InterruptedException e){
