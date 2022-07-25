@@ -5,10 +5,12 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -20,7 +22,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -28,6 +34,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.ScreenUtils;
 import com.blankj.utilcode.util.StringUtils;
@@ -133,7 +140,7 @@ public class LoginActivity extends BaseActivity {
     TextView dateTv;
     //    private String[] titles = {"扫码进入", "手写签到", "邀请码"};
     private LoginToFragmentListener loginToFragmentListener;
-
+    private Dialog confirmDialog;
     @BindView(R.id.initiate_meeting_tv)
     TextView init_meeting;
     @BindView(R.id.join_meeting_tv)
@@ -196,9 +203,9 @@ public class LoginActivity extends BaseActivity {
     private String COPY_PATH = Environment.getExternalStorageDirectory() + constant.COPY_PATH;
     private String VOTE_FILE = Environment.getExternalStorageDirectory() + constant.VOTE_FILE;
     private String netFilePath = Environment.getExternalStorageDirectory() + constant.WUHU_NET_FILE;//网络请求得到的文件夹路径
-    private   String FileCathePath = Environment.getExternalStorageDirectory() + File.separator + "cutlittlefile";   //切片视频切割后缓存地址
+    private String FileCathePath = Environment.getExternalStorageDirectory() + File.separator + "cutlittlefile";   //切片视频切割后缓存地址
     private String selfIp = "";
-    private   String isReuse = "";
+    private String isReuse = "";
     private Handler handler = new Handler() {
         @Override
 
@@ -365,7 +372,7 @@ public class LoginActivity extends BaseActivity {
         if (message.getMessage().equals(constant.get_server_ip)) {
             //验证安装APP设备的数量
             verificationEquipment();
-           // getMacIsRegister();
+            // getMacIsRegister();
 //           resumeToGetMeetingInfo();
         }
         if (message.getMessage().equals(constant.continusClick)) {
@@ -463,38 +470,96 @@ public class LoginActivity extends BaseActivity {
     }
 
     //验证安装APP设备的数量
-   private  void  verificationEquipment(){
+    private void verificationEquipment() {
 
-       Map<String,Object> map = new HashMap<>();
-       //随机参数--测试用
-   /*    UUID id=UUID.randomUUID();
+        Map<String, Object> map = new HashMap<>();
+        //随机参数--测试用
+      UUID id=UUID.randomUUID();
        String[] idd=id.toString().split("-");
-      String  mac= idd[0]+idd[1]+idd[2];*/
+      String  mac= idd[0]+idd[1]+idd[2];
 
-       map.put("mac",FLUtil.getMacAddress());
-       NetWorkManager.getInstance().getNetWorkApiService().verificationEquipment(map).compose(this.<BasicResponse>bindToLifecycle())
-               .subscribeOn(Schedulers.io())
-               .observeOn(AndroidSchedulers.mainThread())
-               .subscribe(new DefaultObserver<BasicResponse>() {
-                   @Override
-                   protected void onFail(BasicResponse response) {
-                       Toast.makeText(LoginActivity.this,"安装APP的设备已达上限！",Toast.LENGTH_SHORT).show();
-                       try {
-                           Thread.sleep(500);//休眠5毫秒
-                       } catch (InterruptedException e) {
-                           e.printStackTrace();
-                       }
-                       finish();
-                      // System.exit(0);
-                   }
+        map.put("mac", mac);
+        NetWorkManager.getInstance().getNetWorkApiService().verificationEquipment(map).compose(this.<BasicResponse>bindToLifecycle())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DefaultObserver<BasicResponse>() {
+                    @Override
+                    protected void onFail(BasicResponse response) {
+                       // Toast.makeText(LoginActivity.this, "安装APP的设备已达上限！", Toast.LENGTH_SHORT).show();
+                        dialogView();
 
-                   @Override
-                   protected void onSuccess(BasicResponse response) {
+                        // System.exit(0);
+                    }
 
-                   }
-               });
+                    @Override
+                    protected void onSuccess(BasicResponse response) {
 
-   }
+                    }
+                });
+
+    }
+
+    private void  dialogView() {
+        confirmDialog = new Dialog(LoginActivity.this, R.style.dialogTransparent);
+       View   view = LayoutInflater.from(LoginActivity.this).inflate(R.layout.dialog_confirm3, null);
+        confirmDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        //弹窗点击周围空白处弹出层自动消失弹窗消失(false时为点击周围空白处弹出层不自动消失)
+       // confirmDialog.setCanceledOnTouchOutside(canceledOnTouchOutside);
+        //将布局设置给Dialog
+        confirmDialog.setContentView(view);
+        TextView confirm = view.findViewById(R.id.confir_btn);
+        TextView contentTxt = (TextView) view.findViewById(R.id.content_tv);
+       /* contentTxt.setVisibility(View.INVISIBLE);
+        confirm.setText("安装APP的设备已达上限！");*/
+
+     /*   contentTxt.setBackgroundColor(Color.parseColor("#ffffff"));
+        contentTxt.setTextColor(Color.parseColor("#3377FF"));*/
+      //  contentTxt.setText("安装APP的设备已达上限！");
+        confirmDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        confirmDialog.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+        confirmDialog.getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+            @Override
+            public void onSystemUiVisibilityChange(int visibility) {
+                int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                        //布局位于状态栏下方
+                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                        //全屏
+                        View.SYSTEM_UI_FLAG_FULLSCREEN |
+                        //隐藏导航栏
+                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+                if (Build.VERSION.SDK_INT >= 19) {
+                    uiOptions |= 0x00001000;
+                } else {
+                    uiOptions |= View.SYSTEM_UI_FLAG_LOW_PROFILE;
+                }
+                if (confirmDialog!=null&&confirmDialog.getWindow()!=null){
+                    confirmDialog.getWindow().getDecorView().setSystemUiVisibility(uiOptions);
+                }
+
+            }
+        });
+        confirmDialog.show();
+        Window window = confirmDialog.getWindow();
+        WindowManager windowManager = window.getWindowManager();
+        Display display = windowManager.getDefaultDisplay();
+        WindowManager.LayoutParams lp = confirmDialog.getWindow().getAttributes();
+        lp.width = (int) (display.getWidth() * 0.45); //设置宽度
+        lp.height = (int) (display.getHeight() * 0.23); //设置宽度
+        confirmDialog.getWindow().setAttributes(lp);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (confirmDialog!=null){
+                    confirmDialog.dismiss();
+                }
+
+                finish();
+            }
+        }, 2000);
+
+
+    }
 
     /**
      * 获取参会人员信息
