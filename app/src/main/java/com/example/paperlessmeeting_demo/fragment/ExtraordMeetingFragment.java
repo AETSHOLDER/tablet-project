@@ -181,7 +181,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
             @Override
             public void onClick(View view) {
                 if (UrlConstant.baseUrl.equals("http://192.168.1.1:3006")) {
-                    Toast.makeText(getActivity(), "服务端不在线，请稍后再试！", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "服务器不在线，请稍后再试！", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -192,7 +192,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
             @Override
             public void onClick(View view) {
                 if (UrlConstant.baseUrl.equals("http://192.168.1.1:3006")) {
-                    Toast.makeText(getActivity(), "服务端不在线，请稍后再试！", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "服务器不在线，请稍后再试！", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
