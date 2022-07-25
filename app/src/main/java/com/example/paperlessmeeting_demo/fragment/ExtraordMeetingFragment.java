@@ -63,6 +63,7 @@ import com.example.paperlessmeeting_demo.tool.TempMeetingTools.UDPBroadcastManag
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.JWebSocketClientService;
 import com.example.paperlessmeeting_demo.tool.TimeUtils;
 import com.example.paperlessmeeting_demo.tool.ToastUtils;
+import com.example.paperlessmeeting_demo.tool.UrlConstant;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.example.paperlessmeeting_demo.tool.constant;
 import com.example.paperlessmeeting_demo.util.ToastUtil;
@@ -179,13 +180,21 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
         init_meeting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (UrlConstant.baseUrl.equals("http://192.168.1.1:3006")) {
+                    Toast.makeText(getActivity(), "服务端不在线，请稍后再试！", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 initMeetingDialog();
             }
         });
         join_meeting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                if (UrlConstant.baseUrl.equals("http://192.168.1.1:3006")) {
+                    Toast.makeText(getActivity(), "服务端不在线，请稍后再试！", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 showHistoryDialog();
                 //老版：通过选取临时会议邀请码进入会议

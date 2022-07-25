@@ -130,6 +130,7 @@ public interface NetWorkApi {
     //大文件合并
     @POST("mergeChunk")
     Observable<BasicResponse<MergeChunkBean>> mergeChunk(@Body Map<String, Object> map);
+
     /*
      *  大文件分片上传
      * */
@@ -149,20 +150,24 @@ public interface NetWorkApi {
     //创建文件
     @POST("createMeetingFile")
     Observable<BasicResponse<CreateFileBeanResponse>> createMeetingFile(@Body Object fields);
+
     //芜湖获取会议列表
     @GET("meetingList")
-    Observable<BasicResponse<List<WuHuMeetingListResponse>>> meetingList(@Query("name") String name,@Query("startTime") String startTime);
+    Observable<BasicResponse<List<WuHuMeetingListResponse>>> meetingList(@Query("name") String name, @Query("startTime") String startTime);
 
     //芜湖修改会议
     @PUT("meeting")
     Observable<BasicResponse<MeetingIdBean>> meeting(@Body WuHuEditBeanRequset wuHuEditBeanRequset);
+
     //下载文件、、
     @Streaming
     @POST("downloadFile")
     Observable<BasicResponse> downloadFile(@Query("uri") String uri, @Query("dest") String dest);
+
     //芜湖查询单个会议
     @GET("meetingInfo")
     Observable<BasicResponse<WuHuMeetingListResponse>> getWuHuMeetingInfo(@Query("id") String id);
+
     //查询会议信息
     @GET("findMeetingRecordInfo")
     Observable<BasicResponse<MeetingInfoBean>> getMeetingInfo(@Query("id") String id);
@@ -237,5 +242,9 @@ public interface NetWorkApi {
     //转动摄像头
     @GET("positionCall/{pos}")
     Observable<BasicResponse> setPositonCall(@Path("pos") String groupId);
+
+    //验证安装APP设备的数量
+    @POST("device")
+    Observable<BasicResponse> verificationEquipment(@Body Map<String, Object> map);
 
 }

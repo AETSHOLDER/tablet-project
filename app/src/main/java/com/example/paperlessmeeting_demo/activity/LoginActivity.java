@@ -86,7 +86,10 @@ import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -360,6 +363,8 @@ public class LoginActivity extends BaseActivity {
             }
         }
         if (message.getMessage().equals(constant.get_server_ip)) {
+            //验证安装APP设备的数量
+            verificationEquipment();
            // getMacIsRegister();
 //           resumeToGetMeetingInfo();
         }
@@ -457,6 +462,39 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
+    //验证安装APP设备的数量
+   private  void  verificationEquipment(){
+
+       Map<String,Object> map = new HashMap<>();
+       //随机参数--测试用
+   /*    UUID id=UUID.randomUUID();
+       String[] idd=id.toString().split("-");
+      String  mac= idd[0]+idd[1]+idd[2];*/
+
+       map.put("mac",FLUtil.getMacAddress());
+       NetWorkManager.getInstance().getNetWorkApiService().verificationEquipment(map).compose(this.<BasicResponse>bindToLifecycle())
+               .subscribeOn(Schedulers.io())
+               .observeOn(AndroidSchedulers.mainThread())
+               .subscribe(new DefaultObserver<BasicResponse>() {
+                   @Override
+                   protected void onFail(BasicResponse response) {
+                       Toast.makeText(LoginActivity.this,"安装APP的设备已达上限！",Toast.LENGTH_SHORT).show();
+                       try {
+                           Thread.sleep(500);//休眠5毫秒
+                       } catch (InterruptedException e) {
+                           e.printStackTrace();
+                       }
+                       finish();
+                      // System.exit(0);
+                   }
+
+                   @Override
+                   protected void onSuccess(BasicResponse response) {
+
+                   }
+               });
+
+   }
 
     /**
      * 获取参会人员信息

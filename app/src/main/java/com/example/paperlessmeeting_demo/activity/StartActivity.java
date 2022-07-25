@@ -72,6 +72,7 @@ public class StartActivity extends WBBasicActivity implements EasyPermissions.Pe
             case R.id.welcomeImage:
                 Intent intent = new Intent(StartActivity.this, LoginActivity.class);
                 startActivity(intent);
+                finish();
                 break;
         }
     }
