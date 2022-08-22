@@ -473,12 +473,12 @@ public class LoginActivity extends BaseActivity {
     private void verificationEquipment() {
 
         Map<String, Object> map = new HashMap<>();
-        //随机参数--测试用
+   /*     //随机参数--测试用
       UUID id=UUID.randomUUID();
        String[] idd=id.toString().split("-");
-      String  mac= idd[0]+idd[1]+idd[2];
+      String  mac= idd[0]+idd[1]+idd[2];*/
 
-        map.put("mac", mac);
+        map.put("mac", FLUtil.getMacAddress());
         NetWorkManager.getInstance().getNetWorkApiService().verificationEquipment(map).compose(this.<BasicResponse>bindToLifecycle())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
