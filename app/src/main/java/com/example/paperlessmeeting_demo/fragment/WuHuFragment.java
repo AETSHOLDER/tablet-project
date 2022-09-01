@@ -127,50 +127,109 @@ import okhttp3.RequestBody;
  * Author：LiuYM
  * Date： 2017-05-10 10:37
  */
-
 public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfilePthInterface, WuHuFileListAdapter.upLoadFileInterface, WuHuFileListAdapter.PlayerClickInterface, WuHuFileListAdapter.ShareFileInterface, WuHuFileListAdapter.PushFileInterface, View.OnClickListener {
+    /**
+     * The Unbinder.
+     */
     Unbinder unbinder;
     private static final String TAG = "TestFragment";
     private String textNub;
  /*   @BindView(R.id.tv_test)
     TextView mTextView;*/
 
+    /**
+     * The Root lin.
+     */
     @BindView(R.id.root_lin)
     RelativeLayout root_lin;
+    /**
+     * The Image add.
+     */
     @BindView(R.id.image_add)
     RelativeLayout imageAdd;
+    /**
+     * The List view.
+     */
     @BindView(R.id.listView)
     MyListView listView;
+    /**
+     * The List view catalog.
+     */
     @BindView(R.id.listView_catalog)
     MyListView listView_catalog;
+    /**
+     * The Progress bar ll.
+     */
     @BindView(R.id.progressBar_ll)
     RelativeLayout progressBarLl;
+    /**
+     * The Fragment line.
+     */
     @BindView(R.id.aa)
     View fragmentLine;
+    /**
+     * The Nn.
+     */
     @BindView(R.id.nn)
     View nn;
+    /**
+     * The Topic.
+     */
     @BindView(R.id.topic)
     TextView topic;
+    /**
+     * The Tittle 1.
+     */
     @BindView(R.id.tittle1)
     TextView tittle1;
+    /**
+     * The Tittle 2.
+     */
     @BindView(R.id.tittle2)
     TextView tittle2;
+    /**
+     * The Attend.
+     */
     @BindView(R.id.attend)
     TextView attend;
+    /**
+     * The Attend 2.
+     */
     @BindView(R.id.attend2)
     TextView attend2;
+    /**
+     * The Tittle num.
+     */
     @BindView(R.id.tittle_num)
     TextView tittle_num;
+    /**
+     * The File ly.
+     */
     @BindView(R.id.file_ly)
     LinearLayout file_ly;
+    /**
+     * The Topic ll.
+     */
     @BindView(R.id.topic_ll)
     LinearLayout topic_ll;
+    /**
+     * The Fragment ttile rl.
+     */
     @BindView(R.id.fragment_ttile_rl)
     RelativeLayout fragment_ttile_rl;
+    /**
+     * The List view catalog ll.
+     */
     @BindView(R.id.listView_catalog_ll)
     LinearLayout listView_catalog_ll;
+    /**
+     * The Scroll view file.
+     */
     @BindView(R.id.scrollView_file)
     ScrollView scrollView_file;
+    /**
+     * The Scroll view cata.
+     */
     @BindView(R.id.scrollView_cata)
     ScrollView scrollView_cata;
 
@@ -659,7 +718,35 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
                         intent.putExtra("isNetFile", false);
                         startActivity(intent);
                     } else if (fileBean.getFile_type().equals("4")) {
+                        /*{
+                            intent = new Intent();
+                            if (fileBean.isNet()) {
+                                if (fileBean.getLocalPath()== null) {
+                                    Toast.makeText(getActivity(), "文件不存在", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                            } else {
+                                if (fileBean.getPath() == null) {
+                                    Toast.makeText(getActivity(), "文件不存在", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                            }
 
+
+                            intent.setClass(getActivity(), SignActivity.class);
+                            //网络文件路径放在了getLocalPath字段  getPath放的是服务器的文件路径
+                            if (fileBean.isNet()) {
+                                intent.putExtra("url", fileBean.getLocalPath());
+                            } else {
+                                intent.putExtra("url", fileBean.getPath());
+                            }
+
+                            intent.putExtra("isOpenFile", true);
+                            intent.putExtra("isNetFile", false);
+                            intent.putExtra("tempPath", false);
+                            intent.putExtra("fileName", fileBean.getName());
+                            startActivity(intent);
+                        }*/
                         if (UserUtil.isNetworkOnline) {
                             intent = new Intent();
                             if (fileBean.isNet()) {
@@ -1247,6 +1334,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
            /* if (fileBeans == null || fileBeans.size() == 0) {
                 return;
             }*/
+
             fileListAdapter.setGridViewBeanList(fileBeans);
             fileListAdapter.notifyDataSetChanged();
         }
@@ -1349,6 +1437,8 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
 
     /**
      * 收到websocket 信息
+     *
+     * @param message the message
      */
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onGetStickyEvent(EventMessage message) {
@@ -2127,6 +2217,11 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
 
     }
 
+    /**
+     * Gets ip address string.
+     *
+     * @return the ip address string
+     */
     /*
      * 临时会议时获取设备有线网IP地址
      * */
@@ -2149,6 +2244,11 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
         return "0.0.0.0";
     }
 
+    /**
+     * Gets ip address.
+     *
+     * @return the ip address
+     */
     /*
      * 临时会议时获取设备无线网IP地址
      * */
@@ -2256,6 +2356,12 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
 
     }
 
+    /**
+     * New instance wu hu fragment.
+     *
+     * @param text the text
+     * @return the wu hu fragment
+     */
     public static WuHuFragment newInstance(String text) {
         WuHuFragment wuHuFragment = new WuHuFragment();
         Bundle bundle = new Bundle();
@@ -2264,7 +2370,12 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
         return wuHuFragment;
     }
 
-    //删除操作更新tag值
+    /**
+     * Update arguments.
+     *
+     * @param newText the new text
+     */
+//删除操作更新tag值
     public void updateArguments(String newText) {
 
         this.textNub = newText;
@@ -2776,9 +2887,9 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
                             e.printStackTrace();
                         }
                     }
+                    Log.d("hdhhdssf+locService",locService.size()+"     "+fileBeans.size());
 
-
-                    fileListAdapter.setGridViewBeanList(locService);
+                    fileListAdapter.setGridViewBeanList(fileBeans);
                     fileListAdapter.notifyDataSetChanged();
                     //通知所有fragment 都更新对应的议题文件列表
                     //  sendFragmenFlag();
@@ -2791,6 +2902,14 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
 
     }
 
+    /**
+     * Gets file path.
+     *
+     * @param context the context
+     * @param uri     the uri
+     * @return the file path
+     * @throws URISyntaxException the uri syntax exception
+     */
     @SuppressLint("NewApi")
     public String getFilePath(Context context, Uri uri) throws URISyntaxException {
         String selection = null;
@@ -2907,19 +3026,43 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
         return null;
     }
 
+    /**
+     * Is external storage document boolean.
+     *
+     * @param uri the uri
+     * @return the boolean
+     */
     public static boolean isExternalStorageDocument(Uri uri) {
         return "com.android.externalstorage.documents".equals(uri.getAuthority());
     }
 
+    /**
+     * Is downloads document boolean.
+     *
+     * @param uri the uri
+     * @return the boolean
+     */
     public static boolean isDownloadsDocument(Uri uri) {
         Log.d("isDownloadsDocument", uri.getAuthority());
         return "com.android.providers.downloads.documents".equals(uri.getAuthority());
     }
 
+    /**
+     * Is media document boolean.
+     *
+     * @param uri the uri
+     * @return the boolean
+     */
     public static boolean isMediaDocument(Uri uri) {
         return "com.android.providers.media.documents".equals(uri.getAuthority());
     }
 
+    /**
+     * Is google photos uri boolean.
+     *
+     * @param uri the uri
+     * @return the boolean
+     */
     public static boolean isGooglePhotosUri(Uri uri) {
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
@@ -2949,8 +3092,7 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
      *
      * @param oldPath$Name String 原文件路径+文件名 如：data/user/0/com.test/files/abc.txt
      * @param newPath$Name String 复制后路径+文件名 如：data/user/0/com.test/cache/abc.txt
-     * @return <code>true</code> if and only if the file was copied;
-     * <code>false</code> otherwise
+     * @return <code>true</code> if and only if the file was copied; <code>false</code> otherwise
      */
     public boolean copyFile(String oldPath$Name, String newPath$Name) {
         try {
@@ -3296,6 +3438,9 @@ public class WuHuFragment extends BaseFragment implements MediaReceiver.sendfile
 
     }
 
+    /**
+     * Show file transfer dialog.
+     */
     public void showFileTransferDialog() {
         //自定义dialog显示布局
         inflate = LayoutInflater.from(getActivity()).inflate(R.layout.wuhu_file_progress_dialog, null);

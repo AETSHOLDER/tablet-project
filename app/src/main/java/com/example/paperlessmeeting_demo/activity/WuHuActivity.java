@@ -327,7 +327,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                     bundle1.putString("filePath", filePath1);
                     intent1.putExtras(bundle1);
                     intent1.setAction(constant.SHARE_FILE_BROADCAST);
-                    //sendBroadcast(intent1);
+                    sendBroadcast(intent1);
                     break;
                 case 4:
                     Toast.makeText(WuHuActivity.this, "文件接收失败", Toast.LENGTH_SHORT).show();
