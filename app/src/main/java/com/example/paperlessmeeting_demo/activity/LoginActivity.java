@@ -456,7 +456,7 @@ public class LoginActivity extends BaseActivity {
                                 ToastUtils.showToast(LoginActivity.this, "该会议已结束!!!");
                                 return;
                             }
-                            Intent intent1 = new Intent(LoginActivity.this, WuHuActivity.class);
+                            Intent intent1 = new Intent(LoginActivity.this, WuHuActivity2.class);
                             Bundle bundle = new Bundle();
                             bundle.putString("ip", ip);
                             bundle.putString("isreuse", isReuse);

@@ -44,6 +44,7 @@ import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.activity.ActivitySearchListMeeting;
 import com.example.paperlessmeeting_demo.activity.MainActivity;
 import com.example.paperlessmeeting_demo.activity.WuHuActivity;
+import com.example.paperlessmeeting_demo.activity.WuHuActivity2;
 import com.example.paperlessmeeting_demo.adapter.WuHuMeetingListAdapter;
 import com.example.paperlessmeeting_demo.base.BaseFragment;
 import com.example.paperlessmeeting_demo.bean.BasicResponse;
@@ -364,7 +365,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                     List<String> ipcodeInfo = FLUtil.dealUDPMsg(UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr.get(currentSelIndex));
                     String[] strAll = ipcodeInfo.get(1).split("/");
                     String isRu = strAll[1];
-                    Intent intent1 = new Intent(getActivity(), WuHuActivity.class);
+                    Intent intent1 = new Intent(getActivity(), WuHuActivity2.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("ip", ipcodeInfo.get(0));
                     bundle.putString("isreuse", isRu);
@@ -469,7 +470,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                                 UserUtil.isTempMeeting = true;
                                 Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageClient);
 
-                                Intent intent1 = new Intent(getActivity(), WuHuActivity.class);
+                                Intent intent1 = new Intent(getActivity(), WuHuActivity2.class);
                                 if (index >= UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr.size()) {
                                     ToastUtils.showShort("加入不了会议!");
                                     return;
@@ -479,7 +480,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                                 String[] strAll = ipcodeInfo.get(1).split("/");
                                 String isRu = strAll[1];
                                 UserUtil.isNetDATA = false;
-                                Intent intent2 = new Intent(getActivity(), WuHuActivity.class);
+                                Intent intent2 = new Intent(getActivity(), WuHuActivity2.class);
                                 Bundle bundle = new Bundle();
                                 bundle.putString("ip", ipcodeInfo.get(0));
                                 bundle.putString("isreuse", isRu);
@@ -514,7 +515,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                                     UserUtil.isNetDATA = false;
                                     constant.temp_code = content;
                                     Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
-                                    Intent intent = new Intent(getActivity(), WuHuActivity.class);
+                                    Intent intent = new Intent(getActivity(), WuHuActivity2.class);
                                     Bundle bundle = new Bundle();
                                     bundle.putString("code", content);
                                     bundle.putString("isreuse", "3");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
@@ -529,7 +530,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                                     UserUtil.isNetDATA = false;
                                     constant.temp_code = content;
                                     Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
-                                    Intent intent = new Intent(getActivity(), WuHuActivity.class);
+                                    Intent intent = new Intent(getActivity(), WuHuActivity2.class);
                                     Bundle bundle = new Bundle();
                                     bundle.putString("code", content);
                                     bundle.putString("isreuse", "3");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
@@ -550,7 +551,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                     UserUtil.isNetDATA = false;
                     constant.temp_code = content;
                     Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
-                    Intent intent = new Intent(getActivity(), WuHuActivity.class);
+                    Intent intent = new Intent(getActivity(), WuHuActivity2.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("code", content);
                     bundle.putString("isreuse", "3");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
@@ -566,7 +567,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                     UserUtil.isNetDATA = false;
                     constant.temp_code = content;
                     Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
-                    Intent intent = new Intent(getActivity(), WuHuActivity.class);
+                    Intent intent = new Intent(getActivity(), WuHuActivity2.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("code", content);
                     bundle.putString("isreuse", "3");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
@@ -815,7 +816,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
             UserUtil.ISCHAIRMAN = true;
             constant.temp_code = "formalmeeting-" + wuHuMeetingListResponse.getName();
             Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
-            Intent intent = new Intent(getActivity(), WuHuActivity.class);
+            Intent intent = new Intent(getActivity(), WuHuActivity2.class);
             Bundle bundle = new Bundle();
             bundle.putString("code", "formalmeeting-" + wuHuMeetingListResponse.getName() + "/" + wuHuMeetingListResponse.get_id());
             bundle.putString("isreuse", "4");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
@@ -829,7 +830,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
             UserUtil.isNetDATA = true;
             constant.temp_code = "formalmeeting-" + wuHuMeetingListResponse.getName();
             Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
-            Intent intent = new Intent(getActivity(), WuHuActivity.class);
+            Intent intent = new Intent(getActivity(), WuHuActivity2.class);
             Bundle bundle = new Bundle();
             bundle.putString("code", "formalmeeting-" + wuHuMeetingListResponse.getName() + "/" + wuHuMeetingListResponse.get_id());
             bundle.putString("isreuse", "4");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
@@ -1019,7 +1020,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                 UserUtil.isNetDATA = false;
                 constant.temp_code = codeStr;
                 Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
-                Intent intent = new Intent(getActivity(), WuHuActivity.class);
+                Intent intent = new Intent(getActivity(), WuHuActivity2.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("code", codeStr);
                 bundle.putString("isreuse", "1");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
@@ -1037,7 +1038,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                 UserUtil.isNetDATA = false;
                 constant.temp_code = codeStr;
                 Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageServer);
-                Intent intent = new Intent(getActivity(), WuHuActivity.class);
+                Intent intent = new Intent(getActivity(), WuHuActivity2.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("code", codeStr);
                 bundle.putString("isreuse", "2");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
