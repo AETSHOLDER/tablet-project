@@ -555,6 +555,7 @@ public class JWebSocketClientService {
 
             }
         };
+        client.setConnectionLostTimeout(0);
         connect();
     }
 

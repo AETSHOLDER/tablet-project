@@ -328,8 +328,8 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
             public void onClick(View view) {
                 sign_Door.setSelected(!sign_Door.isSelected());
                 if (sign_Door.isSelected()) {
-                    if(isScreen){
-                        CVIPaperDialogUtils.showConfirmDialog(SignActivity.this,"请先退出同屏!","确定",false,new CVIPaperDialogUtils.ConfirmDialogListener() {
+                    if(isScreen || UserUtil.isShareScreen){
+                        CVIPaperDialogUtils.showConfirmDialog(SignActivity.this,"请先退出同屏或者投屏!","确定",false,new CVIPaperDialogUtils.ConfirmDialogListener() {
                             @Override
                             public void onClickButton(boolean clickConfirm, boolean clickCancel) {
                                 if (clickConfirm) {
