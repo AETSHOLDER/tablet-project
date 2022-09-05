@@ -333,6 +333,8 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                             @Override
                             public void onClickButton(boolean clickConfirm, boolean clickCancel) {
                                 if (clickConfirm) {
+                                    // 按钮状态回正
+                                    sign_Door.setSelected(!sign_Door.isSelected());
                                     return;
                                 }
                             }
