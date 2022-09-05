@@ -1282,9 +1282,13 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                         || SignOperationUtils.getInstance().mCurrentOPerationColor == WhiteBoardVariable.Operation.COLOR_EXPAND
                         || SignOperationUtils.getInstance().mCurrentOPerationText == WhiteBoardVariable.Operation.TEXT_EXPAND
                         || SignOperationUtils.getInstance().mCurrentOPerationEraser == WhiteBoardVariable.Operation.ERASER_EXPAND) {
-                    mVBottomBack.setVisibility(View.VISIBLE);
+                    if(mVBottomBack!=null){
+                        mVBottomBack.setVisibility(View.VISIBLE);
+                    }
                 } else {
-                    mVBottomBack.setVisibility(View.GONE);
+                    if(mVBottomBack!=null){
+                        mVBottomBack.setVisibility(View.GONE);
+                    }
                 }
             }
         }, 100);
