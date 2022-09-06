@@ -56,6 +56,7 @@ import com.example.paperlessmeeting_demo.bean.WuHuEditBean;
 import com.example.paperlessmeeting_demo.bean.WuHuNetWorkBean;
 import com.example.paperlessmeeting_demo.enums.MessageReceiveType;
 import com.example.paperlessmeeting_demo.fragment.ExtraordMeetingFragment;
+import com.example.paperlessmeeting_demo.fragment.ExtraordMeetingFragment2;
 import com.example.paperlessmeeting_demo.fragment.SweepCodeFragment;
 import com.example.paperlessmeeting_demo.network.DefaultObserver;
 import com.example.paperlessmeeting_demo.network.NetWorkManager;
@@ -783,7 +784,7 @@ public class LoginActivity extends BaseActivity {
 
         SweepCodeFragment sweepCodeFragment = SweepCodeFragment.newInstance("扫码进入");
         loginToFragmentListener = sweepCodeFragment;
-        pagerAdapter.addFragment(ExtraordMeetingFragment.newInstance("临时会议"), "临时会议");
+        pagerAdapter.addFragment(ExtraordMeetingFragment2.newInstance("网络会议"), "网络会议");
         pagerAdapter.addFragment(sweepCodeFragment, "扫码进入");
 //        pagerAdapter.addFragment(WhiteboardFragment.newInstance("手写签到"), "手写签到");
 
