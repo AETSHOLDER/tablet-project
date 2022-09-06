@@ -224,6 +224,7 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
     private ProgressBar progressBar;//显示文件传输进度
     private CompletedView completedView;
     private ImageView result_ima;
+    private ImageView close_dialog;
     private TextView tips;
     private String pushPath;
     private String pushType;
@@ -239,6 +240,8 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
     private int shareResponNum = 0;
     private int pushResponNo = 0;
     private int shareResponNo = 0;
+    private boolean FileIsShare=false;//文件有没有点过分享
+    private boolean FileIsPush=false;//推送按钮有没点过
     private Handler mHandler = new Handler() {
 
         @Override
@@ -378,24 +381,47 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                  * */
                 case 4:
                     // progressBarLl.setVisibility(View.VISIBLE);
-                    showFileTransferDialog();
-                    String fileName = msg.obj.toString();
-                    tips.setText("正在发送");
+                    if (shareResponNum==1||pushResponNum==1){
+
+                        showFileTransferDialog();
+                        String fileName = msg.obj.toString();
+                        tips.setText("正在发送");
+
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (dialog != null) {
+                                    dialog.dismiss();
+                                }
+                            }
+                        }, 1500);
+                    }
+
+
                     break;
                 /*
                  * 分享文件发送完毕，隐藏加载动画
                  * */
                 case 55:
                     //   progressBarLl.setVisibility(View.GONE);
-                    if (dialog != null) {
-                        dialog.dismiss();
-                    }
-                    completedView.setVisibility(View.GONE);
-                    result_ima.setVisibility(View.VISIBLE);
-                    result_ima.setImageResource(R.mipmap.ic_push_succes);
-                    tips.setText("发送成功");
-                    Toast.makeText(getActivity(), "文件发送成功", Toast.LENGTH_SHORT).show();
+                    if (shareResponNum==1||pushResponNum==1) {
+                        if (dialog != null) {
+                            if (completedView!=null){
+                                completedView.setVisibility(View.GONE);
+                            }
+                            if (result_ima!=null){
+                                result_ima.setVisibility(View.VISIBLE);
+                                result_ima.setImageResource(R.mipmap.ic_push_succes);
+                            }
+                            if (tips!=null){
+                                tips.setText("发送成功");
+                            }
 
+                            dialog.dismiss();
+                        }
+
+                        Toast.makeText(getActivity(), "文件发送成功", Toast.LENGTH_SHORT).show();
+                    }
                     if (isPush) {
                         if (StringUtils.isEmpty(pushType) || StringUtils.isEmpty(pushPath) || StringUtils.isEmpty(pushName)) {
                             return;
@@ -455,9 +481,14 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                  * 文件传输进度
                  * */
                 case 10:
+                    if (shareResponNum==1||pushResponNum==1) {
+                        String proress = (String) msg.obj;
+                        if (completedView!=null){
 
-                    String proress = (String) msg.obj;
-                    completedView.setProgress(Integer.parseInt(proress));
+                            completedView.setProgress(Integer.parseInt(proress));
+                        }
+
+                    }
                     break;
                 /*
                  * 分享文件发送失败，隐藏加载动画
@@ -472,14 +503,22 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                             }
                         }
                     }, 1500);
-
-                    completedView.setVisibility(View.GONE);
-                    result_ima.setVisibility(View.VISIBLE);
+                    if (shareResponNum==1||pushResponNum==1){
+                        if (completedView!=null){
+                            completedView.setVisibility(View.GONE);
+                        }
+                        if (result_ima!=null){
+                            result_ima.setVisibility(View.VISIBLE);
+                        }
+                        if (tips!=null){
+                            tips.setText("努力发送中");
+                        }
                     // result_ima.setImageResource(R.mipmap.ic_push_fail);
-                    tips.setText("努力发送中");
+
                     Toast.makeText(getActivity(), "网络有点差哦", Toast.LENGTH_SHORT).show();
                     String df = msg.obj.toString();
                     Log.d("dfsfsdf", df);
+                    }
                     break;
                 case 210:
                     File file = (File) msg.obj;
@@ -1024,8 +1063,7 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
         fileListBean.setMac(FLUtil.getMacAddress());
         fileListBean.setPos(textNub);
         wsUpdata(fileListBean, constant.FILEMD5SHARE);
-
-
+        FileIsShare=true;
         isPush = false;
         sharePath = path;
         shareType = type;
@@ -1056,6 +1094,7 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
         wsUpdata(fileListBean, constant.FILEMD5PUSH);
         opened = false;
         isPush = true;
+        FileIsPush=true;
         pushName = name;
         pushPath = path;
         pushType = type;
@@ -1493,6 +1532,7 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                             //谁发出的分享谁处理
                             if (sharePushFileBean.getMac().equals(FLUtil.getMacAddress())) {
                                 pushShareRespon(sharePushFileBean, "1");
+                                Log.d("vvcvsvsfgsf-1","路过~~~~1111");
                             }
 
                         }
@@ -1517,6 +1557,7 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                         //谁发出的推送谁处理
                         if (sharePushFileBean.getMac().equals(FLUtil.getMacAddress())) {
                             pushShareRespon(sharePushFileBean, "2");
+                            Log.d("vvcvsvsfgsf-2","路过~~~~2222");
                         }
 
 
@@ -1691,6 +1732,7 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
             paths.add(sharePath);
             fileNames.add(shareName);
             Message.obtain(mHandler, 4, name).sendToTarget();
+            if (shareResponNum==1){
             Thread sendThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -1698,14 +1740,17 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                         stringListIp.clear();
                         stringListIp = Hawk.get("stringsIp");
                     }
+                    Log.d("vvcvsvsfgsf-ip大小：",stringListIp.size()+"  ");
                     //根据Ip将文件发送到不同的设备
                     for (int i = 0; i < stringListIp.size(); i++) {
+                        Log.d("vvcvsvsfgsf-每一个ip：",stringListIp.get(i)+"    大小："+stringListIp.size());
                         socketShareFileManager.SendFile(fileNames, paths, stringListIp.get(i), constant.SHARE_PORT, "1", textNub);
                     }
                 }
 
             });
             sendThread.start();
+            }
            /*  new Thread() {
                         @Override
                         public void run() {
@@ -1826,7 +1871,9 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                     intent.putExtra("url", pushPath);
                     intent.putExtra("isOpenFile", true);
                     intent.putExtra("isNetFile", false);
-                    startActivity(intent);
+                        startActivity(intent);
+
+
                     Log.d("重复打开  wuhuFment ActivityImage md5", "333333");
 //
 
@@ -1878,19 +1925,21 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                         intent.putExtra("isNetFile", false);
                         intent.putExtra("tempPath", false);
                         intent.putExtra("fileName", pushName);
-                        startActivity(intent);
+                            startActivity(intent);
+
                         Log.d("重复打开  wuhuFment SignActivity md5", "44444");
                           /*  if (!opened) {
                                 startActivity(intent);
                             }
                             opened = true;*/
                     } else {
-                        CVIPaperDialogUtils.showConfirmDialog(getActivity(), "当前无外网，会使用wps打开文件", "知道了", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
-                            @Override
-                            public void onClickButton(boolean clickConfirm, boolean clickCancel) {
-                                startActivity(FileUtils.openFile(path, getActivity()));
-                            }
-                        });
+
+                            CVIPaperDialogUtils.showConfirmDialog(getActivity(), "当前无外网，会使用wps打开文件", "知道了", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                                @Override
+                                public void onClickButton(boolean clickConfirm, boolean clickCancel) {
+                                    startActivity(FileUtils.openFile(path, getActivity()));
+                                }
+                            });
                     }
                 }
                 isPush = false;
@@ -1903,24 +1952,26 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                     paths.add(pushPath);
                     fileNames.add(pushName);
                     Message.obtain(mHandler, 4, name).sendToTarget();
+                    if (pushResponNum==1){
+                        Thread sendThread = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
 
-                    Thread sendThread = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
+                                if (Hawk.contains("stringsIp")) {
+                                    stringListIp.clear();
+                                    stringListIp = Hawk.get("stringsIp");
+                                }
+                                //根据Ip将文件发送到不同的设备
+                                for (int i = 0; i < stringListIp.size(); i++) {
+                                    socketShareFileManager.SendFile(fileNames, paths, stringListIp.get(i), constant.SHARE_PORT, "2", textNub);
+                                }
 
-                            if (Hawk.contains("stringsIp")) {
-                                stringListIp.clear();
-                                stringListIp = Hawk.get("stringsIp");
+
                             }
-                            //根据Ip将文件发送到不同的设备
-                            for (int i = 0; i < stringListIp.size(); i++) {
-                                socketShareFileManager.SendFile(fileNames, paths, stringListIp.get(i), constant.SHARE_PORT, "2", textNub);
-                            }
+                        });
+                        sendThread.start();
+                    }
 
-
-                        }
-                    });
-                    sendThread.start();
                       /*  new Thread() {
                             @Override
                             public void run() {
@@ -2749,6 +2800,13 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                                                 }
                                                 //把当前本地议题文件集合放入对应的议题
                                                 locService.add(fileBean);
+                                                for (int y= 0; y < locService.size() - 1; y++) {
+                                                    for (int j = locService.size() - 1; j > y; j--) {
+                                                        if (locService.get(j).getName().equals(locService.get(y).getName())) {
+                                                            locService.remove(j);
+                                                        }
+                                                    }
+                                                }
                                                 editListBean.setLocalFiles(locService);
                                                 copyEdList.set(Integer.valueOf(textNub), editListBean);
 
@@ -2774,6 +2832,14 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
 
                         } catch (URISyntaxException e) {
                             e.printStackTrace();
+                        }
+                    }
+
+                    for (int i = 0; i < locService.size() - 1; i++) {
+                        for (int j = locService.size() - 1; j > i; j--) {
+                            if (locService.get(j).getName().equals(locService.get(i).getName())) {
+                                locService.remove(j);
+                            }
                         }
                     }
 
@@ -3303,7 +3369,7 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
         dialog = new MyDialog(getActivity(), R.style.dialogTransparent);
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         //弹窗点击周围空白处弹出层自动消失弹窗消失(false时为点击周围空白处弹出层不自动消失)
-        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCanceledOnTouchOutside(true);
         //将布局设置给Dialog
         dialog.setContentView(inflate);
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
@@ -3328,6 +3394,7 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
             }
         });
         progressBar = inflate.findViewById(R.id.progressBar);
+        close_dialog= inflate.findViewById(R.id.close_dialog);
         completedView = inflate.findViewById(R.id.tasks_view);
         result_ima = inflate.findViewById(R.id.result_ima);
         completedView.setVisibility(View.VISIBLE);
@@ -3348,6 +3415,12 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
         wlp.width = (int) (width * 0.45);//设置宽
         wlp.height = (int) (width * 0.3);//设置宽
         window.setAttributes(wlp);
+        close_dialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
         dialog.setOnTouchOutside(new MyDialog.onTouchOutsideInterFace() {
             @Override
             public void outSide() {

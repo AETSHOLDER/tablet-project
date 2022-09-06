@@ -11,7 +11,15 @@
     android:layout_centerVertical="true"
     android:layout_centerHorizontal="true"
     >
+<ImageView
+    android:id="@+id/close_dialog"
+    android:layout_width="45dp"
+    android:layout_height="45dp"
+    android:src="@mipmap/ic_close_dialog"
+    android:layout_alignParentRight="true"
+    android:layout_marginRight="10dp"
 
+    />
      <com.example.paperlessmeeting_demo.widgets.CompletedView
          android:id="@+id/tasks_view"
          android:layout_width="wrap_content"

@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -67,6 +68,8 @@ import com.example.paperlessmeeting_demo.tool.ToastUtils;
 import com.example.paperlessmeeting_demo.tool.UrlConstant;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.example.paperlessmeeting_demo.tool.constant;
+import com.example.paperlessmeeting_demo.util.NetSpeed;
+import com.example.paperlessmeeting_demo.util.NetSpeedTimer;
 import com.example.paperlessmeeting_demo.util.ToastUtil;
 import com.example.paperlessmeeting_demo.widgets.MyDialog;
 import com.example.paperlessmeeting_demo.widgets.MyListView;
@@ -74,6 +77,7 @@ import com.google.gson.Gson;
 import com.jyn.vcview.VerificationCodeView;
 import com.orhanobut.hawk.Hawk;
 import com.snow.common.tool.utils.FastClickUtils;
+import com.tencent.smtt.sdk.TbsReaderView;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
@@ -122,7 +126,45 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
     private WuHuMeetingListAdapter wuHuMeetingListAdapter;
     private List<WuHuMeetingListResponse> wuHuMeetingListResponses = new ArrayList<>();
     private TextView no_data;
+    TbsReaderView tbsReaderView;
+    private NetSpeedTimer mNetSpeedTimer;
+    private Handler mHandler = new Handler() {
 
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 1:
+                    int port = (int)msg.obj;
+                    Log.d("","port===="+port);
+                    break;
+                case 2:
+                    String ss = (String)msg.obj;
+                    Log.e("正在接收文件",""+ss);
+//                    Toast.makeText(SignActivity.this, "正在接收文件", Toast.LENGTH_SHORT).show();
+                    break;
+                case 4:
+
+                    break;
+                case 5:
+//                    Toast.makeText(SignActivity.this, "文件分享成功", Toast.LENGTH_SHORT).show();
+                    break;
+                case 6:
+//                    Toast.makeText(SignActivity.this, "文件分享失败", Toast.LENGTH_SHORT).show();
+                    String df = msg.obj.toString();
+                    Log.d("文件分享失败++", df);
+                    break;
+               /* case  NetSpeedTimer.NET_SPEED_TIMER_DEFAULT:
+                    String speed = (String) msg.obj;
+                    //打印你所需要的网速值，单位默认为kb/s
+                    init_meeting.setText(speed);
+                    Log.d(TAG, "current net speed  = " + speed);
+                    break;*/
+                default:
+                    break;
+            }
+        }
+    };
     public static ExtraordMeetingFragment newInstance(String movie) {
         ExtraordMeetingFragment extraordMeetingFragment = new ExtraordMeetingFragment();
         return extraordMeetingFragment;
@@ -181,10 +223,10 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
         init_meeting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (UrlConstant.baseUrl.equals("http://192.168.1.1:3006")) {
-                    Toast.makeText(getActivity(), "服务器不在线，请稍后再试！", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+             /*  if (UrlConstant.baseUrl.equals("http://192.168.1.1:3006")) {
+                Toast.makeText(getActivity(), "服务器不在线，请稍后再试！", Toast.LENGTH_SHORT).show();
+                 return;
+              }*/
 
                 initMeetingDialog();
             }
@@ -202,7 +244,10 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
                 // joinMeetingDialog();
             }
         });
-
+       /* //创建NetSpeedTimer实例
+        mNetSpeedTimer = new NetSpeedTimer(mContext, new NetSpeed(), mHandler).setDelayTime(1000).setPeriodTime(2000);
+        //在想要开始执行的地方调用该段代码
+        mNetSpeedTimer.startSpeedTimer();*/
 
     }
 

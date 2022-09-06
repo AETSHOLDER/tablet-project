@@ -261,7 +261,7 @@ public class WuHuActivity2 extends BaseActivity implements View.OnClickListener,
     private int upLoadNum = 0;//每个文件的切片数
     private int upLoadFileNum = 0;
     private int locaFileNum = 0;
-    private int size = 1024 * 1024 * 10;
+    private int size = 1024 * 1024 * 100;
     private String upLoadFileType;
     private FileCutUtils fileCutUtils;  //文件切割工具类
     private int littlefilecount;  //切割文件个数
@@ -300,7 +300,7 @@ public class WuHuActivity2 extends BaseActivity implements View.OnClickListener,
                 case 33:
                     //分享 有文件
                     Toast.makeText(WuHuActivity2.this, "文件已成功接收，请在文件管理页面查看", Toast.LENGTH_SHORT).show();
-                    Log.e("hahahahahahaa", "case 3");
+                    Log.d("vvcvsvsfgsf", "case 3");
                     int flag = msg.arg1;
                     int flag2 = msg.arg2;
                     String filePath1 = (String) msg.obj;
@@ -323,7 +323,7 @@ public class WuHuActivity2 extends BaseActivity implements View.OnClickListener,
                     bundle1.putString("filePath", filePath1);
                     intent1.putExtras(bundle1);
                     intent1.setAction(constant.SHARE_FILE_BROADCAST);
-                    //sendBroadcast(intent1);
+                  //  sendBroadcast(intent1);
                     break;
                 case 4:
                     Toast.makeText(WuHuActivity2.this, "文件接收失败", Toast.LENGTH_SHORT).show();

@@ -2,6 +2,7 @@ package com.example.paperlessmeeting_demo.activity;
 
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.paperlessmeeting_demo.MeetingAPP;
@@ -12,7 +13,12 @@ import com.example.paperlessmeeting_demo.tool.PermissionManager;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.example.paperlessmeeting_demo.tool.constant;
 import com.orhanobut.hawk.Hawk;
+import com.tencent.smtt.export.external.TbsCoreSettings;
+import com.tencent.smtt.sdk.QbSdk;
+import com.tencent.smtt.sdk.TbsListener;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -97,10 +103,51 @@ public class SplashActivity extends BaseActivity implements EasyPermissions.Perm
     public void onPermissionsGranted(int requestCode, List<String> perms) {
         Toast.makeText(SplashActivity.this, "授权成功", Toast.LENGTH_LONG).show();
         toLoginActivity();
-        MeetingAPP.getInstance().initX5();
+        initX5();
+        //MeetingAPP.getInstance().initX5();
     }
 
+    private void initX5() {
+        HashMap map = new HashMap();
+        map.put(TbsCoreSettings.TBS_SETTINGS_USE_SPEEDY_CLASSLOADER, true);
+        map.put(TbsCoreSettings.TBS_SETTINGS_USE_DEXLOADER_SERVICE, true);
+        QbSdk.initTbsSettings(map);
+        //非wifi情况下，主动下载x5内核
+        QbSdk.setDownloadWithoutWifi(true);
+        //搜集本地tbs内核信息并上报服务器，服务器返回结果决定使用哪个内核。
+        QbSdk.PreInitCallback cb = new QbSdk.PreInitCallback() {
+            @Override
+            public void onViewInitFinished(boolean arg0) {
+                //x5內核初始化完成的回调，为true表示x5内核加载成功，否则表示x5内核加载失败，会自动切换到系统内核。
+                Log.d("MeetingAPP", " x5内核加载" + (arg0 ? "成功!":"失败!"));
+                Hawk.put("TBS",arg0);
+            }
 
+            @Override
+            public void onCoreInitFinished() {
+                Log.d("MeetingAPP22", " onViewInitFinished is " + "路过~~~~~");
+            }
+        };
+        QbSdk.setTbsListener(new TbsListener() {
+            @Override
+            public void onDownloadFinish(int i) {
+                Log.d("MeetingAPP33", " onViewInitFinished is " + i);
+            }
+
+            @Override
+            public void onInstallFinish(int i) {
+                Log.d("MeetingAPP444", " onViewInitFinished is " + i);
+            }
+
+            @Override
+            public void onDownloadProgress(int i) {
+                Log.d("MeetingAPP555", " onViewInitFinished is " + i);
+            }
+        });
+
+        //x5内核初始化接口
+        QbSdk.initX5Environment(getApplicationContext(), cb);
+    }
     /**
      * 请求权限失败
      *

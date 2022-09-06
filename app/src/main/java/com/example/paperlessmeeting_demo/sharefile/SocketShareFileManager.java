@@ -156,7 +156,11 @@ public class SocketShareFileManager {
                 SendMessage(101, "接收完成:" + fileName, 0);
             }else if (sharePush==0){
                 SendMessage(88, savePath, 0);
+                Log.d("vvcvsvsfgsf-推送接收次数","接收次数~~~~33333");
             }else if (sharePush==1){
+
+                Log.d("vvcvsvsfgsf-分享接收次数","接收次数~~~~33333");
+
                 SendMessage(33, savePath, 0);
             }
 
@@ -220,7 +224,9 @@ public class SocketShareFileManager {
     public void SendFile(ArrayList<String> fileName, ArrayList<String> path, String ipAddress, int port, String actionType,String flag) {
         try {
             long total = 0;
+            Log.d("vvcvsvsfgsf-ipAddress~~",ipAddress);
             for (int i = 0; i < fileName.size(); i++) {
+
                 Socket name = new Socket(ipAddress, port);
                 OutputStream outputName = name.getOutputStream();
                 OutputStreamWriter outputWriter = new OutputStreamWriter(outputName);

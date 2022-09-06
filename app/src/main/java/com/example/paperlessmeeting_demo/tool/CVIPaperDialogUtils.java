@@ -96,7 +96,7 @@ public class CVIPaperDialogUtils {
 
         TextView confirm = view.findViewById(R.id.confir_btn);
         TextView contentTxt = (TextView) view.findViewById(R.id.content_tv);
-        confirmDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+      /*  confirmDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         confirmDialog.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         confirmDialog.getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
             @Override
@@ -119,7 +119,7 @@ public class CVIPaperDialogUtils {
                 }
 
             }
-        });
+        });*/
         confirmDialog.show();
 
         WindowManager windowManager = context.getWindowManager();
