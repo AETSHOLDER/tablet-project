@@ -434,6 +434,13 @@ public class LoginActivity extends BaseActivity {
                         }
                     }
 
+                    //芜湖临时会议客户端收到广播后的邀请码弹框提示
+                } else {
+                    UserUtil.isNetDATA = false;
+                    title = "您收到邀请码为(" + code + ")的临时会议!";
+                }
+
+                if (UserUtil.isNetDATA) {
                     CVIPaperDialogUtils.showCountDownCustomDialog(LoginActivity.this, title, "确定加入", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
                         @Override
                         public void onClickButton(boolean clickConfirm, boolean clickCancel) {
@@ -453,7 +460,7 @@ public class LoginActivity extends BaseActivity {
                                     ToastUtils.showToast(LoginActivity.this, "该会议已结束!!!");
                                     return;
                                 }
-                                Intent intent1 = new Intent(LoginActivity.this, WuHuActivity2.class);
+                                Intent intent1 = new Intent(LoginActivity.this, WuHuActivity3.class);
                                 Bundle bundle = new Bundle();
                                 bundle.putString("ip", ip);
                                 bundle.putString("isreuse", isReuse);
@@ -462,13 +469,7 @@ public class LoginActivity extends BaseActivity {
                             }
                         }
                     });
-
-                    //芜湖临时会议客户端收到广播后的邀请码弹框提示
-                } else {
-                    UserUtil.isNetDATA = false;
-                    title = "您收到邀请码为(" + code + ")的临时会议!";
                 }
-
             }
         }
     }

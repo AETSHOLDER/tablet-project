@@ -1058,11 +1058,25 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
                 failList.clear();//清空下载失败的url
                 wuHuMeetingListResponse = Hawk.get("WuHuMeetingListResponse");
                 WuHuMeetingListResponse.ContentDTO contentDTO = wuHuMeetingListResponse.getContent();
-                if (contentDTO.getTopics() != null) {
-                    Hawk.put("company_name", contentDTO.getTopics());
+                if (wuHuMeetingListResponse.getName() != null) {
+                    Hawk.put("company_name", wuHuMeetingListResponse.getName());
                 }
                 if (contentDTO.getTopic_type() != null) {
-                    Hawk.put("tittle2", contentDTO.getTopic_type());
+                    String[]    strings=contentDTO.getTopic_type().split(" ");
+                    if (strings.length>0&&strings!=null){
+                        StringBuilder  sb=new StringBuilder();
+                        String  str="";
+                        for (int i=0;i<strings.length;i++){
+                            sb.append(strings[i]).append("\n");
+                        }
+                        str=sb.substring(0,sb.length()-1);
+                        Hawk.put("tittle2", str);
+
+                    }{
+                        Hawk.put("tittle2", contentDTO.getTopic_type());
+
+                    }
+
                 }
                 UserUtil.meeting_record_id = wuHuMeetingListResponse.get_id();
                 Log.d("coming_id", UserUtil.meeting_record_id);
@@ -2098,6 +2112,7 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
             if (wuHuEditBeanList == null || wuHuEditBeanList.size() == 0) {
                 return;
             }
+            Log.d("fdsgdsgsdfgf1111",wuHuEditBeanList.size()+"  原始议题集合大小");
             List<WuHuEditBean.EditListBean> ets = new ArrayList<>();
             ets.clear();
             for (int i = 0; i < wuHuEditBeanList.size(); i++) {
@@ -2108,11 +2123,14 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
                 if (editListBean.getLocalFiles() != null && editListBean.getLocalFiles().size() > 0) {
                     fileListBeanList.addAll(editListBean.getLocalFiles());
                     editListBean.setFileListBeanList(fileListBeanList);//每个议题下的本地文件复制到网络文件中去
-                    ets.add(editListBean);//本地文件和网络文件都有的议题集合
+
                 }
+                ets.add(editListBean);//本地文件和网络文件都有的议题集合及只有单纯议题的集合
             }
             wuHuEditBean.setEditListBeanList(ets);
             Hawk.put("WuHuFragmentData", wuHuEditBean);
+            Log.d("fdsgdsgsdfgf1111",wuHuEditBean.getEditListBeanList().size()+"  编辑完议题文件大小后的议题大小");
+
 
             for (int i = 0; i < ets.size(); i++) {
                 WuHuEditBean.EditListBean editListBean = ets.get(i);
