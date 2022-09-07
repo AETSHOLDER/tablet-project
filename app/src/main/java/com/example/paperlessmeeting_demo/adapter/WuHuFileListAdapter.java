@@ -1,6 +1,7 @@
 package com.example.paperlessmeeting_demo.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,11 +9,13 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.bean.FileListBean;
 import com.example.paperlessmeeting_demo.bean.WuHuEditBean;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
+import com.example.paperlessmeeting_demo.util.OnClickUtils;
 
 import java.util.List;
 
@@ -147,34 +150,59 @@ public class WuHuFileListAdapter extends BaseAdapter {
                 viHolder.proprietary.setText("分享");
             }
             if (UserUtil.ISCHAIRMAN) {
-                if (UserUtil.isTempMeeting){
+                if (UserUtil.isNetDATA){
+                    viHolder.open.setVisibility(View.VISIBLE);
+                    viHolder.proprietary.setVisibility(View.VISIBLE);
+
+                }else {
                     viHolder.open.setVisibility(View.GONE);
                     viHolder.proprietary.setVisibility(View.GONE);
                 }
 
                 //只有服务端才有的方法：初始化议题数据并提交到服务端
                 //  initiaServerData();
+            }else {
+                viHolder.open.setVisibility(View.GONE);
+                viHolder.proprietary.setVisibility(View.VISIBLE);
             }
             //文件分享
             viHolder.proprietary.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d("asdfasfsf", gridViewBean.getPath() + "=====" + gridViewBean.getFile_type());
-                    shareFileInterface.shareFileInfo(gridViewBean.getPath(), gridViewBean.getFile_type(), "1", gridViewBean.getName(), gridViewBean.getAuthor(), gridViewBean.getTime());
-                }
+                    if (!OnClickUtils.isFastDoubleClick(R.id.open)) {
+                        Log.d("asdfasfsf", gridViewBean.getPath() + "=====" + gridViewBean.getFile_type());
+
+                        shareFileInterface.shareFileInfo(gridViewBean.getPath(), gridViewBean.getFile_type(), "1", gridViewBean.getName(), gridViewBean.getAuthor(), gridViewBean.getTime());
+                    }
+
+                    else {
+
+                        Toast.makeText(context,"分享中请勿连续点击",Toast.LENGTH_SHORT).show();
+                    }
+                    }
             });
             //文件推送
             viHolder.open.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (gridViewBean.isNet()){
-                        pushFileInterface.pushFileInfo(gridViewBean.getLocalPath(), gridViewBean.getFile_type(), "1", gridViewBean.getName(), gridViewBean.getAuthor(), gridViewBean.getTime());
+                    if (!OnClickUtils.isFastDoubleClick(R.id.open)){
+
+                        if (gridViewBean.isNet()){
+                            pushFileInterface.pushFileInfo(gridViewBean.getLocalPath(), gridViewBean.getFile_type(), "1", gridViewBean.getName(), gridViewBean.getAuthor(), gridViewBean.getTime());
+
+                        }else {
+
+                            pushFileInterface.pushFileInfo(gridViewBean.getPath(), gridViewBean.getFile_type(), "1", gridViewBean.getName(), gridViewBean.getAuthor(), gridViewBean.getTime());
+
+                        }
 
                     }else {
 
-                        pushFileInterface.pushFileInfo(gridViewBean.getPath(), gridViewBean.getFile_type(), "1", gridViewBean.getName(), gridViewBean.getAuthor(), gridViewBean.getTime());
-
+                        Toast.makeText(context,"推送中请勿连续点击",Toast.LENGTH_SHORT).show();
                     }
+
+
+
                 }
             });
 
