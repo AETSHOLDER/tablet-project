@@ -67,6 +67,7 @@ import com.example.paperlessmeeting_demo.tool.FLUtil;
 import com.example.paperlessmeeting_demo.tool.PermissionManager;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.UDPBroadcastManager;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.EventMessage;
+import com.example.paperlessmeeting_demo.tool.TempMeetingTools.thdReceive;
 import com.example.paperlessmeeting_demo.tool.TimeUtils;
 import com.example.paperlessmeeting_demo.tool.ToastUtils;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
@@ -262,8 +263,8 @@ public class LoginActivity extends BaseActivity {
 
             Hawk.delete("wuhulocal");
         }*/
-        agendaRl = (RelativeLayout) findViewById(R.id.agenda_rl);
-        loginLeft = (LinearLayout) findViewById(R.id.login_left);
+        agendaRl = findViewById(R.id.agenda_rl);
+        loginLeft = findViewById(R.id.login_left);
         //创建分享 添加本地，网络文件文件夹
         File share = new File(fileShare);
         if (!share.exists()) {
@@ -400,7 +401,7 @@ public class LoginActivity extends BaseActivity {
 
         }*/
         if (message.getType().equals(MessageReceiveType.MessageCreatTempMeeting)) {
-            Activity topActivity = (Activity) ActivityUtils.getTopActivity();
+            Activity topActivity = ActivityUtils.getTopActivity();
             if (topActivity != null && topActivity.getLocalClassName().contains("LoginActivity")) {
                 String[] ip_code = message.getMessage().split(",");
                 String ip = ip_code[0];
@@ -432,40 +433,42 @@ public class LoginActivity extends BaseActivity {
                             title = "请您加入" + "\n" + strName;
                         }
                     }
+
+                    CVIPaperDialogUtils.showCountDownCustomDialog(LoginActivity.this, title, "确定加入", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                        @Override
+                        public void onClickButton(boolean clickConfirm, boolean clickCancel) {
+                            if (clickConfirm) {
+                                Log.e("111111", "倒计时结束");
+
+                                UserUtil.isTempMeeting = true;
+                                Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageClient);
+
+                                boolean flag = false;
+                                for (String msg : thdReceive.receiveIPArr) {
+                                    if (msg.contains(ip)) {
+                                        flag = true;
+                                    }
+                                }
+                                if (!flag) {
+                                    ToastUtils.showToast(LoginActivity.this, "该会议已结束!!!");
+                                    return;
+                                }
+                                Intent intent1 = new Intent(LoginActivity.this, WuHuActivity2.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putString("ip", ip);
+                                bundle.putString("isreuse", isReuse);
+                                intent1.putExtras(bundle);
+                                startActivity(intent1);
+                            }
+                        }
+                    });
+
                     //芜湖临时会议客户端收到广播后的邀请码弹框提示
                 } else {
                     UserUtil.isNetDATA = false;
                     title = "您收到邀请码为(" + code + ")的临时会议!";
                 }
 
-                CVIPaperDialogUtils.showCountDownCustomDialog(LoginActivity.this, title, "确定加入", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
-                    @Override
-                    public void onClickButton(boolean clickConfirm, boolean clickCancel) {
-                        if (clickConfirm) {
-                            Log.e("111111", "倒计时结束");
-
-                            UserUtil.isTempMeeting = true;
-                            Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageClient);
-
-                            boolean flag = false;
-                            for (String msg : UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr) {
-                                if (msg.contains(ip)) {
-                                    flag = true;
-                                }
-                            }
-                            if (!flag) {
-                                ToastUtils.showToast(LoginActivity.this, "该会议已结束!!!");
-                                return;
-                            }
-                            Intent intent1 = new Intent(LoginActivity.this, WuHuActivity2.class);
-                            Bundle bundle = new Bundle();
-                            bundle.putString("ip", ip);
-                            bundle.putString("isreuse", isReuse);
-                            intent1.putExtras(bundle);
-                            startActivity(intent1);
-                        }
-                    }
-                });
             }
         }
     }
@@ -480,7 +483,7 @@ public class LoginActivity extends BaseActivity {
       String  mac= idd[0]+idd[1]+idd[2];*/
 
         map.put("mac", FLUtil.getMacAddress());
-        NetWorkManager.getInstance().getNetWorkApiService().verificationEquipment(map).compose(this.<BasicResponse>bindToLifecycle())
+        NetWorkManager.getInstance().getNetWorkApiService().verificationEquipment(map).compose(this.bindToLifecycle())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultObserver<BasicResponse>() {
@@ -509,7 +512,7 @@ public class LoginActivity extends BaseActivity {
         //将布局设置给Dialog
         confirmDialog.setContentView(view);
         TextView confirm = view.findViewById(R.id.confir_btn);
-        TextView contentTxt = (TextView) view.findViewById(R.id.content_tv);
+        TextView contentTxt = view.findViewById(R.id.content_tv);
        /* contentTxt.setVisibility(View.INVISIBLE);
         confirm.setText("安装APP的设备已达上限！");*/
 
@@ -589,13 +592,13 @@ public class LoginActivity extends BaseActivity {
         if (attendeBeanList != null) {
             attendeBeanList.clear();
         }
-        NetWorkManager.getInstance().getNetWorkApiService().getMeetingUserList(_id).compose(this.<BasicResponse<List<AttendeBean>>>bindToLifecycle())
+        NetWorkManager.getInstance().getNetWorkApiService().getMeetingUserList(_id).compose(this.bindToLifecycle())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultObserver<BasicResponse<List<AttendeBean>>>() {
                     @Override
                     protected void onSuccess(BasicResponse<List<AttendeBean>> response) {
-                        attendeBeanList = (List<AttendeBean>) response.getData();
+                        attendeBeanList = response.getData();
                         Hawk.put("attendeBeanList", attendeBeanList);
                         setAgendaUi(attendeBeanList);
                     }
@@ -722,7 +725,7 @@ public class LoginActivity extends BaseActivity {
 
     private void getMacIsRegister() {
 
-        NetWorkManager.getInstance().getNetWorkApiService().findPaperLessInfo(FLUtil.getMacAddress()).compose(this.<BasicResponse<String>>bindToLifecycle())
+        NetWorkManager.getInstance().getNetWorkApiService().findPaperLessInfo(FLUtil.getMacAddress()).compose(this.bindToLifecycle())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultObserver<BasicResponse<String>>() {
@@ -955,7 +958,7 @@ public class LoginActivity extends BaseActivity {
 
     private void getMeeingInfo(String meeting__id) {
         //绑定生命周期
-        NetWorkManager.getInstance().getNetWorkApiService().getMeetingInfo(meeting__id).compose(this.<BasicResponse<MeetingInfoBean>>bindToLifecycle())
+        NetWorkManager.getInstance().getNetWorkApiService().getMeetingInfo(meeting__id).compose(this.bindToLifecycle())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultObserver<BasicResponse<MeetingInfoBean>>() {
@@ -1135,7 +1138,7 @@ public class LoginActivity extends BaseActivity {
         RequestBody requestBody = RequestBody.create(MediaType.parse(upLoadFileType), file);
         Log.d("dfgsgsf3333", path + "---666666");
         MultipartBody.Part part = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
-        NetWorkManager.getInstance().getNetWorkApiService().upLoadFile(creatDirectory(type), "", "", part).compose(this.<BasicResponse<UploadBean>>bindToLifecycle())
+        NetWorkManager.getInstance().getNetWorkApiService().upLoadFile(creatDirectory(type), "", "", part).compose(this.bindToLifecycle())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultObserver<BasicResponse<UploadBean>>() {
@@ -1165,7 +1168,7 @@ public class LoginActivity extends BaseActivity {
                             if (Hawk.contains("user_id")) {
                                 user_id = Hawk.get("user_id");
                             }
-                            uploadBean = (UploadBean) response.getData();
+                            uploadBean = response.getData();
                             //创建文件请求体类
                             createFileBeanRequest = new CreateFileBeanRequest();
                             createFileBeanRequest.setC_id(c_id);
@@ -1196,7 +1199,7 @@ public class LoginActivity extends BaseActivity {
 
     private void creatFile(CreateFileBeanRequest createFileBeanRequest) {
         Log.d("dfgsgsf3333", "路过~~~~~");
-        NetWorkManager.getInstance().getNetWorkApiService().createMeetingFile(createFileBeanRequest).compose(this.<BasicResponse<CreateFileBeanResponse>>bindToLifecycle())
+        NetWorkManager.getInstance().getNetWorkApiService().createMeetingFile(createFileBeanRequest).compose(this.bindToLifecycle())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultObserver<BasicResponse<CreateFileBeanResponse>>() {
