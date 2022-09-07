@@ -479,7 +479,7 @@ public class ExtraordMeetingFragment2 extends BaseFragment implements Verificati
                 if (stringList.contains(content)) {
                     int index = stringList.indexOf(content);
                     initMeetingDialog.dismiss();
-                    CVIPaperDialogUtils.showCustomDialog(getActivity(), "已存在创建码", null, "可重复创建", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                    CVIPaperDialogUtils.showCustomDialog(getActivity(), "创建码已保存", null, "请继续", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
                         @Override
                         public void onClickButton(boolean clickConfirm, boolean clickCancel) {
                             if (clickConfirm) {
@@ -522,7 +522,7 @@ public class ExtraordMeetingFragment2 extends BaseFragment implements Verificati
 //                        }
 //                    });
 
-                    CVIPaperDialogUtils.showCustomDialog(getActivity(), "已存在创建码", "", "继续创建", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                    CVIPaperDialogUtils.showCustomDialog(getActivity(), "创建码已保存", "", "请继续创建", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
                         @Override
                         public void onClickButton(boolean clickConfirm, boolean clickCancel) {
                             if (clickConfirm) {

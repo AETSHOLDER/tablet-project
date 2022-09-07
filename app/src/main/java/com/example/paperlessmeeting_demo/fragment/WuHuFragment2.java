@@ -2633,8 +2633,9 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                         if (Hawk.contains("WuHuFragmentData")) {
                             //临时存放的议题集合
                             List<WuHuEditBean.EditListBean> copyEdList = new ArrayList<>();
+                            copyEdList.clear();
                             WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
-                            copyEdList = wuHuEditBean.getEditListBeanList();
+                            copyEdList .addAll(wuHuEditBean.getEditListBeanList());
                             //遍历更新当前议题下的文件
                             List<WuHuEditBean.EditListBean.FileListBean> locService = new ArrayList<>();
                             locService.clear();
@@ -2678,6 +2679,7 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                             fileListAdapter.setGridViewBeanList(locService);
                             fileListAdapter.notifyDataSetChanged();
                             Hawk.put("WuHuFragmentData", wuHuEditBean);
+                      //      Log.d("wuHuEditBeanwwww111",wuHuEditBean.getEditListBeanList().size()+"   单选文件大小");
 
                             if (UserUtil.ISCHAIRMAN) {
                                 wsUpdata(wuHuEditBean, constant.SUBMITANISSUE);
@@ -2803,8 +2805,9 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                                 if (Hawk.contains("WuHuFragmentData")) {
                                     //临时存放的议题集合
                                     List<WuHuEditBean.EditListBean> copyEdList = new ArrayList<>();
+                                    copyEdList.clear();
                                     WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
-                                    copyEdList = wuHuEditBean.getEditListBeanList();
+                                    copyEdList.addAll(wuHuEditBean.getEditListBeanList());
                                     //遍历更新当前议题下的文件
                                     if (copyEdList != null && copyEdList.size() > 0) {
                                         for (int k = 0; k < copyEdList.size(); k++) {
@@ -2830,7 +2833,10 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                                         }
                                         wuHuEditBean.setEditListBeanList(copyEdList);
                                     }
+
                                     Hawk.put("WuHuFragmentData", wuHuEditBean);
+
+                                    //Log.d("wuHuEditBeanwwww222",wuHuEditBean.getEditListBeanList().size()+"   多选文件大小");
 
                                     if (UserUtil.ISCHAIRMAN) {
                                         wsUpdata(wuHuEditBean, constant.SUBMITANISSUE);
