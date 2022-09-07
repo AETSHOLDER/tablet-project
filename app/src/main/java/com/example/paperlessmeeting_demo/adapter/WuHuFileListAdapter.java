@@ -128,7 +128,12 @@ public class WuHuFileListAdapter extends BaseAdapter {
         }else {
             viHolder.open.setVisibility(View.GONE);
             viHolder.proprietary.setVisibility(View.INVISIBLE);
+
+
         }*/
+
+
+
         if (UserUtil.isTempMeeting) {
             if (gridViewBean.isNet()){
                 viHolder.open.setVisibility(View.VISIBLE);
@@ -141,7 +146,15 @@ public class WuHuFileListAdapter extends BaseAdapter {
                 viHolder.open.setText("推送");
                 viHolder.proprietary.setText("分享");
             }
+            if (UserUtil.ISCHAIRMAN) {
+                if (UserUtil.isTempMeeting){
+                    viHolder.open.setVisibility(View.GONE);
+                    viHolder.proprietary.setVisibility(View.GONE);
+                }
 
+                //只有服务端才有的方法：初始化议题数据并提交到服务端
+                //  initiaServerData();
+            }
             //文件分享
             viHolder.proprietary.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -201,7 +214,7 @@ public class WuHuFileListAdapter extends BaseAdapter {
     public interface upLoadFileInterface
 
     {
-        public void sendFileInfo(String path, String type, String flag);
+        void sendFileInfo(String path, String type, String flag);
     }
 
     /*
@@ -210,23 +223,23 @@ public class WuHuFileListAdapter extends BaseAdapter {
     * */
     public interface ShareFileInterface {
 
-        public void shareFileInfo(String path, String type, String flag, String name, String author, String time);
+        void shareFileInfo(String path, String type, String flag, String name, String author, String time);
     }
     /*
      * 临时会议推送文件
      * */
     public interface PushFileInterface {
 
-        public void pushFileInfo(String path, String type, String flag, String name, String author, String time);
+        void pushFileInfo(String path, String type, String flag, String name, String author, String time);
     }
     public interface PlayerClickInterface {
         //播放监听
-        public void onPlayerClick(String url);
+        void onPlayerClick(String url);
 
         //暂停监听
-        public void onPauseClick(String url);
+        void onPauseClick(String url);
 
-        public void onResetMusic(String url);
+        void onResetMusic(String url);
     }
 
     static class ViewHolder {

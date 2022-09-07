@@ -50,6 +50,7 @@ import com.example.paperlessmeeting_demo.tool.CVIPaperDialogUtils;
 import com.example.paperlessmeeting_demo.tool.FLUtil;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.UDPBroadcastManager;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.JWebSocketClientService;
+import com.example.paperlessmeeting_demo.tool.TempMeetingTools.thdReceive;
 import com.example.paperlessmeeting_demo.tool.TimeUtils;
 import com.example.paperlessmeeting_demo.tool.ToastUtils;
 import com.example.paperlessmeeting_demo.tool.UrlConstant;
@@ -281,13 +282,13 @@ public class ExtraordMeetingFragment2 extends BaseFragment implements Verificati
         TextView ok = view.findViewById(R.id.ok_tv);
         ok.setVisibility(View.INVISIBLE);
         ImageView imageView = view.findViewById(R.id.clear_ima);
-        tipsTxt = (TextView) view.findViewById(R.id.results);
+        tipsTxt = view.findViewById(R.id.results);
         tipsTxt.setVisibility(View.GONE);
         joinMeetingDialog.setContentView(view);//这里还可以指定布局参数
         joinMeetingDialog.setCancelable(false);// 不可以用“返回键”取消
         joinMeetingDialog.show();
 
-        for (String msg : UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr) {
+        for (String msg : thdReceive.receiveIPArr) {
             List<String> ipcodeInfo = FLUtil.dealUDPMsg(msg);
             // 里面包含 ip code/1
             String[] code_idnex = ipcodeInfo.get(1).split("/");
@@ -298,9 +299,7 @@ public class ExtraordMeetingFragment2 extends BaseFragment implements Verificati
         if (stringList.size() == 0) {
             stringList.add("暂无邀请码");
         } else {
-            if (stringList.contains("暂无邀请码")) {
-                stringList.remove("暂无邀请码");
-            }
+            stringList.remove("暂无邀请码");
         }
 
         //创建ArrayAdapter对象
@@ -316,7 +315,7 @@ public class ExtraordMeetingFragment2 extends BaseFragment implements Verificati
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr.size() <= 0) {
+                if (thdReceive.receiveIPArr.size() <= 0) {
                     tipsTxt.setText("暂无该会议,请检查!");
                     tipsTxt.setVisibility(View.VISIBLE);
 //                    Toast.makeText(LoginActivity.this,"暂无该会议,请检查!",Toast.LENGTH_LONG);
@@ -383,8 +382,8 @@ public class ExtraordMeetingFragment2 extends BaseFragment implements Verificati
                 Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageClient);
 
                 //  判断receiveIPArr是否被清了
-                if (UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr.size() >= currentSelIndex + 1) {
-                    List<String> ipcodeInfo = FLUtil.dealUDPMsg(UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr.get(currentSelIndex));
+                if (thdReceive.receiveIPArr.size() >= currentSelIndex + 1) {
+                    List<String> ipcodeInfo = FLUtil.dealUDPMsg(thdReceive.receiveIPArr.get(currentSelIndex));
                     String[] strAll = ipcodeInfo.get(1).split("/");
                     String isRu = strAll[1];
                     Intent intent1 = new Intent(getActivity(), WuHuActivity3.class);
@@ -454,11 +453,7 @@ public class ExtraordMeetingFragment2 extends BaseFragment implements Verificati
     @Override
     public void onComplete(View view, String content) {
         if (view == create_invite_codeview) {
-            if (Hawk.contains("WuHuFragmentData")) {
-                isReuse = false;
-            } else {
-                isReuse = true;
-            }
+            isReuse = !Hawk.contains("WuHuFragmentData");
             if (!FLUtil.netIsConnect(getActivity())) {
                 if (view != null) {
                     InputMethodManager inputmanger = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -470,9 +465,9 @@ public class ExtraordMeetingFragment2 extends BaseFragment implements Verificati
             }
 
             // 有在接收到广播消息
-            if (UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr.size() > 0 && !UDPBroadcastManager.getInstance().MythdReceive.pause) {
+            if (thdReceive.receiveIPArr.size() > 0 && !UDPBroadcastManager.MythdReceive.pause) {
 
-                for (String msg : UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr) {
+                for (String msg : thdReceive.receiveIPArr) {
                     List<String> ipcodeInfo = FLUtil.dealUDPMsg(msg);
                     // 里面包含 ip code/1
                     String[] code_idnex = ipcodeInfo.get(1).split("/");
@@ -484,7 +479,7 @@ public class ExtraordMeetingFragment2 extends BaseFragment implements Verificati
                 if (stringList.contains(content)) {
                     int index = stringList.indexOf(content);
                     initMeetingDialog.dismiss();
-                    CVIPaperDialogUtils.showCustomDialog(getActivity(), "已存在该邀请码对应的临时会议，是否加入?", null, "加入会议", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                    CVIPaperDialogUtils.showCustomDialog(getActivity(), "已存在创建码", null, "可重复创建", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
                         @Override
                         public void onClickButton(boolean clickConfirm, boolean clickCancel) {
                             if (clickConfirm) {
@@ -493,12 +488,12 @@ public class ExtraordMeetingFragment2 extends BaseFragment implements Verificati
                                 Hawk.put(constant.TEMPMEETING, MessageReceiveType.MessageClient);
 
                                 Intent intent1 = new Intent(getActivity(), WuHuActivity3.class);
-                                if (index >= UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr.size()) {
+                                if (index >= thdReceive.receiveIPArr.size()) {
                                     ToastUtils.showShort("加入不了会议!");
                                     return;
                                 }
 
-                                List<String> ipcodeInfo = FLUtil.dealUDPMsg(UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr.get(index));
+                                List<String> ipcodeInfo = FLUtil.dealUDPMsg(thdReceive.receiveIPArr.get(index));
                                 String[] strAll = ipcodeInfo.get(1).split("/");
                                 String isRu = strAll[1];
                                 UserUtil.isNetDATA = false;
@@ -527,7 +522,7 @@ public class ExtraordMeetingFragment2 extends BaseFragment implements Verificati
 //                        }
 //                    });
 
-                    CVIPaperDialogUtils.showCustomDialog(getActivity(), "存在其他已经创建的临时会议", "是否仍然创建?", "继续创建", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                    CVIPaperDialogUtils.showCustomDialog(getActivity(), "已存在创建码", "", "继续创建", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
                         @Override
                         public void onClickButton(boolean clickConfirm, boolean clickCancel) {
                             if (clickConfirm) {
@@ -769,7 +764,7 @@ public class ExtraordMeetingFragment2 extends BaseFragment implements Verificati
 
     //根据日期查询当天会议列表
     private void getMeetingList(String time) {
-        NetWorkManager.getInstance().getNetWorkApiService().meetingList("", time).compose(this.<BasicResponse<List<WuHuMeetingListResponse>>>bindToLifecycle())
+        NetWorkManager.getInstance().getNetWorkApiService().meetingList("", time).compose(this.bindToLifecycle())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultObserver<BasicResponse<List<WuHuMeetingListResponse>>>() {
@@ -825,9 +820,9 @@ public class ExtraordMeetingFragment2 extends BaseFragment implements Verificati
             return;
         }
         // 有在接收到广播消息
-        if (UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr.size() > 0 && !UDPBroadcastManager.getInstance().MythdReceive.pause) {
+        if (thdReceive.receiveIPArr.size() > 0 && !UDPBroadcastManager.MythdReceive.pause) {
 
-            for (String msg : UDPBroadcastManager.getInstance().MythdReceive.receiveIPArr) {
+            for (String msg : thdReceive.receiveIPArr) {
                 List<String> ipcodeInfo = FLUtil.dealUDPMsg(msg);
                 // 里面包含 ip code/1
                 String[] code_idnex = ipcodeInfo.get(1).split("/");
@@ -1088,7 +1083,7 @@ public class ExtraordMeetingFragment2 extends BaseFragment implements Verificati
         int height = size.y;
         wlp.width = (int) (width * 0.45);//设置宽
         wlp.height = (int) (height * 0.23);
-        ;//设置宽
+        //设置宽
         window.setAttributes(wlp);
         dialog.show();
     }

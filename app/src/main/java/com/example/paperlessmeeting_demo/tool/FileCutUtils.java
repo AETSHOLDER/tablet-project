@@ -43,12 +43,12 @@ public class FileCutUtils {
             for (int i = 0; i < count - 1; i++) { //最后一片单独处理
                 long begin = offSet;
                 long end = (i + 1) * maxSize;
-                offSet = getWrite(targetFile.getAbsolutePath(), i, begin, end);
+                offSet = getWrite(targetFile.getAbsolutePath(), i, begin, end,targetFile.getName());
             }
 
 
             if (length - offSet > 0) {
-                getWrite(targetFile.getAbsolutePath(), count-1, offSet, length);
+                getWrite(targetFile.getAbsolutePath(), count-1, offSet, length,targetFile.getName());
             }
 
         } catch (FileNotFoundException e) {
@@ -73,7 +73,7 @@ public class FileCutUtils {
      * @param end 结束指针的位置
      * @return long
      */
-    public long getWrite(String file,int index,long begin,long end ){
+    public long getWrite(String file,int index,long begin,long end ,String  fileName){
 
         long endPointer = 0L;
 
@@ -86,7 +86,7 @@ public class FileCutUtils {
             //判断文件夹是否存在,如果不存在则创建文件夹
             createFileFolder(FileCathePath);
             //读取切片文件
-            File mFile = new File(FileCathePath + File.separator + "zdb_file" + "_" + index + file.substring(file.lastIndexOf(".")));
+            File mFile = new File(FileCathePath + File.separator + "zdb_file" + "_" + index +fileName+ file.substring(file.lastIndexOf(".")));
             littlefilelist.add(mFile);
             //如果存在
             if (!isFileExist(mFile)) {
@@ -125,7 +125,7 @@ public class FileCutUtils {
      */
     public static String suffixName (File file){
         String fileName=file.getName();
-        String fileTyle=fileName.substring(fileName.lastIndexOf("."),fileName.length());
+        String fileTyle=fileName.substring(fileName.lastIndexOf("."));
         return fileTyle;
     }
 

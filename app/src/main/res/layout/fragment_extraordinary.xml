@@ -21,7 +21,7 @@
             android:shadowDx="0"
             android:shadowDy="2"
             android:shadowRadius="3.0"
-            android:text="发起会议"
+            android:text="创建会议"
             android:textColor="#ffffffff"
             android:textSize="50sp" />
 

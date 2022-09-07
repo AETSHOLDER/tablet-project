@@ -41,7 +41,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:gravity="center"
-                android:text="请输入邀请码"
+                android:text="请输入创建码"
                 android:textColor="#ff5b5b5b"
                 android:textSize="28sp" />
 

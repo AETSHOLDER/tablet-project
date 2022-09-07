@@ -115,6 +115,7 @@
             android:src="@mipmap/ic_wuhu_finish_meeting" />
 
         <TextView
+            android:id="@+id/finish_meeting"
             style="@style/wuhu_tittle_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

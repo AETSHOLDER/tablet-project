@@ -1148,7 +1148,7 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
         map.put("uid", "");
         map.put("file", "");*/
         MultipartBody.Part part = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
-        NetWorkManager.getInstance().getNetWorkApiService().upLoadFile(creatDirectory(type), "", "", part).compose(this.<BasicResponse<UploadBean>>bindToLifecycle())
+        NetWorkManager.getInstance().getNetWorkApiService().upLoadFile(creatDirectory(type), "", "", part).compose(this.bindToLifecycle())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultObserver<BasicResponse<UploadBean>>() {
@@ -1167,7 +1167,7 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                             if (Hawk.contains("user_id")) {
                                 user_id = Hawk.get("user_id");
                             }
-                            uploadBean = (UploadBean) response.getData();
+                            uploadBean = response.getData();
                             //创建文件请求体类
                             createFileBeanRequest = new CreateFileBeanRequest();
                             createFileBeanRequest.setC_id(c_id);
@@ -1194,7 +1194,7 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
     }
 
     private void creatFile(CreateFileBeanRequest createFileBeanRequest) {
-        NetWorkManager.getInstance().getNetWorkApiService().createMeetingFile(createFileBeanRequest).compose(this.<BasicResponse<CreateFileBeanResponse>>bindToLifecycle())
+        NetWorkManager.getInstance().getNetWorkApiService().createMeetingFile(createFileBeanRequest).compose(this.bindToLifecycle())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultObserver<BasicResponse<CreateFileBeanResponse>>() {
@@ -1256,12 +1256,12 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                 Log.d(TAG, "路过~~~~~11" + file.getPath());
 
                 if (file.isDirectory()) {
-                    Log.d(TAG, "若是文件目录。继续读1" + file.getName().toString()
-                            + file.getPath().toString());
+                    Log.d(TAG, "若是文件目录。继续读1" + file.getName()
+                            + file.getPath());
 
                     getFileName(file.listFiles());
-                    Log.d(TAG, "若是文件目录。继续读2" + file.getName().toString()
-                            + file.getPath().toString());
+                    Log.d(TAG, "若是文件目录。继续读2" + file.getName()
+                            + file.getPath());
                 } else {
                     String fileName = file.getName();
                     String endStr = fileName.substring(fileName.lastIndexOf(".") + 1);
@@ -1839,7 +1839,7 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                 Log.d("sADdDdD222", "pushType=" + pushType + "    pushPath=" + pushPath + "    pushName=" + pushName);
                 Intent intent;
                 if (pushType.equals("3")) {
-                    Activity topActivity = (Activity) ActivityUtils.getTopActivity();
+                    Activity topActivity = ActivityUtils.getTopActivity();
                     if (topActivity != null) {
                         if (topActivity.getLocalClassName().contains("ActivityImage")) {
                             {
@@ -1880,7 +1880,7 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
 
                 } else if (pushType.equals("4")) {
                     if (UserUtil.isNetworkOnline) {
-                        Activity topActivity = (Activity) ActivityUtils.getTopActivity();
+                        Activity topActivity = ActivityUtils.getTopActivity();
                         if (topActivity != null) {
                             // 如果是在签批内，先关闭，再进入,否则未销毁tbs,会一直显示加载中(看情况添加用户提示)
                             if (topActivity.getLocalClassName().contains("SignActivity")) {
@@ -2649,8 +2649,17 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                                             locService.addAll(editListBean.getLocalFiles());
                                         }
 
+
                                         //把当前本地议题文件集合放入对应的议题
                                         locService.add(fileBean);
+
+                                        for (int y= 0; y < locService.size() - 1; y++) {
+                                            for (int j = locService.size() - 1; j > y; j--) {
+                                                if (locService.get(j).getName().equals(locService.get(y).getName())) {
+                                                    locService.remove(j);
+                                                }
+                                            }
+                                        }
 
                                         editListBean.setLocalFiles(locService);
                                         copyEdList.set(Integer.valueOf(textNub), editListBean);
@@ -2658,6 +2667,13 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                                     }
                                 }
                                 wuHuEditBean.setEditListBeanList(copyEdList);
+                            }
+                            for (int y= 0; y < locService.size() - 1; y++) {
+                                for (int j = locService.size() - 1; j > y; j--) {
+                                    if (locService.get(j).getName().equals(locService.get(y).getName())) {
+                                        locService.remove(j);
+                                    }
+                                }
                             }
                             fileListAdapter.setGridViewBeanList(locService);
                             fileListAdapter.notifyDataSetChanged();

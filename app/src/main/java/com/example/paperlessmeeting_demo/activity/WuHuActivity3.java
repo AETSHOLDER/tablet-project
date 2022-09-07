@@ -116,6 +116,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -181,6 +182,9 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
     TextView name;
     @BindView(R.id.time)
     TextView timeTv;
+    @BindView(R.id.finish_meeting)
+    TextView finish_meeting;
+
     @BindView(R.id.rigth_rl)
     RelativeLayout rigth_rl;
     @BindView(R.id.left_rl)
@@ -374,7 +378,7 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
                            sendBroadcast(intent8);
 
                         }*/
-                        Activity topActivity = (Activity) ActivityUtils.getTopActivity();
+                        Activity topActivity = ActivityUtils.getTopActivity();
                         if (topActivity != null) {
                             // 如果是在签批内，先关闭，再进入,否则未销毁tbs,会一直显示加载中(看情况添加用户提示)
                             if (topActivity.getLocalClassName().contains("ActivityImage")) {
@@ -409,7 +413,7 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
                     } else if (fileBean400.getFile_type().equals("4")) {
 
                         if (UserUtil.isNetworkOnline) {
-                            Activity topActivity = (Activity) ActivityUtils.getTopActivity();
+                            Activity topActivity = ActivityUtils.getTopActivity();
                             if (topActivity != null) {
                                 // 如果是在签批内，先关闭，再进入,否则未销毁tbs,会一直显示加载中(看情况添加用户提示)
                                 if (topActivity.getLocalClassName().contains("SignActivity")) {
@@ -525,7 +529,7 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
                            sendBroadcast(intent8);
 
                         }*/
-                        Activity topActivity = (Activity) ActivityUtils.getTopActivity();
+                        Activity topActivity = ActivityUtils.getTopActivity();
                         if (topActivity != null) {
                             // 如果是在签批内，先关闭，再进入,否则未销毁tbs,会一直显示加载中(看情况添加用户提示)
                             if (topActivity.getLocalClassName().contains("ActivityImage")) {
@@ -559,7 +563,7 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
                     } else if (fileBean.getFile_type().equals("4")) {
 
                         if (UserUtil.isNetworkOnline) {
-                            Activity topActivity = (Activity) ActivityUtils.getTopActivity();
+                            Activity topActivity = ActivityUtils.getTopActivity();
                             if (topActivity != null) {
                                 // 如果是在签批内，先关闭，再进入,否则未销毁tbs,会一直显示加载中(看情况添加用户提示)
                                 if (topActivity.getLocalClassName().contains("SignActivity")) {
@@ -878,6 +882,11 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
         if (UserUtil.ISCHAIRMAN) {
             cc1.setVisibility(View.VISIBLE);
             cc2.setVisibility(View.GONE);
+            if (!UserUtil.isNetDATA){
+                finish_meeting.setText("保存会议");
+                vote_ll.setVisibility(View.GONE);
+            }
+
             //只有服务端才有的方法：初始化议题数据并提交到服务端
             //  initiaServerData();
         } else {
@@ -921,7 +930,7 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
                                 try {
                                     // datagramSocket.setSoTimeout(20000);
                                     datagramSocket.receive(datagramPacket);
-                                    strMsg = new String(datagramPacket.getData(), 0, datagramPacket.getData().length, "UTF-8");
+                                    strMsg = new String(datagramPacket.getData(), 0, datagramPacket.getData().length, StandardCharsets.UTF_8);
                                     if (strMsg.contains(constant.SHARE_FILE_IP)) {
                                         String ip = datagramPacket.getAddress().getHostAddress();
                                         Message message = new Message();
@@ -997,7 +1006,7 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
                 broadcastUDPFileService.setListener(new BroadcastUDPFileService.errorMsgListener() {
                     @Override
                     public void getErrorMsg(String msg) {
-                        Log.d("gsfgdgg", msg.toString());
+                        Log.d("gsfgdgg", msg);
                     }
                 });
             }
@@ -1477,8 +1486,8 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
         home_ll1.setOnClickListener(this);
         home_ll.setOnClickListener(this);
         shareScreen_rl.setOnClickListener(this);
-        mBtnDelete = (Button) findViewById(R.id.btn_delete);
-        mBtnAdd = (Button) findViewById(R.id.btn_add);
+        mBtnDelete = findViewById(R.id.btn_delete);
+        mBtnAdd = findViewById(R.id.btn_add);
         edit_name_rl.setVisibility(View.GONE);
 
         left_rl.setVisibility(View.GONE);
@@ -1934,7 +1943,15 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
     //结束会议
     private void showFinishMeetingDialog() {
         Log.d("Broadcast111", "UrlConstant.baseUrl= " + UrlConstant.baseUrl);
-        CVIPaperDialogUtils.showCustomDialog(WuHuActivity3.this, "确定要结束会议？", "请保存/上传好会议文件!!!", "确定", true, new CVIPaperDialogUtils.ConfirmDialogListener() {
+        String  str="";
+        if (UserUtil.ISCHAIRMAN) {
+            str="确定要保存会议？";
+
+        }else {
+            str="确定要结束会议？";
+
+        }
+        CVIPaperDialogUtils.showCustomDialog(WuHuActivity3.this, str, "请保存/上传好会议文件!!!", "确定", true, new CVIPaperDialogUtils.ConfirmDialogListener() {
             @Override
             public void onClickButton(boolean clickConfirm, boolean clickCancel) {
                 if (clickConfirm) {
@@ -2009,7 +2026,7 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
                         map.put("status", "FINISH");
                         map.put("c_id", c_id);
                         //绑定生命周期
-                        NetWorkManager.getInstance().getNetWorkApiService().finishMeeting(map).compose(WuHuActivity3.this.<BasicResponse>bindToLifecycle())
+                        NetWorkManager.getInstance().getNetWorkApiService().finishMeeting(map).compose(WuHuActivity3.this.bindToLifecycle())
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(new DefaultObserver<BasicResponse>() {
@@ -2049,7 +2066,7 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
         Log.d("coming_id_un", UserUtil.meeting_record_id);
         wuHuEditBeanRequset.setId(UserUtil.meeting_record_id);
 
-        NetWorkManager.getInstance().getNetWorkApiService().meeting(wuHuEditBeanRequset).compose(this.<BasicResponse<MeetingIdBean>>bindToLifecycle())
+        NetWorkManager.getInstance().getNetWorkApiService().meeting(wuHuEditBeanRequset).compose(this.bindToLifecycle())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultObserver<BasicResponse<MeetingIdBean>>() {
@@ -2142,6 +2159,7 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
                         WuHuEditBean.EditListBean.FileListBean fileListBean = fileListBeanList.get(k);
                         if (!fileListBean.isNet()) {
                             //只上传本地文件
+                            Log.d("dfdssdgdsgs11111",fileListBean.getName());
                             cutfile(fileListBean.getPath(), fileListBean.getName(), fileListBean.getPos());
                         }
                     }
@@ -2177,10 +2195,12 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
     }
 
     private void cutfile(String filePath, String fileName, String pos) {
+            littlefilelist.clear();
         try {
             long mBufferSize = size; //分片的大小，可自定义
             fileCutUtils = new FileCutUtils();
             littlefilecount = fileCutUtils.getSplitFile(new File(filePath), mBufferSize);
+            Log.d("gtgwrtwwrtwt大文件上传分片--11",filePath);
             littlefilelist = fileCutUtils.getLittlefilelist();
             upload(fileName, pos, littlefilelist);
 
@@ -2205,15 +2225,17 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
 
             }
         }*/
+        Log.d("dfdssdgdsgs222222",fileName);
         Log.d("gtgwrtwwrtwt大文件上传分片33", "议题：  " + pos + "    " + fileName + "  切片数：" + filelist.size());
         for (int i = 0; i < filelist.size(); i++) {
             File f = filelist.get(i);
             upLoadFileType = getMimeType(filelist.get(i).getName());
             endStrAll = filelist.get(i).getName().substring(filelist.get(i).getName().lastIndexOf(".") + 1);
+
             RequestBody requestBody = RequestBody.create(MediaType.parse(upLoadFileType), f);
             MultipartBody.Part part = MultipartBody.Part.createFormData("file", fileName + "/" + pos, requestBody);
 
-            NetWorkManager.getInstance().getNetWorkApiService().receiveChunk(part).compose(this.<BasicResponse>bindToLifecycle())
+            NetWorkManager.getInstance().getNetWorkApiService().receiveChunk(part).compose(this.bindToLifecycle())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new DefaultObserver<BasicResponse>() {
@@ -2222,19 +2244,22 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
                             super.onFail(response);
                             upLoadNum++;//每个文件的切片数
                             littelFilePos++;//议题下的文件分片索引
-                            Log.d("gtgwrtwwrtwt大文件上传分片111", "上传路过   upLoadNum" + upLoadNum + "  fileName=   " + fileName);
+                            Log.d("gtgwrtwwrtwt大文件上传分片pppp1111", "上传路过   upLoadNum" + upLoadNum + "  fileName=   " + fileName);
                             Log.d("失败111222222", response.getMsg() + "   " + response.getData().toString());
 
                             for (int n = 0; n < fileFragmentationBeans.size(); n++) {
                                 if (fileFragmentationBeans.get(n).getFileName().equals(fileName)) {
+
+
                                     int a = fileFragmentationBeans.get(n).getNumberUploads();
                                     a++;
                                     fileFragmentationBeans.get(n).setNumberUploads(a);
                                     if (fileFragmentationBeans.get(n).getNumberUploads() == fileFragmentationBeans.get(n).getAllFenPianNum()) {
                                         upLoadNum = 0;
+                                        Log.d("dfdssdgdsgs33333",fileFragmentationBeans.get(n).getFileName());
                                         mergeShards(fileFragmentationBeans.get(n).getFileName(), fileFragmentationBeans.get(n).getPos());
                                     }
-                                    Log.d("gtgwrtwwrtwt大文件上传分片ppppp", "议题：  " + pos + "   缓存文件名：" + fileFragmentationBeans.get(n).getFileName() + "   传递的文件名字：" + fileName + "  总大小 " + fileFragmentationBeans.get(n).getAllFenPianNum() + "  fenpiandaxiao " + fileFragmentationBeans.get(n).getNumberUploads());
+                                    Log.d("gtgwrtwwrtwt大文件上传分片ppppp2222", "议题：  " + pos + "   缓存文件名：" + fileFragmentationBeans.get(n).getFileName() + "   传递的文件名字：" + fileName + "  总大小 " + fileFragmentationBeans.get(n).getAllFenPianNum() + "  fenpiandaxiao " + fileFragmentationBeans.get(n).getNumberUploads());
 
                                 }
 
@@ -2300,7 +2325,7 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
         map.put("size", size);
         //  map.put("updateFileList", 1);
         map.put("index", Integer.valueOf(pos));
-        NetWorkManager.getInstance().getNetWorkApiService().mergeChunk(map).compose(this.<BasicResponse<MergeChunkBean>>bindToLifecycle())
+        NetWorkManager.getInstance().getNetWorkApiService().mergeChunk(map).compose(this.bindToLifecycle())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultObserver<BasicResponse<MergeChunkBean>>() {
@@ -2315,7 +2340,7 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
                             reSetdata();
                         }
                         Log.d("失败1113333", response.getMsg() + "   " + response.getData().toString());
-                        Log.d("gtgwrtwwrtwt大文件上传分片33333", "总文件： " + locaFileNum + "     执行过上传的数量：" + upLoadFileNum + "  fileName   " + fileName);
+                        Log.d("gtgwrtwwrtwt大文件上传分片ppppp333", "总文件： " + locaFileNum + "     执行过上传的数量：" + upLoadFileNum + "  fileName   " + fileName);
                     }
 
                     @Override
@@ -2325,6 +2350,7 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
                             littelFilePos = 0;//议题下的文件分片索引
                             issueFileNum++;//每个议题下的文件
                             MergeChunkBean mergeChunkBean = response.getData();
+                            Log.d("sdfsfdfdf",mergeChunkBean.getUrl()+"     "+mergeChunkBean.getIndex());
                             if (Hawk.contains("WuHuFragmentData")) {
                                 List<WuHuEditBean.EditListBean> beanList = new ArrayList<>();
                                 beanList.clear();
@@ -2334,15 +2360,23 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
                                     return;
                                 }
                                 for (int i = 0; i < beanList.size(); i++) {
+                                    //获取每一个议题
                                     WuHuEditBean.EditListBean editListBean = beanList.get(i);
+                                    //当前议题和返回的议题索引作对比
                                     if (String.valueOf(mergeChunkBean.getIndex()).equals(editListBean.getPos())) {
                                         List<WuHuEditBean.EditListBean.FileListBean> fileListBeanList = new ArrayList<>();
                                         fileListBeanList.clear();
                                         if (editListBean.getFileListBeanList() != null & editListBean.getFileListBeanList().size() > 0) {
+                                            //获取当前议题下的文件集合
                                             fileListBeanList.addAll(editListBean.getFileListBeanList());
                                             for (int k = 0; k < fileListBeanList.size(); k++) {
-                                                fileListBeanList.get(k).setNet(true);
-                                                fileListBeanList.get(k).setPath(mergeChunkBean.getUrl());
+                                                if (fileName.equals(fileListBeanList.get(k).getName())){
+
+                                                    Log.d("fgdfhhhhfgdhdh   00",fileName.equals(fileListBeanList.get(k).getName())+"  fileName="+fileName+"   fileListBeanList.get(k).getName()="+fileListBeanList.get(k).getName());
+                                                    fileListBeanList.get(k).setNet(true);
+                                                    fileListBeanList.get(k).setPath(mergeChunkBean.getUrl());
+                                                }
+
                                             }
                                             editListBean.setFileListBeanList(fileListBeanList);
                                         }
@@ -2403,8 +2437,8 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
             wuHuEditBeanRequset.setContent(wuHuEditBean);
             wuHuEditBeanRequset.setId(UserUtil.meeting_record_id);
         }
-        Log.d("dfggsdgsgs222", wuHuEditBeanRequset.toString().toString());
-        NetWorkManager.getInstance().getNetWorkApiService().meeting(wuHuEditBeanRequset).compose(this.<BasicResponse<MeetingIdBean>>bindToLifecycle())
+        Log.d("dfggsdgsgs222", wuHuEditBeanRequset.toString());
+        NetWorkManager.getInstance().getNetWorkApiService().meeting(wuHuEditBeanRequset).compose(this.bindToLifecycle())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultObserver<BasicResponse<MeetingIdBean>>() {
@@ -2918,7 +2952,7 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
         if (Hawk.contains("WuHuMeetingID")) {
             id = Hawk.get("WuHuMeetingID");
         }
-        NetWorkManager.getInstance().getNetWorkApiService().getWuHuMeetingInfo(id).compose(this.<BasicResponse<WuHuMeetingListResponse>>bindToLifecycle())
+        NetWorkManager.getInstance().getNetWorkApiService().getWuHuMeetingInfo(id).compose(this.bindToLifecycle())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultObserver<BasicResponse<WuHuMeetingListResponse>>() {
@@ -2969,6 +3003,7 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
                 for (int k = 0; k < netLocaFiles.size(); k++) {
                     WuHuNetWorkBean wuHuNetWorkBean = new WuHuNetWorkBean();
                     wuHuNetWorkBean.setUrl(UrlConstant.baseUrl + "/" + netLocaFiles.get(k).getPath());
+
                     wuHuNetWorkBean.setName(netLocaFiles.get(k).getName());
                     allFileNum++;
                     filesList.add(wuHuNetWorkBean);
@@ -2983,11 +3018,13 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
         //遍历议题下载文件
         for (int i = 0; i < filesList.size(); i++) {
             WuHuNetWorkBean wuHuNetWorkBean = filesList.get(i);
+
             DownloadUtil.get().download(wuHuNetWorkBean.getUrl(), netFilePath, wuHuNetWorkBean.getName(), new DownloadUtil.OnDownloadListener() {
                 @Override
                 public void onDownloadSuccess(File file) {
                     dowLoadNum++;
                     Log.d("dffasfsdfafafdowLoadNum11", dowLoadNum + "    " + filesList.size());
+                    Log.d("dffasfsdfafafdowLoadNum333",  "wuHuNetWorkBean.getUrl()=    " + wuHuNetWorkBean.getUrl());
                     completeDownload();
                 }
 
@@ -2998,6 +3035,7 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
                 @Override
                 public void onDownloadFailed(Exception e) {
                     dowLoadNum++;
+
                     Log.d("dffasfsdfafafdowLoadNum222", dowLoadNum + "    " + filesList.size());
                     failList.add(wuHuNetWorkBean);
                     completeDownload();
@@ -3720,13 +3758,9 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
             int top = leftTop[1];
             int bottom = top + v.getHeight();
             int right = left + v.getWidth();
-            if (event.getX() > left && event.getX() < right
-                    && event.getY() > top && event.getY() < bottom) {
-                // 点击的是输入框区域，保留点击EditText的事件
-                return false;
-            } else {
-                return true;
-            }
+            // 点击的是输入框区域，保留点击EditText的事件
+            return !(event.getX() > left) || !(event.getX() < right)
+                    || !(event.getY() > top) || !(event.getY() < bottom);
         }
         return false;
     }
