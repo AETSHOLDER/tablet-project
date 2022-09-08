@@ -33,7 +33,7 @@ android {
         }
 //        buildConfigField "boolean", "DOWNLOAD_NEED_LOG", needLog == "true" ? "true" : "false"
         multiDexEnabled true
-        File file = project.rootProject.file('local.properties');
+        File file = project.rootProject.file('local.properties')
         def needLog = null
         if (file.exists()) {
             Properties p = new Properties()
@@ -145,8 +145,9 @@ dependencies {
     implementation project(':verticaltablayout')
     api 'com.bintray.library:basetools_lib:1.0.0'
     implementation files('libs/netty-all-4.1.24.Final.jar')
-    //x5内核Sdk
-    api 'com.tencent.tbs.tbssdk:sdk:43697'
+
+  /*  //x5内核Sdk
+    api 'com.tencent.tbs.tbssdk:sdk:43697'*/
 
     //---------------
     implementation 'com.scwang.smart:refresh-layout-kernel:2.0.1'
@@ -203,4 +204,5 @@ dependencies {
     implementation 'com.joanzapata.pdfview:android-pdfview:1.0.4@aar'
     implementation 'com.angel:ZoomImageView:1.0.0'
     implementation 'com.contrarywind:Android-PickerView:3.2.7'
+    implementation files('libs/tbs_sdk_thirdapp_v4.3.0.236_44136_sharewithdownloadwithfile_withoutGame_obfs_20211203_185750.jar')
 }

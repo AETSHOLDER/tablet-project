@@ -7,6 +7,15 @@ public class WuHuNetWorkBean implements Serializable {
     private String mac;
     private String ip;
     private String url;
+    private String pos;
+
+    public String getPos() {
+        return pos;
+    }
+
+    public void setPos(String pos) {
+        this.pos = pos;
+    }
 
     public String getUrl() {
         return url;

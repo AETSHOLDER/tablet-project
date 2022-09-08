@@ -2183,7 +2183,7 @@ public class WuHuActivity2 extends BaseActivity implements View.OnClickListener,
         try {
             long mBufferSize = size; //分片的大小，可自定义
             fileCutUtils = new FileCutUtils();
-            littlefilecount = fileCutUtils.getSplitFile(new File(filePath), mBufferSize);
+            littlefilecount = fileCutUtils.getSplitFile(new File(filePath), mBufferSize,pos);
             littlefilelist = fileCutUtils.getLittlefilelist();
             upload(fileName, pos, littlefilelist);
 

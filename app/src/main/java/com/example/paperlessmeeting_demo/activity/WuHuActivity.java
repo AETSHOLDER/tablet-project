@@ -122,6 +122,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -380,7 +381,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                            sendBroadcast(intent8);
 
                         }*/
-                        Activity topActivity = (Activity) ActivityUtils.getTopActivity();
+                        Activity topActivity = ActivityUtils.getTopActivity();
                         if (topActivity != null) {
                             // 如果是在签批内，先关闭，再进入,否则未销毁tbs,会一直显示加载中(看情况添加用户提示)
                             if (topActivity.getLocalClassName().contains("ActivityImage")) {
@@ -415,7 +416,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                     } else if (fileBean400.getFile_type().equals("4")) {
 
                         if (UserUtil.isNetworkOnline) {
-                            Activity topActivity = (Activity) ActivityUtils.getTopActivity();
+                            Activity topActivity = ActivityUtils.getTopActivity();
                             if (topActivity != null) {
                                 // 如果是在签批内，先关闭，再进入,否则未销毁tbs,会一直显示加载中(看情况添加用户提示)
                                 if (topActivity.getLocalClassName().contains("SignActivity")) {
@@ -531,7 +532,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                            sendBroadcast(intent8);
 
                         }*/
-                        Activity topActivity = (Activity) ActivityUtils.getTopActivity();
+                        Activity topActivity = ActivityUtils.getTopActivity();
                         if (topActivity != null) {
                             // 如果是在签批内，先关闭，再进入,否则未销毁tbs,会一直显示加载中(看情况添加用户提示)
                             if (topActivity.getLocalClassName().contains("ActivityImage")) {
@@ -565,7 +566,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                     } else if (fileBean.getFile_type().equals("4")) {
 
                         if (UserUtil.isNetworkOnline) {
-                            Activity topActivity = (Activity) ActivityUtils.getTopActivity();
+                            Activity topActivity = ActivityUtils.getTopActivity();
                             if (topActivity != null) {
                                 // 如果是在签批内，先关闭，再进入,否则未销毁tbs,会一直显示加载中(看情况添加用户提示)
                                 if (topActivity.getLocalClassName().contains("SignActivity")) {
@@ -927,7 +928,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                                 try {
                                     // datagramSocket.setSoTimeout(20000);
                                     datagramSocket.receive(datagramPacket);
-                                    strMsg = new String(datagramPacket.getData(), 0, datagramPacket.getData().length, "UTF-8");
+                                    strMsg = new String(datagramPacket.getData(), 0, datagramPacket.getData().length, StandardCharsets.UTF_8);
                                     if (strMsg.contains(constant.SHARE_FILE_IP)) {
                                         String ip = datagramPacket.getAddress().getHostAddress();
                                         Message message = new Message();
@@ -1003,7 +1004,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                 broadcastUDPFileService.setListener(new BroadcastUDPFileService.errorMsgListener() {
                     @Override
                     public void getErrorMsg(String msg) {
-                        Log.d("gsfgdgg", msg.toString());
+                        Log.d("gsfgdgg", msg);
                     }
                 });
             }
@@ -1482,8 +1483,8 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
         home_ll1.setOnClickListener(this);
         home_ll.setOnClickListener(this);
         shareScreen_rl.setOnClickListener(this);
-        mBtnDelete = (Button) findViewById(R.id.btn_delete);
-        mBtnAdd = (Button) findViewById(R.id.btn_add);
+        mBtnDelete = findViewById(R.id.btn_delete);
+        mBtnAdd = findViewById(R.id.btn_add);
         edit_name_rl.setVisibility(View.GONE);
 
         left_rl.setVisibility(View.GONE);
@@ -2014,7 +2015,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                         map.put("status", "FINISH");
                         map.put("c_id", c_id);
                         //绑定生命周期
-                        NetWorkManager.getInstance().getNetWorkApiService().finishMeeting(map).compose(WuHuActivity.this.<BasicResponse>bindToLifecycle())
+                        NetWorkManager.getInstance().getNetWorkApiService().finishMeeting(map).compose(WuHuActivity.this.bindToLifecycle())
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(new DefaultObserver<BasicResponse>() {
@@ -2054,7 +2055,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
         Log.d("coming_id_un", UserUtil.meeting_record_id);
         wuHuEditBeanRequset.setId(UserUtil.meeting_record_id);
 
-        NetWorkManager.getInstance().getNetWorkApiService().meeting(wuHuEditBeanRequset).compose(this.<BasicResponse<MeetingIdBean>>bindToLifecycle())
+        NetWorkManager.getInstance().getNetWorkApiService().meeting(wuHuEditBeanRequset).compose(this.bindToLifecycle())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultObserver<BasicResponse<MeetingIdBean>>() {
@@ -2185,7 +2186,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
         try {
             long mBufferSize = size; //分片的大小，可自定义
             fileCutUtils = new FileCutUtils();
-            littlefilecount = fileCutUtils.getSplitFile(new File(filePath), mBufferSize);
+            littlefilecount = fileCutUtils.getSplitFile(new File(filePath), mBufferSize,pos);
             littlefilelist = fileCutUtils.getLittlefilelist();
             upload(fileName, pos, littlefilelist);
 
@@ -2218,7 +2219,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
             RequestBody requestBody = RequestBody.create(MediaType.parse(upLoadFileType), f);
             MultipartBody.Part part = MultipartBody.Part.createFormData("file", fileName + "/" + pos, requestBody);
 
-            NetWorkManager.getInstance().getNetWorkApiService().receiveChunk(part).compose(this.<BasicResponse>bindToLifecycle())
+            NetWorkManager.getInstance().getNetWorkApiService().receiveChunk(part).compose(this.bindToLifecycle())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new DefaultObserver<BasicResponse>() {
@@ -2305,7 +2306,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
         map.put("size", size);
         //  map.put("updateFileList", 1);
         map.put("index", Integer.valueOf(pos));
-        NetWorkManager.getInstance().getNetWorkApiService().mergeChunk(map).compose(this.<BasicResponse<MergeChunkBean>>bindToLifecycle())
+        NetWorkManager.getInstance().getNetWorkApiService().mergeChunk(map).compose(this.bindToLifecycle())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultObserver<BasicResponse<MergeChunkBean>>() {
@@ -2408,8 +2409,8 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
             wuHuEditBeanRequset.setContent(wuHuEditBean);
             wuHuEditBeanRequset.setId(UserUtil.meeting_record_id);
         }
-        Log.d("dfggsdgsgs222", wuHuEditBeanRequset.toString().toString());
-        NetWorkManager.getInstance().getNetWorkApiService().meeting(wuHuEditBeanRequset).compose(this.<BasicResponse<MeetingIdBean>>bindToLifecycle())
+        Log.d("dfggsdgsgs222", wuHuEditBeanRequset.toString());
+        NetWorkManager.getInstance().getNetWorkApiService().meeting(wuHuEditBeanRequset).compose(this.bindToLifecycle())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultObserver<BasicResponse<MeetingIdBean>>() {
@@ -2923,7 +2924,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
         if (Hawk.contains("WuHuMeetingID")) {
             id = Hawk.get("WuHuMeetingID");
         }
-        NetWorkManager.getInstance().getNetWorkApiService().getWuHuMeetingInfo(id).compose(this.<BasicResponse<WuHuMeetingListResponse>>bindToLifecycle())
+        NetWorkManager.getInstance().getNetWorkApiService().getWuHuMeetingInfo(id).compose(this.bindToLifecycle())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultObserver<BasicResponse<WuHuMeetingListResponse>>() {
@@ -3724,13 +3725,9 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
             int top = leftTop[1];
             int bottom = top + v.getHeight();
             int right = left + v.getWidth();
-            if (event.getX() > left && event.getX() < right
-                    && event.getY() > top && event.getY() < bottom) {
-                // 点击的是输入框区域，保留点击EditText的事件
-                return false;
-            } else {
-                return true;
-            }
+            // 点击的是输入框区域，保留点击EditText的事件
+            return !(event.getX() > left) || !(event.getX() < right)
+                    || !(event.getY() > top) || !(event.getY() < bottom);
         }
         return false;
     }

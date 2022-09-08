@@ -9,6 +9,7 @@ import android.os.Looper;
 import android.util.Base64;
 import android.util.Log;
 import com.blankj.utilcode.util.ActivityUtils;
+import com.example.paperlessmeeting_demo.MeetingAPP;
 import com.example.paperlessmeeting_demo.activity.LoginActivity;
 import com.example.paperlessmeeting_demo.activity.WhiteBoardActivity;
 import com.example.paperlessmeeting_demo.activity.WhiteBoardActivity2;
@@ -83,7 +84,7 @@ public class JWebSocketClientService {
                     EventBus.getDefault().post(msg);
                 }
 
-                Activity topActivity = (Activity) ActivityUtils.getTopActivity();
+                Activity topActivity = ActivityUtils.getTopActivity();
                 //  处理通过ws收到的白板消息tempTeamReq
                 if (message.contains("shareReq") || message.contains(constant.TEMPSHAREREQ)) {
                     String whiteName = "activity.WhiteBoardActivity2";
@@ -108,7 +109,7 @@ public class JWebSocketClientService {
                     }
 
                     Hawk.put(constant.team_share, "share");
-                    Activity top2= (Activity) ActivityUtils.getTopActivity();
+                    Activity top2= ActivityUtils.getTopActivity();
                     if (top2 != null) {
                         Intent intent;
                         if (UserUtil.isTempMeeting) {
@@ -163,7 +164,7 @@ public class JWebSocketClientService {
                                                     e.printStackTrace();
                                                 }
                                             }
-                                            Activity top2 = (Activity) ActivityUtils.getTopActivity();
+                                            Activity top2 = ActivityUtils.getTopActivity();
 
                                             Hawk.put(constant.team_share, "team");
                                             if (top2 != null) {
@@ -363,14 +364,19 @@ public class JWebSocketClientService {
                                             new Handler().postDelayed(new Runnable() {
                                                 @Override
                                                 public void run() {
-                                                    Activity top2 = (Activity) ActivityUtils.getTopActivity();
+                                                    Activity top2 = ActivityUtils.getTopActivity();
                                                     if(top2!=null){
-                                                        CVIPaperDialogUtils.showCountDownConfirmDialog(top2, "会议已结束!", "确定", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                                                        top2.runOnUiThread(new Runnable() {
                                                             @Override
-                                                            public void onClickButton(boolean clickConfirm, boolean clickCancel) {
-                                                                if (clickConfirm) {
+                                                            public void run() {
+                                                                CVIPaperDialogUtils.showCountDownConfirmDialog(top2, "会议已结束!", "确定", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                                                                    @Override
+                                                                    public void onClickButton(boolean clickConfirm, boolean clickCancel) {
+                                                                        if (clickConfirm) {
 
-                                                                }
+                                                                        }
+                                                                    }
+                                                                });
                                                             }
                                                         });
                                                     }
@@ -526,7 +532,7 @@ public class JWebSocketClientService {
                 super.onError(ex);
                 ex.printStackTrace();
 
-                Activity topActivity = (Activity) ActivityUtils.getTopActivity();
+                Activity topActivity = ActivityUtils.getTopActivity();
                 if (topActivity != null) {
                     Intent intent = new Intent(topActivity, LoginActivity.class);
                     topActivity.startActivity(intent);
@@ -535,12 +541,13 @@ public class JWebSocketClientService {
 
 
                 Looper.prepare();
-                new Handler().postDelayed(new Runnable() {
+                MeetingAPP.mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Activity top2 = (Activity) ActivityUtils.getTopActivity();
+                        Activity top2 = ActivityUtils.getTopActivity();
                         if(top2!=null){
-                            CVIPaperDialogUtils.showCountDownConfirmDialog(top2, "会议已结束!", "确定", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+
+                              CVIPaperDialogUtils.showCountDownConfirmDialog(top2, "会议已结束!", "确定", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
                                 @Override
                                 public void onClickButton(boolean clickConfirm, boolean clickCancel) {
                                     if (clickConfirm) {
@@ -627,7 +634,7 @@ public class JWebSocketClientService {
         }
         try {
             final ReceiveData receiveData = mAnalyticUtils.analyticData(bytes);
-            Activity topActivity = (Activity) ActivityUtils.getTopActivity();
+            Activity topActivity = ActivityUtils.getTopActivity();
             if (topActivity != null) {
                 topActivity.runOnUiThread(new Runnable() {
                     @Override
@@ -677,7 +684,7 @@ public class JWebSocketClientService {
                         if (reconnectCount > 0) {
                             reconnectWs();
                         } else {
-                            Activity topActivity = (Activity) ActivityUtils.getTopActivity();
+                            Activity topActivity = ActivityUtils.getTopActivity();
                             if (topActivity != null) {
                                 topActivity.runOnUiThread(new Runnable() {
                                     @Override

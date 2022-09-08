@@ -287,7 +287,7 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                         //临时存放的议题集合
                         List<WuHuEditBean.EditListBean> copyEdList = new ArrayList<>();
                         WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
-                        copyEdList = wuHuEditBean.getEditListBeanList();
+                        copyEdList .addAll(wuHuEditBean.getEditListBeanList());
                         //遍历更新当前议题下的文件
                         if (copyEdList != null && copyEdList.size() > 0) {
                             for (int i = 0; i < copyEdList.size(); i++) {
@@ -309,7 +309,7 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                             wuHuEditBean.setEditListBeanList(copyEdList);
                         }
                         Hawk.put("WuHuFragmentData", wuHuEditBean);
-                        if (!UserUtil.ISCHAIRMAN) {
+                        if (UserUtil.ISCHAIRMAN) {
                             wsUpdata(wuHuEditBean, constant.SUBMITANISSUE);
                         }
                     }
@@ -337,7 +337,7 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                         List<WuHuEditBean.EditListBean> copyEdList = new ArrayList<>();
                         copyEdList.clear();
                         WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
-                        copyEdList = wuHuEditBean.getEditListBeanList();
+                        copyEdList .addAll( wuHuEditBean.getEditListBeanList());
                         if (copyEdList == null || copyEdList.size() == 0) {
                             return;
                         }
@@ -951,7 +951,7 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                     if (Hawk.contains("WuHuFragmentData")) {
                         wuHuEditBeanList.clear();
                         WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
-                        wuHuEditBeanList = wuHuEditBean.getEditListBeanList();
+                        wuHuEditBeanList .addAll(wuHuEditBean.getEditListBeanList());
                         if (wuHuEditBeanList == null || wuHuEditBeanList.size() == 0) {
                             return;
                         }
@@ -1776,7 +1776,7 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                 //临时存放的议题集合
                 List<WuHuEditBean.EditListBean> copyEdList = new ArrayList<>();
                 WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
-                copyEdList = wuHuEditBean.getEditListBeanList();
+                copyEdList .addAll(wuHuEditBean.getEditListBeanList()) ;
                 //遍历更新当前议题下的文件
                 List<WuHuEditBean.EditListBean.FileListBean> shareService = new ArrayList<>();
                 shareService.clear();
@@ -1996,7 +1996,7 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                         //临时存放的议题集合
                         List<WuHuEditBean.EditListBean> copyEdList = new ArrayList<>();
                         WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
-                        copyEdList = wuHuEditBean.getEditListBeanList();
+                        copyEdList .addAll(wuHuEditBean.getEditListBeanList()) ;
                         //遍历更新当前议题下的文件
                         List<WuHuEditBean.EditListBean.FileListBean> shareService = new ArrayList<>();
                         shareService.clear();
@@ -2084,7 +2084,9 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
             file_ly.setVisibility(View.VISIBLE);
 
         }
-        List<WuHuEditBean.EditListBean> allList = wuHuEditBean.getEditListBeanList();
+        List<WuHuEditBean.EditListBean> allList =new ArrayList<>();
+
+        allList.addAll(wuHuEditBean.getEditListBeanList());
 
         if (allList == null || allList.size() == 0) {
             return;
@@ -2341,7 +2343,11 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
              tittle_num.setText("议题"+s);*/
                 WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
                 List<WuHuEditBean.EditListBean> editListBeanList = new ArrayList<>();
-                editListBeanList = wuHuEditBean.getEditListBeanList();
+                if (wuHuEditBean!=null&&wuHuEditBean.getEditListBeanList()!=null){
+
+                    editListBeanList .addAll(wuHuEditBean.getEditListBeanList());
+                }
+
 
                 if (Integer.valueOf(textNub) == 0) {
                     if (listView_catalog != null && file_ly != null && fragment_ttile_rl != null && topic_ll != null && fragmentLine != null && nn != null && listView_catalog_ll != null && scrollView_file != null && scrollView_cata != null) {
@@ -2553,10 +2559,14 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
         getActivity().registerReceiver(myCatalogBroadcastReceiver, filter4);
 
         selfIp = getNetworkType();
-        if (!UserUtil.ISCHAIRMAN) {
-            imageAdd.setVisibility(View.GONE);
+        if (UserUtil.isNetDATA){
 
+            imageAdd.setVisibility(View.GONE);
+        }else {
+
+            imageAdd.setVisibility(View.VISIBLE);
         }
+
         return view;
     }
 
@@ -2635,7 +2645,9 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                             List<WuHuEditBean.EditListBean> copyEdList = new ArrayList<>();
                             copyEdList.clear();
                             WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
+                            if (wuHuEditBean!=null&&wuHuEditBean.getEditListBeanList()!=null){
                             copyEdList .addAll(wuHuEditBean.getEditListBeanList());
+                            }
                             //遍历更新当前议题下的文件
                             List<WuHuEditBean.EditListBean.FileListBean> locService = new ArrayList<>();
                             locService.clear();
@@ -2807,7 +2819,9 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                                     List<WuHuEditBean.EditListBean> copyEdList = new ArrayList<>();
                                     copyEdList.clear();
                                     WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
-                                    copyEdList.addAll(wuHuEditBean.getEditListBeanList());
+                                    if (wuHuEditBean!=null&&wuHuEditBean.getEditListBeanList()!=null){
+                                        copyEdList .addAll(wuHuEditBean.getEditListBeanList());
+                                    }
                                     //遍历更新当前议题下的文件
                                     if (copyEdList != null && copyEdList.size() > 0) {
                                         for (int k = 0; k < copyEdList.size(); k++) {
@@ -3569,7 +3583,7 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                         if (wuHuEditBean.getEditListBeanList() == null || wuHuEditBean.getEditListBeanList().size() == 0) {
                             return;
                         }
-                        editListBeanList = wuHuEditBean.getEditListBeanList();
+                        editListBeanList .addAll(wuHuEditBean.getEditListBeanList());
                         topic.setText(editListBeanList.get(Integer.valueOf(textNub)).getSubTopics());
                         attend.setText(editListBeanList.get(Integer.valueOf(textNub)).getReportingUnit());
                         attend2.setText(editListBeanList.get(Integer.valueOf(textNub)).getParticipantUnits());
@@ -3607,9 +3621,17 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                 }
                 Log.d("fdgsgsgsgsg2222", Hawk.contains("WuHuFragmentData") + "");
                 if (Hawk.contains("WuHuFragmentData")) {
-                    wuHuEditBeanList.clear();
-                    WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
-                    wuHuEditBeanList = wuHuEditBean.getEditListBeanList();
+
+                    if (wuHuEditBeanList!=null){
+
+                        wuHuEditBeanList.clear();
+                        WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
+                        if (wuHuEditBean!=null&&wuHuEditBean.getEditListBeanList()!=null){
+                            wuHuEditBeanList .addAll(wuHuEditBean.getEditListBeanList());
+                        }
+
+                    }
+
                     if (wuHuEditBeanList != null && wuHuCalalogListAdapter != null) {
                         wuHuCalalogListAdapter.setWuHuEditBeanList(wuHuEditBeanList);
                         wuHuCalalogListAdapter.notifyDataSetChanged();

@@ -136,7 +136,40 @@ public class WuHuFileListAdapter extends BaseAdapter {
         }*/
 
 
+     if (UserUtil.isNetDATA){
+         if (UserUtil.ISCHAIRMAN) {
+             if (gridViewBean.isNet()){
 
+                 viHolder.open.setVisibility(View.VISIBLE);
+                 viHolder.proprietary.setVisibility(View.INVISIBLE);
+                 viHolder.open.setText("推送");
+                 viHolder.proprietary.setText("分享");
+             }else {
+
+                 viHolder.open.setVisibility(View.VISIBLE);
+                 viHolder.proprietary.setVisibility(View.VISIBLE);
+                 viHolder.open.setText("推送");
+                 viHolder.proprietary.setText("分享");
+             }
+
+
+         }else {
+
+             viHolder.open.setVisibility(View.GONE);
+             viHolder.proprietary.setVisibility(View.GONE);
+             viHolder.open.setText("推送");
+             viHolder.proprietary.setText("分享");
+
+         }
+
+
+      }else {
+         viHolder.open.setVisibility(View.GONE);
+         viHolder.proprietary.setVisibility(View.GONE);
+         viHolder.open.setText("推送");
+         viHolder.proprietary.setText("分享");
+
+     }
         if (UserUtil.isTempMeeting) {
             if (gridViewBean.isNet()){
                 viHolder.open.setVisibility(View.VISIBLE);
@@ -145,14 +178,15 @@ public class WuHuFileListAdapter extends BaseAdapter {
                 viHolder.proprietary.setText("分享");
             }else {
                 viHolder.open.setVisibility(View.VISIBLE);
-                viHolder.proprietary.setVisibility(View.VISIBLE);
+                viHolder.proprietary.setVisibility(View.INVISIBLE);
                 viHolder.open.setText("推送");
                 viHolder.proprietary.setText("分享");
             }
+
             if (UserUtil.ISCHAIRMAN) {
                 if (UserUtil.isNetDATA){
                     viHolder.open.setVisibility(View.VISIBLE);
-                    viHolder.proprietary.setVisibility(View.VISIBLE);
+                    viHolder.proprietary.setVisibility(View.INVISIBLE);
 
                 }else {
                     viHolder.open.setVisibility(View.GONE);
@@ -163,7 +197,7 @@ public class WuHuFileListAdapter extends BaseAdapter {
                 //  initiaServerData();
             }else {
                 viHolder.open.setVisibility(View.GONE);
-                viHolder.proprietary.setVisibility(View.VISIBLE);
+                viHolder.proprietary.setVisibility(View.GONE);
             }
             //文件分享
             viHolder.proprietary.setOnClickListener(new View.OnClickListener() {
@@ -225,7 +259,40 @@ public class WuHuFileListAdapter extends BaseAdapter {
                 }
             });
         }
+        if (UserUtil.isNetDATA){
+            if (UserUtil.ISCHAIRMAN) {
+                if (gridViewBean.isNet()){
 
+                    viHolder.open.setVisibility(View.VISIBLE);
+                    viHolder.proprietary.setVisibility(View.INVISIBLE);
+                    viHolder.open.setText("推送");
+                    viHolder.proprietary.setText("分享");
+                }else {
+
+                    viHolder.open.setVisibility(View.VISIBLE);
+                    viHolder.proprietary.setVisibility(View.INVISIBLE);
+                    viHolder.open.setText("分享");
+                    //viHolder.proprietary.setText("分享");
+                }
+
+
+            }else {
+
+                viHolder.open.setVisibility(View.GONE);
+                viHolder.proprietary.setVisibility(View.GONE);
+                viHolder.open.setText("推送");
+                viHolder.proprietary.setText("分享");
+
+            }
+
+
+        }else {
+            viHolder.open.setVisibility(View.GONE);
+            viHolder.proprietary.setVisibility(View.GONE);
+            viHolder.open.setText("推送");
+            viHolder.proprietary.setText("分享");
+
+        }
 
         if ("1".equals(gridViewBean.getFile_type())) {
             viHolder.musicReset.setVisibility(View.VISIBLE);

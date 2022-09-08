@@ -1108,7 +1108,7 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
         wlp.height = (int) (height * 0.23);
         //设置宽
         window.setAttributes(wlp);
-        dialog.show();
+       // dialog.show();
     }
 
     @Override

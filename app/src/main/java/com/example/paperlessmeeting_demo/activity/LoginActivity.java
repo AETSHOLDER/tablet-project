@@ -373,7 +373,7 @@ public class LoginActivity extends BaseActivity {
         }
         if (message.getMessage().equals(constant.get_server_ip)) {
             //验证安装APP设备的数量
-            verificationEquipment();
+        //    verificationEquipment();
             // getMacIsRegister();
 //           resumeToGetMeetingInfo();
         }

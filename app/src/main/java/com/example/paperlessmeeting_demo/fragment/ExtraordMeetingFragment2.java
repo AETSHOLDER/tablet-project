@@ -784,8 +784,13 @@ public class ExtraordMeetingFragment2 extends BaseFragment implements Verificati
                     protected void onSuccess(BasicResponse<List<WuHuMeetingListResponse>> response) {
                         if (response != null) {
                             wuHuMeetingListResponses.clear();
-                            wuHuMeetingListResponses.addAll(response.getData());
-                            initUi(wuHuMeetingListResponses);
+                            if (response.getData()!=null){
+
+                                wuHuMeetingListResponses.addAll(response.getData());
+                                initUi(wuHuMeetingListResponses);
+
+                            }
+
 
                         }
 
@@ -838,8 +843,17 @@ public class ExtraordMeetingFragment2 extends BaseFragment implements Verificati
             bundle.putString("code", "formalmeeting-" + wuHuMeetingListResponse.getName() + "/" + wuHuMeetingListResponse.get_id());
             bundle.putString("isreuse", "4");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
             intent.putExtras(bundle);
-            Hawk.put("WuHuMeetingListResponse", wuHuMeetingListResponse);
-            getActivity().startActivity(intent);
+            if (wuHuMeetingListResponse.getContent().getEditListBeanList()!=null){
+                Hawk.put("WuHuMeetingListResponse", wuHuMeetingListResponse);
+                getActivity().startActivity(intent);
+
+            }else {
+
+                Toast.makeText(getActivity(),"当前会议议题信息异常，请检查",Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+
 
         } else {
             UserUtil.isTempMeeting = true;
@@ -852,8 +866,16 @@ public class ExtraordMeetingFragment2 extends BaseFragment implements Verificati
             bundle.putString("code", "formalmeeting-" + wuHuMeetingListResponse.getName() + "/" + wuHuMeetingListResponse.get_id());
             bundle.putString("isreuse", "4");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
             intent.putExtras(bundle);
-            Hawk.put("WuHuMeetingListResponse", wuHuMeetingListResponse);
-            getActivity().startActivity(intent);
+
+            if (wuHuMeetingListResponse.getContent().getEditListBeanList()!=null){
+                Hawk.put("WuHuMeetingListResponse", wuHuMeetingListResponse);
+                getActivity().startActivity(intent);
+
+            }else {
+
+                Toast.makeText(getActivity(),"当前会议议题信息异常，请检查",Toast.LENGTH_SHORT).show();
+                return;
+            }
 
         }
 
@@ -1085,7 +1107,7 @@ public class ExtraordMeetingFragment2 extends BaseFragment implements Verificati
         wlp.height = (int) (height * 0.23);
         //设置宽
         window.setAttributes(wlp);
-        dialog.show();
+      //  dialog.show();
     }
 
     @Override
