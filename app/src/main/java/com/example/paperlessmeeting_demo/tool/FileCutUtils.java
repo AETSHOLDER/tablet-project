@@ -19,6 +19,11 @@ import java.util.List;
 public class FileCutUtils {
     private List<File> littlefilelist=new ArrayList<>();
     String FileCathePath = Environment.getExternalStorageDirectory() + File.separator + "cutlittlefile";   //切片视频切割后缓存地址
+     private String  pos;
+
+    /*public FileCutUtils(String pos) {
+        this.pos = pos;
+    }*/
 
     /**
      * 文件分割方法
@@ -26,7 +31,7 @@ public class FileCutUtils {
      * @param cutSize 分割文件的大小
      * @return int 文件切割的个数
      */
-    public int getSplitFile(File targetFile, long cutSize) {
+    public int getSplitFile(File targetFile, long cutSize,String pos) {
 
         //计算切割文件大小
         int count = targetFile.length() % cutSize == 0 ? (int) (targetFile.length() / cutSize) :
@@ -43,12 +48,12 @@ public class FileCutUtils {
             for (int i = 0; i < count - 1; i++) { //最后一片单独处理
                 long begin = offSet;
                 long end = (i + 1) * maxSize;
-                offSet = getWrite(targetFile.getAbsolutePath(), i, begin, end,targetFile.getName());
+                offSet = getWrite(targetFile.getAbsolutePath(), i, begin, end,targetFile.getName(),pos);
             }
 
 
             if (length - offSet > 0) {
-                getWrite(targetFile.getAbsolutePath(), count-1, offSet, length,targetFile.getName());
+                getWrite(targetFile.getAbsolutePath(), count-1, offSet, length,targetFile.getName(),pos);
             }
 
         } catch (FileNotFoundException e) {
@@ -73,7 +78,7 @@ public class FileCutUtils {
      * @param end 结束指针的位置
      * @return long
      */
-    public long getWrite(String file,int index,long begin,long end ,String  fileName){
+    public long getWrite(String file,int index,long begin,long end ,String  fileName,String pos){
 
         long endPointer = 0L;
 
@@ -86,7 +91,7 @@ public class FileCutUtils {
             //判断文件夹是否存在,如果不存在则创建文件夹
             createFileFolder(FileCathePath);
             //读取切片文件
-            File mFile = new File(FileCathePath + File.separator + "zdb_file" + "_" + index +fileName+ file.substring(file.lastIndexOf(".")));
+            File mFile = new File(FileCathePath + File.separator + "zdb_file" + "_" + index +pos+"-"+fileName);
             littlefilelist.add(mFile);
             //如果存在
             if (!isFileExist(mFile)) {

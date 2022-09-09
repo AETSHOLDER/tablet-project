@@ -61,6 +61,7 @@ import com.example.paperlessmeeting_demo.bean.BasicResponse;
 import com.example.paperlessmeeting_demo.bean.CreateFileBeanRequest;
 import com.example.paperlessmeeting_demo.bean.CreateFileBeanResponse;
 import com.example.paperlessmeeting_demo.bean.FileListBean;
+import com.example.paperlessmeeting_demo.bean.PushBean;
 import com.example.paperlessmeeting_demo.bean.SharePushFileBean;
 import com.example.paperlessmeeting_demo.bean.TempWSBean;
 import com.example.paperlessmeeting_demo.bean.UploadBean;
@@ -1077,7 +1078,60 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
         //通知所有fragment 都更新对应的议题文件列表
         //推送前查询其他客户端有无当前推送的文件
         //查询参会人员
-        TempWSBean bean = new TempWSBean();
+        PushBean pushBean=new PushBean();
+        pushBean.setFileName(name);
+        wsUpdata(pushBean, constant.PUSH_FILE_WEBSOCK);
+
+        if (UserUtil.ISCHAIRMAN) {
+            Intent intent;
+
+            if (type.equals("3")) {
+                intent = new Intent();
+                intent.setClass(getActivity(), ActivityImage.class);
+                if (path == null) {
+                    Toast.makeText(getActivity(), "文件不存在", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                intent.putExtra("url", path);
+                intent.putExtra("isOpenFile", true);
+                intent.putExtra("isNetFile", false);
+                startActivity(intent);
+            } else if (type.equals("4")) {
+
+                if (UserUtil.isNetworkOnline) {
+                    intent = new Intent();
+
+                        if (path == null) {
+                            Toast.makeText(getActivity(), "文件不存在", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                    intent.setClass(getActivity(), SignActivity.class);
+                    intent.putExtra("url", path);
+                    intent.putExtra("isOpenFile", true);
+                    intent.putExtra("isNetFile", false);
+                    intent.putExtra("tempPath", false);
+                    intent.putExtra("fileName", name);
+                    startActivity(intent);
+                } else {
+                    CVIPaperDialogUtils.showConfirmDialog(getActivity(), "当前无外网，会使用wps打开文件", "知道了", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                        @Override
+                        public void onClickButton(boolean clickConfirm, boolean clickCancel) {
+                            if (path!=null) {
+                                startActivity(FileUtils.openFile(path, getActivity()));
+                            }
+
+                        }
+                    });
+                }
+
+            }
+
+        }
+
+    }
+      /*  TempWSBean bean = new TempWSBean();
         bean.setReqType(0);
         bean.setUserMac_id(FLUtil.getMacAddress());
         bean.setPackType(constant.QUERYATTENDSize);
@@ -1097,9 +1151,8 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
         FileIsPush=true;
         pushName = name;
         pushPath = path;
-        pushType = type;
+        pushType = type;*/
 
-    }
 
     //发送每个fragment标识及文件数据名称
     private void sendFragmenFlag() {
@@ -3471,13 +3524,20 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
      * websocket发送数据至其他设备
      */
     private void wsUpdata(Object obj, String packType) {
-        TempWSBean bean = new TempWSBean();
-        bean.setReqType(0);
-        bean.setUserMac_id(FLUtil.getMacAddress());
-        bean.setPackType(packType);
-        bean.setBody(obj);
-        String strJson = new Gson().toJson(bean);
-        JWebSocketClientService.sendMsg(strJson);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                TempWSBean bean = new TempWSBean();
+                bean.setReqType(0);
+                bean.setUserMac_id(FLUtil.getMacAddress());
+                bean.setPackType(packType);
+                bean.setBody(obj);
+                String strJson = new Gson().toJson(bean);
+                JWebSocketClientService.sendMsg(strJson);
+
+            }
+        }).start();
+
     }
 
     /**

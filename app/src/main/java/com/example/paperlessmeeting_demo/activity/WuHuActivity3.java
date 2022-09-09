@@ -59,6 +59,7 @@ import com.example.paperlessmeeting_demo.bean.FileFragmentationBean;
 import com.example.paperlessmeeting_demo.bean.FileListBean;
 import com.example.paperlessmeeting_demo.bean.MeetingIdBean;
 import com.example.paperlessmeeting_demo.bean.MergeChunkBean;
+import com.example.paperlessmeeting_demo.bean.PushBean;
 import com.example.paperlessmeeting_demo.bean.SharePushFileBean;
 import com.example.paperlessmeeting_demo.bean.TempWSBean;
 import com.example.paperlessmeeting_demo.bean.VoteListBean;
@@ -133,6 +134,7 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import retrofit.RestAdapter;
 
 /*
  * 临时会议改创建会议
@@ -734,12 +736,135 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
 
 
                     break;
+                case 1080:
+                    String path = (String) msg.obj;
+                    String type="";
+                    String endStr2="";
+                    String name="";
+                    if (path==null){
+                        return;
+                    }
+                    if (path!=null){
+                        File  ff=new File(path);
+                        //   String endStr = fileName.substring(fileName.lastIndexOf(".") + 1);s
+                         String  str = ff.getName().substring(ff.getName().lastIndexOf(".") + 1);
+                        endStr2=getType(str);
+                        name=ff.getName();
+                    }
+
+                    if (endStr2.equals("3")) {
+                        //防止普通参会人员重复打开页面
+                    /*    if ( isActivityTop(ActivityImage.class,WuHuActivity.this)){
+                            Intent  intent8=new Intent(constant.WUHU_IMAGE_FILE_BROADCAST);
+                            Bundle bundle2=new Bundle();
+                            bundle2.putString("url",fileBean.getPath());
+                            intent8.putExtras(bundle2);
+                           sendBroadcast(intent8);
+
+                        }*/
+                        Activity topActivity = ActivityUtils.getTopActivity();
+                        if (topActivity != null) {
+                            // 如果是在签批内，先关闭，再进入,否则未销毁tbs,会一直显示加载中(看情况添加用户提示)
+                            if (topActivity.getLocalClassName().contains("ActivityImage")) {
+                                {
+                                    ActivityImage activityImage = (ActivityImage) topActivity;
+                                    topActivity.finish();
+                                    try {
+                                        Thread.sleep(200);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            } else if (topActivity.getLocalClassName().contains("SignActivity")) {
+                                SignActivity signActivity = (SignActivity) topActivity;
+                                signActivity.clearData();
+                                topActivity.finish();
+                                try {
+                                    Thread.sleep(200);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                        }
+                        Intent intent9 = new Intent();
+                        intent9.setClass(WuHuActivity3.this, ActivityImage.class);
+                        if (path!=null){
+                        intent9.putExtra("url", path);
+                        intent9.putExtra("isOpenFile", true);
+                        intent9.putExtra("isNetFile", false);
+                        startActivity(intent9);}
+                    } else if (endStr2.equals("4")) {
+
+                        if (UserUtil.isNetworkOnline) {
+                            Activity topActivity = ActivityUtils.getTopActivity();
+                            if (topActivity != null) {
+                                // 如果是在签批内，先关闭，再进入,否则未销毁tbs,会一直显示加载中(看情况添加用户提示)
+                                if (topActivity.getLocalClassName().contains("SignActivity")) {
+                                    // 防止前一个打开签批的立即结束
+                                    try {
+                                        Thread.sleep(100);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    SignActivity signActivity = (SignActivity) topActivity;
+                                    signActivity.clearData();
+                                    topActivity.finish();
+                                    try {
+                                        Thread.sleep(200);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+                                } else if (topActivity.getLocalClassName().contains("ActivityImage")) {
+                                    ActivityImage activityImage = (ActivityImage) topActivity;
+                                    topActivity.finish();
+                                    try {
+                                        Thread.sleep(200);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                            intent = new Intent();
+                            intent.setClass(WuHuActivity3.this, SignActivity.class);
+                            if (path!=null){
+                                intent.putExtra("url", path);
+                                intent.putExtra("isOpenFile", true);
+                                intent.putExtra("isNetFile", false);
+                                intent.putExtra("tempPath", false);
+                                intent.putExtra("fileName", name);
+                                startActivity(intent);
+
+                            }
+
+
+                        } else {
+                            CVIPaperDialogUtils.showConfirmDialog(WuHuActivity3.this, "当前无外网，会使用wps打开文件", "知道了", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                                @Override
+                                public void onClickButton(boolean clickConfirm, boolean clickCancel) {
+                                    if(path!=null){
+
+                                        startActivity(FileUtils.openFile(path, WuHuActivity3.this));
+                                    }
+
+                                }
+                            });
+                        }
+                    }
+
+                     break;
 
             }
 
 
         }
     };
+
+
+
+
+
 
     /*
      * 遍历得到分享和推送的文件并且提交到数据库
@@ -1275,6 +1400,7 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
                         // 下面两行数据不能颠倒
                         voteBean.setUser_list(new ArrayList<>());
                         voteBean.setStatus("ENABLE");
+                        voteBean.setStatus(dataDTO.getStatus());
                         creatVote(voteBean, "1");
                     }
 
@@ -1380,15 +1506,22 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
      * websocket发送投票更新
      */
     private void wsUpdataVote(Object obj, String packType, String flag) {
-        Log.d("gdgsdgsdgdgf444666", flag + "");
-        TempWSBean bean = new TempWSBean();
-        bean.setReqType(0);
-        bean.setFlag(flag);
-        bean.setUserMac_id(FLUtil.getMacAddress());
-        bean.setPackType(packType);
-        bean.setBody(obj);
-        String strJson = new Gson().toJson(bean);
-        JWebSocketClientService.sendMsg(strJson);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                Log.d("gdgsdgsdgdgf444666", flag + "");
+                TempWSBean bean = new TempWSBean();
+                bean.setReqType(0);
+                bean.setFlag(flag);
+                bean.setUserMac_id(FLUtil.getMacAddress());
+                bean.setPackType(packType);
+                bean.setBody(obj);
+                String strJson = new Gson().toJson(bean);
+                JWebSocketClientService.sendMsg(strJson);
+            }
+        }).start();
+
     }
 
     //会议结束上传进度弹框
@@ -1952,7 +2085,6 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
                         wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
                         Hawk.put("WuHuFragmentData", wuHuEditBean);
                         wsUpdata(wuHuEditBean, constant.DELETE_WUHU_FRAGMENT);
-
                     }
 
                 }
@@ -3007,7 +3139,37 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
                     }
 
 
-                }
+                }else if (message.getMessage().contains(constant.PUSH_FILE_WEBSOCK)){
+                    try {
+                  //主席端自己不接收
+                        if (UserUtil.ISCHAIRMAN){
+                            return;
+
+                        }
+                        TempWSBean<PushBean> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<PushBean>>() {
+                        }.getType());
+                        if (wsebean != null) {
+                            PushBean pushBean = wsebean.getBody();
+                            if (pushBean!=null&&pushBean.getFileName()!=null){
+                                //分享和推送时先复制到分享文件夹
+                                File path = new File(netFilePath);
+                                File[] files = path.listFiles();// 读取
+                                if (files == null) {
+                                    return;
+                                }
+                                getallfiles(files,pushBean.getFileName());
+                            }
+
+                            Log.e("dfsdgfsdgfs",pushBean.getFileName());
+
+                        }
+
+                    }catch (Exception e){
+
+                    }
+
+
+                    }
             if (message.getMessage().contains(constant.SURENAME)) {
                 loadData();
             }
@@ -3308,6 +3470,118 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
             }
 
         }
+    }
+
+    /**
+     * 获取指定目录内所有文件路径
+     * @param dirpath 需要查询的文件目录
+     * @param _type 查询类型，比如mp3什么的
+     */
+    private void  getallfiles(File[] files, String name) {
+        String path = "";
+       // File f = new File(dirpath);
+new Thread(new Runnable() {
+    @Override
+    public void run() {
+
+        if (files != null) {
+            for (int i = 0; i < files.length; i++) {
+
+                File f1 = files[i];
+                if (name.equals(f1.getName())) {
+
+                    Message shareMsg = new Message();
+                    shareMsg.what = 1080;
+                    shareMsg.obj = f1.getPath();
+                    mHander.sendMessage(shareMsg);
+
+
+                }
+
+            }
+
+        }
+       /* if (f.exists()) {//判断路径是否存在
+            File[] files = f.listFiles();
+            if (files != null) {
+                for (int i = 0; i < files.length; i++) {
+
+                    File f1 = files[i];
+                    if (name.equals(f1.getName())) {
+
+                        Message shareMsg = new Message();
+                        shareMsg.what = 1080;
+                        shareMsg.obj = f1.getPath();
+                        mHander.sendMessage(shareMsg);
+
+
+                    }
+
+                }
+
+            }
+
+        }*/
+
+    }
+}).start();
+
+    }
+
+
+
+    /*
+     * 遍历得到分享的文件
+     * */
+    private void getShareFile(File[] files,String name) {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                synchronized (UserUtil.object) {
+
+                    //子线程开始
+                    String content = "";
+                    if (files != null) {
+                        // 先判断目录是否为空，否则会报空指针
+                        for (File file : files) {
+                            if (file.isDirectory()) {
+                                getFileName(file.listFiles());
+
+                            } else {
+                                String fileName = file.getName();
+                                String[] fileNameAll = null;
+                                String pos = null;
+                                if (fileName.contains(constant.WUHUPUSH)) {
+                                    fileNameAll = fileName.split(constant.WUHUPUSH);
+                                    fileName = fileNameAll[1];
+                                    pos = fileNameAll[0];
+                                } else if (fileName.contains(constant.WUHUSHARE)) {
+                                    fileNameAll = fileName.split(constant.WUHUSHARE);
+                                    fileName = fileNameAll[1];
+                                    pos = fileNameAll[0];
+                                }
+                                Log.d("wuhuwuwhuwuhuwwhu   cvi", fileNameAll.length + "   " + fileNameAll[1] + "    " + fileNameAll[0]);
+
+
+                            }
+                        }
+
+                      /*  //发送消息跟新文件列表
+                        Message shareMsg = new Message();
+                        shareMsg.what = 1080;
+                        shareMsg.obj = shareFileBeans;
+                        handler.sendMessage(shareMsg);*/
+
+                    }
+
+
+                }
+
+                //子线程执行结束
+            }
+        }).start();
     }
 
     private void querywuhufragment(List<WuHuEditBean.EditListBean> editListBeanList) {

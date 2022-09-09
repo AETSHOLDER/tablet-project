@@ -13,6 +13,7 @@ import com.example.paperlessmeeting_demo.MeetingAPP;
 import com.example.paperlessmeeting_demo.activity.LoginActivity;
 import com.example.paperlessmeeting_demo.activity.WhiteBoardActivity;
 import com.example.paperlessmeeting_demo.activity.WhiteBoardActivity2;
+import com.example.paperlessmeeting_demo.bean.PushBean;
 import com.example.paperlessmeeting_demo.bean.TeamDisagree;
 import com.example.paperlessmeeting_demo.bean.TempWSBean;
 import com.example.paperlessmeeting_demo.bean.VoteListBean;
@@ -329,7 +330,16 @@ public class JWebSocketClientService {
 
                     }
                 }
+
+                        if(message.contains(constant.PUSH_FILE_WEBSOCK)){
+
+                            TempWSBean<PushBean> wsebean = new Gson().fromJson(message, new TypeToken<TempWSBean<PushBean>>(){}.getType());
+                            PushBean  pushBean = wsebean.getBody();
+
+                        }
                 //  会议结束
+
+
                 if (message.contains(constant.MEETINGFINISH)) {
                     try {
                         WSBean<meetingRecordId> wsebean = new Gson().fromJson(message, new TypeToken<WSBean<meetingRecordId>>() {}.getType());

@@ -792,8 +792,8 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                         }
                         if (!TextUtils.isEmpty(bean.getText())) {
                             bean.setFlag("1");
-                            options_list.add(bean.getText().toString());
-                            temporBean3.setContent(bean.getText().toString());
+                            options_list.add(bean.getText());
+                            temporBean3.setContent(bean.getText());
                             temporBean3.setChecked(false);
                             temporBeanArrayList.add(temporBean3);
                         }
@@ -2062,7 +2062,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
         View view = mLayoutManager.findViewByPosition(position);
         //mLayoutManager为recyclre的布局管理器
         RelativeLayout layout = (RelativeLayout) view;        //获取布局中任意控件对象
-        ImageView operation = (ImageView) layout.findViewById(R.id.operation);
+        ImageView operation = layout.findViewById(R.id.operation);
         mLucklyPopopWindow.showAtLocation(getActivity().getWindow().getDecorView(), operation);
 
     }
@@ -2214,16 +2214,22 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
      * websocket发送投票更新
      */
     private void wsUpdataVote(Object obj, String packType, String flag) {
-        Log.d("gdgsdgsdgdgf444666",flag+"");
-        TempWSBean bean = new TempWSBean();
-        bean.setReqType(0);
-        bean.setFlag(flag);
-        bean.setUserMac_id(FLUtil.getMacAddress());
-        bean.setPackType(packType);
-        bean.setBody(obj);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("gdgsdgsdgdgf444666",flag+"");
+                TempWSBean bean = new TempWSBean();
+                bean.setReqType(0);
+                bean.setFlag(flag);
+                bean.setUserMac_id(FLUtil.getMacAddress());
+                bean.setPackType(packType);
+                bean.setBody(obj);
 
-        String strJson = new Gson().toJson(bean);
-        JWebSocketClientService.sendMsg(strJson);
+                String strJson = new Gson().toJson(bean);
+                JWebSocketClientService.sendMsg(strJson);
+            }
+        }).start();
+
     }
 
 
@@ -2246,14 +2252,14 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
      */
     private void requestToVote(VoteBean.UserListBean bean, String flag) {
         wsUpdataVote(bean, constant.UPDATEVOTE, flag);
-         voteAdapter2.notifyDataSetChanged();
+         //voteAdapter2.notifyDataSetChanged();
     }
 
     /**
      * 删除投票请求
      */
     private void deleatVote(Map<String, Object> map) {
-        NetWorkManager.getInstance().getNetWorkApiService().removeMeetingVote(map).compose(this.<BasicResponse>bindToLifecycle())
+        NetWorkManager.getInstance().getNetWorkApiService().removeMeetingVote(map).compose(this.bindToLifecycle())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultObserver<BasicResponse>() {
@@ -2268,7 +2274,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
      * 更新投票请求
      */
     private void updateMeetingVote(Map<String, Object> map) {
-        NetWorkManager.getInstance().getNetWorkApiService().updateMeetingVote(map).compose(this.<BasicResponse>bindToLifecycle())
+        NetWorkManager.getInstance().getNetWorkApiService().updateMeetingVote(map).compose(this.bindToLifecycle())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultObserver<BasicResponse>() {
@@ -2375,12 +2381,12 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                 Log.d(TAG, "路过~~~~~11" + file.getPath());
 
                 if (file.isDirectory()) {
-                    Log.d(TAG, "若是文件目录。继续读1" + file.getName().toString()
-                            + file.getPath().toString());
+                    Log.d(TAG, "若是文件目录。继续读1" + file.getName()
+                            + file.getPath());
 
                     getVoteFile(file.listFiles());
-                    Log.d(TAG, "若是文件目录。继续读2" + file.getName().toString()
-                            + file.getPath().toString());
+                    Log.d(TAG, "若是文件目录。继续读2" + file.getName()
+                            + file.getPath());
                 } else {
                     String fileName = file.getName();
                     String endStr = fileName.substring(fileName.lastIndexOf(".") + 1);
@@ -2392,7 +2398,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                         temporBeanList=voteList.get(i).getTemporBeanList();
                        for (int  n=0;n<temporBeanList.size();n++){
                            if (fileName.equals(temporBeanList.get(n).getFileName())){
-                               temporBeanList.get(n).setVotePath(file.getPath().toString());
+                               temporBeanList.get(n).setVotePath(file.getPath());
 
                            }
 
