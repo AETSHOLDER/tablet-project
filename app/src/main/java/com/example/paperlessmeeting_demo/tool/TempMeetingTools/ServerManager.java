@@ -6,6 +6,7 @@ import android.util.Log;
 import com.example.paperlessmeeting_demo.WuHuLocalFileBean;
 import com.example.paperlessmeeting_demo.bean.AttendeBean;
 import com.example.paperlessmeeting_demo.bean.FileBean;
+import com.example.paperlessmeeting_demo.bean.PushBean;
 import com.example.paperlessmeeting_demo.bean.SharePushFileBean;
 import com.example.paperlessmeeting_demo.bean.TempWSBean;
 import com.example.paperlessmeeting_demo.bean.VoteListBean;
@@ -283,6 +284,22 @@ public class ServerManager {
                 editListBeans.addAll(wuHuEditBean.getEditListBeanList());
 
                 wsebean1.setBody(wuHuEditBean);
+                String strJson = new Gson().toJson(wsebean1);
+                SendMessageToAll(strJson);
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        // 推送文件
+        if(message.contains(constant.PUSH_FILE_WEBSOCK)){
+            try {
+                TempWSBean<PushBean> wsebean = new Gson().fromJson(message, new TypeToken<TempWSBean<PushBean>>(){}.getType());
+                PushBean pushBean = wsebean.getBody();
+                TempWSBean wsebean1 = new TempWSBean();
+                wsebean1.setReqType(1);
+                wsebean1.setUserMac_id("");
+                wsebean1.setPackType(constant.PUSH_FILE_WEBSOCK);
+                wsebean1.setBody(pushBean);
                 String strJson = new Gson().toJson(wsebean1);
                 SendMessageToAll(strJson);
             }catch (Exception e) {
