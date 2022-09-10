@@ -205,5 +205,5 @@ dependencies {
     implementation 'com.angel:ZoomImageView:1.0.0'
     implementation 'com.contrarywind:Android-PickerView:3.2.7'
     implementation files('libs/tbs_sdk_thirdapp_v4.3.0.236_44136_sharewithdownloadwithfile_withoutGame_obfs_20211203_185750.jar')
-    
+
 }
