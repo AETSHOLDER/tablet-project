@@ -609,7 +609,13 @@ public class ServerManager {
             }
         }
          */
-        myWebsocketServer.broadcast(message);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                myWebsocketServer.broadcast(message);
+            }
+        }).start();
+
     }
 
     /**

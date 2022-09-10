@@ -2270,6 +2270,7 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
 
     private void uploadFile() {
         if (Hawk.contains("WuHuFragmentData")) {
+            
             wuHuEditBeanList.clear();
             WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
             wuHuEditBeanList.addAll(wuHuEditBean.getEditListBeanList());
@@ -3209,7 +3210,13 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
         bean.setPackType(constant.QUERYVOTE_WUHU_FRAGMENT);
         bean.setBody("");
         String strJson = new Gson().toJson(bean);
-        JWebSocketClientService.sendMsg(strJson);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                JWebSocketClientService.sendMsg(strJson);
+            }
+        }).start();
+
 
     }
 
@@ -4091,6 +4098,7 @@ new Thread(new Runnable() {
      * websocket发送数据至其他设备
      */
     private void wsUpdata(Object obj, String packType) {
+
         TempWSBean bean = new TempWSBean();
         bean.setReqType(0);
         bean.setUserMac_id(FLUtil.getMacAddress());
@@ -4098,6 +4106,20 @@ new Thread(new Runnable() {
         bean.setBody(obj);
         String strJson = new Gson().toJson(bean);
         JWebSocketClientService.sendMsg(strJson);
+
+ /*       new Thread(new Runnable() {
+            @Override
+            public void run() {
+                TempWSBean bean = new TempWSBean();
+                bean.setReqType(0);
+                bean.setUserMac_id(FLUtil.getMacAddress());
+                bean.setPackType(packType);
+                bean.setBody(obj);
+                String strJson = new Gson().toJson(bean);
+                JWebSocketClientService.sendMsg(strJson);
+            }
+        }).start();*/
+
     }
 
     @Override
