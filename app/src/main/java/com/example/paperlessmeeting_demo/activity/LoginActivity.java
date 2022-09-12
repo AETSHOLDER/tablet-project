@@ -895,7 +895,7 @@ public class LoginActivity extends BaseActivity {
         //app每次进入会议先删除分享、推送、签批，投票的图
      /*   deleteDirWihtFile(new File(fileShare));
         deleteDirWihtFile(new File(COPY_PATH));*/
-        deleteDirWihtFile(new File(VOTE_FILE));
+     //   deleteDirWihtFile(new File(VOTE_FILE));
         deleteDirWihtFile(new File(netFilePath));
         File netFile = new File(netFilePath);
         if (!netFile.exists()) {

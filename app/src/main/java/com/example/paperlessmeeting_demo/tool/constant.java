@@ -131,7 +131,8 @@ public class constant {
     public final static String FRESH_CATalog_BROADCAST = "freshcatalogfragment";//刷新非主席芜湖目录列表
     public static String temp_code = "temp_code";//临时会议code
     public final static String WUHU_FILE_BROADCAST = "WuHufile";////芜湖版本，当用户位于签批页面时  再次检测到推送文件后，只替换文件路径，不需要重启新页面
-    public final static String PUSH_FILE_WEBSOCK="PUSH_FILE_WEBSOCK";//推送网络文件
+    public final static String PUSH_FILE_WEBSOCK = "PUSH_FILE_WEBSOCK";//推送网络文件
+    public final static String CHANGE_COLOR_BG = "Change_color_background";//改变背景颜色
 
     /**
      * 发言单元
@@ -142,11 +143,11 @@ public class constant {
     public final static String micSta = "micSta";
     /**
      * 签批广播
-     * */
+     */
     public final static String MEMBER_SIGN_BROADCAST = "memberSign";
     /**
      * pc同屏模块
-     * */
+     */
     public static String serverResponse = ".Cvi,Respond='This is the Server'";//  服务应答
     public static final String BROADCAST_IP = "255.255.255.255";              //  UDP广播地址
     public static final int BROADCAST_PORT = 9707;                            //  UDP广播、单播端口

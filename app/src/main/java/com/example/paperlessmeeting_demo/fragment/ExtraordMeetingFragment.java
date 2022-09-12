@@ -69,8 +69,6 @@ import com.example.paperlessmeeting_demo.tool.ToastUtils;
 import com.example.paperlessmeeting_demo.tool.UrlConstant;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.example.paperlessmeeting_demo.tool.constant;
-import com.example.paperlessmeeting_demo.util.NetSpeed;
-import com.example.paperlessmeeting_demo.util.NetSpeedTimer;
 import com.example.paperlessmeeting_demo.util.ToastUtil;
 import com.example.paperlessmeeting_demo.widgets.MyDialog;
 import com.example.paperlessmeeting_demo.widgets.MyListView;
@@ -128,7 +126,6 @@ public class ExtraordMeetingFragment extends BaseFragment implements Verificatio
     private List<WuHuMeetingListResponse> wuHuMeetingListResponses = new ArrayList<>();
     private TextView no_data;
     TbsReaderView tbsReaderView;
-    private NetSpeedTimer mNetSpeedTimer;
     private Handler mHandler = new Handler() {
 
         @Override

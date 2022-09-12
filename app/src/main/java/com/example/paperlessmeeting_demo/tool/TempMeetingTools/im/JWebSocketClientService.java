@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Base64;
 import android.util.Log;
+
 import com.blankj.utilcode.util.ActivityUtils;
 import com.example.paperlessmeeting_demo.MeetingAPP;
 import com.example.paperlessmeeting_demo.activity.LoginActivity;
@@ -35,6 +36,7 @@ import com.example.paperlessmeeting_demo.util.ByteUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.orhanobut.hawk.Hawk;
+
 import org.greenrobot.eventbus.EventBus;
 import org.java_websocket.enums.ReadyState;
 import org.java_websocket.handshake.ServerHandshake;
@@ -45,6 +47,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
 import static com.blankj.utilcode.util.ActivityUtils.startActivity;
 
 public class JWebSocketClientService {
@@ -61,7 +64,7 @@ public class JWebSocketClientService {
      * 初始化websocket连接
      */
     public static void initSocketClient() {
-        if(client != null && client.isOpen()){
+        if (client != null && client.isOpen()) {
             return;
         }
         mAnalyticUtils = new AnalyticDataUtils();
@@ -77,10 +80,10 @@ public class JWebSocketClientService {
             public void onMessage(String message) {
                 Log.d(TAG, "收到的消息：" + message);
                 // 发出消息
-                if(message.contains(constant.QUERYVOTE_WUHU_FRAGMENT) ){
+                if (message.contains(constant.QUERYVOTE_WUHU_FRAGMENT)) {
                     EventMessage msg = new EventMessage(MessageReceiveType.MessageClient, message);
                     EventBus.getDefault().postSticky(msg);
-                }else {
+                } else {
                     EventMessage msg = new EventMessage(MessageReceiveType.MessageClient, message);
                     EventBus.getDefault().post(msg);
                 }
@@ -91,7 +94,7 @@ public class JWebSocketClientService {
                     String whiteName = "activity.WhiteBoardActivity2";
 //                    Log.d("getLocalClassName", topActivity.getLocalClassName());
 
-                    if(UserUtil.ISCHAIRMAN){
+                    if (UserUtil.ISCHAIRMAN) {
                         return;
                     }
                     if (UserUtil.isTempMeeting && UserUtil.ISCHAIRMAN) {
@@ -99,7 +102,7 @@ public class JWebSocketClientService {
                     }
                     if (topActivity != null) {
                         // 如果是在白板内，先关闭白板，再进入
-                        if(topActivity.getLocalClassName().contains(whiteName)|| topActivity.getLocalClassName().contains("WhiteBoardActivity")){
+                        if (topActivity.getLocalClassName().contains(whiteName) || topActivity.getLocalClassName().contains("WhiteBoardActivity")) {
                             topActivity.finish();
                             try {
                                 Thread.sleep(100);
@@ -110,7 +113,7 @@ public class JWebSocketClientService {
                     }
 
                     Hawk.put(constant.team_share, "share");
-                    Activity top2= ActivityUtils.getTopActivity();
+                    Activity top2 = ActivityUtils.getTopActivity();
                     if (top2 != null) {
                         Intent intent;
                         if (UserUtil.isTempMeeting) {
@@ -144,7 +147,7 @@ public class JWebSocketClientService {
                         topActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                if(UserUtil.ISCHAIRMAN){
+                                if (UserUtil.ISCHAIRMAN) {
                                     return;
                                 }
                                 if (UserUtil.isTempMeeting && UserUtil.ISCHAIRMAN) {
@@ -157,7 +160,7 @@ public class JWebSocketClientService {
                                         if (clickConfirm) {
                                             // 如果是在白板内，先关闭白板，再进入
                                             String whiteName = "activity.WhiteBoardActivity2";
-                                            if(topActivity.getLocalClassName().contains(whiteName) || topActivity.getLocalClassName().contains("WhiteBoardActivity")){
+                                            if (topActivity.getLocalClassName().contains(whiteName) || topActivity.getLocalClassName().contains("WhiteBoardActivity")) {
                                                 topActivity.finish();
                                                 try {
                                                     Thread.sleep(100);
@@ -204,7 +207,7 @@ public class JWebSocketClientService {
                     }
                 }
 
-                if (message.contains("shareFinish") || message.contains("teamFinish")){
+                if (message.contains("shareFinish") || message.contains("teamFinish")) {
                     if (topActivity != null) {
                         String whiteName = "activity.WhiteBoardActivity";
                         // 在白板页面内 提示，出了白板不再提示
@@ -330,23 +333,33 @@ public class JWebSocketClientService {
 
                     }
                 }
+                //直接推送打开本地文件
+                if (message.contains(constant.PUSH_FILE_WEBSOCK)) {
 
-                        if(message.contains(constant.PUSH_FILE_WEBSOCK)){
+                    TempWSBean<PushBean> wsebean = new Gson().fromJson(message, new TypeToken<TempWSBean<PushBean>>() {
+                    }.getType());
+                    PushBean pushBean = wsebean.getBody();
 
-                            TempWSBean<PushBean> wsebean = new Gson().fromJson(message, new TypeToken<TempWSBean<PushBean>>(){}.getType());
-                            PushBean  pushBean = wsebean.getBody();
+                }
+                //改变颜色背景
+                if (message.contains(constant.CHANGE_COLOR_BG)) {
 
-                        }
+                    TempWSBean<String> wsebean = new Gson().fromJson(message, new TypeToken<TempWSBean<String>>() {
+                    }.getType());
+                    String str = wsebean.getBody();
+
+                }
                 //  会议结束
 
 
                 if (message.contains(constant.MEETINGFINISH)) {
                     try {
-                        WSBean<meetingRecordId> wsebean = new Gson().fromJson(message, new TypeToken<WSBean<meetingRecordId>>() {}.getType());
+                        WSBean<meetingRecordId> wsebean = new Gson().fromJson(message, new TypeToken<WSBean<meetingRecordId>>() {
+                        }.getType());
                         //  收到vote的websocket的信息
                         if (wsebean != null) {
                             meetingRecordId meetingRecordId = wsebean.getBody();
-                            if(meetingRecordId.getMeetingRecordId().equals(UserUtil.meeting_record_id)){ // 如果是当前会议
+                            if (meetingRecordId.getMeetingRecordId().equals(UserUtil.meeting_record_id)) { // 如果是当前会议
                                 if (topActivity != null) {
                                     topActivity.runOnUiThread(new Runnable() {
                                         @Override
@@ -358,15 +371,15 @@ public class JWebSocketClientService {
 
                                             Hawk.delete(constant._id);
                                             Hawk.delete(constant.user_id);
-                                          if (!UserUtil.ISCHAIRMAN) {
-                                              if (Hawk.contains("WuHuFragmentData")) {
-                                                  Hawk.delete("WuHuFragmentData");
-                                                  if (Hawk.contains("wuhulocal")) {
-                                                      Hawk.delete("wuhulocal");
+                                            if (!UserUtil.ISCHAIRMAN) {
+                                                if (Hawk.contains("WuHuFragmentData")) {
+                                                    Hawk.delete("WuHuFragmentData");
+                                                    if (Hawk.contains("wuhulocal")) {
+                                                        Hawk.delete("wuhulocal");
 
-                                                  }
-                                              }
-                                          }
+                                                    }
+                                                }
+                                            }
 
                                             Intent intent = new Intent(topActivity, LoginActivity.class);
                                             topActivity.startActivity(intent);
@@ -375,7 +388,7 @@ public class JWebSocketClientService {
                                                 @Override
                                                 public void run() {
                                                     Activity top2 = ActivityUtils.getTopActivity();
-                                                    if(top2!=null){
+                                                    if (top2 != null) {
                                                         top2.runOnUiThread(new Runnable() {
                                                             @Override
                                                             public void run() {
@@ -391,7 +404,7 @@ public class JWebSocketClientService {
                                                         });
                                                     }
                                                 }
-                                            },100);
+                                            }, 100);
 
                                         }
                                     });
@@ -399,7 +412,7 @@ public class JWebSocketClientService {
                             }
                         }
 
-                    }catch (Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -407,10 +420,11 @@ public class JWebSocketClientService {
                 if (!UserUtil.ISCHAIRMAN) {
                     // 收到临时会议新增投票信息
                     if (message.contains(constant.NEWVOTE)) {
-                        TempWSBean<VoteListBean.VoteBean> wsebean = new Gson().fromJson(message, new TypeToken<TempWSBean<VoteListBean.VoteBean>>(){}.getType());
+                        TempWSBean<VoteListBean.VoteBean> wsebean = new Gson().fromJson(message, new TypeToken<TempWSBean<VoteListBean.VoteBean>>() {
+                        }.getType());
                         VoteListBean.VoteBean voteBean = wsebean.getBody();
-                        String flag= wsebean.getFlag();
-                        AutomaticVoteUtil.voteAlert(voteBean,flag);
+                        String flag = wsebean.getFlag();
+                        AutomaticVoteUtil.voteAlert(voteBean, flag);
 
                     }
                     // 正式会议 投票信息
@@ -482,7 +496,6 @@ public class JWebSocketClientService {
             }
 
 
-
             /**
              *  临时会议专用add
              * */
@@ -495,11 +508,11 @@ public class JWebSocketClientService {
                  * 验证重名，有重名不再发送以前的id
                  * */
                 String myNumber = "";
-                if(infoMsg.equals(constant.RESETNAME)){
+                if (infoMsg.equals(constant.RESETNAME)) {
                     Random random = new Random();
                     myNumber = (random.nextInt(max - min + 1) + min) + "";
                     Hawk.put(constant.myNumber, myNumber);
-                }else {
+                } else {
                     if (Hawk.get(constant.myNumber) != null) {
                         myNumber = Hawk.get(constant.myNumber);
                     } else {
@@ -555,9 +568,9 @@ public class JWebSocketClientService {
                     @Override
                     public void run() {
                         Activity top2 = ActivityUtils.getTopActivity();
-                        if(top2!=null){
+                        if (top2 != null) {
 
-                              CVIPaperDialogUtils.showCountDownConfirmDialog(top2, "会议已结束!", "确定", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                            CVIPaperDialogUtils.showCountDownConfirmDialog(top2, "会议已结束!", "确定", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
                                 @Override
                                 public void onClickButton(boolean clickConfirm, boolean clickCancel) {
                                     if (clickConfirm) {
@@ -567,7 +580,7 @@ public class JWebSocketClientService {
                             });
                         }
                     }
-                },100);
+                }, 100);
                 Looper.loop();
 
             }
@@ -611,6 +624,7 @@ public class JWebSocketClientService {
             client.send(msg);
         }
     }
+
     /**
      * 发送同屏数据,和上面方法一样，数据类型不同
      *
@@ -623,11 +637,12 @@ public class JWebSocketClientService {
             byte[] aa = com.example.paperlessmeeting_demo.tool.ScreenTools.utils.ByteUtil.decodeValue(bytes);
 
 //            String strMsg = ByteUtil.byteBufferToString(bytes);
-            Log.d(TAG, "发送同屏数据->"+ aa);
+            Log.d(TAG, "发送同屏数据->" + aa);
             client.send(bytes);
         }
     }
-    public static void sendByteArr(byte[] bytes){
+
+    public static void sendByteArr(byte[] bytes) {
         if (null != client && client.isOpen()) {
 //            Log.d("JWebSocketClientService", "发送同屏数据");
 
@@ -637,9 +652,9 @@ public class JWebSocketClientService {
 
     /**
      * 客户端处理同屏数据
-     * */
+     */
     public static void dealWithScreenData(ByteBuffer bytes) {
-        if(UserUtil.ISCHAIRMAN){
+        if (UserUtil.ISCHAIRMAN) {
             return;
         }
         try {
@@ -656,7 +671,7 @@ public class JWebSocketClientService {
                 });
             }
 
-        }catch (IOException e){
+        } catch (IOException e) {
 
         }
     }

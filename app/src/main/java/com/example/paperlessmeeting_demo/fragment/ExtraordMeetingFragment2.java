@@ -56,7 +56,6 @@ import com.example.paperlessmeeting_demo.tool.ToastUtils;
 import com.example.paperlessmeeting_demo.tool.UrlConstant;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.example.paperlessmeeting_demo.tool.constant;
-import com.example.paperlessmeeting_demo.util.NetSpeedTimer;
 import com.example.paperlessmeeting_demo.util.ToastUtil;
 import com.example.paperlessmeeting_demo.widgets.MyDialog;
 import com.google.gson.Gson;
@@ -105,7 +104,6 @@ public class ExtraordMeetingFragment2 extends BaseFragment implements Verificati
     private List<WuHuMeetingListResponse> wuHuMeetingListResponses = new ArrayList<>();
     private TextView no_data;
     TbsReaderView tbsReaderView;
-    private NetSpeedTimer mNetSpeedTimer;
     private Handler mHandler = new Handler() {
 
         @Override
