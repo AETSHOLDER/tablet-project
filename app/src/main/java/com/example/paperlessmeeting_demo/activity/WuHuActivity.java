@@ -641,15 +641,16 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                     }
                     if (!adressIp.equals(strIp)) {
                         stringsIp.add(adressIp);
-                    }
-                    for (int i = 0; i < stringsIp.size() - 1; i++) {
+                        for (int i = 0; i < stringsIp.size() - 1; i++) {
 //                        Log.d("gdhh222", stringsIp.get(i) + "");
-                        for (int j = stringsIp.size() - 1; j > i; j--) {
-                            if (stringsIp.get(i).equals(stringsIp.get(j)))
-                                stringsIp.remove(j);
+                            for (int j = stringsIp.size() - 1; j > i; j--) {
+                                if (stringsIp.get(i).equals(stringsIp.get(j)))
+                                    stringsIp.remove(j);
+                            }
                         }
+                        Hawk.put("stringsIp", stringsIp);
                     }
-                    Hawk.put("stringsIp", stringsIp);
+
                     break;
                 case 5:
                     Toast.makeText(WuHuActivity.this, "文件发送成功哈哈哈哈！", Toast.LENGTH_SHORT).show();

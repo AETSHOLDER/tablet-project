@@ -1553,40 +1553,6 @@ public class WuHuFragment3 extends BaseFragment implements MediaReceiver.sendfil
         // mTextView.setText(text);
         Log.d(TAG + toString(), "onCreateView: ");
 
-        /*
-         * 临时会议时，全局发送本设备Ip地址到其他设备
-         * */
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        Thread.sleep(5000);//休眠3
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        DatagramSocket socket = new DatagramSocket();
-                        String str = constant.SHARE_FILE_IP + getIpAddressString();
-                        Hawk.put("SelfIpAddress", selfIp);//自身Ip
-                        byte[] sendStr = str.getBytes();
-                        InetAddress address = InetAddress.getByName(constant.EXTRAORDINARY_MEETING_INETADDRESS);
-                        DatagramPacket packet = new DatagramPacket(sendStr, sendStr.length, address, constant.EXTRAORDINARY_MEETING_PORT);
-                        socket.send(packet);
-                        socket.close();
-                    } catch (SocketException e) {
-                        e.printStackTrace();
-                    } catch (UnknownHostException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }).start();
-
-
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {

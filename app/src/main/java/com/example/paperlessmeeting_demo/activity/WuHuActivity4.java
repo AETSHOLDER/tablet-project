@@ -52,6 +52,7 @@ import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.activity.Sign.SignActivity;
 import com.example.paperlessmeeting_demo.activity.Sign.SignListActivity;
 import com.example.paperlessmeeting_demo.adapter.PagerAdapter2;
+import com.example.paperlessmeeting_demo.adapter.PagerAdapter3;
 import com.example.paperlessmeeting_demo.adapter.WuHuNewTopicAdapter;
 import com.example.paperlessmeeting_demo.base.BaseActivity;
 import com.example.paperlessmeeting_demo.bean.BasicResponse;
@@ -69,6 +70,7 @@ import com.example.paperlessmeeting_demo.bean.WuHuMeetingListResponse;
 import com.example.paperlessmeeting_demo.bean.WuHuNetWorkBean;
 import com.example.paperlessmeeting_demo.enums.MessageReceiveType;
 import com.example.paperlessmeeting_demo.fragment.WuHuFragment2;
+import com.example.paperlessmeeting_demo.fragment.WuHuFragment3;
 import com.example.paperlessmeeting_demo.network.DefaultObserver;
 import com.example.paperlessmeeting_demo.network.NetWorkManager;
 import com.example.paperlessmeeting_demo.sharefile.BroadcastUDPFileService;
@@ -209,8 +211,8 @@ public class WuHuActivity4 extends BaseActivity implements View.OnClickListener,
     private RelativeLayout sava_all;
     private Button mBtnDelete;
     private Button mBtnAdd;
-    private SparseArray<WuHuFragment2> mTestFragments = new SparseArray<>();
-    private PagerAdapter2 mPagerAdapter;
+    private SparseArray<WuHuFragment3> mTestFragments = new SparseArray<>();
+    private PagerAdapter3 mPagerAdapter;
     private int key;
     private int mCurPos;
     private int fragmentPos = 0;
@@ -277,7 +279,7 @@ public class WuHuActivity4 extends BaseActivity implements View.OnClickListener,
     private int issueFileNum = 0;//每个议题下的文件
     private List<FileFragmentationBean> fileFragmentationBeans = new ArrayList<>();
     public FreshenFragmentInterface freshenFragment;
-
+    private String selfIp = "";
     public FreshenFragmentInterface getFreshenFragment() {
         return freshenFragment;
     }
@@ -649,16 +651,18 @@ public class WuHuActivity4 extends BaseActivity implements View.OnClickListener,
                         strIp = Hawk.get("SelfIpAddress");
                     }
                     if (!adressIp.equals(strIp)) {
+
                         stringsIp.add(adressIp);
-                    }
-                    for (int i = 0; i < stringsIp.size() - 1; i++) {
+                        for (int i = 0; i < stringsIp.size() - 1; i++) {
 //                        Log.d("gdhh222", stringsIp.get(i) + "");
-                        for (int j = stringsIp.size() - 1; j > i; j--) {
-                            if (stringsIp.get(i).equals(stringsIp.get(j)))
-                                stringsIp.remove(j);
+                            for (int j = stringsIp.size() - 1; j > i; j--) {
+                                if (stringsIp.get(i).equals(stringsIp.get(j)))
+                                    stringsIp.remove(j);
+                            }
                         }
+                        Hawk.put("stringsIp", stringsIp);
                     }
-                    Hawk.put("stringsIp", stringsIp);
+
                     break;
                 case 5:
                     Toast.makeText(WuHuActivity4.this, "文件发送成功哈哈哈哈！", Toast.LENGTH_SHORT).show();
@@ -977,7 +981,7 @@ public class WuHuActivity4 extends BaseActivity implements View.OnClickListener,
         wuHuListAdapter.setDeletSeparatelyInterface(this);
         wuHuListAdapter.setAddSeparatelyInterface(this);
 
-        mPagerAdapter = new PagerAdapter2(getSupportFragmentManager(), mTestFragments);
+        mPagerAdapter = new PagerAdapter3(getSupportFragmentManager(), mTestFragments);
         mViewPager.setAdapter(mPagerAdapter);
         mPagerAdapter.notifyDataSetChanged();
         mViewPager.setOffscreenPageLimit(mTestFragments.size()-1);
@@ -2103,8 +2107,14 @@ public class WuHuActivity4 extends BaseActivity implements View.OnClickListener,
 
             wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
             Hawk.put("WuHuFragmentData", wuHuEditBean);
-            //更新单个数据
-            wsUpdata(wuHuEditBean, constant.REFRASHWuHUSIGLEDATA);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    //更新单个数据
+                    wsUpdata(wuHuEditBean, constant.REFRASHWuHUSIGLEDATA);
+                }
+            }).start();
+
         }
         Hawk.put("company_name", company_name.getText().toString());
         Hawk.put("tittle2", tittle2.getText().toString());
@@ -2131,8 +2141,14 @@ public class WuHuActivity4 extends BaseActivity implements View.OnClickListener,
 
             wuHuEditBean.setEditListBeanList(wuHuEditBeanList);*/
             Hawk.put("WuHuFragmentData", wuHuEditBean);
-            //更新单个数据
-            wsUpdata(wuHuEditBean, constant.REFRASHWuHUSIGLEDATA);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    //更新单个数据
+                    wsUpdata(wuHuEditBean, constant.REFRASHWuHUSIGLEDATA);
+                }
+            }).start();
+
         }
 
 
@@ -2154,6 +2170,12 @@ public class WuHuActivity4 extends BaseActivity implements View.OnClickListener,
                         wuHuEditBean.setPosition(position + "");
                         wuHuEditBean.setEditListBeanList(wuHuEditBeanList);
                         Hawk.put("WuHuFragmentData", wuHuEditBean);
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                wsUpdata(wuHuEditBean, constant.DELETE_WUHU_FRAGMENT);
+                            }
+                        }).start();
                         wsUpdata(wuHuEditBean, constant.DELETE_WUHU_FRAGMENT);
                     }
 
@@ -2904,7 +2926,7 @@ public class WuHuActivity4 extends BaseActivity implements View.OnClickListener,
                             wuHuEditBeanList.clear();
                             WuHuEditBean wuHuEditBean = wsebean.getBody();
                             Log.d("onReceiveMsg11111大小=  wuwhuactivity  添加议题", fragmentPos + "");
-                            mTestFragments.put(key++, WuHuFragment2.newInstance(fragmentPos + ""));
+                            mTestFragments.put(key++, WuHuFragment3.newInstance(fragmentPos + ""));
                             fragmentPos++;
                             mPagerAdapter.setmTestFragments(mTestFragments);
                             mPagerAdapter.notifyDataSetChanged();
@@ -3737,7 +3759,7 @@ public class WuHuActivity4 extends BaseActivity implements View.OnClickListener,
         wuHuEditBeanList.clear();
         wuHuEditBeanList.addAll(editListBeanList);
         for (int i = 0; i < wuHuEditBeanList.size(); i++) {
-            mTestFragments.put(key++, WuHuFragment2.newInstance(fragmentPos + ""));
+            mTestFragments.put(key++, WuHuFragment3.newInstance(fragmentPos + ""));
             fragmentPos++;
         }
       /*for (int i=0;i<mTestFragments.size();i++){
@@ -4451,7 +4473,7 @@ public class WuHuActivity4 extends BaseActivity implements View.OnClickListener,
         @Override
         public void onReceive(Context context, Intent in) {
             if (in.getAction().equals(constant.ADD_FRAGMENT_BROADCAST)) {
-                mTestFragments.put(key++, WuHuFragment2.newInstance(fragmentPos + ""));
+                mTestFragments.put(key++, WuHuFragment3.newInstance(fragmentPos + ""));
                 fragmentPos++;
                 mPagerAdapter.notifyDataSetChanged();
 

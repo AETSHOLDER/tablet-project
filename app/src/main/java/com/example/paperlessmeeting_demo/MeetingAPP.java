@@ -33,6 +33,7 @@ import com.squareup.leakcanary.RefWatcher;
 import com.tencent.smtt.export.external.TbsCoreSettings;
 import com.tencent.smtt.sdk.QbSdk;
 import com.tencent.smtt.sdk.TbsListener;
+import com.umeng.commonsdk.UMConfigure;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.cookie.CookieJarImpl;
 import com.zhy.http.okhttp.cookie.store.PersistentCookieStore;
@@ -118,6 +119,10 @@ public class MeetingAPP extends Application {
 //        serialPortClient.openPort();
         // 初始化socket连接 ，寻址广播
         FLUtil.receiveBroadcast();
+        //友盟
+        UMConfigure.setLogEnabled(true);
+      //  UMConfigure.preInit();
+        UMConfigure.init(this, "63202ec788ccdf4b7e2b8f7f", "Umeng", UMConfigure.DEVICE_TYPE_PHONE, "");
 
         Utils.init(this);
         initOkHttpUtil();
