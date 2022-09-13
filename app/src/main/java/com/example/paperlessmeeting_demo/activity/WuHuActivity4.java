@@ -1248,7 +1248,7 @@ public class WuHuActivity4 extends BaseActivity implements View.OnClickListener,
                         }
                     }
                 }
-                if (filesList.size() == 0) {
+                if (filesList.size() <1) {
                     if (networkFileDialog != null) {
                         networkFileDialog.dismiss();
                     }

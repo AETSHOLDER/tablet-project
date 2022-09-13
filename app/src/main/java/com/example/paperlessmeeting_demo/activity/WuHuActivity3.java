@@ -1240,50 +1240,52 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
                         }
                     }
                 }
-                if (filesList.size() == 0) {
+                if (filesList.size() < 1) {
                     if (networkFileDialog != null) {
                         networkFileDialog.dismiss();
                     }
 
-                }
-                //遍历议题下载文件
-                for (int i = 0; i < filesList.size(); i++) {
-                    WuHuNetWorkBean wuHuNetWorkBean = filesList.get(i);
-                    DownloadUtil.get().download(wuHuNetWorkBean.getUrl(), netFilePath, wuHuNetWorkBean.getName(), new DownloadUtil.OnDownloadListener() {
-                        @Override
-                        public void onDownloadSuccess(File file) {
-                            dowLoadNum++;
+                }else {
+                    //遍历议题下载文件
+                    for (int i = 0; i < filesList.size(); i++) {
+                        WuHuNetWorkBean wuHuNetWorkBean = filesList.get(i);
+                        DownloadUtil.get().download(wuHuNetWorkBean.getUrl(), netFilePath, wuHuNetWorkBean.getName(), new DownloadUtil.OnDownloadListener() {
+                            @Override
+                            public void onDownloadSuccess(File file) {
+                                dowLoadNum++;
 
-                            Log.d("dffasfsdfafafdowLoadNum11", dowLoadNum + "    " + filesList.size());
-                            Log.d("gtgwrtwwrtwt大文件上传分片----00", dowLoadNum + "    文件名： " + file.getName() + "   下载文件大小 " + Formatter.formatFileSize(WuHuActivity3.this, file.length()));
-                           // completeDownload();
-                            if (dowLoadNum==filesList.size()){
-                                if (networkFileDialog != null) {
-                                    networkFileDialog.dismiss();
+                                Log.d("dffasfsdfafafdowLoadNum11", dowLoadNum + "    " + filesList.size());
+                                Log.d("gtgwrtwwrtwt大文件上传分片----00", dowLoadNum + "    文件名： " + file.getName() + "   下载文件大小 " + Formatter.formatFileSize(WuHuActivity3.this, file.length()));
+                                // completeDownload();
+                                if (dowLoadNum==filesList.size()){
+                                    if (networkFileDialog != null) {
+                                        networkFileDialog.dismiss();
+                                    }
                                 }
+
                             }
 
-                        }
-
-                        @Override
-                        public void onDownloading(int progress) {
-                        }
-
-                        @Override
-                        public void onDownloadFailed(Exception e) {
-                            dowLoadNum++;
-                            Log.d("dffasfsdfafafdowLoadNum222", dowLoadNum + "    " + filesList.size());
-                            failList.add(wuHuNetWorkBean);
-                            if (dowLoadNum==filesList.size()){
-                                if (networkFileDialog != null) {
-                                    networkFileDialog.dismiss();
-                                }
+                            @Override
+                            public void onDownloading(int progress) {
                             }
-                         //   completeDownload();
-                        }
-                    });
 
+                            @Override
+                            public void onDownloadFailed(Exception e) {
+                                dowLoadNum++;
+                                Log.d("dffasfsdfafafdowLoadNum222", dowLoadNum + "    " + filesList.size());
+                                failList.add(wuHuNetWorkBean);
+                                if (dowLoadNum==filesList.size()){
+                                    if (networkFileDialog != null) {
+                                        networkFileDialog.dismiss();
+                                    }
+                                }
+                                //   completeDownload();
+                            }
+                        });
+
+                    }
                 }
+
 
                 if (isAdd == 0) {
                     //索引0充当目录页面
