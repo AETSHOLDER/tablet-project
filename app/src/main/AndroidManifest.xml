@@ -237,6 +237,12 @@
             android:screenOrientation="landscape"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
             />
+        <activity
+            android:name=".activity.WuHuActivity4"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
+            />
+
      <!--   <activity
             android:name=".activity.EditWuHuActivity"
              />-->
