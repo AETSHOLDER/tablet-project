@@ -264,7 +264,7 @@ public class WuHuFileListAdapter extends BaseAdapter {
                 if (gridViewBean.isNet()){
 
                     viHolder.open.setVisibility(View.VISIBLE);
-                    viHolder.proprietary.setVisibility(View.INVISIBLE);
+                    viHolder.proprietary.setVisibility(View.VISIBLE);
                     viHolder.open.setText("推送");
                     viHolder.proprietary.setText("分享");
                 }else {

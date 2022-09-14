@@ -460,7 +460,7 @@ public class LoginActivity extends BaseActivity {
                                     ToastUtils.showToast(LoginActivity.this, "该会议已结束!!!");
                                     return;
                                 }
-                                Intent intent1 = new Intent(LoginActivity.this, WuHuActivity4.class);
+                                Intent intent1 = new Intent(LoginActivity.this, WuHuActivity3.class);
                                 Bundle bundle = new Bundle();
                                 bundle.putString("ip", ip);
                                 bundle.putString("isreuse", isReuse);
@@ -897,6 +897,10 @@ public class LoginActivity extends BaseActivity {
         deleteDirWihtFile(new File(COPY_PATH));*/
      //   deleteDirWihtFile(new File(VOTE_FILE));
         deleteDirWihtFile(new File(netFilePath));
+        File voteFile = new File(VOTE_FILE);
+        if (!voteFile.exists()) {
+            voteFile.mkdir();
+        }
         File netFile = new File(netFilePath);
         if (!netFile.exists()) {
             netFile.mkdir();

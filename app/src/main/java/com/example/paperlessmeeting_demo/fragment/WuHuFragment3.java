@@ -811,6 +811,7 @@ public class WuHuFragment3 extends BaseFragment implements MediaReceiver.sendfil
                 intent3.putExtras(bundle);
                 intent3.setAction(constant.CHANGE_CATALOG_BROADCAST);
                 getActivity().sendBroadcast(intent3);
+                Log.d("wvdfsdfgsdg67676", "CHANGE_CATALOG_BROADCAST");
 
 
             }

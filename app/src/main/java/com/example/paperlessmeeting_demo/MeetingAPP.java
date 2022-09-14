@@ -1,5 +1,7 @@
 package com.example.paperlessmeeting_demo;
 
+import static com.example.paperlessmeeting_demo.tool.FLUtil.getNetworkType;
+
 import android.app.Application;
 import android.content.Context;
 import android.os.Handler;
@@ -33,12 +35,17 @@ import com.squareup.leakcanary.RefWatcher;
 import com.tencent.smtt.export.external.TbsCoreSettings;
 import com.tencent.smtt.sdk.QbSdk;
 import com.tencent.smtt.sdk.TbsListener;
-import com.umeng.commonsdk.UMConfigure;
+//import com.umeng.commonsdk.UMConfigure;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.cookie.CookieJarImpl;
 import com.zhy.http.okhttp.cookie.store.PersistentCookieStore;
 
 import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -65,6 +72,7 @@ public class MeetingAPP extends Application {
     private SerialPortClient serialPortClient;
     private HexadecimalConversion hexadecimal;
     private NettyClient nettyClient;//socket操作连接对象
+    private String selfIp = "";
     //static 代码段可以防止内存泄露
     static {
     /* //设置全局的Header构建器
@@ -120,9 +128,9 @@ public class MeetingAPP extends Application {
         // 初始化socket连接 ，寻址广播
         FLUtil.receiveBroadcast();
         //友盟
-        UMConfigure.setLogEnabled(true);
+     /*   UMConfigure.setLogEnabled(true);
       //  UMConfigure.preInit();
-        UMConfigure.init(this, "63202ec788ccdf4b7e2b8f7f", "Umeng", UMConfigure.DEVICE_TYPE_PHONE, "");
+        UMConfigure.init(this, "63202ec788ccdf4b7e2b8f7f", "Umeng", UMConfigure.DEVICE_TYPE_PHONE, "");*/
 
         Utils.init(this);
         initOkHttpUtil();
@@ -194,7 +202,8 @@ public class MeetingAPP extends Application {
 
                     }
                 });
-
+        //发送 ip
+        sendIp();
 
     }
 
@@ -277,6 +286,40 @@ public class MeetingAPP extends Application {
                 .cookieJar(cookieJar)
                 .build();
         OkHttpUtils.initClient(client);
+    }
+    private void sendIp() {
+        /*
+         * 临时会议时，全局发送本设备Ip地址到其他设备
+         * */
+        selfIp = getNetworkType();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        Thread.sleep(5000);//休眠3
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        DatagramSocket socket = new DatagramSocket();
+                        String str = constant.SHARE_FILE_IP +FLUtil. getIpAddressString();
+                        Hawk.put("SelfIpAddress", selfIp);//自身Ip
+                        byte[] sendStr = str.getBytes();
+                        InetAddress address = InetAddress.getByName(constant.EXTRAORDINARY_MEETING_INETADDRESS);
+                        DatagramPacket packet = new DatagramPacket(sendStr, sendStr.length, address, constant.EXTRAORDINARY_MEETING_PORT);
+                        socket.send(packet);
+                        socket.close();
+                    } catch (SocketException e) {
+                        e.printStackTrace();
+                    } catch (UnknownHostException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
     }
 }
 

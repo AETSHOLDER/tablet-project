@@ -199,10 +199,10 @@ public class ExtraordMeetingFragment2 extends BaseFragment implements Verificati
         init_meeting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               if (UrlConstant.baseUrl.equals("http://192.168.1.1:3006")) {
+            /*   if (UrlConstant.baseUrl.equals("http://192.168.1.1:3006")) {
                 Toast.makeText(getActivity(), "服务器不在线，请稍后再试！", Toast.LENGTH_SHORT).show();
                  return;
-              }
+              }*/
 
                 initMeetingDialog();
             }
@@ -210,10 +210,10 @@ public class ExtraordMeetingFragment2 extends BaseFragment implements Verificati
         join_meeting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (UrlConstant.baseUrl.equals("http://192.168.1.1:3006")) {
+               /* if (UrlConstant.baseUrl.equals("http://192.168.1.1:3006")) {
                     Toast.makeText(getActivity(), "服务器不在线，请稍后再试！", Toast.LENGTH_SHORT).show();
                     return;
-                }
+                }*/
 
                 showHistoryDialog();
                 //老版：通过选取临时会议邀请码进入会议

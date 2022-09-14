@@ -75,9 +75,7 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
                 <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="63202ec788ccdf4b7e2b8f7f" />
+                <category android:name="android.intent.category.DEFAULT" />/>
             </intent-filter>
         </activity>
         <activity
