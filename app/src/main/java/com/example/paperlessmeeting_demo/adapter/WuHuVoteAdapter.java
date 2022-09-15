@@ -71,9 +71,9 @@ public class WuHuVoteAdapter extends RecyclerView.Adapter<WuHuVoteAdapter.MyView
     }
     public interface voteClickListener{
         //  点击查看
-        public void chairmanClickListener(int position,String flag);
+        void chairmanClickListener(int position, String flag);
         //  点击操作
-        public void operationclickListener(int position,String flag);
+        void operationclickListener(int position, String flag);
 
     }
     private WuHuVoteAdapter.voteClickListener mvoterClickListener;
@@ -231,7 +231,7 @@ public class WuHuVoteAdapter extends RecyclerView.Adapter<WuHuVoteAdapter.MyView
                 holder.endtimeClock.setText("进行中");
                 holder.btn_pos.setText("已投票");
                 holder.btn_pos.setEnabled(false);
-                Toast.makeText(context,"您已投过！",Toast.LENGTH_SHORT).show();
+              //  Toast.makeText(context,"您已投过！",Toast.LENGTH_SHORT).show();
               //  ((WuHuVoteChairmanViewHolder) holder).status_desc.setVisibility(View.VISIBLE);
                // ((WuHuVoteChairmanViewHolder) holder).operation.setVisibility(View.VISIBLE);
 
@@ -283,16 +283,16 @@ public class WuHuVoteAdapter extends RecyclerView.Adapter<WuHuVoteAdapter.MyView
     }
 
     public interface endInterFace{
-        public void   end(int  a,String flag);
+        void   end(int a, String flag);
     }
     public interface voteInterFace{
 
-        public  void  vote(int  a,String flag);
+        void  vote(int a, String flag);
     }
 
     public interface viewResultsInterface{
 
-        public void vr(int a,String flag);
+        void vr(int a, String flag);
     }
     @Override
     public int getItemCount() {
