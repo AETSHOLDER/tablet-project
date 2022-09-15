@@ -872,21 +872,31 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                              fileNames.add(list.get(i).getFileName());
                              paths.add(list.get(i).getText());
                          }
+                    if (Hawk.contains("stringsIp")) {
+                        stringListIp = Hawk.get("stringsIp");
+                    }
+                    for (int i = 0; i < stringListIp.size(); i++) {
+                        Log.d("stringListIp=投票11",stringListIp.get(i));
+
+                    }
 
                     Thread sendThread = new Thread(new Runnable() {
                         @Override
                         public void run() {
 
-                            if (Hawk.contains("stringsIp")) {
-                                stringListIp = Hawk.get("stringsIp");
-                            }
+
                             //根据Ip将文件发送到不同的设备
                             for (int i = 0; i < stringListIp.size(); i++) {
+                                Log.d("fgdggsg3333 ",stringListIp.get(i));
                                 socketShareFileManager.SendNewVoteFile(fileNames, paths, stringListIp.get(i), constant.SHARE_PORT,"3");
                             }
                         }
 
                     });
+                    for (int i = 0; i < stringListIp.size(); i++) {
+                        Log.d("stringListIp=投票22",stringListIp.get(i));
+
+                    }
                     sendThread.start();
                     creatVote(voteBean, "2");
                 }

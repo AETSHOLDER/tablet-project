@@ -145,8 +145,23 @@ public class WuHuSingleGridleAdapter extends BaseAdapter {
                     ImageLoader.getInstance().displayImage("file://" +bean.getContent(),  viewHolder.ima_content);
 
                 }else {
-                    //普通参会人员
-                    ImageLoader.getInstance().displayImage("file://" +bean.getVotePath(), viewHolder.ima_content);
+                    if (bean.getContent().contains("jpg") || bean.getContent().contains("gif") || bean.getContent().contains("png") ||bean.getContent().contains("jpeg") ||
+                            bean.getContent().contains("bmp")) {
+                        String endStr = bean.getContent().substring(bean.getContent().lastIndexOf(".") + 1);
+                        if (endStr.equals("jpg") || endStr.equals("gif") || endStr.equals("png") ||
+                                endStr.equals("jpeg") || endStr.equals("bmp")) {
+                            String[] strConten = bean.getContent().split("/");
+                            String fileName = "";
+                            if (strConten.length > 0) {
+                                fileName = strConten[strConten.length - 1];
+                                //投票主席发起的  若是主席  直接显示主席投票路径
+                                //普通参会人员
+                                ImageLoader.getInstance().displayImage("file://" +UserUtil.VOTE_FILE + fileName, viewHolder.ima_content);
+                            }
+                        }
+
+                    }
+
                 }
 
             }

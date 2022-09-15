@@ -2515,15 +2515,17 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
         File path = new File(strFilePath);
         File[] files = path.listFiles();// 读取
         Log.d("缓存里面的的textNub=", textNub + "  isDeletOption=" + isDeletOption);
+        Log.d("Valueisempty333111", "isVisibleToUser=   "+isVisibleToUser+"   textNub="+textNub);
+
         if (isVisibleToUser) {
             if (Hawk.contains("WuHuFragmentData")) {
                        /*  int s=Integer.valueOf(textNub)+1;
              tittle_num.setText("议题"+s);*/
                 WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
                 List<WuHuEditBean.EditListBean> editListBeanList = new ArrayList<>();
-                if (wuHuEditBean != null && wuHuEditBean.getEditListBeanList() != null && wuHuEditBean.getEditListBeanList().size() < 0) {
-
+                if (wuHuEditBean != null && wuHuEditBean.getEditListBeanList() != null && wuHuEditBean.getEditListBeanList().size() > 0) {
                     editListBeanList.addAll(wuHuEditBean.getEditListBeanList());
+
                 } else {
                     Log.d("Valueisempty333", "setUserVisibleHint为空   ");
 
@@ -2542,11 +2544,12 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                         scrollView_file.setVisibility(View.GONE);
                         scrollView_cata.setVisibility(View.VISIBLE);
                         if (wuHuCalalogListAdapter != null) {
-                            wuHuCalalogListAdapter.setWuHuEditBeanList(editListBeanList);
-                            listView_catalog.setAdapter(wuHuCalalogListAdapter);
-                            wuHuCalalogListAdapter.notifyDataSetChanged();
+                            if (editListBeanList!=null&&editListBeanList.size()>0){
+                                wuHuCalalogListAdapter.setWuHuEditBeanList(editListBeanList);
+                                listView_catalog.setAdapter(wuHuCalalogListAdapter);
+                                wuHuCalalogListAdapter.notifyDataSetChanged();
+                            }
                         }
-
                     }
 
                 } else {
@@ -3807,7 +3810,6 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                     listView_catalog.setVisibility(View.GONE);
                     file_ly.setVisibility(View.VISIBLE);
                 }
-
                 if (Hawk.contains("WuHuFragmentData")) {
 
                     if (wuHuEditBeanList != null) {
@@ -3815,7 +3817,7 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                         wuHuEditBeanList.clear();
                         WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
 
-                        if (wuHuEditBean != null && wuHuEditBean.getEditListBeanList() != null && wuHuEditBean.getEditListBeanList().size() < 0) {
+                        if (wuHuEditBean != null && wuHuEditBean.getEditListBeanList() != null && wuHuEditBean.getEditListBeanList().size() >0) {
                             wuHuEditBeanList.addAll(wuHuEditBean.getEditListBeanList());
                         } else {
                             Log.d("Valueisempty1111", "FRESH_CATalog_BROADCAST为空   ");
@@ -3823,7 +3825,7 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
 
                     }
 
-                    if (wuHuEditBeanList != null && wuHuCalalogListAdapter != null) {
+                    if (wuHuEditBeanList != null && wuHuCalalogListAdapter != null&&wuHuEditBeanList.size()>0) {
                         wuHuCalalogListAdapter.setWuHuEditBeanList(wuHuEditBeanList);
                         wuHuCalalogListAdapter.notifyDataSetChanged();
                     }

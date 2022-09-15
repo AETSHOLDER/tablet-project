@@ -136,47 +136,47 @@ public class WuHuFileListAdapter extends BaseAdapter {
         }*/
 
 
-     if (UserUtil.isNetDATA){
-         if (UserUtil.ISCHAIRMAN) {
-             if (gridViewBean.isNet()){
+        if (UserUtil.isNetDATA) {
+            if (UserUtil.ISCHAIRMAN) {
+                if (gridViewBean.isNet()) {
 
-                 viHolder.open.setVisibility(View.VISIBLE);
-                 viHolder.proprietary.setVisibility(View.INVISIBLE);
-                 viHolder.open.setText("推送");
-                 viHolder.proprietary.setText("分享");
-             }else {
+                    viHolder.open.setVisibility(View.VISIBLE);
+                    viHolder.proprietary.setVisibility(View.INVISIBLE);
+                    viHolder.open.setText("推送");
+                    viHolder.proprietary.setText("分享");
+                } else {
 
-                 viHolder.open.setVisibility(View.VISIBLE);
-                 viHolder.proprietary.setVisibility(View.VISIBLE);
-                 viHolder.open.setText("推送");
-                 viHolder.proprietary.setText("分享");
-             }
-
-
-         }else {
-
-             viHolder.open.setVisibility(View.GONE);
-             viHolder.proprietary.setVisibility(View.GONE);
-             viHolder.open.setText("推送");
-             viHolder.proprietary.setText("分享");
-
-         }
+                    viHolder.open.setVisibility(View.VISIBLE);
+                    viHolder.proprietary.setVisibility(View.VISIBLE);
+                    viHolder.open.setText("推送");
+                    viHolder.proprietary.setText("分享");
+                }
 
 
-      }else {
-         viHolder.open.setVisibility(View.GONE);
-         viHolder.proprietary.setVisibility(View.GONE);
-         viHolder.open.setText("推送");
-         viHolder.proprietary.setText("分享");
+            } else {
 
-     }
+                viHolder.open.setVisibility(View.GONE);
+                viHolder.proprietary.setVisibility(View.GONE);
+                viHolder.open.setText("推送");
+                viHolder.proprietary.setText("分享");
+
+            }
+
+
+        } else {
+            viHolder.open.setVisibility(View.GONE);
+            viHolder.proprietary.setVisibility(View.GONE);
+            viHolder.open.setText("推送");
+            viHolder.proprietary.setText("分享");
+
+        }
         if (UserUtil.isTempMeeting) {
-            if (gridViewBean.isNet()){
+            if (gridViewBean.isNet()) {
                 viHolder.open.setVisibility(View.VISIBLE);
                 viHolder.proprietary.setVisibility(View.INVISIBLE);
                 viHolder.open.setText("推送");
                 viHolder.proprietary.setText("分享");
-            }else {
+            } else {
                 viHolder.open.setVisibility(View.VISIBLE);
                 viHolder.proprietary.setVisibility(View.INVISIBLE);
                 viHolder.open.setText("推送");
@@ -184,18 +184,18 @@ public class WuHuFileListAdapter extends BaseAdapter {
             }
 
             if (UserUtil.ISCHAIRMAN) {
-                if (UserUtil.isNetDATA){
+                if (UserUtil.isNetDATA) {
                     viHolder.open.setVisibility(View.VISIBLE);
                     viHolder.proprietary.setVisibility(View.INVISIBLE);
 
-                }else {
+                } else {
                     viHolder.open.setVisibility(View.GONE);
                     viHolder.proprietary.setVisibility(View.GONE);
                 }
 
                 //只有服务端才有的方法：初始化议题数据并提交到服务端
                 //  initiaServerData();
-            }else {
+            } else {
                 viHolder.open.setVisibility(View.GONE);
                 viHolder.proprietary.setVisibility(View.GONE);
             }
@@ -205,36 +205,34 @@ public class WuHuFileListAdapter extends BaseAdapter {
                 public void onClick(View v) {
                     if (!OnClickUtils.isFastDoubleClick(R.id.open)) {
                         Log.d("asdfasfsf", gridViewBean.getPath() + "=====" + gridViewBean.getFile_type());
+                        //文件推送和分享都是一样的  芜湖交付版本
+                        //shareFileInterface.shareFileInfo(gridViewBean.getPath(), gridViewBean.getFile_type(), "1", gridViewBean.getName(), gridViewBean.getAuthor(), gridViewBean.getTime());
+                        shareFileInterface.shareFileInfo(gridViewBean.getLocalPath(), gridViewBean.getFile_type(), "1", gridViewBean.getName(), gridViewBean.getAuthor(), gridViewBean.getTime());
+                    } else {
 
-                        shareFileInterface.shareFileInfo(gridViewBean.getPath(), gridViewBean.getFile_type(), "1", gridViewBean.getName(), gridViewBean.getAuthor(), gridViewBean.getTime());
+                        Toast.makeText(context, "分享中请勿连续点击", Toast.LENGTH_SHORT).show();
                     }
-
-                    else {
-
-                        Toast.makeText(context,"分享中请勿连续点击",Toast.LENGTH_SHORT).show();
-                    }
-                    }
+                }
             });
             //文件推送
             viHolder.open.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (!OnClickUtils.isFastDoubleClick(R.id.open)){
+                    if (!OnClickUtils.isFastDoubleClick(R.id.open)) {
 
-                        if (gridViewBean.isNet()){
+                        if (gridViewBean.isNet()) {
                             pushFileInterface.pushFileInfo(gridViewBean.getLocalPath(), gridViewBean.getFile_type(), "1", gridViewBean.getName(), gridViewBean.getAuthor(), gridViewBean.getTime());
 
-                        }else {
+                        } else {
 
                             pushFileInterface.pushFileInfo(gridViewBean.getPath(), gridViewBean.getFile_type(), "1", gridViewBean.getName(), gridViewBean.getAuthor(), gridViewBean.getTime());
 
                         }
 
-                    }else {
+                    } else {
 
-                        Toast.makeText(context,"推送中请勿连续点击",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "推送中请勿连续点击", Toast.LENGTH_SHORT).show();
                     }
-
 
 
                 }
@@ -259,15 +257,15 @@ public class WuHuFileListAdapter extends BaseAdapter {
                 }
             });
         }
-        if (UserUtil.isNetDATA){
+        if (UserUtil.isNetDATA) {
             if (UserUtil.ISCHAIRMAN) {
-                if (gridViewBean.isNet()){
+                if (gridViewBean.isNet()) {
 
                     viHolder.open.setVisibility(View.VISIBLE);
                     viHolder.proprietary.setVisibility(View.VISIBLE);
                     viHolder.open.setText("推送");
                     viHolder.proprietary.setText("分享");
-                }else {
+                } else {
 
                     viHolder.open.setVisibility(View.VISIBLE);
                     viHolder.proprietary.setVisibility(View.INVISIBLE);
@@ -276,17 +274,17 @@ public class WuHuFileListAdapter extends BaseAdapter {
                 }
 
 
-            }else {
+            } else {
 
                 viHolder.open.setVisibility(View.GONE);
-                viHolder.proprietary.setVisibility(View.GONE);
+                viHolder.proprietary.setVisibility(View.VISIBLE);
                 viHolder.open.setText("推送");
                 viHolder.proprietary.setText("分享");
 
             }
 
 
-        }else {
+        } else {
             viHolder.open.setVisibility(View.GONE);
             viHolder.proprietary.setVisibility(View.GONE);
             viHolder.open.setText("推送");
@@ -306,20 +304,19 @@ public class WuHuFileListAdapter extends BaseAdapter {
         return view;
     }
 
-    public interface upLoadFileInterface
-
-    {
+    public interface upLoadFileInterface {
         void sendFileInfo(String path, String type, String flag);
     }
 
     /*
-    * 临时会议分享文件
-    * String actionType:标识事件是分享还是推送  1：分享  2：推送
-    * */
+     * 临时会议分享文件
+     * String actionType:标识事件是分享还是推送  1：分享  2：推送
+     * */
     public interface ShareFileInterface {
 
         void shareFileInfo(String path, String type, String flag, String name, String author, String time);
     }
+
     /*
      * 临时会议推送文件
      * */
@@ -327,6 +324,7 @@ public class WuHuFileListAdapter extends BaseAdapter {
 
         void pushFileInfo(String path, String type, String flag, String name, String author, String time);
     }
+
     public interface PlayerClickInterface {
         //播放监听
         void onPlayerClick(String url);

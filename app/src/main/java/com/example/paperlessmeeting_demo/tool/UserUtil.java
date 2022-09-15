@@ -1,5 +1,7 @@
 package com.example.paperlessmeeting_demo.tool;
 
+import android.os.Environment;
+
 /*暂存，进入APP首页，得到用户信息，判断是否是主席台或者普通用户*/
 public class UserUtil {
     public static boolean ISCHAIRMAN = false;
@@ -14,7 +16,7 @@ public class UserUtil {
     public static boolean isNetDATA = true;    // 芜湖-是否是网络数据
     public static boolean isNetworkOnline = false;  // 是否有外网
     public static String serverIP = "";             // 服务端IP
-
+    public static  String VOTE_FILE = Environment.getExternalStorageDirectory() + constant.VOTE_FILE;
     public static boolean isShareScreen = false;    // 当前是否在投屏
 
 }
