@@ -1302,6 +1302,11 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
                 if (wuHuMeetingListResponse.getName() != null) {
                     Hawk.put("company_name", wuHuMeetingListResponse.getName());
                 }
+                // 新增单独存储 SignFilePath editean取出来为空
+                if (wuHuMeetingListResponse.getContent() != null && wuHuMeetingListResponse.getContent().getSignFilePath()!=null) {
+                    Hawk.put(constant.SignFilePath, wuHuMeetingListResponse.getContent().getSignFilePath());
+                }
+
                 if (contentDTO.getTopic_type() != null) {
                     String[] strings = contentDTO.getTopic_type().split(" ");
                     if (strings.length > 0 && strings != null) {
@@ -1416,6 +1421,7 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
                     wuHuEditBean.set_id(wuHuMeetingListResponse.get_id());
                     wuHuEditBean.setTopics(contentDTO.getTopics());
                     wuHuEditBean.setTopic_type(contentDTO.getTopic_type());
+                    wuHuEditBean.setSignFilePath(contentDTO.getSignFilePath());
                     wuHuEditBean.setLine_color("1");
                     wuHuEditBean.setThem_color("2");
                     List<WuHuMeetingListResponse.ContentDTO.EditListBeanListDTO> editListBeanListDTOS = new ArrayList<>();
@@ -2484,6 +2490,10 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
                 Toast.makeText(WuHuActivity3.this, "数据异常，将保留原始数据", Toast.LENGTH_SHORT).show();
                 return;
             }
+            if (Hawk.contains(constant.SignFilePath) && Hawk.get(constant.SignFilePath) != null) {
+                List<String> SignFilePaths =  Hawk.get(constant.SignFilePath);
+                wuHuEditBean.setSignFilePath(SignFilePaths);
+            }
 
             wuHuEditBeanRequset.setContent(wuHuEditBean);
             Log.d("coming_id_un", UserUtil.meeting_record_id);
@@ -2945,6 +2955,11 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
 
             String data = TimeUtils.getTime(System.currentTimeMillis(), TimeUtils.DATA_FORMAT_NO_HOURS_DATA7);//会议-年
             wuHuEditBean.setStartTime(data);
+
+            if (Hawk.contains(constant.SignFilePath) && Hawk.get(constant.SignFilePath) != null) {
+                List<String> SignFilePaths =  Hawk.get(constant.SignFilePath);
+                wuHuEditBean.setSignFilePath(SignFilePaths);
+            }
             wuHuEditBeanRequset.setContent(wuHuEditBean);
             wuHuEditBeanRequset.setId(UserUtil.meeting_record_id);
         }
@@ -3503,6 +3518,11 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
 
     //获取投票列表数据状态数据
     public void loadData() {
+        // 初始化签批数据 清空
+        List<String> list = new ArrayList<>();
+        Hawk.put(constant.SignFilePath,list);
+
+
         if (UserUtil.ISCHAIRMAN) {
             //只有服务端才有的方法：初始化议题数据并提交到服务端
             initiaServerData();
@@ -3579,6 +3599,10 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
                     protected void onSuccess(BasicResponse<WuHuMeetingListResponse> response) {
                         if (response != null) {
                             WuHuMeetingListResponse wuHuMeetingListResponse = response.getData();
+
+                            if (wuHuMeetingListResponse.getContent() != null && wuHuMeetingListResponse.getContent().getSignFilePath()!=null) {
+                                Hawk.put(constant.SignFilePath, wuHuMeetingListResponse.getContent().getSignFilePath());
+                            }
                             setData(wuHuMeetingListResponse);
 
                         }

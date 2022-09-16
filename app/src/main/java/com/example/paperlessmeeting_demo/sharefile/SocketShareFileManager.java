@@ -10,6 +10,7 @@ import android.util.Log;
 import com.blankj.utilcode.util.StringUtils;
 import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.tool.constant;
+import com.orhanobut.hawk.Hawk;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -29,6 +30,8 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.List;
+
 //分享文件
 public class SocketShareFileManager {
     private ServerSocket server;
@@ -154,6 +157,16 @@ public class SocketShareFileManager {
             Log.d("fenxiasng", "savePath==" + savePath+"fileName="+fileName);
             if (fileName.contains(signFlag)){
                 SendMessage(101, "接收完成:" + fileName, 0);
+                // 接受完成后 增加
+                List<String> signFilePaths = null;
+                if (Hawk.contains(constant.SignFilePath)) {
+                    signFilePaths = Hawk.get(constant.SignFilePath);
+                    if(signFilePaths!=null){
+                        signFilePaths.add(savePath);
+                        Hawk.put(constant.SignFilePath, signFilePaths);
+                    }
+                }
+
             }else if (sharePush==0){
                 SendMessage(88, savePath, 0);
                 Log.d("vvcvsvsfgsf-推送接收次数","接收次数~~~~33333");

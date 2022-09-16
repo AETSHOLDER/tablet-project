@@ -134,6 +134,8 @@ public class constant {
     public final static String PUSH_FILE_WEBSOCK = "PUSH_FILE_WEBSOCK";//推送网络文件
     public final static String CHANGE_COLOR_BG = "Change_color_background";//改变背景颜色
 
+
+    public final static String SignFilePath = "SignFilePath";
     /**
      * 发言单元
      */

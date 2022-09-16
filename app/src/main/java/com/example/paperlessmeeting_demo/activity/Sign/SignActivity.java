@@ -41,6 +41,7 @@ import android.widget.Toast;
 import com.example.paperlessmeeting_demo.R;
 import com.example.paperlessmeeting_demo.base.BaseActivity;
 import com.example.paperlessmeeting_demo.bean.UserBehaviorBean;
+import com.example.paperlessmeeting_demo.bean.WuHuEditBean;
 import com.example.paperlessmeeting_demo.sharefile.SocketShareFileManager;
 import com.example.paperlessmeeting_demo.tool.CVIPaperDialogUtils;
 import com.example.paperlessmeeting_demo.tool.FLUtil;
@@ -763,9 +764,21 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                                 Bitmap bitmap2 = FLUtil.cropBitmapCustom(bitmap,pix,piy,piW,piH,true);
 
                                 String filePath = saveImage22(bitmap2);
-                                // 上传  非主席发送给主席
+
                                 boolean ok = new File(filePath).exists();
                                 Log.e("111","文件是否存在==="+ok);
+
+                                // 记录本场会议所签批的文件路径
+                                List<String> signFilePaths = null;
+                                if (Hawk.contains(constant.SignFilePath) && ok) {
+                                    signFilePaths = Hawk.get(constant.SignFilePath);
+                                    if(signFilePaths!=null){
+                                        signFilePaths.add(filePath);
+                                        Hawk.put(constant.SignFilePath, signFilePaths);
+                                    }
+                                }
+
+                                // 上传  非主席发送给主席
                                 if(!UserUtil.ISCHAIRMAN && filePath!=null && new File(filePath).exists()){
                                     String fileName = parseName(filePath);
                                     Thread sendThread = new Thread(new Runnable() {

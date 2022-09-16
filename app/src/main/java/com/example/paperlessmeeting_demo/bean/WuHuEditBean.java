@@ -1,6 +1,7 @@
 package com.example.paperlessmeeting_demo.bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,6 +41,15 @@ public class WuHuEditBean implements Serializable {
     private String line_color;
     private String them_color;
     private String startTime;
+    private List<String>  signFilePath;  //签批文件路径list  2022.09.15
+
+    public List<String> getSignFilePath() {
+        return signFilePath;
+    }
+
+    public void setSignFilePath(List<String> signFilePath) {
+        this.signFilePath = signFilePath;
+    }
 
     public String getStartTime() {
         return startTime;

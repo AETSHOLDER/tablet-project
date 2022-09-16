@@ -1,6 +1,7 @@
 package com.example.paperlessmeeting_demo.bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -62,6 +63,15 @@ public class WuHuMeetingListResponse implements Serializable {
             private String startTime;
             private List<EditListBeanListDTO> editListBeanList;
             private VoteListBeanDTO voteListBean;
+            private List<String>  signFilePath = new ArrayList();  //签批文件路径list  2022.09.15
+
+            public List<String> getSignFilePath() {
+                return signFilePath;
+            }
+
+            public void setSignFilePath(List<String> signFilePath) {
+                this.signFilePath = signFilePath;
+            }
 
             public String getTopics() {
                 return topics;

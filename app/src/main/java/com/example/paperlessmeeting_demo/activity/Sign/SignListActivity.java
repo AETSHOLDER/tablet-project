@@ -28,12 +28,14 @@ import com.example.paperlessmeeting_demo.activity.Sign.Bean.SignThumbBean;
 import com.example.paperlessmeeting_demo.activity.Sign.Bean.SignViewBean;
 import com.example.paperlessmeeting_demo.activity.Sign.CallBack.OnRecyclerItemClickListener;
 import com.example.paperlessmeeting_demo.base.BaseActivity;
+import com.example.paperlessmeeting_demo.bean.WuHuEditBean;
 import com.example.paperlessmeeting_demo.fragment.WuHUVoteListFragment;
 import com.example.paperlessmeeting_demo.tool.CVIPaperDialogUtils;
 import com.example.paperlessmeeting_demo.tool.ToastUtils;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.example.paperlessmeeting_demo.tool.constant;
 import com.example.paperlessmeeting_demo.util.SysUtils;
+import com.orhanobut.hawk.Hawk;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -143,6 +145,16 @@ public class SignListActivity extends BaseActivity {
                                 File file = new File(signThumbBean.getPath());
                                 if (file.delete()) {
                                     signViewBean.getListDatas().remove(signThumbBean);
+
+                                    List<String> signFilePaths = null;
+                                    if (Hawk.contains(constant.SignFilePath) ) {
+                                        signFilePaths = Hawk.get(constant.SignFilePath);
+                                        if(signFilePaths != null && signFilePaths.contains(signThumbBean.getPath())){
+                                            signFilePaths.remove(signThumbBean.getPath());
+                                            Hawk.put(constant.SignFilePath,signFilePaths);
+                                        }
+                                    }
+
                                 }
                             }
                             adapter.setDatas(signViewBean.getListDatas());
@@ -161,6 +173,7 @@ public class SignListActivity extends BaseActivity {
                         // 清除数据,按下标移除会越界,笨办法
                         for (SignViewBean signViewBean : removeSignBeans){
                             mDatas.remove(signViewBean);
+
                         }
                         for (SignViewRecyclerViewAdapter adapter : removeAdapters){
                             adapterList.remove(adapter);
@@ -225,11 +238,36 @@ public class SignListActivity extends BaseActivity {
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case 12345:
+                    List<String> signFilePaths = null;
+                    if (Hawk.contains(constant.SignFilePath)) {
+                        signFilePaths = Hawk.get(constant.SignFilePath);
+                    }
                     // 全部加载完毕,处理子文件夹下没有文件的数据
                     List<SignViewBean> data = (List<SignViewBean>) msg.obj;
                     for (SignViewBean signViewBean : data) {
+                        SignViewBean newSignViewBean = signViewBean; // 空对象添加匹配过的数据用
+
                         if (signViewBean.getListDatas().size() != 0) {
-                            mDatas.add(signViewBean);
+//                            mDatas.add(signViewBean); //原来只要不是空文件夹就直接加进去展示即可
+                            List<SignThumbBean> signThumbBeanList = signViewBean.getListDatas();
+
+                            List<SignThumbBean> NewSignThumbBeanList = new ArrayList<>(); // 空list添加匹配过的数据用
+
+                            // 以下 for循环 签批文件区分不同议题 2022.09.15添加
+                            for (SignThumbBean signThumbBean : signThumbBeanList){
+                                if(signFilePaths!=null){
+                                    //TODO 该文件包含在此场会议里面，需要加到mDatas里面展示
+                                    if(signFilePaths.contains(signThumbBean.getPath())){
+                                        NewSignThumbBeanList.add(signThumbBean);
+                                    }
+                                }
+
+                            }
+                            if(NewSignThumbBeanList.size()>0){
+                                newSignViewBean.setListDatas(NewSignThumbBeanList);
+                                mDatas.add(newSignViewBean);
+                            }
+
                         }
                     }
                     init(mDatas);
