@@ -2224,21 +2224,22 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
      * websocket发送投票更新
      */
     private void wsUpdataVote(Object obj, String packType, String flag) {
-        new Thread(new Runnable() {
+        TempWSBean bean = new TempWSBean();
+        bean.setReqType(0);
+        bean.setFlag(flag);
+        bean.setUserMac_id(FLUtil.getMacAddress());
+        bean.setPackType(packType);
+        bean.setBody(obj);
+
+        String strJson = new Gson().toJson(bean);
+        JWebSocketClientService.sendMsg(strJson);
+      /*  new Thread(new Runnable() {
             @Override
             public void run() {
                 Log.d("gdgsdgsdgdgf444666",flag+"");
-                TempWSBean bean = new TempWSBean();
-                bean.setReqType(0);
-                bean.setFlag(flag);
-                bean.setUserMac_id(FLUtil.getMacAddress());
-                bean.setPackType(packType);
-                bean.setBody(obj);
 
-                String strJson = new Gson().toJson(bean);
-                JWebSocketClientService.sendMsg(strJson);
             }
-        }).start();
+        }).start();*/
 
     }
 
@@ -2262,7 +2263,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
      */
     private void requestToVote(VoteBean.UserListBean bean, String flag) {
         wsUpdataVote(bean, constant.UPDATEVOTE, flag);
-         //voteAdapter2.notifyDataSetChanged();
+         voteAdapter2.notifyDataSetChanged();
     }
 
     /**

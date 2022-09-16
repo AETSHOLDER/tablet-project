@@ -233,7 +233,9 @@ public class WuHuVoteAdapter extends RecyclerView.Adapter<WuHuVoteAdapter.MyView
                 holder.btn_pos.setEnabled(false);
               //  Toast.makeText(context,"您已投过！",Toast.LENGTH_SHORT).show();
               //  ((WuHuVoteChairmanViewHolder) holder).status_desc.setVisibility(View.VISIBLE);
-               // ((WuHuVoteChairmanViewHolder) holder).operation.setVisibility(View.VISIBLE);
+               // ((WuHuVoteChairmanViewHolder) holder).operatio
+                //
+                // n.setVisibility(View.VISIBLE);
 
                 break;
             default:

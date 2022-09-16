@@ -2878,7 +2878,13 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                             //      Log.d("wuHuEditBeanwwww111",wuHuEditBean.getEditListBeanList().size()+"   单选文件大小");
 
                             if (UserUtil.ISCHAIRMAN) {
-                                wsUpdata(wuHuEditBean, constant.SUBMITANISSUE);
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        wsUpdata(wuHuEditBean, constant.SUBMITANISSUE);
+                                    }
+                                }).start();
+
                             }
                             try {
                                 Thread.sleep(200);
@@ -3037,7 +3043,13 @@ public class WuHuFragment2 extends BaseFragment implements MediaReceiver.sendfil
                                     //Log.d("wuHuEditBeanwwww222",wuHuEditBean.getEditListBeanList().size()+"   多选文件大小");
 
                                     if (UserUtil.ISCHAIRMAN) {
-                                        wsUpdata(wuHuEditBean, constant.SUBMITANISSUE);
+                                        new Thread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                wsUpdata(wuHuEditBean, constant.SUBMITANISSUE);
+                                            }
+                                        }).start();
+
                                     }
                                 }
                                 // fileBeans.add(fileBean);

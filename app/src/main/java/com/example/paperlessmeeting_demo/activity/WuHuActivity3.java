@@ -2975,6 +2975,9 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
                         upLoadNum = 0;//合并完文件的分片总数量置为0
                         //   UrlConstant.baseUrl = "http://192.168.1.1:3006";
                         //  FLUtil.BroadCastIP = "192.168.00.000";
+                        if (Hawk.contains("VoteListBean")) {
+                            Hawk.delete("VoteListBean");
+                        }
                     }
 
                     @Override
