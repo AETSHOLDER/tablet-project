@@ -501,10 +501,49 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                         }
 
                         VoteListBean voteListBean=new VoteListBean();
+
+
+
+                     /*   if (Hawk.contains("allVote")){
+                            ArrayList<HashMap<String,ArrayList<VoteListBean.VoteBean>> > hashMapArrayList=new ArrayList<>();
+                            hashMapArrayList.addAll(Hawk.get("allVote"))  ;
+                            if (hashMapArrayList!=null&&hashMapArrayList.size()>0){
+
+                                for (int i=0;i<hashMapArrayList.size();i++){
+                                    HashMap<String,ArrayList<VoteListBean.VoteBean>>  hashMap=hashMapArrayList.get(i);
+
+                                    Iterator <Map.Entry< String, ArrayList<VoteBean> >> iterator = hashMap.entrySet().iterator();
+                                    while (iterator.hasNext()) {
+                                        Map.Entry< String, ArrayList<VoteBean> > entry = iterator.next();
+                                        if (entry.getKey().equals(UserUtil.meeting_record_id)){
+                                            if (entry.getValue()!=null&&entry.getValue().size()>0){
+
+                                                voteList.addAll(entry.getValue());
+                                            }
+
+                                        }
+
+
+                                    }
+
+
+                                }
+                            }
+                        }*/
+
                         voteListBean.setData(voteList);
+
                         Hawk.put("VoteListBean",voteListBean);
 
-                        Log.d("gdgsdgsdgdgf4446666",flag+"");
+                        if (Hawk.contains(UserUtil.meeting_record_id)){
+                            ArrayList<VoteBean> voteList = new ArrayList<>();
+                            if (Hawk.get(UserUtil.meeting_record_id)!=null){
+                                voteList.addAll(Hawk.get(UserUtil.meeting_record_id));
+                                voteList.addAll(voteList);
+                            }
+
+                        }
+
                         refreshUI(voteList, flag);
                         if (UserUtil.ISCHAIRMAN){
 
@@ -2377,6 +2416,47 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
     @Override
     public void onResume() {
         super.onResume();
+/*
+        Hawk.put(UserUtil.meeting_record_id,"");
+        if (Hawk.contains("allVote")){
+            HashMap<String,ArrayList<VoteListBean.VoteBean>> sites2 = new HashMap<String,ArrayList<VoteListBean.VoteBean>>();
+            if (Hawk.get("allVote")!=null){
+                sites2=Hawk.get("allVote");
+                Iterator <Map.Entry< String, ArrayList<VoteListBean.VoteBean> >> iterator = sites2.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry< String, ArrayList<VoteListBean.VoteBean> > entry = iterator.next();
+
+                    if (entry.getKey().equals(UserUtil.meeting_record_id)&&entry.getKey()!=null){
+                        if (entry.getValue()!=null&&entry.getValue().size()>0){
+                            ArrayList<VoteListBean.VoteBean>  arrayList=new ArrayList<>();
+
+                            arrayList.addAll((ArrayList<VoteListBean.VoteBean>)entry.getValue());
+                            for (int k=0;k<arrayList.size();k++){
+                                if (UserUtil.isTempMeeting) {
+                                    VoteListBean.VoteBean  voteBean=arrayList.get(k);
+                                   // wsUpdataVote(voteBean, constant.NEWVOTE, voteBean.getFlag());
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+
+                }
+
+            }
+
+
+
+        }
+*/
+
+
+
+
 
     }
 

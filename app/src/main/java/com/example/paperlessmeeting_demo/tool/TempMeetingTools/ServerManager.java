@@ -18,9 +18,11 @@ import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.EventMessage;
 import com.example.paperlessmeeting_demo.tool.TempMeetingTools.im.MyWebSocketServer;
 import com.example.paperlessmeeting_demo.tool.FLUtil;
 import com.example.paperlessmeeting_demo.tool.UrlConstant;
+import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.example.paperlessmeeting_demo.tool.constant;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.orhanobut.hawk.Hawk;
 
 import org.greenrobot.eventbus.EventBus;
 import org.java_websocket.WebSocket;
@@ -167,6 +169,59 @@ public class ServerManager {
                 voteBean.setUser_list(new ArrayList<>());
                 voteMap.put(voteBean.get_id(), new ArrayList<>());
                 voteList.add(voteBean);
+                Hawk.put(UserUtil.meeting_record_id,voteList);
+                HashMap<String,ArrayList<VoteListBean.VoteBean>> sites2 = new HashMap<String,ArrayList<VoteListBean.VoteBean>>();
+                if (Hawk.contains("allVote")){
+                    sites2.putAll(Hawk.get("allVote"));
+
+                    Iterator <Map.Entry< String, ArrayList<VoteListBean.VoteBean> >> iterator = sites2.entrySet().iterator();
+                    while (iterator.hasNext()) {
+                        Map.Entry< String, ArrayList<VoteListBean.VoteBean> > entry = iterator.next();
+                        if (entry.getKey().equals(UserUtil.meeting_record_id)&&entry.getKey()!=null){
+
+                            if (entry.getValue()!=null&&entry.getValue().size()>0){
+                                ArrayList<VoteListBean.VoteBean>  arrayList=new ArrayList<>();
+                                arrayList.addAll(entry.getValue());
+                                arrayList.add(voteBean);
+                                sites2.put(UserUtil.meeting_record_id,arrayList);
+                                Hawk.put("allVote",sites2);
+                         /*       for (int k=0;k<arrayList.size();k++){
+                                    if (UserUtil.isTempMeeting) {
+                                        VoteListBean.VoteBean  voteBean=arrayList.get(k);
+                                     *//*  VoteListBean  voteListBean=new VoteListBean();
+                                        voteListBean.setData();*//*
+                                        wsUpdataVote(voteBean, constant.NEWVOTE, voteBean.getFlag());
+
+                                    }
+
+                                }*/
+
+                            }
+
+                        }else {
+
+                            sites2.put(UserUtil.meeting_record_id,voteList);
+                            Hawk.put("allVote",sites2);
+
+                        }
+
+
+                    }
+                    /*ArrayList<HashMap<String,ArrayList<VoteListBean.VoteBean>> > hashMapArrayList=new ArrayList<>();
+                    hashMapArrayList.addAll(Hawk.get("allVote"))  ;
+                    if (hashMapArrayList!=null){
+                        HashMap<String,ArrayList<VoteListBean.VoteBean>> sites2 = new HashMap<String,ArrayList<VoteListBean.VoteBean>>();
+                        sites2.put(UserUtil.meeting_record_id,voteList);
+                        hashMapArrayList.add(sites2);
+                        Hawk.put("allVote",hashMapArrayList);
+                    }*/
+                }else {
+
+                    sites2.put(UserUtil.meeting_record_id,voteList);
+                    Hawk.put("allVote",sites2);
+
+                }
+
                 //SendVoteMsgToAll(wsebean.getFlag());
 
                 // 新增投票多发送一条

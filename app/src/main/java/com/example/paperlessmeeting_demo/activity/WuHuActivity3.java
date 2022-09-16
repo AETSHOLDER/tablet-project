@@ -1419,7 +1419,10 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
                 if (Hawk.contains("WuHuFragmentData")) {
                     //会议名称，横线颜色  背景图，会议类型
                     wuHuEditBean.set_id(wuHuMeetingListResponse.get_id());
-                    wuHuEditBean.setTopics(contentDTO.getTopics());
+                    if (wuHuMeetingListResponse.getName() != null) {
+                        wuHuEditBean.setTopics(wuHuMeetingListResponse.getName());
+                    }
+
                     wuHuEditBean.setTopic_type(contentDTO.getTopic_type());
                     wuHuEditBean.setSignFilePath(contentDTO.getSignFilePath());
                     wuHuEditBean.setLine_color("1");
@@ -2237,8 +2240,14 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
             }).start();
 
         }
-        Hawk.put("company_name", company_name.getText().toString());
-        Hawk.put("tittle2", tittle2.getText().toString());
+        if (company_name!=null&&company_name.getText().toString()!=null){
+
+            Hawk.put("company_name", company_name.getText().toString());
+        }
+        if (tittle2!=null&&tittle2.getText().toString()!=null){
+
+            Hawk.put("tittle2", tittle2.getText().toString());
+        }
         Toast.makeText(WuHuActivity3.this, "保存成功", Toast.LENGTH_SHORT).show();
 
     }
@@ -2261,6 +2270,17 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
             }
 
             wuHuEditBean.setEditListBeanList(wuHuEditBeanList);*/
+       if (company_name!=null&&company_name.getText().toString()!=null){
+
+           Hawk.put("company_name", company_name.getText().toString());
+       }
+       if (tittle2!=null&&tittle2.getText().toString()!=null){
+
+           Hawk.put("tittle2", tittle2.getText().toString());
+       }
+
+
+
             Hawk.put("WuHuFragmentData", wuHuEditBean);
             new Thread(new Runnable() {
                 @Override
@@ -2528,7 +2548,8 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
     private void uploadFile() {
         if (Hawk.contains("WuHuFragmentData")) {
             wuHuEditBeanList.clear();
-
+   String   meetingName="";
+   String  meetingName3="";
             WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
             //处理数据保存时空白数据
             if (wuHuEditBean == null || wuHuEditBean.getEditListBeanList() == null || wuHuEditBean.getEditListBeanList().size() < 0) {
@@ -2626,9 +2647,26 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
             Hawk.put("WuHuFragmentData", wuHuEditBean);
             Log.d("fdsgdsgsdfgf1111", wuHuEditBean.getEditListBeanList().size() + "  编辑完议题文件大小后的议题大小");
 
+            if (Hawk.contains("company_name")){
+                meetingName=Hawk.get("company_name");
+
+            }
+            if (Hawk.contains("tittle2")){
+                meetingName3=Hawk.get("tittle2");
+            }
 
             for (int i = 0; i < ets.size(); i++) {
                 WuHuEditBean.EditListBean editListBean = ets.get(i);
+                if (meetingName!=null||!meetingName.equals("")){
+
+                    editListBean.setTopics(meetingName);
+                }
+                if (meetingName3!=null||!meetingName3.equals("")){
+
+                    editListBean.setTopic_type(meetingName3);
+                }
+
+
                 List<WuHuEditBean.EditListBean.FileListBean> fileListBeanList = new ArrayList<>();
                 fileListBeanList.clear();
                 if (editListBean.getFileListBeanList() != null && editListBean.getFileListBeanList().size() > 0) {
@@ -2919,12 +2957,39 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
             WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
             if (wuHuEditBean != null && wuHuEditBean.getEditListBeanList() != null) {
 
+                if (Hawk.contains("company_name")){
+                    String  name=Hawk.get("company_name");
+                    if (name!=null||!name.equals("")){
+                        wuHuEditBean.setTopics(name);
+
+                    }
+
+                }
+               if (Hawk.contains("tittle2")){
+                   String  tittle=Hawk.get("tittle2");
+                   if (tittle!=null||!tittle.equals("")){
+                       wuHuEditBean.setTopic_type(tittle);
+                   }
+
+               }
+
                 wuHuEditBeanList.addAll(wuHuEditBean.getEditListBeanList());
 
             }
 
 
         }
+/*
+  if (!Hawk.contains("allVote")){
+   */
+/* ArrayList<HashMap<String,ArrayList<VoteListBean.VoteBean>> > hashMapArrayList=new ArrayList<>();
+    ArrayList<VoteListBean.VoteBean>  voteList=new ArrayList<>();*//*
+
+    HashMap<String,ArrayList<VoteListBean.VoteBean>> sites2 = new HashMap<String,ArrayList<VoteListBean.VoteBean>>();
+    Hawk.put("allVote",sites2);
+    }
+*/
+
     }
 
     private void reSetdata() {
@@ -2934,6 +2999,8 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
             WuHuEditBean wuHuEditBean = Hawk.get("WuHuFragmentData");
             if (wuHuEditBean == null || wuHuEditBean.getEditListBeanList() == null || wuHuEditBean.getEditListBeanList().size() < 0) {
                 Log.d("Valueisempty6666", "reSetdata为空   ");
+                Toast.makeText(WuHuActivity3.this,"数据异常，将保留原始数据！",Toast.LENGTH_LONG).cancel();
+                return;
 
             }
 
@@ -2942,8 +3009,11 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
                 wuHuEditBean.getEditListBeanList().remove(0);
             }
 
-
-            if (Hawk.contains("VoteListBean")) {
+          VoteListBean voteListBean = new VoteListBean();
+            ArrayList<VoteListBean.VoteBean> voteList = new ArrayList<>();
+            voteListBean.setData(voteList);
+            wuHuEditBean.setVoteListBean(voteListBean);
+            /*if (Hawk.contains("VoteListBean")) {
                 VoteListBean voteListBean = Hawk.get("VoteListBean");
                 wuHuEditBean.setVoteListBean(voteListBean);
             } else {
@@ -2951,6 +3021,22 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
                 ArrayList<VoteListBean.VoteBean> voteList = new ArrayList<>();
                 voteListBean.setData(voteList);
                 wuHuEditBean.setVoteListBean(voteListBean);
+            }*/
+
+            if (Hawk.contains("company_name")){
+                String  name=Hawk.get("company_name");
+                if (name!=null||!name.equals("")){
+                    wuHuEditBean.setTopics(name);
+
+                }
+
+            }
+            if (Hawk.contains("tittle2")){
+                String  tittle=Hawk.get("tittle2");
+                if (tittle!=null||!tittle.equals("")){
+                    wuHuEditBean.setTopic_type(tittle);
+                }
+
             }
 
             String data = TimeUtils.getTime(System.currentTimeMillis(), TimeUtils.DATA_FORMAT_NO_HOURS_DATA7);//会议-年
@@ -3380,7 +3466,20 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
                                 WuHuEditBean wuHuEditBean = new WuHuEditBean();
                                 wuHuEditBean.setEditListBeanList(editListBeans);
                                 Hawk.put("WuHuFragmentData", wuHuEditBean);
+
                             }
+
+                            if (wuHuEditBean!=null&&wuHuEditBean.getTopics()!=null){
+
+                                Hawk.put("company_name",wuHuEditBean.getTopics());
+
+                            }
+
+                            if (wuHuEditBean!=null&&wuHuEditBean.getTopic_type()!=null){
+
+                                Hawk.put("tittle2",wuHuEditBean.getTopics());
+                            }
+
                             querywuhufragment(editListBeans);
                             //   mViewPager.setOffscreenPageLimit(mTestFragments.size() - 1);
                             Log.d("wrewarawrawerwqeqwe   wuhuactivity111", "查询" + editListBeans.size());
