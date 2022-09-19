@@ -10,14 +10,14 @@ import java.util.List;
 
 public class VoteListBean implements Serializable {
 
-    private ArrayList<VoteBean> data;
+    private List<VoteBean> data;
 
 
-    public ArrayList<VoteListBean.VoteBean> getData() {
+    public List<VoteListBean.VoteBean> getData() {
         return data;
     }
 
-    public void setData(ArrayList<VoteListBean.VoteBean> data) {
+    public void setData(List<VoteListBean.VoteBean> data) {
         this.data = data;
     }
 

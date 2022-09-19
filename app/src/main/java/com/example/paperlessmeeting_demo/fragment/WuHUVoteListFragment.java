@@ -312,7 +312,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
 
     @BindView(R.id.refresh_rl)
     RelativeLayout refresh_rl;
-    ArrayList<VoteBean> voteList = new ArrayList<>();
+    List<VoteBean> voteList = new ArrayList<>();
     private LucklyPopopWindow mLucklyPopopWindow;
     private RecyclerView.LayoutManager mLayoutManager;
     //  修改1
@@ -474,23 +474,10 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                 Log.d(TAG, "wuhu查询投票: " + message.toString());
                 Log.e(TAG, "wuhuonReceiveMsg11111: " + message.toString());
                 try {
-                    TempWSBean<ArrayList> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<ArrayList<VoteBean>>>() {
+                    TempWSBean<List> wsebean = new Gson().fromJson(message.getMessage(), new TypeToken<TempWSBean<List<VoteBean>>>() {
                     }.getType());
                     //  收到vote的websocket的信息
                     if (wsebean != null) {
-                      /*  tempList= wsebean.getBody();
-                        for (VoteBean bean : tempList) {VoteListBean
-                            bean.setStatus(bean.getStatus());
-                        }
-                        for (int i=0;i<tempList.size();i++){
-                            if (!(tempList.get(i).getMvoteStatus()== Constants.VoteStatusEnum.hasFinshed)){
-                                voteList.add(0,tempList.get(i));
-                            }else {
-                                voteList.add(tempList.get(i));
-                            }
-                        }
-
-                      */
 
                         voteList = wsebean.getBody();
                         refreshDataFlag= wsebean.getFlag();
@@ -502,47 +489,69 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
 
                         VoteListBean voteListBean=new VoteListBean();
 
-
-
-                     /*   if (Hawk.contains("allVote")){
-                            ArrayList<HashMap<String,ArrayList<VoteListBean.VoteBean>> > hashMapArrayList=new ArrayList<>();
-                            hashMapArrayList.addAll(Hawk.get("allVote"))  ;
-                            if (hashMapArrayList!=null&&hashMapArrayList.size()>0){
-
-                                for (int i=0;i<hashMapArrayList.size();i++){
-                                    HashMap<String,ArrayList<VoteListBean.VoteBean>>  hashMap=hashMapArrayList.get(i);
-
-                                    Iterator <Map.Entry< String, ArrayList<VoteBean> >> iterator = hashMap.entrySet().iterator();
+                    /*    if (Hawk.contains("VOTE")){
+                            List<VoteBean> voteBeanArrayList= new ArrayList<>();
+                            Map<String,List<VoteBean>> sites2 = new HashMap<String,List<VoteBean>>();
+                            if (Hawk.get("VOTE")!=null){
+                                sites2=(HashMap<String,List<VoteBean>>)Hawk.get("VOTE");
+                                if (sites2!=null&&sites2.size()>0) {
+                                    Iterator<Map.Entry<String, List<VoteBean>>> iterator = sites2.entrySet().iterator();
                                     while (iterator.hasNext()) {
-                                        Map.Entry< String, ArrayList<VoteBean> > entry = iterator.next();
-                                        if (entry.getKey().equals(UserUtil.meeting_record_id)){
-                                            if (entry.getValue()!=null&&entry.getValue().size()>0){
+                                        Map.Entry<String, List<VoteBean>> entry = iterator.next();
+                                        if (entry.getKey().equals(UserUtil.meeting_record_id) && entry.getKey() != null) {
 
-                                                voteList.addAll(entry.getValue());
+                                            if (entry.getValue() != null && entry.getValue().size() > 0) {
+
+                                                voteBeanArrayList= (List<VoteBean> )entry.getValue();
+                                                Log.d("svcvcxvcv",voteBeanArrayList.size()+"");
+
+                                                voteList.addAll(voteBeanArrayList);
+
                                             }
 
                                         }
 
-
                                     }
-
-
                                 }
                             }
                         }*/
+                        List<VoteBean>  currentVoteBeanlist=new ArrayList<>();
+                           currentVoteBeanlist.clear();
+                        if (Hawk.contains("VOTE")){
+                            List<VoteBean>  voteBeanlist=new ArrayList<>();
+                            if (Hawk.get("VOTE")!=null){
+                                voteBeanlist=Hawk.get("VOTE");
+
+                                for (int i=0;i<voteBeanlist.size();i++){
+                                    //Log.d("fgfffgff",voteBeanlist.get(i).getMeeting_record_id()+"   = "+UserUtil.meeting_record_id);
+                                    if (voteBeanlist.get(i).getMeeting_record_id().equals(UserUtil.meeting_record_id)){
+                                        Log.d("fgfffgff",voteBeanlist.get(i).getMeeting_record_id()+"   = "+UserUtil.meeting_record_id);
+                                        currentVoteBeanlist.add(voteBeanlist.get(i));
+                                    }
+
+                                }
+
+                            }
+
+                        }
+                        if (currentVoteBeanlist!=null&&currentVoteBeanlist.size()>0){
+
+                            voteList.addAll(currentVoteBeanlist);
+
+                        }
+
+                        for (int y = 0; y < voteList.size() - 1; y++) {
+                            for (int j = voteList.size() - 1; j > y; j--) {
+                                if (voteList.get(j).getTopic().equals(voteList.get(y).getTopic())) {
+                                    voteList.remove(j);
+                                }
+                            }
+                        }
+
 
                         voteListBean.setData(voteList);
 
                         Hawk.put("VoteListBean",voteListBean);
-
-                        if (Hawk.contains(UserUtil.meeting_record_id)){
-                            ArrayList<VoteBean> voteList = new ArrayList<>();
-                            if (Hawk.get(UserUtil.meeting_record_id)!=null){
-                                voteList.addAll(Hawk.get(UserUtil.meeting_record_id));
-                                voteList.addAll(voteList);
-                            }
-
-                        }
 
                         refreshUI(voteList, flag);
                         if (UserUtil.ISCHAIRMAN){
@@ -571,6 +580,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                     if (wsebean != null) {
                         refreshDataFlag= wsebean.getFlag();
                         VoteBean  voteBean=wsebean.getBody();
+
                         if (voteBean!=null){
                             voteList.add(voteBean);
                             String flag = wsebean.getFlag();//获取选项是图片还是文字标识
@@ -578,6 +588,10 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                                 bean.setStatus(bean.getStatus());
                             }
                             Log.d("gdgsdgsdgdgf444888",flag+"");
+
+                          /*  Map<String,List<VoteBean>> sites2 = new HashMap<String,List<VoteBean>>();
+                            sites2.put(UserUtil.meeting_record_id,voteList);*/
+                            Hawk.put("VOTE",voteList);
 
                             refreshUI(voteList, flag);
 
@@ -876,7 +890,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
                // fromBean.setName(Hawk.get(constant.myNumber));
                 fromBean.setName(UserUtil.user_name);
                 fromBean.set_id(FLUtil.getMacAddress());
-
+                voteBean.setMeeting_record_id(UserUtil.meeting_record_id);
                 voteBean.setTemporBeanList(temporBeanArrayList);
                 voteBean.setTopic(edit_content.getText().toString());
                 voteBean.setOptions(options_list);
@@ -1607,7 +1621,7 @@ public class WuHUVoteListFragment extends BaseFragment implements VoteAdapter.vo
     }
 
     // 刷新页面，无数据显示空白页面
-    protected void refreshUI(ArrayList<VoteBean> data, String flag) {
+    protected void refreshUI(List<VoteBean> data, String flag) {
      if (data.size()>0){
          refresh_rl.setVisibility(View.VISIBLE);
      }else {

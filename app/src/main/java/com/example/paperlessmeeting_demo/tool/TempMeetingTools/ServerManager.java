@@ -68,7 +68,7 @@ public class ServerManager {
 
     private static ArrayList<WuHuEditBean.EditListBean> editListBeans = new ArrayList<>();
     private static ArrayList<WuHuLocalFileBean.FileBean> fileBeanArrayList = new ArrayList<>();
-    private static ArrayList<VoteListBean.VoteBean> voteList = new ArrayList<>();
+    private static List<VoteListBean.VoteBean> voteList = new ArrayList<>();
     //    private static List<VoteListBean.VoteBean.UserListBean> userListBeans = new ArrayList<>();
     private static HashMap<String, ArrayList> voteMap = new HashMap<>();  //  通过key(meetingVoteId) value(userList)存储不同会议的用户投票数据
 
@@ -169,9 +169,8 @@ public class ServerManager {
                 voteBean.setUser_list(new ArrayList<>());
                 voteMap.put(voteBean.get_id(), new ArrayList<>());
                 voteList.add(voteBean);
-                Hawk.put(UserUtil.meeting_record_id,voteList);
-                HashMap<String,ArrayList<VoteListBean.VoteBean>> sites2 = new HashMap<String,ArrayList<VoteListBean.VoteBean>>();
-                if (Hawk.contains("allVote")){
+
+                /* if (Hawk.contains("allVote")){
                     sites2.putAll(Hawk.get("allVote"));
 
                     Iterator <Map.Entry< String, ArrayList<VoteListBean.VoteBean> >> iterator = sites2.entrySet().iterator();
@@ -185,16 +184,16 @@ public class ServerManager {
                                 arrayList.add(voteBean);
                                 sites2.put(UserUtil.meeting_record_id,arrayList);
                                 Hawk.put("allVote",sites2);
-                         /*       for (int k=0;k<arrayList.size();k++){
+                               for (int k=0;k<arrayList.size();k++){
                                     if (UserUtil.isTempMeeting) {
                                         VoteListBean.VoteBean  voteBean=arrayList.get(k);
-                                     *//*  VoteListBean  voteListBean=new VoteListBean();
-                                        voteListBean.setData();*//*
+                                     VoteListBean  voteListBean=new VoteListBean();
+                                        voteListBean.setData();
                                         wsUpdataVote(voteBean, constant.NEWVOTE, voteBean.getFlag());
 
                                     }
 
-                                }*/
+                                }
 
                             }
 
@@ -207,20 +206,20 @@ public class ServerManager {
 
 
                     }
-                    /*ArrayList<HashMap<String,ArrayList<VoteListBean.VoteBean>> > hashMapArrayList=new ArrayList<>();
+                    *//*ArrayList<HashMap<String,ArrayList<VoteListBean.VoteBean>> > hashMapArrayList=new ArrayList<>();
                     hashMapArrayList.addAll(Hawk.get("allVote"))  ;
                     if (hashMapArrayList!=null){
                         HashMap<String,ArrayList<VoteListBean.VoteBean>> sites2 = new HashMap<String,ArrayList<VoteListBean.VoteBean>>();
                         sites2.put(UserUtil.meeting_record_id,voteList);
                         hashMapArrayList.add(sites2);
                         Hawk.put("allVote",hashMapArrayList);
-                    }*/
+                    }*//*
                 }else {
 
                     sites2.put(UserUtil.meeting_record_id,voteList);
                     Hawk.put("allVote",sites2);
 
-                }
+                }*/
 
                 //SendVoteMsgToAll(wsebean.getFlag());
 

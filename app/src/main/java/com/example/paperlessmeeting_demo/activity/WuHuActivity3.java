@@ -3704,8 +3704,10 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
 
                             if (wuHuMeetingListResponse.getContent() != null && wuHuMeetingListResponse.getContent().getSignFilePath()!=null) {
                                 Hawk.put(constant.SignFilePath, wuHuMeetingListResponse.getContent().getSignFilePath());
+                                setData(wuHuMeetingListResponse);
+                                UserUtil.meeting_record_id=wuHuMeetingListResponse.get_id();
                             }
-                            setData(wuHuMeetingListResponse);
+
 
                         }
 

@@ -77,24 +77,24 @@ public class WuHuVoteAdapter extends RecyclerView.Adapter<WuHuVoteAdapter.MyView
 
     }
     private WuHuVoteAdapter.voteClickListener mvoterClickListener;
-    private ArrayList<VoteListBean.VoteBean> list = new ArrayList<>();
+    private List<VoteListBean.VoteBean> list = new ArrayList<>();
     private Context context;
     public WuHuVoteAdapter(Context context) {
         this.context = context;
     }
 
-    public void  addFinalVotestate(ArrayList<VoteListBean.VoteBean> terminalStateList){
+    public void  addFinalVotestate(List<VoteListBean.VoteBean> terminalStateList){
         this.list.clear();
         this.list = terminalStateList;
 
         notifyDataSetChanged();
     }
 
-    public void setList(ArrayList<VoteListBean.VoteBean> list) {
+    public void setList(List<VoteListBean.VoteBean> list) {
         this.list = list;
     }
 
-    public ArrayList<VoteListBean.VoteBean> getList() {
+    public List<VoteListBean.VoteBean> getList() {
         return list;
     }
 
