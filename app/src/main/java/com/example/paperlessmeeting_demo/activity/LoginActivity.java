@@ -373,9 +373,9 @@ public class LoginActivity extends BaseActivity {
         }
         if (message.getMessage().equals(constant.get_server_ip)) {
             //验证安装APP设备的数量
-        //    verificationEquipment();
+            verificationEquipment();
             // getMacIsRegister();
-//           resumeToGetMeetingInfo();
+           //resumeToGetMeetingInfo();
         }
         if (message.getMessage().equals(constant.continusClick)) {
 //            String tips = "！您已在连续点击8次了！开启游客模式！！！";
@@ -490,7 +490,7 @@ public class LoginActivity extends BaseActivity {
                 .subscribe(new DefaultObserver<BasicResponse>() {
                     @Override
                     protected void onFail(BasicResponse response) {
-                       // Toast.makeText(LoginActivity.this, "安装APP的设备已达上限！", Toast.LENGTH_SHORT).show();
+                        // Toast.makeText(LoginActivity.this, "安装APP的设备已达上限！", Toast.LENGTH_SHORT).show();
                         dialogView();
 
                         // System.exit(0);
@@ -504,12 +504,12 @@ public class LoginActivity extends BaseActivity {
 
     }
 
-    private void  dialogView() {
+    private void dialogView() {
         confirmDialog = new Dialog(LoginActivity.this, R.style.dialogTransparent);
-       View   view = LayoutInflater.from(LoginActivity.this).inflate(R.layout.dialog_confirm3, null);
+        View view = LayoutInflater.from(LoginActivity.this).inflate(R.layout.dialog_confirm3, null);
         confirmDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         //弹窗点击周围空白处弹出层自动消失弹窗消失(false时为点击周围空白处弹出层不自动消失)
-       // confirmDialog.setCanceledOnTouchOutside(canceledOnTouchOutside);
+        // confirmDialog.setCanceledOnTouchOutside(canceledOnTouchOutside);
         //将布局设置给Dialog
         confirmDialog.setContentView(view);
         TextView confirm = view.findViewById(R.id.confir_btn);
@@ -519,7 +519,7 @@ public class LoginActivity extends BaseActivity {
 
      /*   contentTxt.setBackgroundColor(Color.parseColor("#ffffff"));
         contentTxt.setTextColor(Color.parseColor("#3377FF"));*/
-      //  contentTxt.setText("安装APP的设备已达上限！");
+        //  contentTxt.setText("安装APP的设备已达上限！");
         confirmDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         confirmDialog.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         confirmDialog.getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
@@ -538,7 +538,7 @@ public class LoginActivity extends BaseActivity {
                 } else {
                     uiOptions |= View.SYSTEM_UI_FLAG_LOW_PROFILE;
                 }
-                if (confirmDialog!=null&&confirmDialog.getWindow()!=null){
+                if (confirmDialog != null && confirmDialog.getWindow() != null) {
                     confirmDialog.getWindow().getDecorView().setSystemUiVisibility(uiOptions);
                 }
 
@@ -555,7 +555,7 @@ public class LoginActivity extends BaseActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (confirmDialog!=null){
+                if (confirmDialog != null) {
                     confirmDialog.dismiss();
                 }
 
@@ -895,7 +895,7 @@ public class LoginActivity extends BaseActivity {
         //app每次进入会议先删除分享、推送、签批，投票的图
      /*   deleteDirWihtFile(new File(fileShare));
         deleteDirWihtFile(new File(COPY_PATH));*/
-     //   deleteDirWihtFile(new File(VOTE_FILE));
+        //   deleteDirWihtFile(new File(VOTE_FILE));
         deleteDirWihtFile(new File(netFilePath));
         File voteFile = new File(VOTE_FILE);
         if (!voteFile.exists()) {

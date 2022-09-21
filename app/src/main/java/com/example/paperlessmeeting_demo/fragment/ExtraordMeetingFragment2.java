@@ -111,12 +111,12 @@ public class ExtraordMeetingFragment2 extends BaseFragment implements Verificati
             super.handleMessage(msg);
             switch (msg.what) {
                 case 1:
-                    int port = (int)msg.obj;
-                    Log.d("","port===="+port);
+                    int port = (int) msg.obj;
+                    Log.d("", "port====" + port);
                     break;
                 case 2:
-                    String ss = (String)msg.obj;
-                    Log.e("正在接收文件",""+ss);
+                    String ss = (String) msg.obj;
+                    Log.e("正在接收文件", "" + ss);
 //                    Toast.makeText(SignActivity.this, "正在接收文件", Toast.LENGTH_SHORT).show();
                     break;
                 case 4:
@@ -141,6 +141,7 @@ public class ExtraordMeetingFragment2 extends BaseFragment implements Verificati
             }
         }
     };
+
     public static ExtraordMeetingFragment2 newInstance(String movie) {
         ExtraordMeetingFragment2 extraordMeetingFragment = new ExtraordMeetingFragment2();
         return extraordMeetingFragment;
@@ -199,10 +200,10 @@ public class ExtraordMeetingFragment2 extends BaseFragment implements Verificati
         init_meeting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            /*   if (UrlConstant.baseUrl.equals("http://192.168.1.1:3006")) {
-                Toast.makeText(getActivity(), "服务器不在线，请稍后再试！", Toast.LENGTH_SHORT).show();
-                 return;
-              }*/
+                if (UrlConstant.baseUrl.equals("http://192.168.1.1:3006")) {
+                    Toast.makeText(getActivity(), "服务器不在线，请稍后再试！", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 initMeetingDialog();
             }
@@ -538,7 +539,7 @@ public class ExtraordMeetingFragment2 extends BaseFragment implements Verificati
                                     startActivity(intent);
                                     Hawk.put("isreuse", "3");
                                     //添加网络会议后 不弹框
-                                  //  showRightDialog(content);
+                                    //  showRightDialog(content);
                                 } else {
                                     initMeetingDialog.dismiss();
                                     UserUtil.isTempMeeting = true;
@@ -575,7 +576,7 @@ public class ExtraordMeetingFragment2 extends BaseFragment implements Verificati
                     Hawk.put("isreuse", "3");
 
                     //添加网络会议后 不弹框
-                  //  showRightDialog(content);
+                    //  showRightDialog(content);
                 } else {
                     initMeetingDialog.dismiss();
                     UserUtil.isTempMeeting = true;
@@ -782,7 +783,7 @@ public class ExtraordMeetingFragment2 extends BaseFragment implements Verificati
                     protected void onSuccess(BasicResponse<List<WuHuMeetingListResponse>> response) {
                         if (response != null) {
                             wuHuMeetingListResponses.clear();
-                            if (response.getData()!=null){
+                            if (response.getData() != null) {
 
                                 wuHuMeetingListResponses.addAll(response.getData());
                                 initUi(wuHuMeetingListResponses);
@@ -841,16 +842,15 @@ public class ExtraordMeetingFragment2 extends BaseFragment implements Verificati
             bundle.putString("code", "formalmeeting-" + wuHuMeetingListResponse.getName() + "/" + wuHuMeetingListResponse.get_id());
             bundle.putString("isreuse", "4");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
             intent.putExtras(bundle);
-            if (wuHuMeetingListResponse.getContent().getEditListBeanList()!=null){
+            if (wuHuMeetingListResponse.getContent().getEditListBeanList() != null) {
                 Hawk.put("WuHuMeetingListResponse", wuHuMeetingListResponse);
                 getActivity().startActivity(intent);
 
-            }else {
+            } else {
 
-                Toast.makeText(getActivity(),"当前会议议题信息异常，请检查",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "当前会议议题信息异常，请检查", Toast.LENGTH_SHORT).show();
                 return;
             }
-
 
 
         } else {
@@ -865,19 +865,19 @@ public class ExtraordMeetingFragment2 extends BaseFragment implements Verificati
             bundle.putString("isreuse", "4");//1:代表复用模板  2：代表不复用模板 3：代表没有模板
             intent.putExtras(bundle);
 
-            if (wuHuMeetingListResponse.getContent().getEditListBeanList()!=null){
+            if (wuHuMeetingListResponse.getContent().getEditListBeanList() != null) {
                 Hawk.put("WuHuMeetingListResponse", wuHuMeetingListResponse);
                 getActivity().startActivity(intent);
 
-            }else {
+            } else {
 
-                Toast.makeText(getActivity(),"当前会议议题信息异常，请检查",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "当前会议议题信息异常，请检查", Toast.LENGTH_SHORT).show();
                 return;
             }
 
         }
 
-        if(historyConferenceDialog!=null){
+        if (historyConferenceDialog != null) {
             historyConferenceDialog.dismiss();
         }
         //====
@@ -1105,7 +1105,7 @@ public class ExtraordMeetingFragment2 extends BaseFragment implements Verificati
         wlp.height = (int) (height * 0.23);
         //设置宽
         window.setAttributes(wlp);
-      //  dialog.show();
+        //  dialog.show();
     }
 
     @Override
