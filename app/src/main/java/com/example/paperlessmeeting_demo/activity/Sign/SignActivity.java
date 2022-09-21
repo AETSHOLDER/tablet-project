@@ -662,7 +662,12 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.e("onActivityResult","resultCode == "+resultCode );
         if(resultCode != Activity.RESULT_OK){
-            ToastUtils.showToast(SignActivity.this,"请允许系统录屏权限!");
+            CVIPaperDialogUtils.showConfirmDialog(SignActivity.this, "请允许系统录屏权限!", "知道了", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                @Override
+                public void onClickButton(boolean clickConfirm, boolean clickCancel) {
+
+                }
+            });
             return;
         }
         if (requestCode == EVENT_SCREENSHOT) {
