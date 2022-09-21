@@ -1,6 +1,7 @@
 package com.example.paperlessmeeting_demo.activity.Sign;
 
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -60,6 +61,7 @@ import com.example.paperlessmeeting_demo.tool.ToastUtils;
 import com.example.paperlessmeeting_demo.tool.UserUtil;
 import com.example.paperlessmeeting_demo.tool.VideoConfiguration;
 import com.example.paperlessmeeting_demo.tool.constant;
+import com.example.paperlessmeeting_demo.util.ToastUtil;
 import com.example.paperlessmeeting_demo.widgets.FloatingActionsMenu;
 import com.example.paperlessmeeting_demo.widgets.FloatingImageButton;
 import com.example.paperlessmeeting_demo.widgets.SignDrawPenView;
@@ -658,6 +660,11 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.e("onActivityResult","resultCode == "+resultCode );
+        if(resultCode != Activity.RESULT_OK){
+            ToastUtils.showToast(SignActivity.this,"请允许系统录屏权限!");
+            return;
+        }
         if (requestCode == EVENT_SCREENSHOT) {
             super.onActivityResult(requestCode, resultCode, data);
             DisplayMetrics displayMetrics = new DisplayMetrics();
