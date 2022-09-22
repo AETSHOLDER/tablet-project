@@ -1041,6 +1041,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
             }
         });
     }
+
     private void initiaServerData() {
 
         if (UserUtil.isNetDATA) {
@@ -1112,12 +1113,12 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                     }
                 }
 
-                if (filesList.size() <1) {
+                if (filesList.size() < 1) {
                     if (networkFileDialog != null) {
                         networkFileDialog.dismiss();
                     }
 
-                }else {
+                } else {
                     //遍历议题下载文件
                     for (int i = 0; i < filesList.size(); i++) {
                         WuHuNetWorkBean wuHuNetWorkBean = filesList.get(i);
@@ -1724,7 +1725,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ACTIVITY_RESULT_CODE_SCREEN && resultCode == Activity.RESULT_OK) {
-            if(mMediaProjectionManage==null){
+            if (mMediaProjectionManage == null) {
                 mMediaProjectionManage = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
             }
             mediaProjection = mMediaProjectionManage.getMediaProjection(resultCode, data);
@@ -1762,13 +1763,13 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
 //                MeetingAPP.mHandler.post(new Runnable() {
 //                    @Override
 //                    public void run() {
-                        // TODO 获取屏幕发数据 直接调用startActivityForResult在WuHuActivity可以，退出到login再进来没有回调，原因未知，用下面方法解决了。。。
-                        mMediaProjectionManage = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-                        Intent captureIntent = mMediaProjectionManage.createScreenCaptureIntent();
-                        Activity top = ActivityUtils.getTopActivity();
-                        if(top!=null && top.getLocalClassName().contains("WuHuActivity")){
-                            top.startActivityForResult(captureIntent, ACTIVITY_RESULT_CODE_SCREEN);
-                        }
+                // TODO 获取屏幕发数据 直接调用startActivityForResult在WuHuActivity可以，退出到login再进来没有回调，原因未知，用下面方法解决了。。。
+                mMediaProjectionManage = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+                Intent captureIntent = mMediaProjectionManage.createScreenCaptureIntent();
+                Activity top = ActivityUtils.getTopActivity();
+                if (top != null && top.getLocalClassName().contains("WuHuActivity")) {
+                    top.startActivityForResult(captureIntent, ACTIVITY_RESULT_CODE_SCREEN);
+                }
 //                    }
 //                });
                 break;
@@ -1971,14 +1972,14 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
 
     //结束会议
     private void showFinishMeetingDialog() {
-        Log.d("Broadcast111","UrlConstant.baseUrl= "+UrlConstant.baseUrl);
+        Log.d("Broadcast111", "UrlConstant.baseUrl= " + UrlConstant.baseUrl);
         CVIPaperDialogUtils.showCustomDialog(WuHuActivity.this, "确定要结束会议？", "请保存/上传好会议文件!!!", "确定", true, new CVIPaperDialogUtils.ConfirmDialogListener() {
             @Override
             public void onClickButton(boolean clickConfirm, boolean clickCancel) {
                 if (clickConfirm) {
                     stopRecording();
                     if (UserUtil.isTempMeeting) {
-                        Log.d("Broadcast22","UrlConstant.baseUrl= "+UrlConstant.baseUrl);
+                        Log.d("Broadcast22", "UrlConstant.baseUrl= " + UrlConstant.baseUrl);
                         if (UrlConstant.baseUrl.equals("http://192.168.1.1:3006")) {
                             Toast.makeText(WuHuActivity.this, "服务端不在线！", Toast.LENGTH_SHORT).show();
                             UserUtil.user_id = "";
@@ -2218,7 +2219,7 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
         try {
             long mBufferSize = size; //分片的大小，可自定义
             fileCutUtils = new FileCutUtils();
-            littlefilecount = fileCutUtils.getSplitFile(new File(filePath), mBufferSize,pos);
+            littlefilecount = fileCutUtils.getSplitFile(new File(filePath), mBufferSize, pos);
             littlefilelist = fileCutUtils.getLittlefilelist();
             upload(fileName, pos, littlefilelist);
 
@@ -2451,8 +2452,8 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                         super.onFail(response);
                         Log.d("失败11144444", response.getMsg() + "   " + response.getData().toString());
                         upLoadNum = 0;//合并完文件的分片总数量置为0
-                        UrlConstant.baseUrl="http://192.168.1.1:3006";
-                        FLUtil.BroadCastIP= "192.168.00.000";
+                        UrlConstant.baseUrl = "http://192.168.1.1:3006";
+                        FLUtil.BroadCastIP = "192.168.00.000";
                     }
 
                     @Override
@@ -2477,8 +2478,8 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                             }
                             UserUtil.meeting_record_id = "";
                             locaFileNum = 0;
-                            UrlConstant.baseUrl="http://192.168.1.1:3006";
-                            FLUtil.BroadCastIP= "192.168.00.000";
+                            UrlConstant.baseUrl = "http://192.168.1.1:3006";
+                            FLUtil.BroadCastIP = "192.168.00.000";
 
                             if (Hawk.get(constant.TEMPMEETING).equals(MessageReceiveType.MessageServer) || ServerManager.getInstance().isServerIsOpen()) {
                                 // 如果是服务端，关掉服务，关停广播
@@ -3007,43 +3008,61 @@ public class WuHuActivity extends BaseActivity implements View.OnClickListener, 
                 for (int k = 0; k < netLocaFiles.size(); k++) {
                     WuHuNetWorkBean wuHuNetWorkBean = new WuHuNetWorkBean();
                     wuHuNetWorkBean.setUrl(UrlConstant.baseUrl + "/" + netLocaFiles.get(k).getPath());
+                    wuHuNetWorkBean.setPos(netLocaFiles.get(k).getPos());
                     wuHuNetWorkBean.setName(netLocaFiles.get(k).getName());
                     allFileNum++;
                     filesList.add(wuHuNetWorkBean);
                 }
             }
         }
-        if (filesList.size() == 0) {
+
+        if (filesList.size() > 0) {
+
+            for (int a = 0; a < filesList.size(); a++) {
+                filesList.get(a).setPos((Integer.valueOf(filesList.get(a).getPos()) + 1) + "");
+
+            }
+            //处理不同议题下相同文件名且不同内容
+            for (int k = 0; k < filesList.size() - 1; k++) {
+                for (int j = filesList.size() - 1; j > k; j--) {
+                    if (filesList.get(k).getName().equals(filesList.get(j).getName())) {
+                        filesList.get(k).setName(filesList.get(k).getPos() + filesList.get(k).getName());
+                        filesList.get(j).setName(filesList.get(j).getPos() + filesList.get(j).getName());
+                    }
+                }
+            }
+        }
+        if (filesList.size() < 1) {
             if (networkFileDialog != null) {
                 networkFileDialog.dismiss();
             }
+        } else {
+            //遍历议题下载文件
+            for (int i = 0; i < filesList.size(); i++) {
+                WuHuNetWorkBean wuHuNetWorkBean = filesList.get(i);
+                DownloadUtil.get().download(wuHuNetWorkBean.getUrl(), netFilePath, wuHuNetWorkBean.getName(), new DownloadUtil.OnDownloadListener() {
+                    @Override
+                    public void onDownloadSuccess(File file) {
+                        dowLoadNum++;
+                        Log.d("dffasfsdfafafdowLoadNum11", dowLoadNum + "    " + filesList.size());
+                        completeDownload();
+                    }
+
+                    @Override
+                    public void onDownloading(int progress) {
+                    }
+
+                    @Override
+                    public void onDownloadFailed(Exception e) {
+                        dowLoadNum++;
+                        Log.d("dffasfsdfafafdowLoadNum222", dowLoadNum + "    " + filesList.size());
+                        failList.add(wuHuNetWorkBean);
+                        completeDownload();
+                    }
+                });
+
+            }
         }
-        //遍历议题下载文件
-        for (int i = 0; i < filesList.size(); i++) {
-            WuHuNetWorkBean wuHuNetWorkBean = filesList.get(i);
-            DownloadUtil.get().download(wuHuNetWorkBean.getUrl(), netFilePath, wuHuNetWorkBean.getName(), new DownloadUtil.OnDownloadListener() {
-                @Override
-                public void onDownloadSuccess(File file) {
-                    dowLoadNum++;
-                    Log.d("dffasfsdfafafdowLoadNum11", dowLoadNum + "    " + filesList.size());
-                    completeDownload();
-                }
-
-                @Override
-                public void onDownloading(int progress) {
-                }
-
-                @Override
-                public void onDownloadFailed(Exception e) {
-                    dowLoadNum++;
-                    Log.d("dffasfsdfafafdowLoadNum222", dowLoadNum + "    " + filesList.size());
-                    failList.add(wuHuNetWorkBean);
-                    completeDownload();
-                }
-            });
-
-        }
-
 
     }
 

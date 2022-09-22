@@ -3461,10 +3461,27 @@ public class WuHuActivity4 extends BaseActivity implements View.OnClickListener,
                 for (int k = 0; k < netLocaFiles.size(); k++) {
                     WuHuNetWorkBean wuHuNetWorkBean = new WuHuNetWorkBean();
                     wuHuNetWorkBean.setUrl(UrlConstant.baseUrl + "/" + netLocaFiles.get(k).getPath());
-
+                    wuHuNetWorkBean.setPos(netLocaFiles.get(k).getPos());
                     wuHuNetWorkBean.setName(netLocaFiles.get(k).getName());
                     allFileNum++;
                     filesList.add(wuHuNetWorkBean);
+                }
+            }
+        }
+
+        if (filesList.size() > 0) {
+
+            for (int a = 0; a < filesList.size(); a++) {
+                filesList.get(a).setPos((Integer.valueOf(filesList.get(a).getPos()) + 1) + "");
+
+            }
+            //处理不同议题下相同文件名且不同内容
+            for (int k = 0; k < filesList.size() - 1; k++) {
+                for (int j = filesList.size() - 1; j > k; j--) {
+                    if (filesList.get(k).getName().equals(filesList.get(j).getName())) {
+                        filesList.get(k).setName(filesList.get(k).getPos() + filesList.get(k).getName());
+                        filesList.get(j).setName(filesList.get(j).getPos() + filesList.get(j).getName());
+                    }
                 }
             }
         }
