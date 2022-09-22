@@ -1091,39 +1091,60 @@ public class WuHuActivity2 extends BaseActivity implements View.OnClickListener,
                         }
                     }
                 }
-                if (filesList.size() == 0) {
+
+                //处理不同议题下相同文件名且不同内容
+                if (filesList.size() > 0) {
+
+                    for (int a = 0; a < filesList.size(); a++) {
+                        filesList.get(a).setPos((Integer.valueOf(filesList.get(a).getPos()) + 1) + "");
+
+                    }
+                    //处理不同议题下相同文件名且不同内容
+                    for (int k = 0; k < filesList.size() - 1; k++) {
+                        for (int j = filesList.size() - 1; j > k; j--) {
+                            if (filesList.get(k).getName().equals(filesList.get(j).getName())) {
+                                filesList.get(k).setName(filesList.get(k).getPos() + filesList.get(k).getName());
+                                filesList.get(j).setName(filesList.get(j).getPos() + filesList.get(j).getName());
+                            }
+                        }
+                    }
+                }
+
+                if (filesList.size() <1) {
                     if (networkFileDialog != null) {
                         networkFileDialog.dismiss();
                     }
 
+                }else {
+                    //遍历议题下载文件
+                    for (int i = 0; i < filesList.size(); i++) {
+                        WuHuNetWorkBean wuHuNetWorkBean = filesList.get(i);
+                        DownloadUtil.get().download(wuHuNetWorkBean.getUrl(), netFilePath, wuHuNetWorkBean.getName(), new DownloadUtil.OnDownloadListener() {
+                            @Override
+                            public void onDownloadSuccess(File file) {
+                                dowLoadNum++;
+
+                                Log.d("dffasfsdfafafdowLoadNum11", dowLoadNum + "    " + filesList.size());
+                                Log.d("gtgwrtwwrtwt大文件上传分片2228888", dowLoadNum + "    文件名： " + file.getName() + "   下载文件大小 " + Formatter.formatFileSize(WuHuActivity2.this, file.length()));
+                                completeDownload();
+                            }
+
+                            @Override
+                            public void onDownloading(int progress) {
+                            }
+
+                            @Override
+                            public void onDownloadFailed(Exception e) {
+                                dowLoadNum++;
+                                Log.d("dffasfsdfafafdowLoadNum222", dowLoadNum + "    " + filesList.size());
+                                failList.add(wuHuNetWorkBean);
+                                completeDownload();
+                            }
+                        });
+
+                    }
                 }
-                //遍历议题下载文件
-                for (int i = 0; i < filesList.size(); i++) {
-                    WuHuNetWorkBean wuHuNetWorkBean = filesList.get(i);
-                    DownloadUtil.get().download(wuHuNetWorkBean.getUrl(), netFilePath, wuHuNetWorkBean.getName(), new DownloadUtil.OnDownloadListener() {
-                        @Override
-                        public void onDownloadSuccess(File file) {
-                            dowLoadNum++;
 
-                            Log.d("dffasfsdfafafdowLoadNum11", dowLoadNum + "    " + filesList.size());
-                            Log.d("gtgwrtwwrtwt大文件上传分片2228888", dowLoadNum + "    文件名： " + file.getName() + "   下载文件大小 " + Formatter.formatFileSize(WuHuActivity2.this, file.length()));
-                            completeDownload();
-                        }
-
-                        @Override
-                        public void onDownloading(int progress) {
-                        }
-
-                        @Override
-                        public void onDownloadFailed(Exception e) {
-                            dowLoadNum++;
-                            Log.d("dffasfsdfafafdowLoadNum222", dowLoadNum + "    " + filesList.size());
-                            failList.add(wuHuNetWorkBean);
-                            completeDownload();
-                        }
-                    });
-
-                }
 
                 if (isAdd == 0) {
                     //索引0充当目录页面
@@ -1173,8 +1194,18 @@ public class WuHuActivity2 extends BaseActivity implements View.OnClickListener,
                                 fileListBean.setSuffix(endStr);//上传文件后缀名和文件类型；setSuffix和setType所赋值内容一样。
                                 fileListBean.setType(getFileType(endStr));
                                 // fileListBean.setNet(localFilesDTO.getNet());
+                                if (filesList.size() > 0 && filesList != null) {
+                                    for (int m = 0; m < filesList.size(); m++) {
+                                        // Log.d("srtetret=444", filesList.get(m).getPos() + "   " + fileListBean.getPos() + "     " + filesList.get(m).getServicePath() + "   " + localFilesDTO.getPath());
+                                        if (filesList.get(m).getPos().equals(fileListBean.getPos()) && filesList.get(m).getServicePath().equals(localFilesDTO.getPath())) {
+                                            fileListBean.setName(filesList.get(m).getName());
+                                            fileListBean.setLocalPath(netFilePath + filesList.get(m).getName());
+                                            //  Log.d("srtetret=333", filesList.get(m).getName());
+                                        }
+
+                                    }
+                                }
                                 fileListBean.setNet(true);
-                                fileListBean.setLocalPath(netFilePath + localFilesDTO.getName());
                                 Log.d("gfdfddhdh下载后的文件路径    ", netFilePath + localFilesDTO.getName());
                                 editFiles.add(fileListBean);
                             }

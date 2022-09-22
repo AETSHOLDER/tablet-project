@@ -8,6 +8,15 @@ public class WuHuNetWorkBean implements Serializable {
     private String ip;
     private String url;
     private String pos;
+     private String servicePath;
+
+    public String getServicePath() {
+        return servicePath;
+    }
+
+    public void setServicePath(String servicePath) {
+        this.servicePath = servicePath;
+    }
 
     public String getPos() {
         return pos;
