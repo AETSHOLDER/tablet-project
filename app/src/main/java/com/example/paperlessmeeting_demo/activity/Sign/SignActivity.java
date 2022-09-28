@@ -344,7 +344,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
                         });
                         return;
                     }
-                    if(url.contains("ppt") || url.contains("xls")){
+                    if(url.contains("ppt") || url.contains("xls") || url.contains("txt")){
                         // 这两种office类型getBitmap取得的截图很小，只能用这种方法
                         Log.e("111","url.contains(\"ppt\")");
                         takeScreenShot();
