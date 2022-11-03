@@ -48,14 +48,14 @@
         android:layout_marginRight="190dp"
         android:background="#EA4318" />
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/topic_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="176dp"
         android:layout_marginTop="50dp"
         android:layout_marginRight="176dp"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:visibility="gone">
 
         <TextView
@@ -63,15 +63,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="15dp"
+            android:layout_centerVertical="true"
             android:gravity="center"
             android:text="议题1"
             android:textColor="#EA1818"
             android:textSize="42sp" />
+        <TextView
+            android:id="@+id/topic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="请编辑会议议题"
+            android:textColor="#333333"
+            android:textSize="38sp" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            >
 
             <TextView
                 android:id="@+id/tc"
@@ -90,23 +102,16 @@
                 android:layout_marginTop="20dp"
                 android:layout_toRightOf="@id/tc">
 
-                <TextView
-                    android:id="@+id/topic"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginLeft="15dp"
-                    android:gravity="top"
-                    android:text="请编辑会议议题"
-                    android:textColor="#333333"
-                    android:textSize="38sp" />
+
             </LinearLayout>
 
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            >
 
             <TextView
                 android:id="@+id/ad"
@@ -133,7 +138,9 @@
 
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            >
 
             <TextView
                 android:id="@+id/ss"
@@ -157,7 +164,7 @@
                 android:textSize="38sp" />
 
         </RelativeLayout>
-    </LinearLayout>
+    </RelativeLayout>
 
     <View
         android:id="@+id/nn"

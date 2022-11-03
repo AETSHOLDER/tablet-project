@@ -167,7 +167,7 @@ public class WuHuFragment3 extends BaseFragment implements MediaReceiver.sendfil
     @BindView(R.id.file_ly)
     LinearLayout file_ly;
     @BindView(R.id.topic_ll)
-    LinearLayout topic_ll;
+    RelativeLayout topic_ll;
     @BindView(R.id.fragment_ttile_rl)
     RelativeLayout fragment_ttile_rl;
     @BindView(R.id.listView_catalog_ll)

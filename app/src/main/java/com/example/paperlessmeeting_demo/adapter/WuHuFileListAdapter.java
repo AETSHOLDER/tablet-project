@@ -267,7 +267,7 @@ public class WuHuFileListAdapter extends BaseAdapter {
                     viHolder.proprietary.setText("分享");
                 } else {
 
-                    viHolder.open.setVisibility(View.VISIBLE);
+                    viHolder.open.setVisibility(View.INVISIBLE);
                     viHolder.proprietary.setVisibility(View.INVISIBLE);
                     viHolder.open.setText("分享");
                     //viHolder.proprietary.setText("分享");
@@ -277,7 +277,7 @@ public class WuHuFileListAdapter extends BaseAdapter {
             } else {
 
                 viHolder.open.setVisibility(View.GONE);
-                viHolder.proprietary.setVisibility(View.VISIBLE);
+                viHolder.proprietary.setVisibility(View.INVISIBLE);
                 viHolder.open.setText("推送");
                 viHolder.proprietary.setText("分享");
 
