@@ -2110,6 +2110,19 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
             }
             mediaProjection = mMediaProjectionManage.getMediaProjection(resultCode, data);
             startRecord();
+        }else {
+            MeetingAPP.getInstance().getNettyClient().disconnect();
+//            try {
+//                unbindService(mConnect);
+//            } catch (Exception e) {
+//
+//            }
+            CVIPaperDialogUtils.showConfirmDialog(WuHuActivity3.this, "请允许录屏权限，否则无法投屏!", "知道了", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                @Override
+                public void onClickButton(boolean clickConfirm, boolean clickCancel) {
+
+                }
+            });
         }
     }
 
@@ -2180,6 +2193,7 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
 //                    ToastUtils.showShort("连接失败");
                     Log.e(TAG, "onServiceStatusConnectChanged:" + statusCode);
                     stopRecording();
+
                 }
             }
         });
@@ -2206,12 +2220,17 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
             }
         }).start();
 
+
     }
 
     /**
      * 停止录屏
      */
     private void stopRecording() {
+        if(shareScreen_tv!=null){
+            shareScreen_tv.setText("pc投屏");
+        }
+
         try {
             unbindService(mConnect);
         } catch (Exception e) {
