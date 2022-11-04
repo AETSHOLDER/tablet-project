@@ -2104,25 +2104,27 @@ public class WuHuActivity3 extends BaseActivity implements View.OnClickListener,
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ACTIVITY_RESULT_CODE_SCREEN && resultCode == Activity.RESULT_OK) {
-            if (mMediaProjectionManage == null) {
-                mMediaProjectionManage = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-            }
-            mediaProjection = mMediaProjectionManage.getMediaProjection(resultCode, data);
-            startRecord();
-        }else {
-            MeetingAPP.getInstance().getNettyClient().disconnect();
-//            try {
-//                unbindService(mConnect);
-//            } catch (Exception e) {
-//
-//            }
-            CVIPaperDialogUtils.showConfirmDialog(WuHuActivity3.this, "请允许录屏权限，否则无法投屏!", "知道了", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
-                @Override
-                public void onClickButton(boolean clickConfirm, boolean clickCancel) {
-
+        if (requestCode == ACTIVITY_RESULT_CODE_SCREEN ) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (mMediaProjectionManage == null) {
+                    mMediaProjectionManage = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
                 }
-            });
+                mediaProjection = mMediaProjectionManage.getMediaProjection(resultCode, data);
+                startRecord();
+            }else {
+                if(MeetingAPP.getInstance().getNettyClient() != null){
+                    MeetingAPP.getInstance().getNettyClient().disconnect();
+                }
+
+                CVIPaperDialogUtils.showConfirmDialog(WuHuActivity3.this, "请允许录屏权限，否则无法投屏!", "知道了", false, new CVIPaperDialogUtils.ConfirmDialogListener() {
+                    @Override
+                    public void onClickButton(boolean clickConfirm, boolean clickCancel) {
+
+                    }
+                });
+            }
+
+
         }
     }
 
